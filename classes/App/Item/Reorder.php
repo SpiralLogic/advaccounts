@@ -15,7 +15,6 @@
    */
   class Reorder extends \ADV\App\DB\Base
   {
-
     protected $_table = 'stock_location';
     protected $_classname = 'Stock Location';
     protected $_id_column = 'loc_code';
@@ -68,5 +67,14 @@
         "Secondary Shelf" => ['fun' => [$this, 'formatSecondaryShelf']],
         "Reorder Level"   => ['fun' => [$this, 'formatReorderLevel']],
       ];
+    }
+    public function formatPrimaryShelf($row) {
+      return (new \ADV\App\Form\Field('input', 'shelf_primary'))->initial($row['shelf_primary']);
+    }
+    public function formatSecondaryShelf($row) {
+      return (new \ADV\App\Form\Field('input', 'shelf_secondary'))->initial($row['shelf_secondary']);
+    }
+    public function formatReorderLevel($row) {
+      return (new \ADV\App\Form\Field('input', 'reorder_level'))->initial($row['reorder_level']);
     }
   }

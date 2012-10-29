@@ -19,7 +19,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -28,10 +27,10 @@
    **/
   class Items extends \ADV\App\Controller\Action
   {
-
     protected $itemData;
     protected $stock_id;
     protected function before() {
+      $this->stock_id = $this->Input->getPostGlobal('stock_id');
       if (REQUEST_AJAX) {
         $this->runPost();
       }
@@ -42,9 +41,14 @@
      *
      * @return string
      */
-    protected function getItemData($id) {
-      $data['item']        = $item = new Item($id);
-      $data['stockLevels'] = $item->getStockLevels();
+    protected function getItemData() {
+      $id                    = $this->stock_id;
+      $data['item']          = $item = new Item($id);
+      $data['stockLevels']   = $item->getStockLevels();
+      $data['status']        = $item->getStatus();
+      $data['sellprices']    = (string) $this->generateSellPrices($item->stock_id);
+      $data['buyprices']     = (string) $this->generateBuyPrices($item->stock_id);
+      $data['reorderlevels'] = (string) $this->generateReorderLevels($item->stock_id);
       return json_encode($data, JSON_NUMERIC_CHECK);
     }
     protected function runPost() {
@@ -60,11 +64,12 @@
             $item = new Item($_POST['id']);
             break;
         }
-        $data['item']        = $item;
-        $data['stockLevels'] = $item->getStockLevels();
-        $data['status']      = $item->getStatus();
-        $data['sellprices']  = (string)$this->generateSellPrices($item->stock_id);
-        $data['buyprices']   = (string)$this->generateBuyPrices($item->stock_id);
+        $data['item']          = $item;
+        $data['stockLevels']   = $item->getStockLevels();
+        $data['status']        = $item->getStatus();
+        $data['sellprices']    = (string) $this->generateSellPrices($item->stock_id);
+        $data['buyprices']     = (string) $this->generateBuyPrices($item->stock_id);
+        $data['reorderlevels'] = (string) $this->generateReorderLevels($item->stock_id);
         if (isset($_GET['page'])) {
           $data['page'] = $_GET['page'];
         }
@@ -102,11 +107,11 @@
         $searchBox = UI::search(
           'itemSearchId',
           [
-            'url'      => 'Item',
-            'idField'  => 'stock_id',
-            'name'     => 'itemSearchId', //
-            'focus'    => true,
-            'callback' => 'Items.fetch'
+          'url'      => 'Item',
+          'idField'  => 'stock_id',
+          'name'     => 'itemSearchId', //
+          'focus'    => true,
+          'callback' => 'Items.fetch'
           ],
           true
         );
@@ -118,10 +123,10 @@
       } else {
         $id = Item::getStockId($_GET['stock_id']);
       }
-      $data          = $this->getItemData($id);
-      $sell_pager    = $this->generateSellPrices($id);
-      $buy_pager     = $this->generateBuyPrices($id);
-      $reorderlevels = $this->generateBuyPrices($id);
+      $data          = $this->getItemData();
+      $sell_pager    = $this->generateSellPrices();
+      $buy_pager     = $this->generateBuyPrices();
+      $reorderlevels = $this->generateReorderLevels();
       $view->set('sellprices', $sell_pager);
       $view->set('buyprices', $buy_pager);
       $view->set('reorderlevels', $reorderlevels);
@@ -131,7 +136,8 @@
       $this->JS->onload("Items.onload($data);");
       $this->Page->end_page(true);
     }
-    protected function generateSellPrices($id) {
+    protected function generateSellPrices() {
+      $id              = $this->stock_id;
       $price           = new Price();
       $price->stock_id = $id;
       $price_pager     = \ADV\App\Pager\Edit::newPager('sellprices', $price->generatePagerColumns());
@@ -140,7 +146,8 @@
       $price_pager->setData(Item_Price::getAll($id));
       return $price_pager;
     }
-    protected function generateBuyPrices($id) {
+    protected function generateBuyPrices() {
+      $id              = $this->stock_id;
       $price           = new Purchase();
       $price->stock_id = $id;
       $price_pager     = \ADV\App\Pager\Edit::newPager('buyprices', $price->generatePagerColumns());
@@ -150,15 +157,10 @@
       $price_pager->setData(Purchase::getAll($id));
       return $price_pager;
     }
-    protected function generateReorderLevels($id) {
-      $reorder           = new Reorder();
-      $reorder->stock_id = $id;
-      $reorder_pager     = \ADV\App\Pager\Pager::newPager('restocklevels', $reorder->generateTableCols());
+    protected function generateReorderLevels() {
+      $id            = $this->stock_id;
+      $reorder_pager = \ADV\App\Pager\Pager::newPager('reorderlevels', Reorder::generateTableCols());
       $reorder_pager->setData(Reorder::getAll($id));
-      if ($this->stock_id) {
-        $this->object->stock_id = $this->stock_id;
-        $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
-      }
       return $reorder_pager;
     }
   }

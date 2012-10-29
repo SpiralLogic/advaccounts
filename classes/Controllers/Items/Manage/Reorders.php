@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,7 +15,6 @@
 
   class Reorders extends \ADV\App\Controller\Manage
   {
-
     protected $stock_id = null;
     protected $security = SA_REORDER;
     protected $frame = false;
@@ -58,15 +56,6 @@
     }
     protected function generateTableCols() {
       return $this->object->generateTableCols();
-    }
-    public function formatPrimaryShelf($row) {
-      return (new \ADV\App\Form\Field('input', 'shelf_primary'))->initial($row['shelf_primary']);
-    }
-    public function formatSecondaryShelf($row) {
-      return (new \ADV\App\Form\Field('input', 'shelf_secondary'))->initial($row['shelf_secondary']);
-    }
-    public function formatReorderLevel($row) {
-      return (new \ADV\App\Form\Field('input', 'reorder_level'))->initial($row['reorder_level']);
     }
     protected function runValidation() {
       Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);

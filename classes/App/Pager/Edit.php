@@ -20,7 +20,6 @@
    */
   class Edit extends Pager
   {
-
     const TYPE_DISABLED = 'disabled';
     const TYPE_EDIT     = 'edit';
     use \ADV\Core\Traits\Action;
@@ -69,7 +68,7 @@
      */
     public function __construct($name, $coldef) {
       $this->name = $name;
-      $this->setColumns((array)$coldef);
+      $this->setColumns((array) $coldef);
     }
     /**
      * @param \ADV\App\DB\Base $object
@@ -313,13 +312,5 @@
       $this->actionID = null;
       $this->editing  = null;
       return parent::__sleep();
-    }
-    /**
-     * @return string
-     */
-    public function __tostring() {
-      ob_start();
-      $this->display();
-      return ob_get_clean();
     }
   }

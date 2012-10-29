@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -30,7 +29,6 @@
    */
   class Pager implements \Countable
   {
-
     const SQL            = 1;
     const ARR            = 2;
     const NEXT           = 'next';
@@ -152,14 +150,13 @@
       $this->name = $name;
       $this->setData($sql);
       if ($coldef === null) {
-        $this->setColumns((array)$sql);
+        $this->setColumns((array) $sql);
       } else {
         $this->setData($sql);
-        $this->setColumns((array)$coldef);
+        $this->setColumns((array) $coldef);
       }
     }
     /** Initialization after changing record set
-     *
      * @return bool
      */
     protected function checkState() {
@@ -748,7 +745,7 @@
      */
     protected function formatNavigation($id, $name, $value, $enabled = true, $title = null) {
       $button = new Button($name, $value, $title);
-      $attrs  = ['disabled' => (bool)!$enabled, 'class' => 'navibutton', 'type' => 'submit',];
+      $attrs  = ['disabled' => (bool) !$enabled, 'class' => 'navibutton', 'type' => 'submit',];
       $id     = $id ? $name . '_' . $id : $name;
       return $button->mergeAttr($attrs)->id($id);
     }
@@ -768,12 +765,11 @@
           $col['fun'] = null;
         }
       }
-      return array_keys((array)$this);
+      return array_keys((array) $this);
     }
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
-     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>
@@ -792,6 +788,14 @@
           $column['fun'] = $coldef[$column['funkey']]['fun'];
         }
       }
+    }
+    /**
+     * @return string
+     */
+    public function __tostring() {
+      ob_start();
+      $this->display();
+      return ob_get_clean();
     }
   }
 
