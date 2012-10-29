@@ -66,7 +66,7 @@
      */
     public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       $url = Purch_UI::transLink($type, $trans_no);
-      if ($raw || $url === null) {
+      if ($raw) {
         return $url;
       }
       if ($label == "") {

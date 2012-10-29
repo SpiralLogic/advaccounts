@@ -115,8 +115,8 @@
       $attr['method']  = 'post';
       $attr['action']  = $action;
       $attr['name']    = $this->name($name);
-      $attr            = array_merge($attr, $input_attr);
-      $this->start     = (new HTML)->form($name, $attr)->input(
+      array_merge($attr, $input_attr);
+      $this->start = (new HTML)->form($name, $attr)->input(
         null,
         [
         'type' => 'hidden',
@@ -174,18 +174,6 @@
     public function text($name, $input_attr = []) {
       $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'text';
-      return $field->mergeAttr($input_attr);
-    }
-    /**
-     * @param       $name
-     * @param array $input_attr
-     *
-     * @internal param null $value
-     * @return \ADV\App\Form\Field
-     */
-    public function password($name, $input_attr = []) {
-      $field         = $this->addField(new Field('input', $name));
-      $field['type'] = 'password';
       return $field->mergeAttr($input_attr);
     }
     /**

@@ -63,7 +63,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('supplier_form');
-      //  $cache = null; //Cache::_get('supplier_form');
+      $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];

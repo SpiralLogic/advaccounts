@@ -146,10 +146,10 @@
      * @internal param $password
      * @return bool
      */
-    public function login($company, $loginname, $password) {
+    public function login($company, $loginname) {
       $this->company = $company;
       $this->logged  = false;
-      $myrow         = $this->get_for_login($loginname, $password);
+      $myrow         = $this->get_for_login($loginname, $_POST['password']);
       if ($myrow) {
         if ($myrow["inactive"]) {
           return false;
@@ -195,12 +195,12 @@
      * @internal param $password
      * @return bool|mixed
      */
-    public function  get_for_login($user_id, $password) {
+    public function  get_for_login($user_id) {
       $auth = new Auth($user_id);
       if ($auth->isBruteForce()) {
         return false;
       }
-      return $auth->checkUserPassword($user_id, $password);
+      return $auth->checkUserPassword($user_id);
     }
     /**
      * @static

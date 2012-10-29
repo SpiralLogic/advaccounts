@@ -2,11 +2,11 @@
   namespace ADV\Controllers\Purchases\Search;
 
   use ADV\App\Forms;
-  use ADV\App\Display;
   use ADV\Core\Event;
   use GL_UI;
   use DB_Pager;
   use Inv_Location;
+  use ADV\App\Page;
   use ADV\App\Dates;
   use ADV\Core\Input\Input;
   use ADV\App\Reporting;
@@ -21,8 +21,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Orders extends \ADV\App\Controller\Action
-  {
+  class Orders extends \ADV\App\Controller\Action {
     /** @var Dates */
     protected $Dates;
     protected $order_no;
@@ -72,7 +71,8 @@
       $this->Page->end_page();
     }
     protected function makeTable() { //figure out the sql required from the inputs available
-      $sql = "SELECT
+      $sql
+        = "SELECT
  porder.order_no,
  porder.reference,
  supplier.name,
@@ -111,15 +111,15 @@
       static::$DB->query($sql, "No orders were returned");
       /*show a table of the orders returned by the sql */
       $cols = array(
-        _("#")           => ['fun' => [$this, 'formatTrans'], 'ord' => ''], //
+        _("#")                                     => ['fun'     => [$this, 'formatTrans'], 'ord'     => ''], //
         _("Reference"), //
-        _("Supplier")    => ['ord' => '', 'type' => 'id'], //
-        _("Supplier ID") => 'skip', //
+        _("Supplier")                              => ['ord' => '', 'type' => 'id'], //
+        _("Supplier ID")                           => 'skip', //
         _("Location"), //
         _("Supplier's Reference"), //
-        _("Order Date")  => ['name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'], //
-        _("Currency")    => ['align' => 'center'], //
-        _("Order Total") => 'amount', //
+        _("Order Date")                            => ['name' => 'ord_date', 'type' => 'date', 'ord' => 'desc'], //
+        _("Currency")                              => ['align' => 'center'], //
+        _("Order Total")                           => 'amount', //
         ['insert' => true, 'fun' => [$this, 'formatEditBtn']], //
         ['insert' => true, 'fun' => [$this, 'formatPrintBtn']], //
         ['insert' => true, 'fun' => [$this, 'formatProcessBtn']]
@@ -128,8 +128,7 @@
       if (!$this->stock_location) {
         $cols[_("Location")] = 'skip';
       }
-      $table = DB_Pager::newPager('purch_orders_tbl', $sql, $cols);
-      Event::warning(_("Marked orders have overdue items."), false);
+      $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "85%";
       $table->display($table);
@@ -139,12 +138,12 @@
      *
      * @return callable
      */
-    public function formatMarker($row) {
+    public function formatMarker($row, $pager) {
       $mark = $row['OverDue'] == 1;
       if ($mark) {
+        Event::warning(_("Marked orders have overdue items."), false);
         return "<tr class='overduebg'>";
       }
-      return '';
     }
     /**
      * @param $row
