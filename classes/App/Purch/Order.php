@@ -1,5 +1,16 @@
 <?php
   use ADV\Core\DB\DBDuplicateException;
+  use ADV\Core\Num;
+  use ADV\App\Forms;
+  use ADV\Core\Session;
+  use ADV\App\Ref;
+  use ADV\App\Validation;
+  use ADV\App\Page;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use ADV\App\Orders;
+  use ADV\App\Dates;
+  use ADV\Core\Config;
   use ADV\App\User;
   use ADV\App\Item\Item;
   use ADV\Core\Ajax;
@@ -23,7 +34,8 @@
   /**
 
    */
-  class Purch_Order {
+  class Purch_Order
+  {
     /** @var */
     public $creditor_id;
     /** @var */
@@ -276,8 +288,7 @@
       /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
       // Sherifoz 22.06.03 Compare against COMPLETED items only !!
       // Otherwise if you try to fullfill item quantities separately will give error.
-      $sql
-               = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+      $sql     = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
               FROM purch_order_details
               WHERE order_no=" . DB::_escape($this->order_no) . " ORDER BY po_detail_item";
       $result  = DB::_query($sql, "could not query purch order details");
@@ -368,13 +379,13 @@
               $po_line->req_del_date
             ) . "'," . DB::_quote($po_line->price) . ", " . DB::_quote($po_line->quantity) . ", " . DB::_quote($po_line->discount) . ")";
           } else {
-            $sql = "UPDATE purch_order_details SET item_code=" . DB::_escape($po_line->stock_id) . ",
-                    description =" . DB::_escape($po_line->description) . ",
+            $sql = "UPDATE purch_order_details SET item_code=" . DB::_quote($po_line->stock_id) . ",
+                    description =" . DB::_quote($po_line->description) . ",
                     delivery_date ='" . Dates::_dateToSql($po_line->req_del_date) . "',
-                    unit_price=" . DB::_escape($po_line->price) . ",
-                    quantity_ordered=" . DB::_escape($po_line->quantity) . ",
-                    discount=" . DB::_escape($po_line->discount) . "
-                    WHERE po_detail_item=" . DB::_escape($po_line->po_detail_rec);
+                    unit_price=" . DB::_quote($po_line->price) . ",
+                    quantity_ordered=" . DB::_quote($po_line->quantity) . ",
+                    discount=" . DB::_quote($po_line->discount) . "
+                    WHERE po_detail_item=" . DB::_quote($po_line->po_detail_rec);
           }
         }
         DB::_query($sql, "One of the purchase order detail records could not be updated");
@@ -390,13 +401,12 @@
      * @return bool
      */
     public function get_header($order_no) {
-      $sql
-              = "SELECT purch_orders.*, suppliers.name,
+      $sql    = "SELECT purch_orders.*, suppliers.name,
              suppliers.curr_code, locations.location_name
             FROM purch_orders, suppliers, locations
             WHERE purch_orders.creditor_id = suppliers.creditor_id
             AND locations.loc_code = into_stock_location
-            AND purch_orders.order_no = " . DB::_escape($order_no);
+            AND purch_orders.order_no = " . DB::_quote($order_no);
       $result = DB::_query($sql, "The order cannot be retrieved");
       if (DB::_numRows($result) == 1) {
         $myrow                  = DB::_fetch($result);
@@ -424,12 +434,11 @@
      */
     public function get_items($order_no, $view = false) {
       /*now populate the line po array with the purchase order details records */
-      $sql
-        = "SELECT purch_order_details.*, units
+      $sql = "SELECT purch_order_details.*, units
             FROM purch_order_details
             LEFT JOIN stock_master
             ON purch_order_details.item_code=stock_master.stock_id
-            WHERE order_no =" . DB::_escape($order_no);
+            WHERE order_no =" . DB::_quote($order_no);
       if ($view) {
         $sql .= " AND (purch_order_details.quantity_ordered > purch_order_details.quantity_received) ";
       }
@@ -497,8 +506,7 @@
      * @param $creditor_id
      */
     public function supplier_to_order($creditor_id) {
-      $sql
-                              = "SELECT * FROM suppliers
+      $sql                    = "SELECT * FROM suppliers
             WHERE creditor_id = '$creditor_id'";
       $result                 = DB::_query($sql, "The supplier details could not be retreived");
       $myrow                  = DB::_fetchAssoc($result);
@@ -554,10 +562,10 @@
         Creditor::newselect(
           null,
           [
-          'cell_params'        => ['colspan' => ($show_currencies + 1), 'rowspan'=> $show_currencies],
-          'rowspan'            => $show_currencies,
-          'row'                => false,
-          'cell_class'         => 'label'
+          'cell_params' => ['colspan' => ($show_currencies + 1), 'rowspan' => $show_currencies],
+          'rowspan'     => $show_currencies,
+          'row'         => false,
+          'cell_class'  => 'label'
           ]
         );
         if (Input::_post('_control') == 'customer') {
@@ -823,8 +831,7 @@
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_data($creditor_id, $stock_id) {
-      $sql
-              = "SELECT * FROM purch_data
+      $sql    = "SELECT * FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -846,8 +853,7 @@
       if ($data === false) {
         $supplier_code = $stock_id;
         try {
-          $sql
-            = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
+          $sql = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
                     conversion_factor, supplier_description) VALUES (" . DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape(
             $price
           ) . ", " . DB::_escape(

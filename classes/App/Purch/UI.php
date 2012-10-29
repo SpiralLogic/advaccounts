@@ -9,7 +9,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_UI {
+  class Purch_UI
+  {
     // SUPPLIERS
     /**
      * @static
@@ -66,7 +67,7 @@
      */
     public static function viewTrans($type, $trans_no, $label = "", $icon = false, $class = '', $id = '', $raw = false) {
       $url = Purch_UI::transLink($type, $trans_no);
-      if ($raw) {
+      if ($raw || $url === null) {
         return $url;
       }
       if ($label == "") {
