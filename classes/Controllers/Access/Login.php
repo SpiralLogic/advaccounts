@@ -9,20 +9,18 @@
    **/
   namespace ADV\Controllers\Access;
 
-  use ADV\App\Forms;
   use ADV\App\Form\Form;
-  use ADV\Core\Cell;
   use ADV\Core\View;
-  use ADV\Core\Table;
 
   /**
 
    */
-  class Login extends \ADV\App\Controller\Action {
+  class Login extends \ADV\App\Controller\Action
+  {
     public $view;
     /** @var \ADV\Core\Config */
     protected $Config;
-    /** @var \ADV\App\Dates*/
+    /** @var \ADV\App\Dates */
     protected $Dates;
     public function run() {
       $this->Config = \ADV\Core\DIC::get('Config');
@@ -51,7 +49,7 @@
       }
       $form = new Form();
       $view->set('form', $form);
-      $form->start('loginform', REQUEST_POST ? $_SESSION['timeout']['uri'] : '#', false, ['class'=> 'formbox']);
+      $form->start('loginform', REQUEST_POST ? $_SESSION['timeout']['uri'] : '#', false, ['class' => 'formbox']);
       $form->text('user_name')->label('User name');
       $form->password('password')->label('Password')->value($this->Config->get('demo_mode') ? "password" : null);
       if ($timeout) {
