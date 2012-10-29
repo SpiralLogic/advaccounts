@@ -168,9 +168,8 @@
       $this->creditor_id =& $this->id;
       parent::__construct($id);
       $this->gst_no  = &$this->tax_id;
-      $this->contact = &$this->contact_name;
       $this->address = &$this->post_address;
-      $this->phone2  = &$this->supp_phone;
+      $this->supp_phone = & $this->phone2;
     }
     /**
      * @return array
