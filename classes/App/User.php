@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -32,7 +33,8 @@
    * @method static percent_dec()
    *  @method static graphic_links()
    */
-  class User extends \ADV\App\DB\Base {
+  class User extends \ADV\App\DB\Base
+  {
     use \ADV\Core\Traits\Hook;
     use StaticAccess;
 
@@ -42,19 +44,19 @@
     public $user;
     public $id;
     public $user_id;
-    /** @var string **/
+    /** @var string * */
     public $loginname;
     /** @var */
     public $username;
     /** @var */
     public $real_name;
     public $name;
-    /** @var string **/
+    /** @var string * */
     public $company = 'default';
     public $company_name;
     /** @var */
     public $pos;
-    /** @var bool **/
+    /** @var bool * */
     public $salesmanid = false;
     /** @var */
     public $access;
@@ -62,16 +64,16 @@
     public $timeout;
     /** @var */
     public $last_action;
-    /** @var array **/
+    /** @var array * */
     protected $role_set = [];
-    /** @var bool **/
+    /** @var bool * */
     public $logged = false;
     /**@var UserPrefs */
     public $prefs;
     public $phone;
     public $language;
     public $email;
-    /** @var bool **/
+    /** @var bool * */
     public $change_password = false;
     public $selectedApp;
     /** @var */
@@ -114,7 +116,7 @@
     public function __construct($id = 0) {
       parent::__construct($id = 0);
       $this->logged = false;
-      $this->prefs  = new UserPrefs();
+      $this->prefs = new UserPrefs();
     }
     /**
      * @return bool
@@ -136,15 +138,15 @@
      */
     public function login($company, $loginname, $password) {
       $this->company = $company;
-      $this->logged  = false;
-      $myrow         = $this->get_for_login($loginname, $password);
+      $this->logged = false;
+      $myrow = $this->get_for_login($loginname, $password);
       if ($myrow) {
         if ($myrow["inactive"]) {
           return false;
         }
         $this->role_set = [];
-        $this->access   = $myrow['role_id'];
-        $this->hash     = $myrow["hash"];
+        $this->access = $myrow['role_id'];
+        $this->hash = $myrow["hash"];
         $this->Security = new Security();
         // store area codes available for current user role
         $role = $this->Security->get_role($myrow['role_id']);
@@ -159,16 +161,16 @@
           }
         }
         $this->change_password = $myrow['change_password'];
-        $this->logged          = true;
-        $this->name            = $myrow['real_name'];
-        $this->pos             = $myrow['pos'];
-        $this->username        = $this->loginname = $loginname;
-        $this->prefs           = new UserPrefs($myrow);
-        $this->user            = $myrow['id'];
-        $this->last_action     = time();
-        $this->timeout         = DB_Company::get_pref('login_tout');
-        $this->company_name    = DB_Company::get_pref('coy_name');
-        $this->salesmanid      = $this->get_salesmanid();
+        $this->logged = true;
+        $this->name = $myrow['real_name'];
+        $this->pos = $myrow['pos'];
+        $this->username = $this->loginname = $loginname;
+        $this->prefs = new UserPrefs($myrow);
+        $this->user = $myrow['id'];
+        $this->last_action = time();
+        $this->timeout = DB_Company::get_pref('login_tout');
+        $this->company_name = DB_Company::get_pref('coy_name');
+        $this->salesmanid = $this->get_salesmanid();
         $this->fireHooks('login');
         Event::registerShutdown(['Users', 'update_visitdate'], [$this->username]);
         Event::registerShutdown([$this, '_addLog']);
@@ -216,16 +218,15 @@
         $tout = $this->timeout;
         if ($tout && (time() > $this->last_action + $tout)) {
           $this->logged = false;
-        } else {
-          $this->last_action = time();
         }
       }
+      $this->last_action = time();
     }
     public function _addLog() {
       DB::_insert('user_login_log')->values(
         array(
-             'user'    => $this->username,
-             'IP'      => Auth::get_ip(),
+             'user' => $this->username,
+             'IP' => Auth::get_ip(),
              'success' => 2
         )
       )->exec();
@@ -271,7 +272,7 @@
      * @return \ADV\Core\DB\Query\Result
      */
     protected function  get() {
-      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
+      $sql = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
       $result = DB::_query($sql, "could not get user " . $this->user);
       return DB::_fetch($result);
     }
@@ -284,7 +285,6 @@
     }
     /**
      * @static
-
      */
     public function _add_js_data() {
       $js = "var user = {theme: '/themes/" . $this->prefs->theme . "/'" //
@@ -318,9 +318,9 @@
       if (!is_numeric($num)) {
         return false;
       }
-      $num = (float) $num;
-      if ($num == (int) $num) {
-        return (int) $num;
+      $num = (float)$num;
+      if ($num == (int)$num) {
+        return (int)$num;
       } else {
         return $num;
       }

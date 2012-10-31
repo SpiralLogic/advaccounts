@@ -11,7 +11,6 @@
      */
     class Purchase extends \ADV\App\DB\Base implements \ADV\App\Pager\Managable
     {
-
       protected $_table = 'purch_data';
       protected $_classname = 'Purchase Price';
       protected $_id_column = 'id';
@@ -32,10 +31,11 @@
        * @return null|\PDOStatement
        */
       public static function getAll($stock_id) {
-        $sql = "SELECT id, suppliers.creditor_id,suppliers.name as supplier, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
+        $sql
+          = "SELECT id, suppliers.creditor_id,suppliers.name as supplier, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
               FROM purch_data INNER JOIN suppliers
               ON purch_data.creditor_id=suppliers.creditor_id
-              WHERE stock_id = " . DB::_escape($stock_id);
+              WHERE stock_id = " . DB::_quote($stock_id);
         return DB::_query($sql, "The supplier purchasing details for the selected part could not be retrieved")->fetchAll(\PDO::FETCH_ASSOC);
       }
       /**
@@ -82,14 +82,14 @@
         return [
           ['type' => 'skip'],
           ['type' => 'skip'],
-          _("Supplier")          => ['edit' => [$this, 'formatSupplierEdit']],
+          _("Supplier") => ['edit' => [$this, 'formatSupplierEdit']],
           ['type' => 'skip'],
           ['type' => 'skip'],
-          _("Price")             => ['type' => 'amount'],
-          _("Supplier's UOM")    => ['edit' => [$this, 'formatUOMEdit']],
+          _("Price") => ['type' => 'amount'],
+          _("Supplier's UOM") => ['edit' => [$this, 'formatUOMEdit']],
           _("Conversion Factor") => ['type' => 'rate'],
           _("Supplier's Code"),
-          _("Updated")           => ['type' => 'date', 'readonly' => true],
+          _("Updated") => ['type' => 'date', 'readonly' => true],
         ];
       }
       public function formatSupplierEdit(Form $form) {
@@ -116,7 +116,6 @@
      **/
     class Item_Purchase
     {
-
       /**
        * @static
        *
@@ -132,7 +131,8 @@
         if ($stockid == null) {
           $stockid = Item::get_stockid($stock_id);
         }
-        $sql = "INSERT INTO purch_data (creditor_id, stockid, stock_id, price, suppliers_uom,
+        $sql
+          = "INSERT INTO purch_data (creditor_id, stockid, stock_id, price, suppliers_uom,
         conversion_factor, supplier_description) VALUES (";
         $sql .= DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($stockid) . ", " . $price . ", " . DB::_escape(
           $suppliers_uom
@@ -177,7 +177,8 @@
        * @return null|PDOStatement
        */
       public static function getAll($stock_id) {
-        $sql = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
+        $sql
+          = "SELECT purch_data.*,suppliers.name, suppliers.curr_code
         FROM purch_data INNER JOIN suppliers
         ON purch_data.creditor_id=suppliers.creditor_id
         WHERE stock_id = " . DB::_escape($stock_id);
@@ -192,7 +193,8 @@
        * @return \ADV\Core\DB\Query\Result|Array
        */
       public static function get($selected_id, $stock_id) {
-        $sql    = "SELECT purch_data.*,suppliers.name FROM purch_data
+        $sql
+          = "SELECT purch_data.*,suppliers.name FROM purch_data
         INNER JOIN suppliers ON purch_data.creditor_id=suppliers.creditor_id
         WHERE purch_data.creditor_id=" . DB::_escape($selected_id) . "
         AND purch_data.stock_id=" . DB::_escape($stock_id);
@@ -219,9 +221,9 @@
           $all_option,
           $submit_on_change,
           array(
-            'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-            'show_inactive' => $all,
-            'editable'      => false
+               'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+               'show_inactive' => $all,
+               'editable' => false
           ),
           false,
           $legacy
@@ -247,11 +249,11 @@
           $all_option,
           $submit_on_change,
           array(
-            'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-            'editable'    => 30,
-            'cells'       => true,
-            'description' => '',
-            'class'       => 'auto'
+               'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+               'editable' => 30,
+               'cells' => true,
+               'description' => '',
+               'class' => 'auto'
           )
         );
       }

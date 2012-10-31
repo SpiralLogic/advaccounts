@@ -10,6 +10,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -24,9 +25,9 @@
     protected $pager_type = self::PAGER_EDIT;
     protected $display_form = false;
     protected function before() {
-      $this->frame    = $this->Input->request('frame');
+      $this->frame = $this->Input->request('frame');
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
-      $this->object   = new Price();
+      $this->object = new Price();
       $this->object->stock_id = $this->stock_id;
     }
     protected function beforeTable() {
@@ -35,12 +36,12 @@
         UI::search(
           'stock_id',
           [
-          'label'   => 'Item:',
-          'url'     => 'Item',
+          'label' => 'Item:',
+          'url' => 'Item',
           'idField' => 'stock_id',
-          'name'    => 'stock_id', //
-          'value'   => $this->stock_id,
-          'focus'   => true,
+          'name' => 'stock_id', //
+          'value' => $this->stock_id,
+          'focus' => true,
           ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);

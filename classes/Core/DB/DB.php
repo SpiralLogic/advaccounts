@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -35,7 +36,8 @@
    * @method  static _quote($value, $type = null)
    * @method  static _quoteWild($value, $both = true, $type = null)
    */
-  class DB extends \PDO implements \Serializable {
+  class DB extends \PDO implements \Serializable
+  {
     use \ADV\Core\Traits\StaticAccess2;
 
     const SELECT = 0;
@@ -54,13 +56,13 @@
     protected $nested = false;
     /** @var Query\Query|Query\Select|Query\Update $query */
     protected $query = false;
-    /** @var bool **/
+    /** @var bool * */
     protected $results = false;
-    /** @var bool **/
+    /** @var bool * */
     protected $errorSql = false;
-    /** @var bool **/
+    /** @var bool * */
     protected $errorInfo = false;
-    /** @var bool **/
+    /** @var bool * */
     protected $intransaction = false;
     /** @var */
     protected $default_connection;
@@ -156,7 +158,7 @@
       $value = trim($value);
       if (!isset($value) || is_null($value) || $value === "") {
         $value = ($null) ? 'null' : '';
-        $type  = \PDO::PARAM_NULL;
+        $type = \PDO::PARAM_NULL;
       } elseif (is_int($value)) {
         $type = \PDO::PARAM_INT;
       } elseif (is_bool($value)) {
@@ -177,14 +179,14 @@
      * @return bool|\PDOStatement
      */
     public function prepare($sql, $debug = false) {
-      $this->debug     = $debug;
+      $this->debug = $debug;
       $this->errorInfo = false;
-      $this->errorSql  = $sql;
-      $data            = $this->data;
+      $this->errorSql = $sql;
+      $data = $this->data;
       try {
-        /** @var \PDOStatement $prepared  */
+        /** @var \PDOStatement $prepared */
         $prepared = parent::prepare($sql);
-        $params   = substr_count($sql, '?');
+        $params = substr_count($sql, '?');
         if ($data && $params > count($data)) {
           throw new DBException('There are more escaped values than there are placeholders!!');
         }
@@ -200,7 +202,7 @@
       if ($debug) {
         $this->queryString = $sql;
       }
-      $this->data     = [];
+      $this->data = [];
       $this->prepared = $prepared;
       return $prepared;
     }
@@ -241,8 +243,8 @@
      */
     public function select($columns = null) {
       $this->prepared = null;
-      $columns        = (is_string($columns)) ? func_get_args() : [];
-      $this->query    = new Query\Select($columns, $this);
+      $columns = (is_string($columns)) ? func_get_args() : [];
+      $this->query = new Query\Select($columns, $this);
       return $this->query;
     }
     /**
@@ -254,7 +256,7 @@
      */
     public function update($into) {
       $this->prepared = null;
-      $this->query    = new Query\Update($into, $this);
+      $this->query = new Query\Update($into, $this);
       return $this->query;
     }
     /**
@@ -264,7 +266,7 @@
      */
     public function insert($into) {
       $this->prepared = null;
-      $this->query    = new Query\Insert($into, $this);
+      $this->query = new Query\Insert($into, $this);
       return $this->query;
     }
     /**
@@ -274,7 +276,7 @@
      */
     public function delete($into) {
       $this->prepared = null;
-      $this->query    = new Query\Delete($into, $this);
+      $this->query = new Query\Delete($into, $this);
       return $this->query;
     }
     /***
@@ -361,9 +363,9 @@
      * @return bool
      */
     public function freeResult() {
-      $result         = ($this->prepared) ? $this->prepared->closeCursor() : false;
+      $result = ($this->prepared) ? $this->prepared->closeCursor() : false;
       $this->errorSql = $this->errorInfo = $this->prepared = null;
-      $this->data     = [];
+      $this->data = [];
       return $result;
     }
     /**
@@ -382,7 +384,7 @@
       }
       $rows = ($this->Cache) ? $this->Cache->get('sql.rowcount.' . md5($sql)) : false;
       if ($rows !== false) {
-        return (int) $rows;
+        return (int)$rows;
       }
       $rows = $this->query($sql)->rowCount();
       if ($this->Cache) {
@@ -399,7 +401,6 @@
     }
     /**
      * @static
-
      */
     public function begin() {
       /** @noinspection PhpUndefinedMethodInspection */
@@ -414,7 +415,6 @@
     }
     /**
      * @static
-
      */
     public function commit() {
       /** @noinspection PhpUndefinedMethodInspection */
@@ -429,7 +429,6 @@
     }
     /**
      * @static
-
      */
     public function cancel() {
       /** @noinspection PhpUndefinedMethodInspection */
@@ -492,8 +491,8 @@
      */
     public function exec($sql, $type, $data = []) {
       $this->errorInfo = false;
-      $this->errorSql  = $sql;
-      $this->data      = $data;
+      $this->errorSql = $sql;
+      $this->data = $data;
       if ($data && is_array(reset($data))) {
         $this->queryString = $this->placeholderValues($this->errorSql, $data);
       } elseif ($data) {
@@ -521,7 +520,9 @@
         $error = $this->error($e, false, true);
         switch ($type) {
           case DB::SELECT:
-            throw new DBSelectException('Could not select from database: ' . $e->getMessage());
+            debug_print_backtrace();
+            exit;
+            throw new DBSelectException('Could not select from database: ' . $this->queryString);
             break;
           case DB::INSERT:
             $count = preg_match('/Column \'(.+)\'(.*)/', $error['message'], $matches);
@@ -583,7 +584,7 @@
      * @return bool
      */
     protected function error(\Exception $e, $msg = false, $silent = false) {
-      $data       = $this->data;
+      $data = $this->data;
       $this->data = [];
       if ($data && is_array(reset($data))) {
         $this->errorSql = $this->placeholderValues($this->errorSql, $data);
@@ -591,9 +592,9 @@
         $this->errorSql = $this->namedValues($this->errorSql, $data);
       }
       $this->queryString = $this->errorSql;
-      $this->errorInfo   = $error = $e->errorInfo;
-      $error['debug']    = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
-      $error['message']  = ($msg != false) ? $msg : $e->getMessage();
+      $this->errorInfo = $error = $e->errorInfo;
+      $error['debug'] = $e->getCode() . (!isset($error[2])) ? $e->getMessage() : $error[2];
+      $error['message'] = ($msg != false) ? $msg : $e->getMessage();
       /** @noinspection PhpUndefinedMethodInspection */
       if ((parent::inTransaction() || $this->intransaction)) {
         parent::rollBack();
@@ -615,17 +616,19 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * String representation of object
+     *
      * @link http://php.net/manual/en/serializable.serialize.php
      */
     public function serialize() {
-      $this->prepared           = null;
+      $this->prepared = null;
       $this->default_connection = null;
-      $this->query              = null;
+      $this->query = null;
       return base64_encode(serialize($this));
     }
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Constructs the object
+     *
      * @link http://php.net/manual/en/serializable.unserialize.php
      *
      * @param string $serialized <p>
@@ -639,33 +642,45 @@
       return static::i();
     }
   }
+
   /**
 
    */
-  class DBException extends \Exception {
+  class DBException extends \Exception
+  {
   }
+
   /**
 
    */
-  class DBInsertException extends DBException {
+  class DBInsertException extends DBException
+  {
   }
+
   /**
 
    */
-  class DBDeleteException extends DBException {
+  class DBDeleteException extends DBException
+  {
   }
+
   /**
 
    */
-  class DBSelectException extends DBException {
+  class DBSelectException extends DBException
+  {
   }
+
   /**
 
    */
-  class DBUpdateException extends DBException {
+  class DBUpdateException extends DBException
+  {
   }
+
   /**
 
    */
-  class DBDuplicateException extends DBException {
+  class DBDuplicateException extends DBException
+  {
   }

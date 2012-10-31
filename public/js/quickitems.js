@@ -3,23 +3,23 @@
  * Date: 17/07/11 - 10:58 PM
  */
 Adv.extend({
-  revertState:function () {
-    var form = document.getElementsByTagName('form')[0];
-    form.reset();
-    Adv.btnConfirm.hide();
-    Adv.btnCancel.hide();
-    Adv.btnNew.show();
-    Adv.Forms.resetHighlights();
-    $("#itemSearchId").val('');
-  },
-  resetState: function () {
-    $("#tabs0 input, #tabs0 textarea").empty();
-    Items.fetch(0);
-    Adv.btnCancel.hide();
-    Adv.btnConfirm.hide();
-    Adv.btnNew.show();
-  }
-});
+             revertState:function () {
+               var form = document.getElementsByTagName('form')[0];
+               form.reset();
+               Adv.btnConfirm.hide();
+               Adv.btnCancel.hide();
+               Adv.btnNew.show();
+               Adv.Forms.resetHighlights();
+               $("#itemSearchId").val('');
+             },
+             resetState: function () {
+               $("#tabs0 input, #tabs0 textarea").empty();
+               Items.fetch(0);
+               Adv.btnCancel.hide();
+               Adv.btnConfirm.hide();
+               Adv.btnNew.show();
+             }
+           });
 var Items = function () {
   var
     item, //
@@ -45,12 +45,8 @@ var Items = function () {
       if (id.id !== undefined) {
         id = id.id;
       }
-      $.post("#", {"id":id}, function (data) {
+      $.post("#", {stockid:id}, function (data) {
         Items.onload(data, true);
-        $('#_sellprices_span').replaceWith(data.sellprices);
-        $('#_buyprices_span').replaceWith(data.buyprices);
-        $('#_reorderlevels_span').replaceWith(data.reorderlevels);
-
       }, 'json');
       return false;
     },
@@ -65,6 +61,7 @@ var Items = function () {
       item[fieldname] = val;
     },
     onload:   function (data, noframes) {
+      var form;
       if (!noframes) {
         this.getFrames(data.item.stock_id);
       }
@@ -73,14 +70,18 @@ var Items = function () {
       item = data.item;
       $.tmpl('items', data.item).appendTo("#Items");
       $.tmpl('accounts', data.item).appendTo("#Accounts");
+      $('#_sellprices_span').replaceWith(data.sellprices);
+      $('#_buyprices_span').replaceWith(data.buyprices);
+      $('#_reorderlevels_span').replaceWith(data.reorderlevels);
       if (data.stockLevels) {
         $stockLevels.show().find('tbody').html($.tmpl('stockrow', data.stockLevels));
       }
       else {
         $stockLevels.hide();
       }
+      form = data._form_id;
       $.each(item, function (i, data) {
-        Adv.Forms.setFormDefault(i, data);
+        Adv.Forms.setFormDefault(i, data, form);
       });
       Adv.Forms.setFocus('stock_id');
     },
@@ -104,10 +105,10 @@ $(function () {
     Items.save();
     return false;
   }),
-    btnNew:             $("#btnNew").mousedown(function () {
-      Adv.resetState();
-      return false;
-    }) });
+               btnNew:  $("#btnNew").mousedown(function () {
+                 Adv.resetState();
+                 return false;
+               }) });
   Adv.o.tabs[0] = $("#tabs0").tabs();
   Adv.o.tabs[0].delegate("input,textarea,select", "change keyup", function () {
     var $this = $(this), $thisname = $this.attr('name');

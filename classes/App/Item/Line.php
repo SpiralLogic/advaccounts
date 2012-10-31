@@ -1,16 +1,20 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Line {
+  class Item_Line
+  {
     /** @var */
     public $stock_id;
-    /** @var null **/
+    /**
+     * @var null
+     */
     public $description;
     /** @var */
     public $units;
@@ -18,9 +22,13 @@
     public $mb_flag;
     /** @var */
     public $quantity;
-    /** @var int **/
+    /**
+     * @var int
+     */
     public $price;
-    /** @var null **/
+    /**
+     * @var null
+     */
     public $standard_cost;
     /**
      * @param      $stock_id
@@ -34,7 +42,7 @@
         Event::error("invalid item added to order : $stock_id", "");
       }
       $this->mb_flag = $item_row["mb_flag"];
-      $this->units   = $item_row["units"];
+      $this->units = $item_row["units"];
       if ($description == null) {
         $this->description = $item_row["description"];
       } else {

@@ -1,9 +1,10 @@
 <div id="itemSearch" class='bold pad10 center'>
 {{$searchBox}}
 </div>
-{{$form._start}}
+ {{$form._start}}
 {#$menu->startTab('Items', 'Items','active')#}
 <div id="Items" class="width40 formbox">
+
 {{#$form.items}}
   {{.}}
   {{/$form.items}}
@@ -41,7 +42,9 @@
 {{#$form.accounts}}
   {{.}}
   {{/$form.accounts}}
+
 </div>
+
 {#$menu->endTab()->startTab('Selling', 'Selling')#}
 {{$sellprices}}
 {#$menu->endTab()->startTab('Purchasing', 'Purchasing')#}
@@ -53,7 +56,6 @@
         style='width:100%'
         height='500' frameborder='0'></iframe>
 {#$menu->endTab()->render()#}
-{{$form._end}}
 <div class="center">
 {{#$form.buttons}}
   {{.}}

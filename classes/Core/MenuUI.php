@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,18 +13,19 @@
   /**
 
    */
-  class MenuUI extends Menu {
+  class MenuUI extends Menu
+  {
     /** @var JS */
     protected $JS;
-    /** @var bool **/
+    /** @var bool * */
     public $tabs = [];
     public $current_tab;
     public $firstPage = 0;
-    /** @var int **/
+    /** @var int * */
     public static $menuCount = 0;
     protected $jslinks = [];
     protected $defaultState = 'default';
-    /** @var array **/
+    /** @var array * */
     protected $options = [];
     /**
      * @param string $defaultState
@@ -61,7 +63,7 @@
      * @return MenuUI
      */
     public function addLink($title, $tooltip = '', $link, $param_element, $target = null) {
-      $this->items[]             = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
+      $this->items[] = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = true;
       return $this;
     }
@@ -74,9 +76,9 @@
      * @return MenuUI
      */
     public function addJSLink($title, $tooltip = '', $name, $onselect) {
-      $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
+      $this->items[] = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = true;
-      $this->jslinks[]           = $onselect;
+      $this->jslinks[] = $onselect;
       return $this;
     }
     /**
@@ -93,8 +95,8 @@
       if ($state == null) {
         $state = $this->defaultState;
       }
-      $this->items[]                       = new MenuUI_item($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count, null, null, $state);
-      $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
+      $this->items[] = new MenuUI_item($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count, null, null, $state);
+      $this->current_tab['attrs']['id'] = 'tabs' . MenuUI::$menuCount . '-' . $count;
       $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content';
       $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count) ? ' display:none;' : '';
       ob_start();
@@ -105,15 +107,15 @@
      */
     public function endTab() {
       $this->current_tab['contents'] = ob_get_clean();
-      $this->tabs[]                  = $this->current_tab;
-      $this->current_tab             = [];
+      $this->tabs[] = $this->current_tab;
+      $this->current_tab = [];
       return $this;
     }
     /**
      * @return void
      */
     public function render() {
-      $menu              = new View('ui/menu');
+      $menu = new View('ui/menu');
       $menu['menuCount'] = MenuUI::$menuCount;
       $menu->set('items', $this->items);
       $menu->set('tabs', $this->tabs);
@@ -125,15 +127,17 @@
       MenuUI::$menuCount++;
     }
   }
+
   /**
 
    */
-  class MenuUI_item extends menu_item {
-    /** @var string **/
+  class MenuUI_item extends menu_item
+  {
+    /** @var string * */
     public $tooltip = '';
-    /** @var null|string **/
+    /** @var null|string * */
     public $param_element = '';
-    /** @var null|string **/
+    /** @var null|string * */
     public $target = '';
     /**
      * @param        $label
@@ -144,16 +148,15 @@
      * @param string $state
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null, $state = 'default') {
-      $this->label   = $label;
+      $this->label = $label;
       $this->liattrs = [
         'class' => 'ui-state-default ui-corner-top ui-state-' . $state,
       ];
-      $this->attrs   = [
-        'href'         => e($link),
-        'title'        => $label,
-        'tooltip'      => e($tooltip),
+      $this->attrs = [
+        'href' => e($link),
+        'title' => $label,
         'data-paramel' => $param_element,
-        'target'       => $target
+        'target' => $target
       ];
     }
   }

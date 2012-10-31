@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,7 +14,8 @@
   /**
 
    */
-  trait HTML {
+  trait HTML
+  {
     /**
      * @param      $tag
      * @param      $attributes
@@ -24,16 +26,14 @@
      */
     protected function makeElement($tag, $attributes, $content = null, $close = false) {
       if ($content === true) {
-        $close   = true;
+        $close = true;
         $content = '';
       } elseif ($content === null) {
         $content = '';
       }
-
       if ($close) {
         $content .= '</' . $tag . '>';
       }
-
       return '<' . $tag . ' ' . static::expandAttributes($attributes) . '>' . $content;
     }
     /**
@@ -46,6 +46,7 @@
       foreach ($attributes as $key => $value) {
         if ($value === true) {
           $attrs .= ' ' . $key;
+          continue;
         }
         if (is_bool($value) || $value === null) {
           continue;
@@ -57,7 +58,6 @@
         }
         $attrs .= ' ' . $key . '="' . $value . '"';
       }
-
       return $attrs;
     }
   }

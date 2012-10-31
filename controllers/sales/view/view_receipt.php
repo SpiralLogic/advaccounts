@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,13 +9,8 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\JS;
-  use ADV\App\Orders;
   use ADV\Core\Input\Input;
-  use ADV\App\Item\Item;
-  use ADV\App\User;
   use ADV\App\Dates;
-  use ADV\App\Debtor\Debtor;
-  use ADV\Core\DB\DB;
   use ADV\App\Forms;
   use ADV\Core\Cell;
   use ADV\App\Display;
@@ -30,7 +26,6 @@
     unset($_POST);
   }
   $receipt = Debtor_Trans::get($trans_id, $trans_type);
-  echo "<br>";
   Table::start('standard width90');
   echo "<tr class='tablerowhead top'><th colspan=6>";
   if ($trans_type == ST_CUSTPAYMENT) {

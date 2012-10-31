@@ -46,26 +46,27 @@
      *
      * @return array
      */
-    public static function getAll($stock_id = null, $inactive = false) {
-      $sql = "SELECT sl.loc_code as id,sl.loc_code, l.location_name , sl.stockid, sl.stock_id,sl.shelf_primary,sl.shelf_secondary,sl.reorder_level
+    public static function getAll($stockid = null, $inactive = false) {
+      $sql
+        = "SELECT sl.loc_code as id,sl.loc_code, l.location_name , sl.stockid, sl.stock_id,sl.shelf_primary,sl.shelf_secondary,sl.reorder_level
         FROM stock_location sl,  locations l
-        WHERE sl.loc_code=l.loc_code AND sl.stock_id = " . DB::_escape($stock_id) . "
-        AND sl.loc_code <> " . DB::_escape(LOC_DROP_SHIP) . "
-        AND sl.loc_code <> " . DB::_escape(LOC_NOT_FAXED_YET) . "
+        WHERE sl.loc_code=l.loc_code AND sl.stockid = " . DB::_quote($stockid) . "
+        AND sl.loc_code <> " . DB::_quote(LOC_DROP_SHIP) . "
+        AND sl.loc_code <> " . DB::_quote(LOC_NOT_FAXED_YET) . "
         ORDER BY sl.loc_code";
       DB::_query($sql, "an item reorder could not be retreived");
-      return DB::_fetchAll();
+      return DB::_fetchAll(\PDO::FETCH_ASSOC);
     }
-    function generateTableCols() {
+    public function generateTableCols() {
       return [
         ['type' => 'skip'],
         ['type' => 'skip'],
-        _("Location")     => ['type' => 'readonly'],
+        _("Location") => ['type' => 'readonly'],
         ['type' => 'skip'],
         ['type' => 'skip'],
-        "Primary Shelf"   => ['fun' => [$this, 'formatPrimaryShelf']],
+        "Primary Shelf" => ['fun' => [$this, 'formatPrimaryShelf']],
         "Secondary Shelf" => ['fun' => [$this, 'formatSecondaryShelf']],
-        "Reorder Level"   => ['fun' => [$this, 'formatReorderLevel']],
+        "Reorder Level" => ['fun' => [$this, 'formatReorderLevel']],
       ];
     }
     public function formatPrimaryShelf($row) {

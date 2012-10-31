@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -29,26 +30,26 @@
    */
   class Pager implements \Countable
   {
-    const SQL            = 1;
-    const ARR            = 2;
-    const NEXT           = 'next';
-    const PREV           = 'prev';
-    const LAST           = 'last';
-    const FIRST          = 'first';
-    const TYPE_BOOL      = 'bool';
-    const TYPE_TIME      = 'time';
-    const TYPE_DATE      = 'date';
+    const SQL = 1;
+    const ARR = 2;
+    const NEXT = 'next';
+    const PREV = 'prev';
+    const LAST = 'last';
+    const FIRST = 'first';
+    const TYPE_BOOL = 'bool';
+    const TYPE_TIME = 'time';
+    const TYPE_DATE = 'date';
     const TYPE_DATESTAMP = 'dstamp';
     const TYPE_TIMESTAMP = 'tstamp';
-    const TYPE_PERCENT   = 'percent';
-    const TYPE_AMOUNT    = 'amount';
-    const TYPE_QTY       = 'qty';
-    const TYPE_EMAIL     = 'email';
-    const TYPE_RATE      = 'rate';
-    const TYPE_INACTIVE  = 'inactive';
-    const TYPE_ID        = 'id';
-    const TYPE_SKIP      = 'skip';
-    const TYPE_GROUP     = 'group';
+    const TYPE_PERCENT = 'percent';
+    const TYPE_AMOUNT = 'amount';
+    const TYPE_QTY = 'qty';
+    const TYPE_EMAIL = 'email';
+    const TYPE_RATE = 'rate';
+    const TYPE_INACTIVE = 'inactive';
+    const TYPE_ID = 'id';
+    const TYPE_SKIP = 'skip';
+    const TYPE_GROUP = 'group';
     /** @var \ADV\Core\DB\DB */
     static $DB;
     /** @var Input */
@@ -128,12 +129,12 @@
         $pager->refresh();
       }
       static::$Input = $c->offsetGet('Input');
-      static::$JS    = $c->offsetGet('JS');
+      static::$JS = $c->offsetGet('JS');
       static::$Dates = $c->offsetGet('Dates');
-      static::$DB    = $c->offsetGet('DB');
+      static::$DB = $c->offsetGet('DB');
       /** @var \ADV\App\User $user */
-      $user                     = $c->offsetGet('User');
-      $pager->page_length       = $user->prefs->query_size;
+      $user = $c->offsetGet('User');
+      $pager->page_length = $user->prefs->query_size;
       $_SESSION['pager'][$name] = $pager;
       $pager->restoreColumnFunction($coldef);
       if (static::$Input->post('_action') == 'showInactive') {
@@ -150,34 +151,35 @@
       $this->name = $name;
       $this->setData($sql);
       if ($coldef === null) {
-        $this->setColumns((array) $sql);
+        $this->setColumns((array)$sql);
       } else {
         $this->setData($sql);
-        $this->setColumns((array) $coldef);
+        $this->setColumns((array)$coldef);
       }
     }
     /** Initialization after changing record set
+     *
      * @return bool
      */
     protected function checkState() {
       if ($this->ready == false) {
         if ($this->type == self::SQL) {
-          $sql    = $this->generateSQL(true);
+          $sql = $this->generateSQL(true);
           $result = static::$DB->_query($sql, 'Error reading record set');
           if ($result == false) {
             return false;
           }
-          $row             = static::$DB->_fetchRow($result);
+          $row = static::$DB->_fetchRow($result);
           $this->rec_count = $row[0];
-          $this->max_page  = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
+          $this->max_page = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
           $this->setPage(self::FIRST, false);
         } elseif ($this->type == self::ARR) {
-          $this->rec_count  = count($this->sql);
-          $ord              = $this->rowGroup;
+          $this->rec_count = count($this->sql);
+          $ord = $this->rowGroup;
           $this->fieldnames = array_keys($this->sql[0]);
-          $this->dataset    = [];
+          $this->dataset = [];
           foreach ($this->sql as $key => $row) {
-            $row[]           = $key;
+            $row[] = $key;
             $this->dataset[] = $row;
           }
           foreach ($this->columns as $key => $col) {
@@ -208,11 +210,11 @@
             $args[] =& $this->dataset;
             call_user_func_array('array_multisort', $args);
           }
-          $this->max_page   = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
-          $this->curr_page  = $this->curr_page ? : 1;
-          $this->next_page  = ($this->curr_page < $this->max_page) ? $this->curr_page + 1 : null;
-          $this->prev_page  = ($this->curr_page > 1) ? ($this->curr_page - 1) : null;
-          $this->last_page  = ($this->curr_page < $this->max_page) ? $this->max_page : null;
+          $this->max_page = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
+          $this->curr_page = $this->curr_page ? : 1;
+          $this->next_page = ($this->curr_page < $this->max_page) ? $this->curr_page + 1 : null;
+          $this->prev_page = ($this->curr_page > 1) ? ($this->curr_page - 1) : null;
+          $this->last_page = ($this->curr_page < $this->max_page) ? $this->max_page : null;
           $this->first_page = ($this->curr_page != 1) ? 1 : null;
         }
         $this->ready = true;
@@ -225,36 +227,36 @@
      */
     public function setData($sql) {
       if (is_array($sql)) {
-        $this->sql       = $sql;
-        $this->type      = self::ARR;
+        $this->sql = $sql;
+        $this->type = self::ARR;
         $this->rec_count = count($this->sql);
-        $this->max_page  = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
-        $this->ready     = false;
+        $this->max_page = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
+        $this->ready = false;
         return;
       }
       if ($sql != $this->sql) {
-        $this->sql   = $sql;
-        $this->type  = self::SQL;
+        $this->sql = $sql;
+        $this->type = self::SQL;
         $this->ready = false;
-        $parts       = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
+        $parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
         if (count($parts) == 2) {
-          $sql         = $parts[0];
+          $sql = $parts[0];
           $this->order = $parts[1];
         }
-        $parts       = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
+        $parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
         $this->group = null;
         if (count($parts) == 2) {
-          $sql         = $parts[0];
+          $sql = $parts[0];
           $this->group = $parts[1];
         }
         $parts = preg_split('/\sWHERE\s/si', $sql, 2);
         if (count($parts) == 2) {
-          $sql         = $parts[0];
+          $sql = $parts[0];
           $this->where = $parts[1];
         }
         $parts = preg_split('/\sFROM\s/si', $sql, 2);
         if (count($parts) == 2) {
-          $sql        = $parts[0];
+          $sql = $parts[0];
           $this->from = $parts[1];
         }
         $this->select = $sql;
@@ -272,10 +274,10 @@
           $c = ['head' => $colindex, 'type' => $coldef];
         } elseif (is_string($colindex) && is_array($coldef)) {
           $coldef ['head'] = $colindex;
-          $c               = $coldef;
+          $c = $coldef;
         } elseif (is_array($coldef)) {
           $coldef['head'] = '';
-          $c              = $coldef;
+          $c = $coldef;
         } else {
           $c = ['head' => $coldef, 'type' => 'text'];
         }
@@ -331,13 +333,13 @@
           $page = 1;
           break;
       }
-      $page             = ($page < 1) ? 1 : $page;
-      $max              = $this->max_page;
-      $page             = ($page > $max) ? $max : $page;
-      $this->curr_page  = $page;
-      $this->next_page  = ($page < $max) ? $page + 1 : null;
-      $this->prev_page  = ($page > 1) ? ($page - 1) : null;
-      $this->last_page  = ($page < $max) ? $max : null;
+      $page = ($page < 1) ? 1 : $page;
+      $max = $this->max_page;
+      $page = ($page > $max) ? $max : $page;
+      $this->curr_page = $page;
+      $this->next_page = ($page < $max) ? $page + 1 : null;
+      $this->prev_page = ($page > 1) ? ($page - 1) : null;
+      $this->last_page = ($page < $max) ? $max : null;
       $this->first_page = ($page != 1) ? 1 : null;
       if ($query) {
         $this->query();
@@ -360,7 +362,7 @@
         }
       }
       $this->extra_where = $where;
-      $this->ready       = false;
+      $this->ready = false;
     }
     /**
      * @param null $sql
@@ -385,7 +387,7 @@
         if ($this->rec_count == 0) {
           return true;
         }
-        $sql    = $this->generateSQL(false);
+        $sql = $this->generateSQL(false);
         $result = static::$DB->_query($sql, 'Error browsing database: ' . $sql);
         if (!$result) {
           return false;
@@ -399,7 +401,7 @@
         $this->data = array_slice($this->dataset, $offset, $this->page_length);
       }
       $dbfield_names = array_keys($this->data[0]);
-      $cnt           = min(count($dbfield_names), count($this->columns));
+      $cnt = min(count($dbfield_names), count($this->columns));
       for ($c = $i = 0; $c < $cnt; $c++) {
         if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
           //	if (!@($this->columns[$c]['type']=='skip'))
@@ -458,7 +460,7 @@
           return false;
       }
       $this->columns[$col]['ord'] = $ord;
-      $this->ready                = false;
+      $this->ready = false;
       $this->setPage(self::FIRST);
       return true;
     }
@@ -473,10 +475,10 @@
      */
     protected function generateSQL($count = false) {
       $select = $this->select;
-      $from   = $this->from;
-      $where  = $this->where;
-      $group  = $this->group;
-      $order  = $this->order;
+      $from = $this->from;
+      $where = $this->where;
+      $group = $this->group;
+      $order = $this->order;
       if (count($this->extra_where)) {
         $where .= ($where == '' ? '' : ' AND ') . implode($this->extra_where, ' AND ');
       }
@@ -498,7 +500,7 @@
       foreach ($this->columns as $key => $col) {
         if (isset($col['ord'])) {
           if ($col['ord'] && $col['ord'] != 'none') {
-            $name  = isset($col['name']) ? $col['name'] : $key + 1;
+            $name = isset($col['name']) ? $col['name'] : $key + 1;
             $ord[] = $name . ' ' . $col['ord'];
           }
         }
@@ -509,13 +511,13 @@
         $sql .= " ORDER BY $order";
       } // original base query order
       $page_length = $this->page_length;
-      $offset      = ($this->curr_page - 1) * $page_length;
+      $offset = ($this->curr_page - 1) * $page_length;
       $sql .= " LIMIT $offset, $page_length";
       return $sql;
     }
     /** @return array */
     protected function generateHeaders() {
-      $headers  = [];
+      $headers = [];
       $inactive = !Input::_post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
         if (isset($col['head']) || $inactive) {
@@ -582,23 +584,23 @@
       $view->set('inactive', $this->showInactive !== null);
       $this->generateNav($view);
       $this->currentRowGroup = null;
-      $this->fieldnames      = array_keys(reset($this->data));
-      $rows                  = [];
+      $this->fieldnames = array_keys(reset($this->data));
+      $rows = [];
       foreach ($this->data as $row) {
         if ($this->rowGroup) {
           $fields = $this->fieldnames;
-          $field  = $fields[$this->rowGroup[0][0] - 1];
+          $field = $fields[$this->rowGroup[0][0] - 1];
           if ($this->currentRowGroup != $row[$field]) {
             $this->currentRowGroup = $row[$field];
-            $row['group']          = $row[$field];
-            $row['colspan']        = count($this->columns);
+            $row['group'] = $row[$field];
+            $row['colspan'] = count($this->columns);
           }
         }
         if (is_callable($this->rowFunction)) {
           $row['attrs'] = call_user_func($this->rowFunction, $row);
         }
         $row['cells'] = $this->displayRow($row);
-        $rows[]       = $row;
+        $rows[] = $row;
       }
       $view->set('rows', $rows);
       $view->render();
@@ -606,7 +608,12 @@
       return true;
     }
     protected function generateNav(View $view) {
-      $navigation = [[self::FIRST, 1, $this->first_page, 'fast-backward'], [self::PREV, $this->curr_page - 1, $this->prev_page, 'backward'], [self::NEXT, $this->curr_page + 1, $this->next_page, 'forward'], [self::LAST, $this->max_page, $this->last_page, 'fast-forward'],];
+      $navigation = [
+        [self::FIRST, 1, $this->first_page, 'fast-backward'],
+        [self::PREV, $this->curr_page - 1, $this->prev_page, 'backward'],
+        [self::NEXT, $this->curr_page + 1, $this->next_page, 'forward'],
+        [self::LAST, $this->max_page, $this->last_page, 'fast-forward'],
+      ];
       $navbuttons = [];
       if ($this->showInactive !== null) {
         $view['checked'] = ($this->showInactive) ? 'checked' : '';
@@ -619,11 +626,11 @@
         }
         $view->set('navbuttons', $navbuttons);
         $from = ($this->curr_page - 1) * $this->page_length + 1;
-        $to   = $from + $this->page_length - 1;
+        $to = $from + $this->page_length - 1;
         if ($to > $this->rec_count) {
           $to = $this->rec_count;
         }
-        $all             = $this->rec_count;
+        $all = $this->rec_count;
         $view['records'] = "Records $from-$to of $all";
       } else {
         $view['records'] = "No Records";
@@ -643,11 +650,11 @@
      */
     protected function displayRow($row, $columns = null) {
       $columns = $columns ? : $this->columns;
-      $cells   = [];
+      $cells = [];
       foreach ($columns as $col) {
         $coltype = isset($col['type']) ? $col['type'] : '';
         $content = isset($col['name']) ? $row[$col['name']] : '';
-        $attrs   = '';
+        $attrs = '';
         if (isset($col['fun'])) { // use data input function if defined
           $fun = $col['fun'];
           if (is_callable($fun)) {
@@ -662,53 +669,53 @@
         switch ($coltype) { // format columnhsdaasdg
           case self::TYPE_BOOL:
             $content = $content ? 'Yes' : 'No';
-            $attrs   = " class='$class width40'";
+            $attrs = " class='$class width40'";
             break;
           case self::TYPE_TIME:
             $attrs = " class='$class width40'";
             break;
           case self::TYPE_DATE:
             $content = static::$Dates->sqlToDate($content);
-            $attrs   = " class='$class center nowrap'";
+            $attrs = " class='$class center nowrap'";
             break;
           case self::TYPE_DATESTAMP: // time stamp displayed as date
             $content = static::$Dates->sqlToDate(substr($content, 0, 10));
-            $attrs   = " class='$class center nowrap'";
+            $attrs = " class='$class center nowrap'";
             break;
           case self::TYPE_TIMESTAMP: // time stamp - FIX useformat
             $content = static::$Dates->sqlToDate(substr($content, 0, 10)) . ' ' . substr($content, 10);
-            $attrs   = "class='$class center'";
+            $attrs = "class='$class center'";
             break;
           case self::TYPE_PERCENT:
             $content = Num::_percentFormat($content * 100) . '%';
-            $attrs   = ' class="alignright nowrap"';
+            $attrs = ' class="alignright nowrap"';
             break;
           case self::TYPE_AMOUNT:
             if ($content !== '') {
               $content = Num::_priceFormat($content);
-              $attrs   = "class='amount' ";
+              $attrs = "class='amount' ";
             }
             break;
           case self::TYPE_QTY:
             if ($content !== '') {
-              $dec     = isset($col['dec']) ? $col['dec'] : 0;
+              $dec = isset($col['dec']) ? $col['dec'] : 0;
               $content = Num::_format(Num::_round($content, $dec), $dec);
-              $attrs   = ' class="alignright nowrap"';
+              $attrs = ' class="alignright nowrap"';
             }
             break;
           case self::TYPE_EMAIL:
             $content = "<a href='mailto:$content'>$content</a>";
-            $attrs   = isset($col['align']) ? "class='$class " . $col['align'] . "'" : '';
+            $attrs = isset($col['align']) ? "class='$class " . $col['align'] . "'" : '';
             break;
           case self::TYPE_RATE:
             $content = Num::_exrateFormat($content);
-            $attrs   = "class='$class center'";
+            $attrs = "class='$class center'";
             break;
           case self::TYPE_INACTIVE:
             if ($this->showInactive === true) {
               $checked = $row[self::TYPE_INACTIVE] ? 'checked' : '';
               $content = '<input ' . $checked . ' type="checkbox" name="_action" value="' . INACTIVE . $row[self::TYPE_ID] . '" onclick="JsHttpRequest.request(this)">';
-              $attrs   = ' class="center"';
+              $attrs = ' class="center"';
             } else {
               continue 2;
             }
@@ -745,8 +752,8 @@
      */
     protected function formatNavigation($id, $name, $value, $enabled = true, $title = null) {
       $button = new Button($name, $value, $title);
-      $attrs  = ['disabled' => (bool) !$enabled, 'class' => 'navibutton', 'type' => 'submit',];
-      $id     = $id ? $name . '_' . $id : $name;
+      $attrs = ['disabled' => (bool)!$enabled, 'class' => 'navibutton', 'type' => 'submit',];
+      $id = $id ? $name . '_' . $id : $name;
       return $button->mergeAttr($attrs)->id($id);
     }
     /**
@@ -765,11 +772,12 @@
           $col['fun'] = null;
         }
       }
-      return array_keys((array) $this);
+      return array_keys((array)$this);
     }
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
+     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>

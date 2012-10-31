@@ -25,7 +25,6 @@
    */
   class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable, \Countable
   {
-
     const NO_VALUES = 1;
     public $useDefaults = false;
     /** @var Ajax */
@@ -49,7 +48,7 @@
      * @param \ADV\Core\Session                                        $session
      */
     public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
-      $this->Ajax  = $ajax ? : Ajax::i();
+      $this->Ajax = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
       $this->group();
     }
@@ -72,7 +71,7 @@
       if ($this->Input->hasPost($name)) {
         $field->value($this->Input->post($name));
       }
-      $this->fields[$field->id]     = $field;
+      $this->fields[$field->id] = $field;
       $this->validators[$field->id] =& $field->validator;
       $this->Ajax->addUpdate($name, $name, $field->value);
       return $field;
@@ -101,17 +100,18 @@
      * @return \ADV\Core\HTML|string
      */
     public function start($name = '', $action = '', $multi = false, Array $attrs = []) {
+      $name = $name . '_form';
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
-      $attr['method']  = 'post';
-      $attr['action']  = $action;
-      $attr['name']    = $this->name($name);
-      $attr            = array_merge($attr, $attrs);
-      $this->start     = (new HTML)->form($name, $attr)->input(
+      $attr['method'] = 'post';
+      $attr['action'] = $action;
+      $attr['name'] = $this->name($name);
+      $attr = array_merge($attr, $attrs);
+      $this->start = (new HTML)->form($name, $attr)->input(
         null,
         [
-          'type'  => 'hidden',
-          'value' => $this->uniqueid,
-          'name'  => '_form_id'
+        'type' => 'hidden',
+        'value' => $this->uniqueid,
+        'name' => '_form_id'
         ]
       );
       return $this->start;
@@ -150,7 +150,7 @@
      * @return Field
      */
     public function hidden($name) {
-      $field         = $this->addField(new Field('input', $name));
+      $field = $this->addField(new Field('input', $name));
       $field['type'] = 'hidden';
       return $field;
     }
@@ -162,7 +162,7 @@
      * @return \ADV\App\Form\Field
      */
     public function text($name, Array $attrs = []) {
-      $field         = $this->addField(new Field('input', $name));
+      $field = $this->addField(new Field('input', $name));
       $field['type'] = 'text';
       return $field->mergeAttr($attrs);
     }
@@ -174,7 +174,7 @@
      * @return \ADV\App\Form\Field
      */
     public function password($name, Array $attrs = []) {
-      $field         = $this->addField(new Field('input', $name));
+      $field = $this->addField(new Field('input', $name));
       $field['type'] = 'password';
       return $field->mergeAttr($attrs);
     }
@@ -197,10 +197,10 @@
      * @return Field
      */
     public function date($name, Array $attrs = []) {
-      $field              = $this->addField(new Field('input', $name));
-      $field['type']      = 'text';
+      $field = $this->addField(new Field('input', $name));
+      $field['type'] = 'text';
       $field['maxlength'] = 10;
-      $field['class']     = 'datepicker';
+      $field['class'] = 'datepicker';
       return $field->mergeAttr($attrs);
     }
     /**
@@ -234,9 +234,9 @@
      * @return \ADV\App\Form\Field
      */
     public function number($name, $dec = 0, Array $attrs = []) {
-      $field             = $this->addField(new Field('input', $name));
+      $field = $this->addField(new Field('input', $name));
       $field['data-dec'] = (int)$dec;
-      $field['type']     = 'text';
+      $field['type'] = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
       $field->mergeAttr($attrs);
       $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
@@ -347,13 +347,13 @@
      */
     public function submit($action, $caption = null, $attrs = []) {
       if (is_array($caption)) {
-        $attrs   = $caption;
+        $attrs = $caption;
         $caption = null;
       }
       if ($caption === null) {
         $caption = $action;
       }
-      $button     = new Button('_action', $action, $caption);
+      $button = new Button('_action', $action, $caption);
       $button->id = $this->nameToId($action);
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $button;
@@ -366,8 +366,8 @@
      * @param Form $form
      */
     public function nest($name, Form $form) {
-      $form->nest           = $name;
-      $this->fields[$name]  = $form;
+      $form->nest = $name;
+      $this->fields[$name] = $form;
       $this->currentgroup[] = $form;
     }
     /**
@@ -428,8 +428,8 @@
      * @return array
      */
     public function jsonSerialize() {
-      $return    = [];
-      $use       = ($this->useDefaults) ? 'default' : 'value';
+      $return = [];
+      $use = ($this->useDefaults) ? 'default' : 'value';
       $autofocus = false;
       foreach ($this->fields as $id => $field) {
         if ($field instanceof Button) {
@@ -447,6 +447,7 @@
         }
         $return[$id] = $value;
       }
+      $return['_form_id'] = $this->uniqueid;
       return $return;
     }
     /**

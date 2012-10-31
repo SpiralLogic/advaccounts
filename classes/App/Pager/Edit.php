@@ -21,7 +21,7 @@
   class Edit extends Pager
   {
     const TYPE_DISABLED = 'disabled';
-    const TYPE_EDIT     = 'edit';
+    const TYPE_EDIT = 'edit';
     use \ADV\Core\Traits\Action;
 
     /** @var \ADV\App\DB\Base */
@@ -49,12 +49,12 @@
         $pager->refresh();
       }
       static::$Input = $c->offsetGet('Input');
-      static::$JS    = $c->offsetGet('JS');
+      static::$JS = $c->offsetGet('JS');
       static::$Dates = $c->offsetGet('Dates');
-      static::$DB    = $c->offsetGet('DB');
+      static::$DB = $c->offsetGet('DB');
       /** @var \ADV\App\User $user */
-      $user                     = $c->offsetGet('User');
-      $pager->page_length       = $user->prefs->query_size;
+      $user = $c->offsetGet('User');
+      $pager->page_length = $user->prefs->query_size;
       $_SESSION['pager'][$name] = $pager;
       $pager->restoreColumnFunction($coldef);
       if (static::$Input->post('_action') == 'showInactive') {
@@ -68,7 +68,7 @@
      */
     public function __construct($name, $coldef) {
       $this->name = $name;
-      $this->setColumns((array) $coldef);
+      $this->setColumns((array)$coldef);
     }
     /**
      * @param \ADV\App\DB\Base $object
@@ -81,10 +81,9 @@
      * @return \ADV\Core\Status|array|string
      */
     public function runPost() {
-      if (REQUEST_POST) {
-        $id           = $this->getActionId([$this->name . DELETE, $this->name . SAVE, $this->name . EDIT, $this->name . INACTIVE]);
-        $this->action = str_replace($this->name, '', $this->action);
-        $this->ready  = false;
+      if (REQUEST_POST && static::$Input->post('_form_id') == $this->name . '_form') {
+        $id = $this->getActionId([DELETE, SAVE, EDIT, INACTIVE]);
+        $this->ready = false;
         switch ($this->action) {
           case DELETE:
             $this->editing->load($id);
@@ -97,7 +96,7 @@
           /** @noinspection PhpMissingBreakStatementInspection */
           case INACTIVE:
             $this->editing->load($id);
-            $changes['inactive'] = Input::_post('_value', Input::NUMERIC);
+            $changes['inactive'] = static::$Input->post('_value', Input::NUMERIC);
           case SAVE:
             $changes = isset($changes) ? $changes : $_POST;
             $this->editing->save($changes);
@@ -137,7 +136,7 @@
     public function display() {
       $this->selectRecords();
       Ajax::_start_div("_{$this->name}_span");
-      $view    = new View('ui/pager');
+      $view = new View('ui/pager');
       $headers = $this->generateHeaders();
       Arr::append($headers, ['', '']);
       $form = new Form();
@@ -148,19 +147,19 @@
       $view->set('inactive', $this->showInactive !== null);
       $this->generateNav($view);
       $this->currentRowGroup = null;
-      $this->fieldnames      = array_keys(reset($this->data));
-      $rows                  = [];
-      $columns               = $this->columns;
-      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn']];
-      $columns[]             = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn']];
+      $this->fieldnames = array_keys(reset($this->data));
+      $rows = [];
+      $columns = $this->columns;
+      $columns[] = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineEditBtn']];
+      $columns[] = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatLineDeleteBtn']];
       foreach ($this->data as $row) {
         if ($this->rowGroup) {
           $fields = $this->fieldnames;
-          $field  = $fields[$this->rowGroup[0][0] - 1];
+          $field = $fields[$this->rowGroup[0][0] - 1];
           if ($this->currentRowGroup != $row[$field]) {
             $this->currentRowGroup = $row[$field];
-            $row['group']          = $row[$field];
-            $row['colspan']        = count($columns);
+            $row['group'] = $row[$field];
+            $row['colspan'] = count($columns);
           }
         }
         if (is_callable($this->rowFunction)) {
@@ -182,7 +181,7 @@
           $this->fieldnames = array_keys($row);
         }
         $row['edit'] = $this->editRow($form);
-        $rows[]      = $row;
+        $rows[] = $row;
       }
       $view->set('rows', $rows);
       $view->render();
@@ -198,14 +197,14 @@
      */
     protected function editRow(Form $form) {
       foreach ($this->columns as $key => $col) {
-        $field   = '';
+        $field = '';
         $coltype = isset($col['type']) ? $col['type'] : '';
-        $name    = isset($col['name']) ? $col['name'] : '';
-        $name    = $name ? : $this->fieldnames[$key];
+        $name = isset($col['name']) ? $col['name'] : '';
+        $name = $name ? : $this->fieldnames[$key];
         if (isset($col['edit'])) { // use data input function if defined
           $coltype = 'edit';
         }
-        $class      = isset($col['class']) ? $col['class'] : null;
+        $class = isset($col['class']) ? $col['class'] : null;
         $alignclass = isset($col['align']) ? " class='$class align" . $col['align'] . "'" : ($class ? "class='$class'" : "");
         if (is_object($this->editing) && property_exists($this->editing, $name)) {
           $value = $this->editing->$name;
@@ -227,7 +226,7 @@
             $form->heading('');
             break;
           case self::TYPE_AMOUNT: // column not displayed
-            $field      = $form->amount($name);
+            $field = $form->amount($name);
             $alignclass = 'class="alignright"';
             break;
           case self::TYPE_RATE: // column not displayed
@@ -247,14 +246,19 @@
           if (isset($col['readonly'])) {
             $field->readonly($col['readonly']);
           }
-          $field['tdclass']   = $alignclass;
-          $field['tdcolspan'] = "colspan=2";
+          if (!$field instanceof \ADV\App\Form\Custom) {
+            $field['tdclass'] = $alignclass;
+            $field['tdcolspan'] = "colspan=2";
+          }
+          $field['form'] = $this->name . '_form';
         }
       }
-      $form->group('save')->button('_action', $this->name . SAVE, $this->editing->id ? SAVE : ADD)->preIcon(ICON_SAVE)->type('mini')->type('success');
+      $form->group('save')->button('_action', SAVE, $this->editing->id ? SAVE : ADD, ['form' => $this->name . '_form'])->preIcon(ICON_SAVE)->type('mini')->type(
+        'success'
+      );
       $form->group('button');
       if ($this->editing->id) {
-        $form->button('_action', $this->name . CANCEL, CANCEL)->preIcon(ICON_CANCEL)->type('mini')->type('danger');
+        $form->button('_action', CANCEL, CANCEL, ['form' => $this->name . '_form'])->preIcon(ICON_CANCEL)->type('mini')->type('danger');
       } else {
         $form->heading('');
       }
@@ -270,8 +274,9 @@
       if ($this->editing->id) {
         return '';
       }
-      $button = new \ADV\App\Form\Button('_action', $this->name . EDIT . $row['id'], EDIT);
+      $button = new \ADV\App\Form\Button('_action', EDIT . $row['id'], EDIT);
       $button->type('mini')->type('primary');
+      $button['form'] = $this->name . '_form';
       return $button;
     }
     /**
@@ -283,9 +288,10 @@
       if ($this->editing->id) {
         return '';
       }
-      $button = new \ADV\App\Form\Button('_action', $this->name . DELETE . $row['id'], DELETE);
+      $button = new \ADV\App\Form\Button('_action', DELETE . $row['id'], DELETE);
       $button->preIcon(ICON_DELETE);
       $button->type('mini')->type('danger');
+      $button['form'] = $this->name . '_form';
       return $button;
     }
     /**
@@ -294,7 +300,7 @@
     protected function restoreColumnFunction($coldef) {
       foreach ($this->columns as &$column) {
         if (isset($column['funkey'])) {
-          $column['fun']  = $coldef[$column['funkey']]['fun'];
+          $column['fun'] = $coldef[$column['funkey']]['fun'];
           $column['edit'] = $coldef[$column['funkey']]['edit'];
         }
       }
@@ -308,9 +314,9 @@
           $col['edit'] = null;
         }
       }
-      $this->action   = null;
+      $this->action = null;
       $this->actionID = null;
-      $this->editing  = null;
+      $this->editing = null;
       return parent::__sleep();
     }
   }

@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -22,18 +23,18 @@
     protected $display_form = false;
     protected function before() {
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
-      $this->object   = new \ADV\App\Item\Reorder();
+      $this->object = new \ADV\App\Item\Reorder();
       $this->runPost();
       if ($this->stock_id) {
         $this->object->stock_id = $this->stock_id;
-        $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
+        $this->object->stockid = \ADV\App\Item\Item::getStockID($this->stock_id);
       }
     }
     protected function index() {
       $this->Page->init($this->title, $this->security);
       $this->beforeTable();
       $this->generateTable();
-      $btn          = $this->formatBtn(SAVE, SAVE, ICON_SAVE);
+      $btn = $this->formatBtn(SAVE, SAVE, ICON_SAVE);
       $btn['class'] = 'btn btn-primary margin20';
       echo '<div class="center">' . $btn . '</div>';
       $this->Page->end_page(true);

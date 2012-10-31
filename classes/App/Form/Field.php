@@ -14,7 +14,6 @@
    */
   class Field implements \ArrayAccess
   {
-
     use \ADV\Core\Traits\HTML;
 
     public $id;
@@ -45,7 +44,7 @@
      */
     public function name($name) {
       $this->name = $this['name'] = $name;
-      $this->id   = $this->nameToId();
+      $this->id = $this->nameToId();
     }
     /**
      * @param $label
@@ -68,7 +67,7 @@
      * @return Field
      */
     public function focus($on = true) {
-      $this->attr['autofocus'] = $on;
+      $this->attr['autofocus'] = (bool)$on;
       return $this;
     }
     /**
@@ -182,17 +181,16 @@
     public function __toString() {
       $value = (isset($this->value)) ? $this->value : $this->default;
       if ($this->readonly) {
-        $tag           = 'span';
+        $tag = 'span';
         $this->content = $value;
       } else {
-        $tag                 = $this->tag;
+        $tag = $this->tag;
         $this->attr['value'] = $value;
       }
-      $this->attr['id'] = $this->id;
-      $control          = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
-      $control          = $this->formatAddOns($control);
+      $control = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
+      $control = $this->formatAddOns($control);
       if ($this->label) {
-        $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
+        $control = "<label ><span>" . $this->label . "</span>$control</label>";
       }
       return $control;
     }

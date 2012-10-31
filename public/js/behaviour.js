@@ -167,96 +167,96 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     }
   }, tout);
   JsHttpRequest.query((upload ? "form." : "") + "POST " + url, // force form loader
-    content, // Function is called when an answer arrives.
-    function (result, errors) {
-      // Write the answer.
-      var newwin = 0, cmd, atom, property, type, id, data, objElement, hasStatus = false;
-      if (result) {
-        for (var i in result) {
-          atom = result[i];
-          cmd = atom['n'];
-          property = atom['p'];
-          type = atom['c'];
-          id = atom['t'];
-          data = atom['data'];
-          // seek element by id if there is no elemnt with given name
-          objElement = document.getElementsByName(id)[0] || document.getElementById(id);
-          if (cmd == 'as') {
-            $(objElement).attr(property, data);
-          }
-          else {
-            if (cmd == 'up') {
-              if (objElement) {
-                if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
-                  objElement.value = data;
-                }
-                else {
-                  objElement.innerHTML = data;
-                } // selector, div, span etc
-              }
-            }
-            else {
-              switch (cmd) {
-                case 'di':
-                  objElement.disabled = data;
-                  break;
-                case 'fc':
-                  if (data.el === undefined) {
-                    Adv.Forms.setFocus(data);
-                  }
-                  else {
-                    Adv.Forms.setFocus(data.el, undefined, data.pos);
-                  }
-                  break;
-                case 'js':
-                  eval(data);
-                  break;
-                case 'rd':
-                  window.location = data;
-                  break;
-                case 'json':
-                  if (data.status) {
-                    hasStatus = true;
-                    Adv.Status.show(data.status);
-                  }
-                  if (Adv.Forms[property]) {
-                    Adv.Forms[property](data);
-                  }
-                  break;
-                case 'pu':
-                  newwin = 1;
-                  window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-                  break;
-                default:
-                  errors = errors + '<br>Unknown ajax function: ' + cmd;
-              }
-            }
-          }
-        }
-        if (tcheck) {
-          JsHttpRequest.clearTimeout(tcheck);
-        }
-        // Write errors to the debug div.
-        if (errors && !hasStatus) {
-          if (cmd && cmd == 'fc') {
-            Adv.Forms.error(data, errors)
-          }
-          else {
-            Adv.Status.show({html:errors});
-          }
-        }
-        if (Adv.loader) {
-          Adv.loader.off();
-        }
-        Behaviour.apply();
-        //document.getElementById('msgbox').scrollIntoView(true);
-        // Restore focus if we've just lost focus because of DOM element refresh
-        Adv.Events.rebind();
-        if (!errors && !hasStatus && !newwin && cmd != 'fc') {
-          Adv.Scroll.loadPosition(true);
-        }
-      }
-    }, false);
+                      content, // Function is called when an answer arrives.
+                      function (result, errors) {
+                        // Write the answer.
+                        var newwin = 0, cmd, atom, property, type, id, data, objElement, hasStatus = false;
+                        if (result) {
+                          for (var i in result) {
+                            atom = result[i];
+                            cmd = atom['n'];
+                            property = atom['p'];
+                            type = atom['c'];
+                            id = atom['t'];
+                            data = atom['data'];
+                            // seek element by id if there is no elemnt with given name
+                            objElement = document.getElementsByName(id)[0] || document.getElementById(id);
+                            if (cmd == 'as') {
+                              $(objElement).attr(property, data);
+                            }
+                            else {
+                              if (cmd == 'up') {
+                                if (objElement) {
+                                  if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA') {
+                                    objElement.value = data;
+                                  }
+                                  else {
+                                    $(objElement).empty().append(data);
+                                  } // selector, div, span etc
+                                }
+                              }
+                              else {
+                                switch (cmd) {
+                                  case 'di':
+                                    objElement.disabled = data;
+                                    break;
+                                  case 'fc':
+                                    if (data.el === undefined) {
+                                      Adv.Forms.setFocus(data);
+                                    }
+                                    else {
+                                      Adv.Forms.setFocus(data.el, undefined, data.pos);
+                                    }
+                                    break;
+                                  case 'js':
+                                    eval(data);
+                                    break;
+                                  case 'rd':
+                                    window.location = data;
+                                    break;
+                                  case 'json':
+                                    if (data.status) {
+                                      hasStatus = true;
+                                      Adv.Status.show(data.status);
+                                    }
+                                    if (Adv.Forms[property]) {
+                                      Adv.Forms[property](data);
+                                    }
+                                    break;
+                                  case 'pu':
+                                    newwin = 1;
+                                    window.open(data, undefined, 'toolbar=no,scrollbar=no,resizable=yes,menubar=no');
+                                    break;
+                                  default:
+                                    errors = errors + '<br>Unknown ajax function: ' + cmd;
+                                }
+                              }
+                            }
+                          }
+                          if (tcheck) {
+                            JsHttpRequest.clearTimeout(tcheck);
+                          }
+                          // Write errors to the debug div.
+                          if (errors && !hasStatus) {
+                            if (cmd && cmd == 'fc') {
+                              Adv.Forms.error(data, errors)
+                            }
+                            else {
+                              Adv.Status.show({html:errors});
+                            }
+                          }
+                          if (Adv.loader) {
+                            Adv.loader.off();
+                          }
+                          Behaviour.apply();
+                          //document.getElementById('msgbox').scrollIntoView(true);
+                          // Restore focus if we've just lost focus because of DOM element refresh
+                          Adv.Events.rebind();
+                          if (!errors && !hasStatus && !newwin && cmd != 'fc') {
+                            Adv.Scroll.loadPosition(true);
+                          }
+                        }
+                      }, false);
 };
 // collect all form input values plus inp trigger value
 JsHttpRequest.formInputs = function (inp, objForm, upload) {
@@ -432,129 +432,129 @@ function passBack(value) {
  Behaviour definitions
  */
 Behaviour.register({
-  'input':                                                                                                         function (e) {
-    if (e.onfocus === undefined) {
-      e.onfocus = function () {
-        Adv.Forms.saveFocus(this);
-        if ($(this).is('.combo')) {
-          this.select();
-        }
-      };
-    }
-    if ($(e).is('.combo,.combo2')) {
-      _set_combo_input(e);
-    }
-    else {
-      if (e.type == 'text') {
-        e.onkeydown = function (ev) {
-          ev = ev || window.event;
-          var key = ev.keyCode || ev.which;
-          if (key == 13) {
-            if ($(e).is('.searchbox')) {
-              e.onblur();
-            }
-            return false;
-          }
-          return true;
-        }
-      }
-    }
-  },
-  'input.combo2':                                                                                                  function (e) {
-    // this hides search button for js enabled browsers
-    e.style.display = 'none';
-  },
-  'div.js_only':                                                                                                   function (e) {
-    // this shows divs for js enabled browsers only
-    e.style.display = 'block';
-  },
+                     'input':                                                                                                         function (e) {
+                       if (e.onfocus === undefined) {
+                         e.onfocus = function () {
+                           Adv.Forms.saveFocus(this);
+                           if ($(this).is('.combo')) {
+                             this.select();
+                           }
+                         };
+                       }
+                       if ($(e).is('.combo,.combo2')) {
+                         _set_combo_input(e);
+                       }
+                       else {
+                         if (e.type == 'text') {
+                           e.onkeydown = function (ev) {
+                             ev = ev || window.event;
+                             var key = ev.keyCode || ev.which;
+                             if (key == 13) {
+                               if ($(e).is('.searchbox')) {
+                                 e.onblur();
+                               }
+                               return false;
+                             }
+                             return true;
+                           }
+                         }
+                       }
+                     },
+                     'input.combo2':                                                                                                  function (e) {
+                       // this hides search button for js enabled browsers
+                       e.style.display = 'none';
+                     },
+                     'div.js_only':                                                                                                   function (e) {
+                       // this shows divs for js enabled browsers only
+                       e.style.display = 'block';
+                     },
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
-  'button[name="_action"],button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':function (e) {
-    e.onclick = function () {
-      Adv.Forms.saveFocus(e);
-      var asp = e.getAttribute('data-aspect');
-      if (asp && asp.indexOf('process') !== -1) {
-        JsHttpRequest.request(this, null, 60000);
-      }
-      else {
-        JsHttpRequest.request(this);
-      }
-      return false;
-    }
-  },
-  'button':                                                                                                        function (e) {
-    if (e.name) {
-      var func = (e.name == '_action') ? _validate[e.value] : _validate[e.name];
-      var old = e.onclick;
-      if (func) {
-        if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
-          e.onclick = func;
-        }
-        else {
-          e.onclick = function () {
-            if (func()) {
-              old();
-              return true;
-            }
-            else {
-              return false;
-            }
-          }
-        }
-      }
-    }
-  },
-  '[data-dec]':                                                                                                    function (e) {
-    var dec = e.getAttribute("data-dec");
-    if (!e.onblur) {
-      e.onblur = function () {
-        Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
-      };
-      e.onblur();
-    }
-  },
-  '.freight':                                                                                                      function (e) {
-    if (e.onblur === undefined) {
-      e.onblur = function () {
-        var dec = this.getAttribute("data-dec");
-        Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec, '2');
-      };
-    }
-  },
-  '.searchbox':// emulated onchange event handling for text inputs
-                                                                                                                   function (e) {
-                                                                                                                     e.setAttribute('_last_val', e.value);
-                                                                                                                     e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
-                                                                                                                     e.onblur = function () {
-                                                                                                                       var val = this.getAttribute('_last_val');
-                                                                                                                       if (val != this.value) {
-                                                                                                                         this.setAttribute('_last_val', this.value);
-                                                                                                                         JsHttpRequest.request('_' + this.name + '_changed', this.form);
-                                                                                                                       }
-                                                                                                                     }
-                                                                                                                   },
-  'button[data-aspect="selector"], input[data-aspect="selector"]':                                                 function (e) {
-    e.onclick = function () {
-      passBack(this.getAttribute('rel'));
-      return false;
-    }
-  },
-  'select':                                                                                                        function (e) {
-    if (e.onfocus === undefined) {
-      e.onfocus = function () {
-        Adv.Forms.saveFocus(this);
-      };
-    }
-    if ($(e).is('.combo,.combo2')) {
-      _set_combo_select(e);
-    }
-  },
-  'a.printlink,button.printlink':                                                                                  function (e) {
-    e.onclick = function () {
-      Adv.Forms.saveFocus(this);
-      JsHttpRequest.request(this, null, 60000);
-      return false;
-    }
-  }
-});
+                     'button[name="_action"],button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':function (e) {
+                       e.onclick = function () {
+                         Adv.Forms.saveFocus(e);
+                         var asp = e.getAttribute('data-aspect');
+                         if (asp && asp.indexOf('process') !== -1) {
+                           JsHttpRequest.request(this, null, 60000);
+                         }
+                         else {
+                           JsHttpRequest.request(this);
+                         }
+                         return false;
+                       }
+                     },
+                     'button':                                                                                                        function (e) {
+                       if (e.name) {
+                         var func = (e.name == '_action') ? _validate[e.value] : _validate[e.name];
+                         var old = e.onclick;
+                         if (func) {
+                           if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
+                             e.onclick = func;
+                           }
+                           else {
+                             e.onclick = function () {
+                               if (func()) {
+                                 old();
+                                 return true;
+                               }
+                               else {
+                                 return false;
+                               }
+                             }
+                           }
+                         }
+                       }
+                     },
+                     '[data-dec]':                                                                                                    function (e) {
+                       var dec = e.getAttribute("data-dec");
+                       if (!e.onblur) {
+                         e.onblur = function () {
+                           Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
+                         };
+                         e.onblur();
+                       }
+                     },
+                     '.freight':                                                                                                      function (e) {
+                       if (e.onblur === undefined) {
+                         e.onblur = function () {
+                           var dec = this.getAttribute("data-dec");
+                           Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec, '2');
+                         };
+                       }
+                     },
+                     '.searchbox':// emulated onchange event handling for text inputs
+                                                                                                                                      function (e) {
+                                                                                                                                        e.setAttribute('_last_val', e.value);
+                                                                                                                                        e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+                                                                                                                                        e.onblur = function () {
+                                                                                                                                          var val = this.getAttribute('_last_val');
+                                                                                                                                          if (val != this.value) {
+                                                                                                                                            this.setAttribute('_last_val', this.value);
+                                                                                                                                            JsHttpRequest.request('_' + this.name + '_changed', this.form);
+                                                                                                                                          }
+                                                                                                                                        }
+                                                                                                                                      },
+                     'button[data-aspect="selector"], input[data-aspect="selector"]':                                                 function (e) {
+                       e.onclick = function () {
+                         passBack(this.getAttribute('rel'));
+                         return false;
+                       }
+                     },
+                     'select':                                                                                                        function (e) {
+                       if (e.onfocus === undefined) {
+                         e.onfocus = function () {
+                           Adv.Forms.saveFocus(this);
+                         };
+                       }
+                       if ($(e).is('.combo,.combo2')) {
+                         _set_combo_select(e);
+                       }
+                     },
+                     'a.printlink,button.printlink':                                                                                  function (e) {
+                       e.onclick = function () {
+                         Adv.Forms.saveFocus(this);
+                         JsHttpRequest.request(this, null, 60000);
+                         return false;
+                       }
+                     }
+                   });
 Behaviour.addLoadEvent(Adv.Scroll.loadPosition);

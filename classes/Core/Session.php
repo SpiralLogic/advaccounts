@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,6 +9,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   use SessionHandlerInterface;
 
   /**
@@ -25,7 +27,6 @@
    */
   class Session implements \ArrayAccess
   {
-
     use \ADV\Core\Traits\StaticAccess2;
 
     /** @var \ADV\Core\Language */
@@ -121,7 +122,7 @@
         return null;
       }
       $_SESSION['_globals'][$var] = $value;
-      $this[$var]                 = $value;
+      $this[$var] = $value;
       return $value;
     }
     /**
@@ -164,6 +165,9 @@
     public function getFlash($var, $default = null) {
       return Arr::get($this->_flash, $var, $default);
     }
+    public function keepFlash($var) {
+      $this->setFlash($var, $this->getFlash($var));
+    }
     /**
      * @internal param $globals
      */
@@ -198,6 +202,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -215,6 +220,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -232,6 +238,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -249,6 +256,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>
@@ -267,5 +275,4 @@
    */
   class SessionException extends \Exception
   {
-
   }
