@@ -197,7 +197,7 @@
      */
     protected function editRow(Form $form) {
       foreach ($this->columns as $key => $col) {
-        $field = '';
+        $field = null;
         $coltype = isset($col['type']) ? $col['type'] : '';
         $name = isset($col['name']) ? $col['name'] : '';
         $name = $name ? : $this->fieldnames[$key];
@@ -220,6 +220,8 @@
             break;
           case self::TYPE_SKIP: // column not displayed
           case self::TYPE_GROUP: // column not displayed
+            break;
+          case self::TYPE_HIDDEN:
             $field = $form->group('hidden')->hidden($name);
             break;
           case self::TYPE_DISABLED:

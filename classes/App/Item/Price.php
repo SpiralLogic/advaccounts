@@ -77,17 +77,19 @@
        */
       public function generatePagerColumns() {
         $cols = [
-          ['type' => 'skip'],
+          ['type' => 'hidden'],
           'Type' => ['edit' => [$this, 'formatTypeEdit']],
           ['type' => 'skip'],
-          ['type' => 'skip'],
-          ['type' => 'skip'],
-          ['type' => 'skip'],
+          ['type' => 'hidden'],
+          ['type' => 'hidden'],
+          ['type' => 'hidden'],
           'Currency' => ['edit' => [$this, 'formatCurrencyEdit']],
           'Price' => ['type' => 'amount'],
-          ['type' => 'skip'],
         ];
         return $cols;
+      }
+      public function formatType($row) {
+        return $row['sales_type'];
       }
       /**
        * @param \ADV\App\Form\Form $form

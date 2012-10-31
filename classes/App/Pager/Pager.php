@@ -50,6 +50,7 @@
     const TYPE_ID = 'id';
     const TYPE_SKIP = 'skip';
     const TYPE_GROUP = 'group';
+    const TYPE_HIDDEN = 'hidden';
     /** @var \ADV\Core\DB\DB */
     static $DB;
     /** @var Input */
@@ -297,6 +298,7 @@
           default:
             break;
           case self::TYPE_SKIP: // skip the column (no header)
+          case self::TYPE_HIDDEN: // skip the column (no header)
             unset($c['head']);
             break;
         }
@@ -521,7 +523,7 @@
       $inactive = !Input::_post('show_inactive');
       foreach ($this->columns as $num_col => $col) {
         if (isset($col['head']) || $inactive) {
-          if ($col['type'] == self::TYPE_SKIP || $col['type'] == self::TYPE_GROUP || $col['type'] == self::TYPE_INACTIVE && $this->showInactive === false) {
+          if (in_array($col['type'], [self::TYPE_SKIP, self::TYPE_GROUP, self::TYPE_HIDDEN]) || $col['type'] == self::TYPE_INACTIVE && $this->showInactive === false) {
             continue;
           }
           if (!isset($col['ord'])) {
@@ -732,6 +734,7 @@
             break;
           case self::TYPE_SKIP: // column not displayed
           case self::TYPE_GROUP: // column not displayed.
+          case self::TYPE_HIDDEN: // column not displayed.
             continue 2;
         }
         $cells[] = ['cell' => $content, 'attrs' => $attrs];
