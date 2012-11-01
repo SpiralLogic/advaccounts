@@ -80,11 +80,11 @@
       }
       public function generatePagerColumns() {
         return [
-          ['type' => 'skip'],
-          ['type' => 'skip'],
+          ['type' => 'hidden'],
+          ['type' => 'hidden'],
           _("Supplier") => ['edit' => [$this, 'formatSupplierEdit']],
-          ['type' => 'skip'],
-          ['type' => 'skip'],
+          ['type' => 'hidden'],
+          ['type' => 'hidden'],
           _("Price") => ['type' => 'amount'],
           _("Supplier's UOM") => ['edit' => [$this, 'formatUOMEdit']],
           _("Conversion Factor") => ['type' => 'rate'],

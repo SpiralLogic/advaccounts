@@ -1,5 +1,2 @@
 <?php
-  $test = new \ADV\App\DB\Generator();
-  $test->getTableDetails('stock_location');
-
-
+  xdebug_var_dump(include ROOT_DOC . 'config/defines.php');

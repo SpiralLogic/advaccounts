@@ -10,6 +10,7 @@
    **/
   namespace ADV\App\Item {
     use Bank_Currency;
+    use ADV\App\Sales\Type;
     use GL_Currency;
     use Sales_Type;
     use ADV\App\Form\Form;
@@ -43,10 +44,6 @@
       public $sales_type_id = 1;
       public $curr_abrev;
       public $price = 0.0000;
-      public function __construct($id = 0, $extra = []) {
-        parent::__construct($id, $extra);
-        $this->stockid =& $this->item_code_id;
-      }
       /**
        * @return \ADV\Core\Traits\Status|bool
        */
@@ -78,9 +75,8 @@
       public function generatePagerColumns() {
         $cols = [
           ['type' => 'hidden'],
-          'Type' => ['edit' => [$this, 'formatTypeEdit']],
           ['type' => 'skip'],
-          ['type' => 'hidden'],
+          'Type' => ['fun' => [$this, 'formatType'], 'type' => 'select', 'items' => Type::selectBoxItems()],
           ['type' => 'hidden'],
           ['type' => 'hidden'],
           'Currency' => ['edit' => [$this, 'formatCurrencyEdit']],
@@ -90,14 +86,6 @@
       }
       public function formatType($row) {
         return $row['sales_type'];
-      }
-      /**
-       * @param \ADV\App\Form\Form $form
-       *
-       * @return \ADV\App\Form\Field
-       */
-      public function formatTypeEdit(Form $form) {
-        return $form->custom(Sales_Type::select('sales_type_id'));
       }
       /**
        * @param \ADV\App\Form\Form $form
@@ -222,7 +210,7 @@
       public static function getAll($stock_id) {
         $sql
           = "SELECT prices.id, sales_types.sales_type, prices.sales_type_id,prices.stock_id,
-				 prices.item_code_id, prices.item_code_id as stockid , prices.curr_abrev,prices.price FROM
+				 prices.item_code_id, prices.item_code_id, prices.curr_abrev,prices.price FROM
 				 prices,
 				 sales_types
             WHERE prices.sales_type_id = sales_types.id

@@ -98,9 +98,9 @@
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $form->group('buttons');
-      $form->submit(ADD)->type('primary')->id('btnNew');
-      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide();
-      $form->submit(SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide();
+      $form->submit(ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
+      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->submit(SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
       $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!$this->stock_id && REQUEST_GET) {

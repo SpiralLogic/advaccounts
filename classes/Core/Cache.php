@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -18,10 +19,11 @@
    * @method static _delete($key)
    * @method static Cache i()
    */
-  class Cache {
+  class Cache
+  {
     use \ADV\Core\Traits\StaticAccess2;
 
-    /** @var Cachable **/
+    /** @var Cachable * */
     protected $driver = false;
     /**
      * @param Cachable $driver
@@ -84,7 +86,7 @@
      * @return \ADV\Core\Cache|bool
      */
     public function defineConstants($name, $constants) {
-      $loader = $this->driver->getLoadConstantsFunction();
+      $loader = $this->driver->loadFunction;
       if (is_callable($loader)) {
         $loader = $loader($name);
       }
@@ -92,9 +94,9 @@
         return true;
       }
       if (is_callable($constants)) {
-        $constants = (array) call_user_func($constants);
+        $constants = (array)call_user_func($constants);
       }
-      $definer = $this->driver->getDefineConstantsFunction();
+      $definer = $this->driver->defineFunction;
       if (is_callable($definer)) {
         $definer = $definer($name, $constants);
       }

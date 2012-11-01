@@ -22,6 +22,7 @@
   {
     const TYPE_DISABLED = 'disabled';
     const TYPE_EDIT = 'edit';
+    const TYPE_SELECT = 'select';
     use \ADV\Core\Traits\Action;
 
     /** @var \ADV\App\DB\Base */
@@ -237,6 +238,12 @@
           case self::TYPE_DATE:
             $value = static::$Dates->sqlToDate($value);
             $field = $form->date($name);
+            break;
+          case self::TYPE_SELECT;
+            if (isset($col['item'])) {
+              ;
+            }
+            $field = $form->arraySelect($name, $col['items']);
             break;
           default:
             $field = $form->text($name);

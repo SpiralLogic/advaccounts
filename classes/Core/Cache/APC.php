@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,8 +14,13 @@
   /**
 
    */
-  class APC implements Cachable {
+  class APC implements Cachable
+  {
+    public $defineFucntion;
+    public $loadFunction;
     public function init() {
+      $this->loadFunction = (function_exists('apc_load_constants')) ? 'apc_load_constants' : false;
+      $this->defineFucntion = (function_exists('apc_define_constants')) ? 'apc_define_constants' : false;
     }
     /**
      * @static
@@ -69,17 +75,5 @@
     public function flush($time = 0) {
       apc_clear_cache('user');
       apc_clear_cache();
-    }
-    /**
-     * @return bool|string
-     */
-    public function getLoadConstantsFunction() {
-      return (function_exists('apc_load_constants')) ? 'apc_load_constants' : false;
-    }
-    /**
-     * @return bool|string
-     */
-    public function getDefineConstantsFunction() {
-      return (function_exists('apc_define_constants')) ? 'apc_define_constants' : false;
     }
   }

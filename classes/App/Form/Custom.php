@@ -38,6 +38,7 @@
       $values = (array)$value;
       $control = $this->control;
       foreach ($values as $v) {
+        $control = preg_replace('/<option ([^>]*)selected([^>]*)\>/', '<option \1 \2>', $control);
         $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
       }
       foreach ($this->attr as $a => $v) {

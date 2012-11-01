@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -19,7 +20,10 @@
   /**
    * @property Category $object
    */
-  class Categories extends \ADV\App\Controller\Manage {
+  class Categories extends \ADV\App\Controller\Manage
+  {
+    protected $pager_type = self::PAGER_EDIT;
+    protected $display_form = false;
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new Category();
@@ -33,6 +37,13 @@
       $this->Page->end_page(true);
     }
     /**
+     * @param \ADV\App\Pager\Edit $pager
+     */
+    protected function getEditing(\ADV\App\Pager\Edit $pager) {
+      $pager->setObject($this->object);
+      $pager->editing->category_id = $this->category_id;
+    }
+    /**
      * @param $form
      * @param $view
      *
@@ -43,7 +54,7 @@
       $form->hidden('category_id');
       $form->text('description')->label("Category Name:")->focus($this->action == EDIT);
       $form->checkbox('dflt_no_sale')->label("Exclude from sales:");
-      $form->arraySelect('dflt_mb_flag', [STOCK_SERVICE=> 'Service', STOCK_MANUFACTURE=> 'Manufacture', STOCK_PURCHASED=> 'Purchased', STOCK_INFO=> 'Info'])->label('Type:');
+      $form->arraySelect('dflt_mb_flag', [STOCK_SERVICE => 'Service', STOCK_MANUFACTURE => 'Manufacture', STOCK_PURCHASED => 'Purchased', STOCK_INFO => 'Info'])->label('Type:');
       $form->custom(Item_Unit::select('dflt_units', null))->label(_("Units of Measure:"));
       $form->custom(Tax_ItemType::select('dflt_tax_type', '', null))->label(_("Tax Type:"));
       $form->custom(GL_UI::all('dflt_sales_act'))->label(_("Sales Account:"));
@@ -68,54 +79,7 @@
      * @return array
      */
     protected function generateTableCols() {
-      $cols = [
-        ['type'=> 'skip'],
-        'Name'       => ['ord'=> 'asc'],
-        'inactive'   => ['type'=> 'inactive'],
-        ['type'=> 'skip'],
-        'Units',
-        ['type'=> 'skip'],
-        'Sales'      => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
-        'COGS'       => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
-        'Inventory'  => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
-        'Adjustments'=> ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
-        'Assemnbly'  => ['fun'=> [$this, 'formatAccounts'], 'useName'=> true],
-        ['type'=> 'skip'],
-        ['type'=> 'skip'],
-        ['type'=> 'skip'],
-        'Tax'        => ['ord'=> 'asc'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
-      ];
-
-      return $cols;
-    }
-    /**
-     * @param $row
-     * @param $cellname
-     *
-     * @return string
-     */
-    public function formatAccounts($row, $cellname) {
-      $unsed = [];
-      if ($row['dflt_mb_flag'] == STOCK_SERVICE || $row['dflt_mb_flag'] == STOCK_INFO) {
-        $unsed = [
-          'dflt_cogs_act',
-          'dflt_inventory_act',
-          'dflt_adjustment_act',
-          'dflt_assembly_act',
-        ];
-      } elseif ($row['dflt_mb_flag'] == STOCK_PURCHASED) {
-        $unsed = ['dflt_assembly_act'];
-      }
-      if ($row['dflt_mb_flag'] == STOCK_INFO) {
-        $unsed += ['dflt_sales_act'];
-      }
-      if (in_array($cellname, $unsed)) {
-        return '-';
-      }
-
-      return $row[$cellname];
+      return $this->object->generateTableCols();
     }
   }
 

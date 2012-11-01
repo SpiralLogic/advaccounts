@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,7 +17,8 @@
     /**
 
      */
-    class Category extends \ADV\App\DB\Base {
+    class Category extends \ADV\App\DB\Base
+    {
       protected $_table = 'stock_category';
       protected $_classname = 'Stock Category';
       protected $_id_column = 'category_id';
@@ -35,9 +37,9 @@
       public $dflt_dim2;
       public $dflt_no_sale = 0;
       public function delete() {
-        $sql    = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::_escape($this->id);
+        $sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::_escape($this->id);
         $result = DB::_query($sql, "could not query stock master");
-        $myrow  = DB::_fetchRow($result);
+        $myrow = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
           Event::error(_("Cannot delete this item category because items have been created using this item category."));
         }
@@ -74,18 +76,17 @@
         if (!Validation::is_num($this->dflt_assembly_act, 0)) {
           return $this->status(false, 'Dflt_assembly_act must be a number', 'dflt_assembly_act');
         }
-
         return true;
       }
       public function defaults() {
         parent::defaults();
-        $company                   = DB_Company::i();
-        $this->dflt_sales_act      = $company->default_sales_act;
-        $this->dflt_inventory_act  = $company->default_inventory_act;
-        $this->dflt_cogs_act       = $company->default_cogs_act;
+        $company = DB_Company::i();
+        $this->dflt_sales_act = $company->default_sales_act;
+        $this->dflt_inventory_act = $company->default_inventory_act;
+        $this->dflt_cogs_act = $company->default_cogs_act;
         $this->dflt_adjustment_act = $company->default_adj_act;
-        $this->dflt_assembly_act   = $company->default_inv_sales_act;
-        $this->dflt_assembly_act   = $company->default_assembly_act;
+        $this->dflt_assembly_act = $company->default_inv_sales_act;
+        $this->dflt_assembly_act = $company->default_assembly_act;
       }
       /**
        * @param bool $inactive
@@ -98,13 +99,64 @@
           $sql .= " AND !c.inactive";
         }
         //DB::_query($sql);
-
         return $sql;
+      }
+      /**
+       * @return array
+       */
+      public function generateTableCols() {
+        $cols = [
+          ['type' => 'skip'],
+          'Name' => ['ord' => 'asc'],
+          'inactive' => ['type' => 'inactive'],
+          ['type' => 'skip'],
+          'Units',
+          ['type' => 'skip'],
+          'Sales' => ['fun' => [$this, 'formatAccounts'], 'useName' => true],
+          'COGS' => ['fun' => [$this, 'formatAccounts'], 'useName' => true],
+          'Inventory' => ['fun' => [$this, 'formatAccounts'], 'useName' => true],
+          'Adjustments' => ['fun' => [$this, 'formatAccounts'], 'useName' => true],
+          'Assemnbly' => ['fun' => [$this, 'formatAccounts'], 'useName' => true],
+          ['type' => 'skip'],
+          ['type' => 'skip'],
+          ['type' => 'skip'],
+          'Tax' => ['ord' => 'asc'],
+          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
+        ];
+        return $cols;
+      }
+      /**
+       * @param $row
+       * @param $cellname
+       *
+       * @return string
+       */
+      public function formatAccounts($row, $cellname) {
+        $unsed = [];
+        if ($row['dflt_mb_flag'] == STOCK_SERVICE || $row['dflt_mb_flag'] == STOCK_INFO) {
+          $unsed = [
+            'dflt_cogs_act',
+            'dflt_inventory_act',
+            'dflt_adjustment_act',
+            'dflt_assembly_act',
+          ];
+        } elseif ($row['dflt_mb_flag'] == STOCK_PURCHASED) {
+          $unsed = ['dflt_assembly_act'];
+        }
+        if ($row['dflt_mb_flag'] == STOCK_INFO) {
+          $unsed += ['dflt_sales_act'];
+        }
+        if (in_array($cellname, $unsed)) {
+          return '-';
+        }
+        return $row[$cellname];
       }
     }
   }
   namespace {
-    class Item_Category {
+    class Item_Category
+    {
       /**
        * @static
        *
@@ -207,9 +259,8 @@
        * @return \ADV\Core\DB\Query\Result|Array
        */
       public static function get($id) {
-        $sql    = "SELECT * FROM stock_category WHERE category_id=" . DB::_escape($id);
+        $sql = "SELECT * FROM stock_category WHERE category_id=" . DB::_escape($id);
         $result = DB::_query($sql, "an item category could not be retrieved");
-
         return DB::_fetch($result);
       }
       /**
@@ -220,10 +271,9 @@
        * @return mixed
        */
       public static function get_name($id) {
-        $sql    = "SELECT description FROM stock_category WHERE category_id=" . DB::_escape($id);
+        $sql = "SELECT description FROM stock_category WHERE category_id=" . DB::_escape($id);
         $result = DB::_query($sql, "could not get sales type");
-        $row    = DB::_fetchRow($result);
-
+        $row = DB::_fetchRow($result);
         return $row[0];
       }
       /**
@@ -238,7 +288,6 @@
        */
       public static function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
         $sql = "SELECT category_id, description, inactive FROM stock_category";
-
         return Forms::selectBox(
           $name,
           $selected_id,
@@ -246,11 +295,11 @@
           'category_id',
           'description',
           array(
-               'order'         => 'category_id',
-               'spec_option'   => $spec_opt,
-               'spec_id'       => -1,
+               'order' => 'category_id',
+               'spec_option' => $spec_opt,
+               'spec_id' => -1,
                'select_submit' => $submit_on_change,
-               'async'         => true
+               'async' => true
           )
         );
       }
