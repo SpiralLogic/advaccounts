@@ -166,10 +166,10 @@
         if (is_callable($this->rowFunction)) {
           $row['attrs'] = call_user_func($this->rowFunction, $row);
         }
-        if ($this->action == DELETE && $this->actionID == $row['id']) {
+        if ($this->action == DELETE && $this->actionID == $row[$this->editing->getIDColumn()]) {
           continue;
         }
-        if ($this->editing->id == $row['id'] && $form) {
+        if ($this->editing->id == $row[$this->editing->getIDColumn()] && $form) {
           $row['edit'] = $this->editRow($form);
         } else {
           $row['cells'] = parent::displayRow($row, $columns);
@@ -283,7 +283,7 @@
       if ($this->editing->id) {
         return '';
       }
-      $button = new \ADV\App\Form\Button('_action', EDIT . $row['id'], EDIT);
+      $button = new \ADV\App\Form\Button('_action', EDIT . $row[$this->editing->getIDColumn()], EDIT);
       $button->type('mini')->type('primary');
       $button['form'] = $this->name . '_form';
       return $button;
@@ -297,7 +297,7 @@
       if ($this->editing->id) {
         return '';
       }
-      $button = new \ADV\App\Form\Button('_action', DELETE . $row['id'], DELETE);
+      $button = new \ADV\App\Form\Button('_action', DELETE . $row[$this->editing->getIDColumn()], DELETE);
       $button->preIcon(ICON_DELETE);
       $button->type('mini')->type('danger');
       $button['form'] = $this->name . '_form';

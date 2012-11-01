@@ -37,7 +37,7 @@
       public $dflt_dim2;
       public $dflt_no_sale = 0;
       public function delete() {
-        $sql = "SELECT COUNT(*) FROM stock_master WHERE category_id=" . DB::_escape($this->id);
+        $sql = "SELECT  COUNT(*) FROM stock_master WHERE category_id=" . DB::_escape($this->id);
         $result = DB::_query($sql, "could not query stock master");
         $myrow = DB::_fetchRow($result);
         if ($myrow[0] > 0) {
@@ -94,7 +94,7 @@
        * @return array
        */
       public static function getAll($inactive = false) {
-        $sql = "SELECT c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
+        $sql = "SELECT c.category_id as id, c.*, t.name as tax_name FROM stock_category c, item_tax_types t WHERE c.dflt_tax_type=t.id";
         if (!$inactive) {
           $sql .= " AND !c.inactive";
         }
@@ -106,6 +106,7 @@
        */
       public function generateTableCols() {
         $cols = [
+          ['type' => 'skip'],
           ['type' => 'skip'],
           'Name' => ['ord' => 'asc'],
           'inactive' => ['type' => 'inactive'],
@@ -121,8 +122,6 @@
           ['type' => 'skip'],
           ['type' => 'skip'],
           'Tax' => ['ord' => 'asc'],
-          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
         ];
         return $cols;
       }
