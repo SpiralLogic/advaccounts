@@ -17,6 +17,7 @@
    */
   class Banking extends Menu
   {
+
     public $name = "Banking";
     public $help_context = "&Banking";
     /**
@@ -30,7 +31,7 @@
       $module->addRightFunction(_("&Journal Entry"), "/banking/gl_journal?NewJournal=Yes", SA_JOURNALENTRY);
       $module->addRightFunction(_("&Budget Entry"), "/banking/gl_budget?", SA_BUDGETENTRY);
       $module->addRightFunction(_("&Reconcile Bank Account"), "/banking/reconcile?", SA_RECONCILE);
-          $module->addRightFunction(_("&Upload Bank Statement"), "/banking/manage/statement?", SA_RECONCILE);
+      $module->addRightFunction(_("&Upload Bank Statement"), "/banking/manage/statement?", SA_RECONCILE);
       $module = $this->add_module(_("Inquiries and Reports"));
       $module->addLeftFunction(_("&Journal Inquiry"), "/banking/inquiry/journal?", SA_GLANALYTIC);
       $module->addLeftFunction(_("GL &Inquiry"), "/gl/search/account?", SA_GLTRANSVIEW);
@@ -49,7 +50,7 @@
       $module->addLeftFunction(_("&Currencies"), "/banking/manage/currencies?", SA_CURRENCY);
       $module->addLeftFunction(_("&Exchange Rates"), "/banking/manage/exchange_rates?", SA_EXCHANGERATE);
       $module->addRightFunction(_("&GL Accounts"), "/gl/manage/accounts?", SA_GLACCOUNT);
-      $module->addRightFunction(_("GL Account &Groups"), "/banking/manage/gl_account_types?", SA_GLACCOUNTGROUP);
+      $module->addRightFunction(_("GL Account &Types"), "/gl/manage/types?", SA_GLACCOUNTGROUP);
       $module->addRightFunction(_("GL Account &Classes"), "/banking/manage/gl_account_classes?", SA_GLACCOUNTCLASS);
     }
   }

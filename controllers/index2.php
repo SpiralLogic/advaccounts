@@ -1,2 +1,2 @@
 <?php
-  xdebug_var_dump(include ROOT_DOC . 'config/defines.php');
+  (new \ADV\App\DB\Generator())->getTableDetails('chart_types');

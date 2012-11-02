@@ -17,7 +17,9 @@
   /**
    * @property Account $object
    */
-  class Accounts extends \ADV\App\Controller\Manage {
+  class Accounts extends \ADV\App\Controller\Manage
+  {
+
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new Account();
@@ -48,18 +50,7 @@
      * @return array
      */
     protected function generateTableCols() {
-      $cols = [
-        'Type'       => ['type'=> 'group'],
-        'Name'       => ['ord'=> 'asc'],
-        'Code',
-        'Code2',
-        'Inactive'   => ['type'=> 'inactive'],
-        ['type'=> 'skip'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
-      ];
-
-      return $cols;
+      $this->object->generateTableCols();
     }
   }
 

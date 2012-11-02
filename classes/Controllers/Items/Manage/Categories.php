@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -22,26 +21,13 @@
    */
   class Categories extends \ADV\App\Controller\Manage
   {
-    protected $pager_type = self::PAGER_EDIT;
-    protected $display_form = false;
+
     protected $tableWidth = '80';
+    protected $security = SA_ITEMCATEGORY;
     protected function before() {
+      $this->setTitle('Item Categories');
       $this->object = new Category();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Item Categories"), SA_ITEMCATEGORY);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page(true);
-    }
-    /**
-     * @param \ADV\App\Pager\Edit $pager
-     */
-    protected function getEditing(\ADV\App\Pager\Edit $pager) {
-      $pager->setObject($this->object);
-      $pager->editing->category_id = $this->category_id;
     }
     /**
      * @param $form
