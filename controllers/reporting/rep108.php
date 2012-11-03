@@ -26,9 +26,9 @@
    * @return null|PDOStatement
    */
   function get_transactions($debtorno, $month, $inc_all) {
-    $dateend   = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
+    $dateend = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
     $datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
-    $sql       = "SELECT d.*," . "((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount) * IF(d.type = " . ST_SALESINVOICE . ",1,-1) ) AS TotalAmount,";
+    $sql = "SELECT d.*," . "((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount) * IF(d.type = " . ST_SALESINVOICE . ",1,-1) ) AS TotalAmount,";
     $sql .= "IF(d.type <> 10,-SUM(d.alloc), if(a.amt is null,0,SUM(a.amt))*if(b.tran_date > '$dateend',0,1)) AS Allocated, ";
     $sql
       .= "( d.due_date < '$datestart' AND (b.tran_date < '$datestart' or b.tran_date is null)) AS OverDue
@@ -51,31 +51,30 @@
    * @return mixed
    */
   function getTransactionPO($no) {
-    $sql    = "SELECT customer_ref FROM sales_orders WHERE order_no=" . DB::_escape($no);
+    $sql = "SELECT customer_ref FROM sales_orders WHERE order_no=" . DB::_escape($no);
     $result = DB::_query($sql, "Could not retrieve any branches");
-    $myrow  = DB::_fetchAssoc($result);
+    $myrow = DB::_fetchAssoc($result);
     return $myrow['customer_ref'];
   }
 
   function print_statements() {
-
-    $report_type         = '\\ADV\\App\\Reports\\PDF';
-    $txt_statement       = "Statement";
+    $report_type = '\\ADV\\App\\Reports\\PDF';
+    $txt_statement = "Statement";
     $txt_opening_balance = 'Opening Balance';
-    $doc_as_of           = "as of";
-    $customer            = Input::_postGet('PARAM_0', Input::NUMERIC, 0);
-    $email               = Input::_postGet('PARAM_1', Input::NUMERIC);
-    $email               = $email ? : Input::_postGet('Email', Input::STRING, 0);
-    $month               = Input::_postGet('PARAM_2', Input::NUMERIC, 0);
-    $inc_all             = Input::_postGet('PARAM_3', Input::NUMERIC, 0);
-    $inc_payments        = Input::_postGet('PARAM_4', Input::NUMERIC, 1);
-    $inc_negatives       = Input::_postGet('PARAM_5', Input::NUMERIC, 0);
-    $comments            = Input::_postGet('PARAM_6', Input::STRING, '');
-    $curency             = Input::_postGet('PARAM_7', Input::STRING, '');
-    $doctype             = ST_STATEMENT;
-    $txt_outstanding     = $txt_over = $txt_days = $txt_current = $txt_total_balance = null;
-    $dec                 = User::price_dec();
-    $cols                = array(
+    $doc_as_of = "as of";
+    $customer = Input::_postGet('PARAM_0', Input::NUMERIC, 0);
+    $email = Input::_postGet('PARAM_1', Input::NUMERIC);
+    $email = $email ? : Input::_postGet('Email', Input::STRING, 0);
+    $month = Input::_postGet('PARAM_2', Input::NUMERIC, 0);
+    $inc_all = Input::_postGet('PARAM_3', Input::NUMERIC, 0);
+    $inc_payments = Input::_postGet('PARAM_4', Input::NUMERIC, 1);
+    $inc_negatives = Input::_postGet('PARAM_5', Input::NUMERIC, 0);
+    $comments = Input::_postGet('PARAM_6', Input::STRING, '');
+    $curency = Input::_postGet('PARAM_7', Input::STRING, '');
+    $doctype = ST_STATEMENT;
+    $txt_outstanding = $txt_over = $txt_days = $txt_current = $txt_total_balance = null;
+    $dec = User::price_dec();
+    $cols = array(
       5, //Transaction
       65, //Invoice
       105, //PO#
@@ -88,14 +87,14 @@
       510,
       460 //line
     );
-    $aligns              = array('left', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'left');
-    $params              = array('comments' => $comments);
-    $cur                 = DB_Company::get_pref('curr_default');
-    $past_due1           = DB_Company::get_pref('past_due_days');
-    $past_due2           = 2 * $past_due1;
+    $aligns = array('left', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'left');
+    $params = array('comments' => $comments);
+    $cur = DB_Company::get_pref('curr_default');
+    $past_due1 = DB_Company::get_pref('past_due_days');
+    $past_due2 = 2 * $past_due1;
     if ($email == 0) {
-      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-      $rep           = new $report_type(_('STATEMENT'), "StatementBulk", SA_CUSTSTATREP, User::page_size());
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+      $rep = new $report_type(_('STATEMENT'), "StatementBulk", SA_CUSTSTATREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
@@ -123,14 +122,14 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       if ($customer_record["Balance"] < 0) {
         continue;
       }
-      $baccount              = Bank_Account::get_default($myrow['curr_code']);
+      $baccount = Bank_Account::get_default($myrow['curr_code']);
       $params['bankaccount'] = $baccount['id'];
-      $trans_rows            = get_transactions($myrow['debtor_id'], $month, $inc_all);
+      $trans_rows = get_transactions($myrow['debtor_id'], $month, $inc_all);
       if ((DB::_numRows($trans_rows) == 0)) {
         continue;
       }
       $transactions = [];
-      $branch       = $openingbalance = $balance = 0;
+      $branch = $openingbalance = $balance = 0;
       while ($transaction = DB::_fetchAssoc($trans_rows)) {
         $balance += $transaction['TotalAmount'] - $transaction['Allocated'];
         if (!$branch) {
@@ -146,17 +145,17 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         continue;
       }
       if ($email == 1) {
-        $rep           = new $report_type("", "", SA_CUSTSTATREP, User::page_size());
+        $rep = new $report_type("", "", SA_CUSTSTATREP, User::page_size());
         $rep->currency = $cur;
         $rep->Font();
-        $rep->title    = _('STATEMENT');
+        $rep->title = _('STATEMENT');
         $rep->filename = "Statement" . $myrow['debtor_id'] . ".pdf";
         $rep->Info($params, $cols, null, $aligns);
       }
       $rep->Header2($myrow, Sales_Branch::get($branch), null, $baccount, ST_STATEMENT);
       $rep->NewLine();
-      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
-      $balance       = 0;
+      extract($rep->getHeaderArray($doctype));
+      $balance = 0;
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
@@ -164,15 +163,15 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         $rep->TextCol(0, 8, $txt_opening_balance);
         $rep->TextCol(8, 9, Num::_format($openingbalance, $dec));
         $rep->NewLine(2);
-        $balance         = $openingbalance;
+        $balance = $openingbalance;
         $display_balance = Num::_format($balance, $dec);
       }
       foreach ($transactions as $i => $trans) {
         if (!$inc_payments && $trans['type'] == ST_CUSTPAYMENT) {
           continue;
         }
-        $display_total       = Num::_format(abs($trans["TotalAmount"]), $dec);
-        $outstanding         = abs($trans["TotalAmount"] - $trans["Allocated"]);
+        $display_total = Num::_format(abs($trans["TotalAmount"]), $dec);
+        $outstanding = abs($trans["TotalAmount"] - $trans["Allocated"]);
         $display_outstanding = Num::_format($outstanding, $dec);
         if (!$inc_payments && $display_outstanding == 0) {
           continue;
@@ -212,19 +211,19 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         }
       }
       $rep->Font('bold');
-      $txt_current   = "Current";
-      $txt_now_due   = "31-60  Days";
+      $txt_current = "Current";
+      $txt_now_due = "31-60  Days";
       $txt_past_due1 = "61-90  Days";
       $txt_past_due2 = "90+ Days";
-      $str           = array($txt_past_due2, $txt_past_due1, $txt_now_due, $txt_current, $txt_total_balance);
-      $str2          = array(
+      $str = array($txt_past_due2, $txt_past_due1, $txt_now_due, $txt_current, $txt_total_balance);
+      $str2 = array(
         Num::_format($customer_record["Overdue2"], $dec),
         Num::_format(($customer_record["Overdue1"] - $customer_record["Overdue2"]), $dec),
         Num::_format(($customer_record["Due"] - $customer_record["Overdue1"]), $dec),
         Num::_format(($balance - $customer_record["Due"]), $dec),
         $display_balance
       );
-      $col           = array(
+      $col = array(
         70,
         150,
         250,
@@ -232,7 +231,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         450,
         610
       );
-      $rep->row      = $rep->bottomMargin + (13 * $rep->lineHeight - 6);
+      $rep->row = $rep->bottomMargin + (13 * $rep->lineHeight - 6);
       if ($customer_record["Balance"] > 0 && $customer_record["Due"] - $customer_record["Overdue1"] < $customer_record["Balance"]) {
         $rep->SetTextColor(255, 0, 0);
         $rep->fontSize += 4;

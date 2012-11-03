@@ -28,6 +28,7 @@
    * @method static price_dec()
    * @method static numeric($input)
    * @method static print_profile()
+   * @method static page_size()
    * @method static show_gl()
    * @method static rep_popup()
    * @method static percent_dec()
@@ -83,7 +84,10 @@
     public $last_record;
     /** @var \ADV\App\Security */
     public $Security;
-    static function i() {
+    /**
+     * @return \ADV\App\User
+     */
+    public static function i() {
       return $_SESSION['User'];
     }
     /**

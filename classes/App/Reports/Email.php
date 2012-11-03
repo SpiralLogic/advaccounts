@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,26 +16,29 @@
   /**
 
    */
-  class Email {
-    /** @var array **/
+  class Email
+  {
+    use Doctext;
+
+    /** @var array * */
     public $to = [];
-    /** @var array **/
+    /** @var array * */
     public $cc = [];
-    /** @var array **/
+    /** @var array * */
     public $bcc = [];
-    /** @var array **/
+    /** @var array * */
     public $attachment = [];
-    /** @var string **/
+    /** @var string * */
     public $boundary = "";
-    /** @var string **/
+    /** @var string * */
     public $header = "";
-    /** @var string **/
+    /** @var string * */
     public $subject = "";
-    /** @var string **/
+    /** @var string * */
     public $body = "";
-    /** @var \PHPMailer **/
+    /** @var \PHPMailer * */
     public $mail;
-    /** @var string **/
+    /** @var string * */
     public $toerror = "No vaild email address";
     protected $Config;
     /**
@@ -42,17 +46,17 @@
      */
     public function __construct($defaults = true) {
       $this->Config = \Config::i();
-      $this->mail   = new PHPMailer(true);
+      $this->mail = new PHPMailer(true);
       $this->mail->IsSMTP(); // telling the class to use SMTP
-      $this->mail->Host     = $this->Config->get('email.server'); // SMTP server
+      $this->mail->Host = $this->Config->get('email.server'); // SMTP server
       $this->mail->Username = $this->Config->get('email.username');
       $this->mail->Password = $this->Config->get('email.password');
-      $this->mail->From     = $this->Config->get('email.from_email');
+      $this->mail->From = $this->Config->get('email.from_email');
       $this->mail->SMTPAuth = true;
       $this->mail->WordWrap = 50;
       if ($defaults) {
         $this->mail->FromName = $this->Config->get('email.from_name');
-        $bcc                  = $this->Config->get('email.bcc');
+        $bcc = $this->Config->get('email.bcc');
         if ($bcc) {
           $this->mail->AddBCC($bcc);
         }
@@ -122,7 +126,7 @@
       //$this->mail->Encoding = "quoted-printable";
       $this->mail->IsHTML(true);
       $this->mail->AltBody = $html . "\n";
-      $this->mail->Body    = "<html><body>\n" . $html . "\n</body></html>\n";
+      $this->mail->Body = "<html><body>\n" . $html . "\n</body></html>\n";
     }
     /**
      * @param $filename

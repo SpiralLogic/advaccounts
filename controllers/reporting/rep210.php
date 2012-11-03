@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_remittances();
   /**
    * @param $type
@@ -19,7 +18,7 @@
    */
   function get_remittance($type, $trans_no) {
     $sql
-            = "SELECT creditor_trans.*,
+      = "SELECT creditor_trans.*,
  		(creditor_trans.ov_amount+creditor_trans.ov_gst+creditor_trans.ov_discount) AS Total,
  		suppliers.name, suppliers.account_no, suppliers.city, suppliers.postcode, suppliers.state,
  		suppliers.curr_code, suppliers.payment_terms, suppliers.gst_no AS tax_id,
@@ -57,30 +56,29 @@
   }
 
   function print_remittances() {
-
     $report_type = '\\ADV\\App\\Reports\\PDF';
-    $from        = $_POST['PARAM_0'];
-    $to          = $_POST['PARAM_1'];
-    $currency    = $_POST['PARAM_2'];
-    $email       = $_POST['PARAM_3'];
-    $comments    = $_POST['PARAM_4'];
+    $from = $_POST['PARAM_0'];
+    $to = $_POST['PARAM_1'];
+    $currency = $_POST['PARAM_2'];
+    $email = $_POST['PARAM_3'];
+    $comments = $_POST['PARAM_4'];
     if ($from == null) {
       $from = 0;
     }
     if ($to == null) {
       $to = 0;
     }
-    $dec  = User::price_dec();
-    $fno  = explode("-", $from);
-    $tno  = explode("-", $to);
+    $dec = User::price_dec();
+    $fno = explode("-", $from);
+    $tno = explode("-", $to);
     $cols = array(4, 85, 150, 225, 275, 360, 450, 515);
     // $headers in doctext.inc
     $aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right');
     $params = array('comments' => $comments);
-    $cur    = DB_Company::get_pref('curr_default');
+    $cur = DB_Company::get_pref('curr_default');
     if ($email == 0) {
-      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-      $rep           = new $report_type(_('REMITTANCE'), "RemittanceBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+      $rep = new $report_type(_('REMITTANCE'), "RemittanceBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
@@ -96,23 +94,23 @@
         if (!$myrow) {
           continue;
         }
-        $baccount              = Bank_Account::get_default($myrow['curr_code']);
+        $baccount = Bank_Account::get_default($myrow['curr_code']);
         $params['bankaccount'] = $baccount['id'];
         if ($email == 1) {
-          $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
+          $rep = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
           $rep->currency = $cur;
           $rep->Font();
-          $rep->title    = _('REMITTANCE');
+          $rep->title = _('REMITTANCE');
           $rep->filename = "Remittance" . $i . ".pdf";
           $rep->Info($params, $cols, null, $aligns);
         } else {
           $rep->title = _('REMITTANCE');
         }
         $rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
-        $result   = get_allocations_for_remittance($myrow['creditor_id'], $myrow['type'], $myrow['trans_no']);
+        $result = get_allocations_for_remittance($myrow['creditor_id'], $myrow['type'], $myrow['trans_no']);
         $linetype = true;
-        $doctype  = ST_SUPPAYMENT;
-        include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
+        $doctype = ST_SUPPAYMENT;
+        extract($rep->getHeaderArray($doctype, false, $linetype));
         $total_allocated = 0;
         $rep->TextCol(0, 4, $doc_Towards, -2);
         $rep->NewLine(2);
@@ -149,7 +147,7 @@
         $rep->Font();
         if ($email == 1) {
           $myrow['contact_email'] = $myrow['email'];
-          $myrow['DebtorName']    = $myrow['name'];
+          $myrow['DebtorName'] = $myrow['name'];
           if ($myrow['contact'] != '') {
             $myrow['DebtorName'] = $myrow['contact'];
           }

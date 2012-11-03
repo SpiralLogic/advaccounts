@@ -6,6 +6,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -25,8 +26,11 @@
   /**
 
    */
-  class Excel extends Spreadsheet_Excel_Writer_Workbook {
-    /** @var string **/
+  class Excel extends Spreadsheet_Excel_Writer_Workbook
+  {
+    use Doctext;
+
+    /** @var string * */
     public $size;
     /** @var */
     public $company;
@@ -38,19 +42,19 @@
     public $fiscal_year;
     /** @var */
     public $title;
-    /** @var string **/
+    /** @var string * */
     public $filename;
-    /** @var string **/
+    /** @var string * */
     public $unique_name;
-    /** @var string **/
+    /** @var string * */
     public $path;
-    /** @var string **/
+    /** @var string * */
     public $code;
-    /** @var int **/
+    /** @var int * */
     public $bottomMargin = 0;
-    /** @var int **/
+    /** @var int * */
     public $lineHeight;
-    /** @var int **/
+    /** @var int * */
     public $leftMargin = 0;
     /** @var */
     public $cols;
@@ -66,37 +70,37 @@
     public $aligns2;
     /** @var */
     public $cols2;
-    /** @var int **/
+    /** @var int * */
     public $fontSize;
-    /** @var int **/
+    /** @var int * */
     public $oldFontSize;
-    /** @var string **/
+    /** @var string * */
     public $currency;
-    /** @var int **/
+    /** @var int * */
     public $row = 9999999;
-    /** @var int **/
+    /** @var int * */
     public $y;
     /** @var */
     public $numcols;
-    /** @var float **/
+    /** @var float * */
     public $excelColWidthFactor;
-    /** @var int **/
+    /** @var int * */
     public $endLine;
-    /** @var \Spreadsheet_Excel_Writer_Format **/
+    /** @var \Spreadsheet_Excel_Writer_Format * */
     public $formatTitle;
-    /** @var \Spreadsheet_Excel_Writer_Format **/
+    /** @var \Spreadsheet_Excel_Writer_Format * */
     public $formatDateTime;
-    /** @var \Spreadsheet_Excel_Writer_Format **/
+    /** @var \Spreadsheet_Excel_Writer_Format * */
     public $formatDate;
-    /** @var \Spreadsheet_Excel_Writer_Format **/
+    /** @var \Spreadsheet_Excel_Writer_Format * */
     public $formatHeaderLeft;
-    /** @var \Spreadsheet_Excel_Writer_Format **/
+    /** @var \Spreadsheet_Excel_Writer_Format * */
     public $formatHeaderRight;
-    /** @var \Spreadsheet_Excel_Writer_Format **/
+    /** @var \Spreadsheet_Excel_Writer_Format * */
     public $formatFooter;
-    /** @var array **/
+    /** @var array * */
     public $formatAmount = [];
-    /** @var mixed **/
+    /** @var mixed * */
     public $sheet;
     /**
      * @param        $title
@@ -113,20 +117,20 @@
         Page::end();
         exit;
       }
-      $this->size                = $size;
-      $this->title               = $title;
-      $this->lineHeight          = 12;
-      $this->endLine             = 760;
-      $this->fontSize            = $fontsize;
-      $this->oldFontSize         = 0;
-      $this->y                   = 0;
-      $this->currency            = '';
+      $this->size = $size;
+      $this->title = $title;
+      $this->lineHeight = 12;
+      $this->endLine = 760;
+      $this->fontSize = $fontsize;
+      $this->oldFontSize = 0;
+      $this->y = 0;
+      $this->currency = '';
       $this->excelColWidthFactor = $excelColWidthFactor;
-      $rtl                       = ($_SESSION['language']->dir == 'rtl');
-      $this->code                = strtolower($_SESSION['language']->encoding);
-      $this->filename            = $filename . ".xls";
-      $this->unique_name         = uniqid('') . ".xls";
-      $this->path                = PATH_COMPANY . 'pdf_files';
+      $rtl = ($_SESSION['language']->dir == 'rtl');
+      $this->code = strtolower($_SESSION['language']->encoding);
+      $this->filename = $filename . ".xls";
+      $this->unique_name = uniqid('') . ".xls";
+      $this->path = PATH_COMPANY . 'pdf_files';
       $this->Spreadsheet_Excel_Writer_Workbook($this->path . "/" . $this->unique_name);
       //$this->setCountry(48);
       if ($this->code != "iso-8859-1") {
@@ -153,13 +157,13 @@
       }
       if ($how == 0) {
         $dateformat_long = "mm{$sep}dd{$sep}yyyy\ \ hh:mm\ am/pm";
-        $dateformat      = "mm{$sep}dd{$sep}yyyy";
+        $dateformat = "mm{$sep}dd{$sep}yyyy";
       } elseif ($how == 1) {
         $dateformat_long = "dd{$sep}mm{$sep}yyyy\ \ hh:mm";
-        $dateformat      = "dd{$sep}mm{$sep}yyyy";
+        $dateformat = "dd{$sep}mm{$sep}yyyy";
       } else {
         $dateformat_long = "yyyy{$sep}mm{$sep}dd\ \ hh:mm";
-        $dateformat      = "yyyy{$sep}mm{$sep}dd";
+        $dateformat = "yyyy{$sep}mm{$sep}dd";
       }
       $this->formatDateTime =& $this->addFormat();
       $this->formatDateTime->setNumFormat($dateformat_long);
@@ -239,9 +243,9 @@
      */
     public function NumFormat($dec) {
       if (!isset($this->formatAmount[$dec])) {
-        $dec    = (int) $dec;
-        $tsep   = ',';
-        $dsep   = '.';
+        $dec = (int)$dec;
+        $tsep = ',';
+        $dsep = '.';
         $format = "###{$tsep}###{$tsep}###{$tsep}##0";
         if ($dec > 0) {
           $format .= "{$dsep}" . str_repeat('0', $dec);
@@ -273,24 +277,24 @@
      */
     public function Info($params, $cols, $headers, $aligns, $cols2 = null, $headers2 = null, $aligns2 = null) {
       $this->company = DB_Company::get_prefs();
-      $year          = DB_Company::get_current_fiscalyear();
+      $year = DB_Company::get_current_fiscalyear();
       if ($year['closed'] == 0) {
         $how = _("Active");
       } else {
         $how = _("Closed");
       }
       $this->fiscal_year = Dates::_sqlToDate($year['begin']) . " - " . Dates::_sqlToDate($year['end']) . " (" . $how . ")";
-      $this->user        = User::i()->name;
-      $this->host        = $_SERVER['SERVER_NAME'];
-      $this->params      = $params;
-      $this->cols        = $cols;
-      $this->headers     = $headers;
-      $this->aligns      = $aligns;
-      $this->cols2       = $cols2;
-      $this->headers2    = $headers2;
-      $this->aligns2     = $aligns2;
-      $this->numcols     = count($this->headers);
-      $tcols             = count($this->headers2);
+      $this->user = User::i()->name;
+      $this->host = $_SERVER['SERVER_NAME'];
+      $this->params = $params;
+      $this->cols = $cols;
+      $this->headers = $headers;
+      $this->aligns = $aligns;
+      $this->cols2 = $cols2;
+      $this->headers2 = $headers2;
+      $this->aligns2 = $aligns2;
+      $this->numcols = count($this->headers);
+      $tcols = count($this->headers2);
       if ($tcols > $this->numcols) {
         $this->numcols = $tcols;
       }
@@ -388,8 +392,8 @@
     public function Header3() {
       // Flag to make sure we only print the company name once
       $companyNamePrinted = false;
-      $this->y            = 0;
-      $tcol               = $this->numcols - 1;
+      $this->y = 0;
+      $tcol = $this->numcols - 1;
       $this->sheet->setRow($this->y, 20);
       // Title
       for ($i = 0; $i < $this->numcols; $i++) {
@@ -517,10 +521,10 @@
      */
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
       if ($date != '') {
-        $date  = Dates::_dateToSql($date);
-        $year  = (int) (substr($date, 0, 4));
-        $month = (int) (substr($date, 5, 2));
-        $day   = (int) (substr($date, 8, 2));
+        $date = Dates::_dateToSql($date);
+        $year = (int)(substr($date, 0, 4));
+        $month = (int)(substr($date, 5, 2));
+        $day = (int)(substr($date, 8, 2));
         if ($output_format == 0) {
           return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
         } elseif ($output_format == 1) {
@@ -722,7 +726,7 @@
         $txt = Dates::_dateToSql($txt);
       }
       list($year, $mo, $day) = explode("-", $txt);
-      $date = $this->ymd2date((int) $year, (int) $mo, (int) $day);
+      $date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
       $this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
     }
     /**
@@ -788,9 +792,9 @@
     public function TextWrapCalc($txt, $width, $spacebreak = false) {
       // Assume an average character width
       $avg_char_width = 5;
-      $ret            = "";
-      $txt2           = $txt;
-      $w              = strlen($txt) * $avg_char_width;
+      $ret = "";
+      $txt2 = $txt;
+      $w = strlen($txt) * $avg_char_width;
       if ($w > $width && $w > 0 && $width != 0) {
         $n = strlen($txt);
         $k = intval($n * $width / $w);
@@ -798,7 +802,7 @@
           $txt2 = substr($txt, 0, $k);
           if ($spacebreak && (($pos = strrpos($txt2, " ")) !== false)) {
             $txt2 = substr($txt2, 0, $pos);
-            $ret  = substr($txt, $pos + 1);
+            $ret = substr($txt, $pos + 1);
           } else {
             $ret = substr($txt, $k);
           }
@@ -873,8 +877,8 @@
      */
     public function ymd2Date($year, $mon, $day) // XLS internal date representation is a number between 1900-01-01 and 2078-12-31
     { // if we need the time part too, we have to add this value after a decimalpoint.
-      $mo      = array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-      $BASE    = 1900;
+      $mo = array(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+      $BASE = 1900;
       $MAXYEAR = 2075;
       if (($year % 4) == 0) {
         $mo[2]++;
@@ -894,7 +898,7 @@
       } elseif ($year > $MAXYEAR) {
         $year = $MAXYEAR;
       }
-      $jul = (int) $day;
+      $jul = (int)$day;
       for ($n = 1; $n < $mon; $n++) {
         $jul += $mo[$n];
       }
@@ -914,7 +918,7 @@
     public function px2units($px) // XLS app conversion. Not bulletproof.
     {
       $excel_column_width_factor = 256;
-      $unit_offset_length        = $this->excelColWidthFactor;
+      $unit_offset_length = $this->excelColWidthFactor;
       return ($px / $unit_offset_length);
     }
     /**

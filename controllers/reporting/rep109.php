@@ -10,44 +10,42 @@
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
      See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * ********************************************************************* */
-
   print_sales_orders();
   $print_as_quote = 0;
   function print_sales_orders() {
     global $print_as_quote;
-
-    $report_type    = '\\ADV\\App\\Reports\\PDF';
-    $from           = $_POST['PARAM_0'];
-    $to             = $_POST['PARAM_1'];
-    $currency       = $_POST['PARAM_2'];
-    $email          = $_POST['PARAM_3'];
+    $report_type = '\\ADV\\App\\Reports\\PDF';
+    $from = $_POST['PARAM_0'];
+    $to = $_POST['PARAM_1'];
+    $currency = $_POST['PARAM_2'];
+    $email = $_POST['PARAM_3'];
     $print_as_quote = $_POST['PARAM_4'];
-    $comments       = $_POST['PARAM_5'];
+    $comments = $_POST['PARAM_5'];
     if ($from == null) {
       $from = 0;
     }
     if ($to == null) {
       $to = 0;
     }
-    $dec  = User::price_dec();
+    $dec = User::price_dec();
     $cols = array(4, 70, 300, 320, 360, 395, 450, 475, 515, 475);
     // $headers in doctext.inc
-    $aligns   = array('left', 'left', 'center', 'left', 'left', 'left', 'left', 'right');
-    $params   = array('comments' => $comments);
-    $cur      = DB_Company::get_pref('curr_default');
+    $aligns = array('left', 'left', 'center', 'left', 'left', 'left', 'left', 'right');
+    $params = array('comments' => $comments);
+    $cur = DB_Company::get_pref('curr_default');
     $security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP;
     if ($email == 0) {
       if ($print_as_quote == 0) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("ORDER"), "SalesOrderBulk", $security, User::page_size());
       } elseif ($print_as_quote == 2) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security, User::page_size());
       } elseif ($print_as_quote == 3) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security, User::page_size());
       } else {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("QUOTE"), "QuoteBulk", $security, User::page_size());
       }
       $rep->currency = $cur;
@@ -60,21 +58,21 @@
       } else {
         $myrow = Sales_Order::get_header($i, ST_SALESQUOTE);
       }
-      $baccount              = Bank_Account::get_default($myrow['curr_code']);
+      $baccount = Bank_Account::get_default($myrow['curr_code']);
       $params['bankaccount'] = $baccount['id'];
-      $branch                = Sales_Branch::get($myrow["branch_id"]);
+      $branch = Sales_Branch::get($myrow["branch_id"]);
       if ($email == 1) {
-        $rep           = new $report_type("", "", $security, User::page_size());
+        $rep = new $report_type("", "", $security, User::page_size());
         $rep->currency = $cur;
         $rep->Font();
         if ($print_as_quote == 1) {
-          $rep->title    = _('QUOTE');
+          $rep->title = _('QUOTE');
           $rep->filename = "Quote" . $i . ".pdf";
         } elseif ($print_as_quote == 2 || $print_as_quote == 3) {
-          $rep->title    = _('PROFORMA INVOICE');
+          $rep->title = _('PROFORMA INVOICE');
           $rep->filename = "Proforna" . $i . ".pdf";
         } else {
-          $rep->title    = _("ORDER");
+          $rep->title = _("ORDER");
           $rep->filename = "SalesOrder" . $i . ".pdf";
         }
         $rep->Info($params, $cols, null, $aligns);
@@ -104,8 +102,8 @@
         $TaxTotal += Tax::for_item($myrow2['stk_code'], $Net, $TaxType);
         # __ADVANCEDEDIT__ END #
         $DisplayPrice = Num::_format($myrow2["unit_price"], $dec);
-        $DisplayQty   = Num::_format($myrow2["quantity"], Item::qty_dec($myrow2['stk_code']));
-        $DisplayNet   = Num::_format($Net, $dec);
+        $DisplayQty = Num::_format($myrow2["quantity"], Item::qty_dec($myrow2['stk_code']));
+        $DisplayNet = Num::_format($Net, $dec);
         if ($myrow2["discount_percent"] == 0) {
           $DisplayDiscount = "";
         } else {
@@ -114,7 +112,7 @@
         $rep->TextCol(0, 1, $myrow2['stk_code'], -2);
         $oldrow = $rep->row;
         $rep->TextColLines(1, 2, $myrow2['description'], -2);
-        $newrow   = $rep->row;
+        $newrow = $rep->row;
         $rep->row = $oldrow;
         $rep->TextCol(2, 3, $DisplayQty, -2);
         $rep->TextCol(3, 4, $myrow2['units'], -2);
@@ -148,12 +146,12 @@
       $SubTotal += $myrow["freight_cost"];
       $TaxTotal += $myrow['freight_cost'] * .1;
       $display_sub_total = Num::_format($SubTotal, $dec);
-      $DisplayTaxTot     = Num::_format($TaxTotal, $dec);
-      $display_total     = Num::_format($SubTotal + $TaxTotal, $dec);
-      $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype          = true;
-      $doctype           = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
-      include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
+      $DisplayTaxTot = Num::_format($TaxTotal, $dec);
+      $display_total = Num::_format($SubTotal + $TaxTotal, $dec);
+      $rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+      $linetype = true;
+      $doctype = ($print_as_quote < 3) ? ST_SALESORDER : ST_SALESQUOTE;
+      extract($rep->getHeaderArray($doctype));
       $rep->TextCol(4, 7, $doc_shipping . ' (ex.GST)', -2);
       $rep->TextCol(7, 8, $display_freight, -2);
       $rep->NewLine();

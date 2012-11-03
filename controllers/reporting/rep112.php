@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_receipts();
   /**
    * @param $type
@@ -19,7 +18,7 @@
    */
   function get_receipt($type, $trans_no) {
     $sql
-            = "SELECT debtor_trans.*,
+      = "SELECT debtor_trans.*,
                 (debtor_trans.ov_amount + debtor_trans.ov_gst + debtor_trans.ov_freight +
                 debtor_trans.ov_freight_tax + debtor_trans.ov_discount) AS Total,
                  debtors.name AS DebtorName, debtors.debtor_ref,
@@ -58,28 +57,27 @@
   }
 
   function print_receipts() {
-
     $report_type = '\\ADV\\App\\Reports\\PDF';
-    $from        = $_POST['PARAM_0'];
-    $to          = $_POST['PARAM_1'];
-    $currency    = $_POST['PARAM_2'];
-    $comments    = $_POST['PARAM_3'];
+    $from = $_POST['PARAM_0'];
+    $to = $_POST['PARAM_1'];
+    $currency = $_POST['PARAM_2'];
+    $comments = $_POST['PARAM_3'];
     if ($from == null) {
       $from = 0;
     }
     if ($to == null) {
       $to = 0;
     }
-    $dec  = User::price_dec();
-    $fno  = explode("-", $from);
-    $tno  = explode("-", $to);
+    $dec = User::price_dec();
+    $fno = explode("-", $from);
+    $tno = explode("-", $to);
     $cols = array(4, 85, 150, 225, 275, 360, 450, 515);
     // $headers in doctext.inc
     $aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right');
     $params = array('comments' => $comments);
-    $cur    = DB_Company::get_pref('curr_default');
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep           = new $report_type(_('RECEIPT'), "ReceiptBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
+    $cur = DB_Company::get_pref('curr_default');
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('RECEIPT'), "ReceiptBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
     $rep->currency = $cur;
     $rep->Font();
     $rep->Info($params, $cols, null, $aligns);
@@ -94,14 +92,14 @@
         if (!$myrow) {
           continue;
         }
-        $baccount              = Bank_Account::get_default($myrow['curr_code']);
+        $baccount = Bank_Account::get_default($myrow['curr_code']);
         $params['bankaccount'] = $baccount['id'];
-        $rep->title            = _('RECEIPT');
+        $rep->title = _('RECEIPT');
         $rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
-        $result   = get_allocations_for_receipt($myrow['debtor_id'], $myrow['type'], $myrow['trans_no']);
+        $result = get_allocations_for_receipt($myrow['debtor_id'], $myrow['type'], $myrow['trans_no']);
         $linetype = true;
-        $doctype  = ST_CUSTPAYMENT;
-        include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
+        $doctype = ST_CUSTPAYMENT;
+        extract($rep->getHeaderArray($doctype, false, $linetype));
         $total_allocated = 0;
         $rep->TextCol(0, 4, $doc_Towards, -2);
         $rep->NewLine(2);
