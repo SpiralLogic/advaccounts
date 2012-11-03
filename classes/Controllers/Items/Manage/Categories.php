@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -19,9 +20,8 @@
   /**
    * @property Category $object
    */
-  class Categories extends \ADV\App\Controller\Manage
+  class Categories extends \ADV\App\Controller\FormPager
   {
-
     protected $tableWidth = '80';
     protected $security = SA_ITEMCATEGORY;
     protected function before() {

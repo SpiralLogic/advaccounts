@@ -8,7 +8,8 @@
   /**
 
    */
-  class Groups extends \ADV\App\Controller\Manage {
+  class Groups extends \ADV\App\Controller\FormPager
+  {
     protected function before() {
       $this->object = new Group();
       $this->runPost();
@@ -36,10 +37,10 @@
      */
     protected function generateTableCols() {
       $cols = [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         'Group Name',
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
       return $cols;
     }

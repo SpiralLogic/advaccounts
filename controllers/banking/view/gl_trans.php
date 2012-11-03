@@ -4,6 +4,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -21,8 +22,6 @@
 	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::_quote($_GET['type_id']) . " AND gl.type_no = " . DB::_quote(
     $_GET['trans_no']
   ) . " ORDER BY counter";
-  var_dump($sql);
-
   $result = DB::_query($sql, "could not get transactions");
   //alert("sql = ".$sql);
   if (DB::_numRows($result) == 0) {
@@ -64,15 +63,14 @@
       );
     }
   }
-  $k             = 0; //row colour counter
+  $k = 0; //row colour counter
   $heading_shown = false;
-  $total         = 0;
+  $total = 0;
   while ($myrow = DB::_fetch($result)) {
     if ($myrow['amount'] == 0) {
       continue;
     }
     $total += $myrow['amount'];
-
     if (!$heading_shown) {
       display_gl_heading($myrow);
       Table::start('padded grid width95');

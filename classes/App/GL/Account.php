@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -18,7 +19,6 @@
      */
     class Account extends \ADV\App\DB\Base
     {
-
       protected $_table = 'chart_master';
       protected $_classname = 'GL Account';
       protected $_id_column = 'account_code';
@@ -62,7 +62,7 @@
         if ($result > 0) {
           return $this->status(false, "Cannot delete this account because transactions have been created using this account.");
         }
-        $prefs    = DB_Company::get_prefs();
+        $prefs = DB_Company::get_prefs();
         $accounts = [
           'debtors_act',
           'pyt_discount_act',
@@ -149,20 +149,6 @@
         }
         return $q->fetch()->all();
       }
-      /**
-       * @return array
-       */
-      public function generateTableCols() {
-        $cols = [
-          ['type' => 'skip'],
-          'Type'     => ['fun' => [$this, 'formatType'], 'type' => 'group', 'edit' => 'select', 'items' => Type::selectBoxItems()],
-          'Name'     => ['ord' => 'asc'],
-          'Code',
-          'Code2',
-          'Inactive' => ['type' => 'inactive'],
-        ];
-        return $cols;
-      }
     }
   }
   namespace {
@@ -175,7 +161,6 @@
      */
     class GL_Account
     {
-
       /**
        * @static
        *
@@ -251,7 +236,7 @@
        * @return \ADV\Core\DB\Query\Result|Array
        */
       public static function get($code) {
-        $sql    = "SELECT * FROM chart_master WHERE account_code=" . DB::_escape($code);
+        $sql = "SELECT * FROM chart_master WHERE account_code=" . DB::_escape($code);
         $result = DB::_query($sql, "could not get gl account");
         return DB::_fetch($result);
       }
@@ -309,7 +294,7 @@
        */
       public static function get_ending_reconciled($bank_account, $bank_date) {
         $sql
-                = "SELECT ending_reconcile_balance
+          = "SELECT ending_reconcile_balance
         FROM bank_accounts WHERE id=" . DB::_escape($bank_account) . " AND last_reconciled_date=" . DB::_escape($bank_date);
         $result = DB::_query($sql, "Cannot retrieve last reconciliation");
         return DB::_fetch($result);
@@ -355,12 +340,12 @@
        * @return bool
        */
       public static function is_balancesheet($code) {
-        $sql    = "SELECT chart_class.ctype FROM chart_class, " . "chart_types, chart_master
+        $sql = "SELECT chart_class.ctype FROM chart_class, " . "chart_types, chart_master
         WHERE chart_master.account_type=chart_types.id AND
         chart_types.class_id=chart_class.cid
         AND chart_master.account_code=" . DB::_escape($code);
         $result = DB::_query($sql, "could not retreive the account class for $code");
-        $row    = DB::_fetchRow($result);
+        $row = DB::_fetchRow($result);
         return $row[0] > 0 && $row[0] < CL_INCOME;
       }
       /**
@@ -371,7 +356,7 @@
        * @return mixed
        */
       public static function get_name($code) {
-        $sql    = "SELECT account_name from chart_master WHERE account_code=" . DB::_escape($code);
+        $sql = "SELECT account_name from chart_master WHERE account_code=" . DB::_escape($code);
         $result = DB::_query($sql, "could not retreive the account name for $code");
         if (DB::_numRows($result) == 1) {
           $row = DB::_fetchRow($result);
@@ -388,12 +373,12 @@
        */
       public static function get_reconcile_start($bank_account, $reconcile_date) {
         $sql
-                = "SELECT reconciled as start_date FROM bank_trans
+          = "SELECT reconciled as start_date FROM bank_trans
                                    WHERE bank_act=" . DB::_escape($bank_account) . " AND reconciled IS NOT null AND amount!=0 AND reconciled <" . DB::_quote(
           $reconcile_date
         ) . " ORDER BY reconciled DESC LIMIT 1";
         $result = DB::_query($sql);
-        $row    = DB::_fetch($result);
+        $row = DB::_fetch($result);
         return $row['start_date'];
       }
     }

@@ -1,16 +1,16 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Controllers\System\Manage;
 
-  use ADV\App\Controller\Manage;
+  use ADV\App\Controller\Pager;
   use Reports_UI;
   use Sales_Point;
   use ADV\App\Languages;
@@ -22,7 +22,8 @@
   /**
 
    */
-  class Users extends Manage {
+  class Users extends \ADV\App\Controller\FormPager
+  {
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new User();
@@ -44,7 +45,7 @@
     protected function formContents(Form $form, View $view) {
       $view['title'] = 'Users';
       $form->hidden('id');
-      $form->text('user_id')->label('User ID:')->focus($this->action==EDIT);
+      $form->text('user_id')->label('User ID:')->focus($this->action == EDIT);
       $form->text('real_name')->label('Name:');
       $form->text('phone')->label('Telephone number:');
       $form->text('email')->label('Email Address:');
@@ -60,16 +61,16 @@
      */
     protected function generateTableCols() {
       $cols = array(
-        ['type'=> "skip"],
+        ['type' => "skip"],
         _("User ID"),
         _("Name"),
         _("Phone"),
         _("Email"),
         _("Last Visit Date"),
         _("Role"),
-        _('Inactive')=> ['type'=> 'inactive'],
-        ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['insert'=> true, "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']]
+        _('Inactive') => ['type' => 'inactive'],
+        ['insert' => true, "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['insert' => true, "align" => "center", 'fun' => [$this, 'formatDeleteBtn']]
       );
       return $cols;
     }

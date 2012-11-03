@@ -8,15 +8,15 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Types extends \ADV\App\Controller\Manage
+  class Types extends \ADV\App\Controller\FormPager
   {
-
     protected $security = SA_GLACCOUNTGROUP;
     protected $pager_type = self::PAGER_EDIT;
     protected $display_form = false;

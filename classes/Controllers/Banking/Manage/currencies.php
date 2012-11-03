@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,17 +10,17 @@
    **/
   namespace ADV\Controllers\Banking\Manage;
 
-  use ADV\App\Controller\Manage;
   use ADV\App\Bank\Currency;
   use ADV\Core\View;
   use ADV\App\Form\Form;
 
   /**   */
-  class Currencies extends Manage {
+  class Currencies extends \ADV\App\Controller\FormPager
+  {
     protected $security = SA_CURRENCY;
     protected $title = 'Currencies';
     public function before() {
-      $this->object     = new Currency();
+      $this->object = new Currency();
       $this->tableWidth = '80';
       $this->runPost();
     }
@@ -45,16 +46,16 @@
      */
     protected function generateTableCols() {
       return [
-        ['type'=> "skip"],
+        ['type' => "skip"],
         'Currency',
         'Abbreviation',
         'Symbol',
         'Country',
         'Hundreds',
-        'Inactive'=> ['type'=> 'inactive'],
+        'Inactive' => ['type' => 'inactive'],
         'Auto Update',
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
     }
   }

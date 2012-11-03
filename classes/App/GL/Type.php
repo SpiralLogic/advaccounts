@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,7 +17,6 @@
      */
     class Type extends \ADV\App\DB\Base
     {
-
       protected $_table = 'chart_types';
       protected $_classname = 'Chart Type';
       protected $_id_column = 'id';
@@ -37,7 +37,7 @@
         if ($result > 0) {
           return $this->status(false, "Cannot delete this account group because GL account groups have been created referring to it.");
         }
-        return true;
+        return parent::delete();
       }
       /**
        * @return \ADV\Core\Traits\Status|bool
@@ -72,12 +72,19 @@
       public function generatePagerColumns() {
         return [['type' => 'skip'], 'Name', 'Class', 'Parent', 'Inactive' => ['type' => 'inactive']];
       }
+      public static function selectBoxItems() {
+        $q = DB::_select('id', 'name')->from('chart_types')->andWhere('inactive=', 0)->fetch();
+        $types = [];
+        foreach ($q as $row) {
+          $types[$row['id']] = $row['name'];
+        }
+        return $types;
+      }
     }
   }
   namespace {
     class GL_Type
     {
-
       /**
        * @static
        *
@@ -142,7 +149,7 @@
        * @return \ADV\Core\DB\Query\Result|Array
        */
       public static function get($id) {
-        $sql    = "SELECT * FROM chart_types WHERE id = " . DB::_escape($id);
+        $sql = "SELECT * FROM chart_types WHERE id = " . DB::_escape($id);
         $result = DB::_query($sql, "could not get account type");
         return DB::_fetch($result);
       }
@@ -154,9 +161,9 @@
        * @return mixed
        */
       public static function get_name($id) {
-        $sql    = "SELECT name FROM chart_types WHERE id = " . DB::_escape($id);
+        $sql = "SELECT name FROM chart_types WHERE id = " . DB::_escape($id);
         $result = DB::_query($sql, "could not get account type");
-        $row    = DB::_fetchRow($result);
+        $row = DB::_fetchRow($result);
         return $row[0];
       }
       /**
@@ -187,9 +194,9 @@
           'id',
           'name',
           array(
-            'order'       => 'id',
-            'spec_option' => $all_option,
-            'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT
+               'order' => 'id',
+               'spec_option' => $all_option,
+               'spec_id' => $all_option_numeric ? 0 : ALL_TEXT
           )
         );
       }

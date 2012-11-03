@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,6 +11,7 @@
   namespace ADV\Controllers\GL\Manage;
 
   use ADV\App\Form\Form;
+  use ADV\App\Pager\Edit;
   use GL_Type;
   use ADV\App\GL\Account;
   use ADV\Core\View;
@@ -17,20 +19,14 @@
   /**
    * @property Account $object
    */
-  class Accounts extends \ADV\App\Controller\Manage
+  class Accounts extends \ADV\App\Controller\FormPager
   {
-
     protected $tableWidth = '80';
+    protected $security = SA_GLACCOUNT;
     protected function before() {
+      $this->setTitle("GL Accounts");
       $this->object = new Account();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "GL Accounts"), SA_GLACCOUNT);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page(true);
     }
     /**
      * @param $form
@@ -50,7 +46,18 @@
      * @return array
      */
     protected function generateTableCols() {
-      $this->object->generateTableCols();
+      $cols = [
+        'Type' => ['type' => 'group'],
+        ['type' => 'skip'],
+        'Name' => ['ord' => 'asc'],
+        'Code',
+        'Code2',
+        'Inactive' => ['type' => 'inactive'],
+        ['type' => 'skip'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
+      ];
+      return $cols;
     }
   }
 

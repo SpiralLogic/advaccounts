@@ -7,13 +7,15 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Creditstatuses extends \ADV\App\Controller\Manage {
+  class Creditstatuses extends \ADV\App\Controller\FormPager
+  {
     protected $tableWidth = '80';
     protected function before() {
       $this->object = new CreditStatus();
@@ -43,14 +45,13 @@
      */
     protected function generateTableCols() {
       $cols = [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         'Description',
-        'Dissallow Invoices'=> ['type'=> 'bool'],
-        'Inactive'          => ['type'=> 'inactive'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        'Dissallow Invoices' => ['type' => 'bool'],
+        'Inactive' => ['type' => 'inactive'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
-
       return $cols;
     }
   }

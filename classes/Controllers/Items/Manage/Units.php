@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,7 +10,7 @@
    **/
   namespace ADV\Controllers\Items\Manage;
 
-  use ADV\App\Controller\Manage;
+  use ADV\App\Controller\Pager;
   use ADV\App\Validation;
   use ADV\App\Item\Unit;
   use ADV\Core\View;
@@ -18,7 +19,8 @@
   /**
 
    */
-  class Units extends Manage {
+  class Units extends \ADV\App\Controller\FormPager
+  {
     protected $stock_id;
     protected $security = SA_UOM;
     protected function before() {
@@ -32,7 +34,6 @@
      * @return mixed
      */
     protected function formContents(Form $form, View $view) {
-
       $view['title'] = 'Item Units of Measure';
       $form->hidden('id');
       $form->text('abbr')->label('Abbreviation:')->focus();
@@ -45,13 +46,13 @@
      */
     protected function generateTableCols() {
       return [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         _("Abbr"),
         _("Name"),
-        _("Decimals")=> ["align"=> "center", 'fun'=> [$this, 'formatDecimals']],
-        _("Inactive")=> ['type'=> 'inactive'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        _("Decimals") => ["align" => "center", 'fun' => [$this, 'formatDecimals']],
+        _("Inactive") => ['type' => 'inactive'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
     }
     /**

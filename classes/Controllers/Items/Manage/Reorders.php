@@ -14,13 +14,12 @@
   use ADV\Core\View;
   use ADV\App\Form\Form;
 
-  class Reorders extends \ADV\App\Controller\Manage
+  class Reorders extends \ADV\App\Controller\InlinePager
   {
     protected $stock_id = null;
     protected $security = SA_REORDER;
     protected $frame = false;
     protected $tableWidth = '90';
-    protected $display_form = false;
     protected function before() {
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
       $this->object = new \ADV\App\Item\Reorder();
@@ -46,14 +45,6 @@
      */
     protected function getTableRows($pagername) {
       return $this->object->getAll($this->stock_id);
-    }
-    /**
-     * @param \ADV\App\Form\Form $form
-     * @param \ADV\Core\View     $view
-     *
-     * @return mixed
-     */
-    protected function formContents(Form $form, View $view) {
     }
     protected function generateTableCols() {
       return $this->object->generateTableCols();

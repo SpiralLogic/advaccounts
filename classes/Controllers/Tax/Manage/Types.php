@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,18 +10,18 @@
    **/
   namespace ADV\Controllers\Tax\Manage;
 
-  use ADV\App\Controller\Manage;
   use GL_UI;
   use ADV\App\Tax\Type;
   use ADV\Core\View;
   use ADV\App\Form\Form;
 
   /**   */
-  class Types extends Manage {
+  class Types extends \ADV\App\Controller\FormPager
+  {
     protected $security = SA_TAXRATES;
     protected $title = 'Tax Types';
     public function before() {
-      $this->object     = new Type();
+      $this->object = new Type();
       $this->tableWidth = '80';
       $this->runPost();
     }
@@ -44,14 +45,14 @@
      */
     protected function generateTableCols() {
       return [
-        ['type'=> "skip"],
+        ['type' => "skip"],
         'Name',
-        'Rate'    => ['type'=> "percent"],
-        'Sales GL Account'=>['fun'=> [$this,'formatAccount']],
-        'Purchasing GL Account'=>['fun'=> [$this,'formatAccount']],
-        'Inactive'=> ['type'=> 'inactive'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        'Rate' => ['type' => "percent"],
+        'Sales GL Account' => ['fun' => [$this, 'formatAccount']],
+        'Purchasing GL Account' => ['fun' => [$this, 'formatAccount']],
+        'Inactive' => ['type' => 'inactive'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
     }
   }

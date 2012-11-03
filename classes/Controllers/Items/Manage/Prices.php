@@ -1,12 +1,10 @@
 <?php
   namespace ADV\Controllers\Items\Manage;
 
-  use ADV\App\Form\Form;
   use ADV\App\Item\Price;
   use Item_Price;
   use ADV\App\UI;
   use ADV\App\Validation;
-  use ADV\Core\View;
 
   /**
    * PHP version 5.4
@@ -17,13 +15,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Prices extends \ADV\App\Controller\Manage
+  class Prices extends \ADV\App\Controller\InlinePager
   {
     protected $stock_id;
     protected $security = SA_SALESPRICE;
     protected $frame = false;
-    protected $pager_type = self::PAGER_EDIT;
-    protected $display_form = false;
     protected function before() {
       $this->frame = $this->Input->request('frame');
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
@@ -55,14 +51,6 @@
      */
     protected function getTableRows($pagername) {
       return Item_Price::getAll($this->stock_id);
-    }
-    /**
-     * @param \ADV\App\Form\Form $form
-     * @param \ADV\Core\View     $view
-     *
-     * @return mixed
-     */
-    protected function formContents(Form $form, View $view) {
     }
     /**
      * @param \ADV\App\Pager\Edit $pager

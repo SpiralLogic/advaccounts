@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,26 +12,19 @@
   namespace ADV\App\Controller;
 
   use ADV\Core\Status;
-  use ADV\App\Pager\Pager;
+  use ADV\App\Pager\Edit;
   use ADV\Core\Input\Input;
-  use ADV\App\Form\Form;
-  use ADV\Core\View;
 
   /**
 
    */
-  abstract class Manage extends Action
+  abstract class Pager extends Action
   {
-
-    const PAGER_VIEW = 'Pager';
-    const PAGER_EDIT = 'Edit';
-    /** @var \ADV\App\GL\QuickEntry */
+    /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';
     protected $security;
-    protected $pager_type = self::PAGER_VIEW;
-    protected $display_form = true;
     protected function runPost() {
       if (REQUEST_POST) {
         $id = $this->getActionId([DELETE, EDIT, INACTIVE]);
@@ -47,7 +41,7 @@
             $changes['inactive'] = $this->Input->post('_value', Input::NUMERIC);
           case SAVE:
             $changes = isset($changes) ? $changes : $_POST;
-            $status  = $this->onSave($changes);
+            $status = $this->onSave($changes);
             break;
           case CANCEL:
             $status = $this->object->getStatus();
@@ -62,12 +56,14 @@
       }
     }
     /**
-     * @param      $changes
-     * @param null $object
+     * @param                       $changes
+     * @param \ADV\App\DB\Base|null $object
+     *
+     * @param int                   $id
      *
      * @return \ADV\Core\Status|array
      */
-    protected function onSave($changes, $object = null, $id = 0) {
+    protected function onSave($changes, \ADV\App\DB\Base $object = null, $id = 0) {
       $object = $object ? : $this->object;
       $object->save($changes);
       //run the sql from either of the above possibilites
@@ -99,58 +95,11 @@
       $status = $object->getStatus();
       return $status;
     }
-    protected function index() {
-      $this->Page->init($this->title, $this->security);
-      $this->beforeTable();
-      $this->generateTable();
-      echo '<br>';
-      if ($this->display_form) {
-        $this->generateForm();
-      }
-      $this->Page->end_page(true);
-    }
-    protected function beforeTable() {
-    }
-    /**
-     * @param \ADV\App\Form\Form $form
-     * @param \ADV\Core\View     $view
-     * @param null               $object
-     * @param bool               $contents
-     */
-    protected function generateForm(\ADV\App\Form\Form $form = null, \ADV\Core\View $view = null, $object = null, $contents = true) {
-      $view = $view ? : new \ADV\Core\View('form/simple');
-      $form = $form ? : new \ADV\App\Form\Form();
-      if ($contents) {
-        $view['title'] = $this->title;
-        $this->formContents($form, $view);
-      }
-      $form->group('buttons');
-      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
-      $form->submit(SAVE)->type('success')->preIcon(ICON_ADD);
-      $form->setValues($object ? : $this->object);
-      $view->set('form', $form);
-      $view->render();
-      $this->Ajax->addJson(true, 'setFormValues', $form);
-    }
+    abstract protected function beforeTable();
     /**
      * @return \ADV\App\Pager\Pager
      */
-    protected function generateTable() {
-      $cols       = $this->generateTableCols();
-      $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      //Pager::kill($pager_name);
-      $pager = '\\ADV\\App\\Pager\\' . $this->pager_type;
-      $table = $pager::newPager($pager_name, $cols);
-      $this->getEditing($table);
-      $table->setData($this->getTableRows($pager_name));
-      $table->width = $this->tableWidth;
-      $table->display();
-    }
-    /**
-     * @param \ADV\App\Pager\Pager $table
-     */
-    protected function getEditing(Pager $table) {
-    }
+    abstract protected function generateTable();
     /**
      * @param $pager_name
      *
@@ -206,12 +155,5 @@
       $button->type('mini')->type($type);
       return $button;
     }
-    /**
-     * @param \ADV\App\Form\Form $form
-     * @param \ADV\Core\View     $view
-     *
-     * @return mixed
-     */
-    abstract protected function formContents(Form $form, View $view);
     abstract protected function generateTableCols();
   }

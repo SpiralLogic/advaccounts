@@ -10,33 +10,27 @@
    **/
   namespace ADV\Controllers\Items\Manage;
 
-  use ADV\App\Controller\Manage;
-  use Item_Unit;
   use ADV\App\Validation;
   use ADV\App\UI;
   use ADV\App\Item\Purchase;
-  use ADV\Core\View;
-  use ADV\App\Form\Form;
 
   /**
 
    */
-  class Purchasing extends Manage
+  class Purchasing extends \ADV\App\Controller\InlinePager
   {
-
     protected $stock_id = null;
     protected $security = SA_PURCHASEPRICING;
     protected $frame = false;
-    protected $pager_type = self::PAGER_EDIT;
     protected $tableWidth = '90';
     protected function before() {
-      $this->frame    = $this->Input->request('frame');
+      $this->frame = $this->Input->request('frame');
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
-      $this->object   = new Purchase();
+      $this->object = new Purchase();
       $this->runPost();
       if ($this->stock_id) {
         $this->object->stock_id = $this->stock_id;
-        $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
+        $this->object->stockid = \ADV\App\Item\Item::getStockID($this->stock_id);
       }
     }
     protected function beforeTable() {
@@ -45,12 +39,12 @@
         UI::search(
           'stock_id',
           [
-            'label'   => 'Item:',
-            'url'     => 'Item',
-            'idField' => 'stock_id',
-            'name'    => 'stock_id', //
-            'value'   => $this->stock_id,
-            'focus'   => true,
+          'label' => 'Item:',
+          'url' => 'Item',
+          'idField' => 'stock_id',
+          'name' => 'stock_id', //
+          'value' => $this->stock_id,
+          'focus' => true,
           ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);
@@ -74,7 +68,7 @@
       $pager->setObject($this->object);
       if ($this->stock_id) {
         $pager->editing->stock_id = $this->stock_id;
-        $this->object->stockid    = \ADV\App\Item\Item::getStockID($this->stock_id);
+        $this->object->stockid = \ADV\App\Item\Item::getStockID($this->stock_id);
       }
     }
     /**
@@ -91,14 +85,5 @@
     }
     protected function generateTableCols() {
       return $this->object->generatePagerColumns();
-    }
-    /**
-     * @param \ADV\App\Form\Form $form
-     * @param \ADV\Core\View     $view
-     *
-     * @return mixed
-     */
-    protected function formContents(Form $form, View $view) {
-      // TODO: Implement formContents() method.
     }
   }

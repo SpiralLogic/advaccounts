@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,7 +10,7 @@
    **/
   namespace ADV\Controllers\GL\Manage;
 
-  use ADV\App\Controller\Manage;
+  use ADV\App\Controller\Pager;
   use GL_UI;
   use Tax_Type;
   use ADV\App\Pager\Pager;
@@ -20,7 +21,7 @@
   /**
 
    */
-  class Quickentries extends Manage
+  class Quickentries extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '70';
     public $linesid;
@@ -28,7 +29,7 @@
     public $line;
     protected function before() {
       $this->object = new \ADV\App\GL\QuickEntry();
-      $this->line   = new \ADV\App\GL\QuickEntryLine();
+      $this->line = new \ADV\App\GL\QuickEntryLine();
       $this->runPost();
       if (!$this->object->id) {
         $this->object->load($this->Input->post('qid'));
@@ -40,20 +41,20 @@
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      $cols       = [
+      $cols = [
         ['type' => 'skip'],
         ['type' => 'skip'],
-        'Action'           => ['fun' => [$this, 'formatActionLine'], 'edit' => [$this, 'formatActionLineEdit']],
+        'Action' => ['fun' => [$this, 'formatActionLine'], 'edit' => [$this, 'formatActionLineEdit']],
         'Account/Tax Type' => ['edit' => 'skip'],
         ['type' => 'skip', 'edit' => [$this, 'formatAccountLineEdit']],
-        'Amount'           => ['type' => 'amount', 'edit' => [$this, 'formatAmountLineEdit']],
+        'Amount' => ['type' => 'amount', 'edit' => [$this, 'formatAmountLineEdit']],
         ['type' => 'skip'],
         ['type' => 'skip'],
       ];
       $pager_name = 'QE_Lines';
       $linestable = \ADV\App\Pager\Edit::newPager($pager_name, $cols);
       $linestable->setObject($this->line);
-      $linestable->editing->qid   = $this->object->id;
+      $linestable->editing->qid = $this->object->id;
       $linestable->width = $this->tableWidth;
       $linestable->setData($this->object->getLines());
       $linestable->display();
@@ -79,7 +80,7 @@
     protected function generateTableCols() {
       $cols = [
         ['type' => 'skip'],
-        'Type'        => ['fun' => [$this, 'formatType']],
+        'Type' => ['fun' => [$this, 'formatType']],
         'Description',
         'Base Amount' => ['type' => Pager::TYPE_AMOUNT],
         'Description',

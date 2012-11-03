@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,13 +16,15 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Types extends \ADV\App\Controller\Manage {
+  class Types extends \ADV\App\Controller\FormPager
+  {
     protected $title = "Sales Types";
     protected $security = SA_SALESTYPES;
     protected function before() {
@@ -47,13 +50,13 @@
      */
     protected function generateTableCols() {
       return $cols = [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         'Sales Type',
-        'Tax Incl.'=> ['type'=> 'bool'],
-        'Factor'   => ['type'=> 'percent'],
-        'Inactive' => ['type'=> 'inactive'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        'Tax Incl.' => ['type' => 'bool'],
+        'Factor' => ['type' => 'percent'],
+        'Inactive' => ['type' => 'inactive'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
     }
   }

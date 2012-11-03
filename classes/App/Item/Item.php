@@ -705,7 +705,6 @@
                             WHERE (s.item_code LIKE ? $termswhere) $constraints
                             AND s.category_id = c.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
-      var_dump($sql);
       DB::_prepare($sql);
       $result = DB::_execute($terms);
       return $result;
