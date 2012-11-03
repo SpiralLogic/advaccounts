@@ -4,7 +4,13 @@ var Adv = {};
 
     fieldsChanged:0,
     lastXhr:      '',
-    o:            {$content:$("#content"), tabs:{}, wrapper:$("#wrapper"), header:$("#header"), body:$("body"), autocomplete:{}}
+    o:            {
+      $content:    $("#content"), //
+      tabs:        {}, //
+      wrapper:     $("#wrapper"), //
+      header:      $("#header"), //
+      body:        $("body"), //
+      autocomplete:{}}
   };
   (function () {
     $.widget("custom.catcomplete", $.ui.autocomplete, {
@@ -193,17 +199,19 @@ Adv.extend({  headerHeight:Adv.o.header.height(),
                },
                loaded:function () {
                  Adv.o.popupWindow.show();
-                 var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight + 10;
-                 var top = ($(window).height() / 2 - (height / 2));
+                 var height = Adv.o.popupWindow[0].contentWindow.document.body.clientHeight + 10 //
+                   , top = ($(window).height() / 2 - (height / 2)) //
+                   , left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
                  if (height > Adv.hoverWindow.height) {
                    top = 50;
                    height = Adv.hoverWindow.height
                  }
-                 var left = ($(window).width() / 2 - Adv.hoverWindow.width / 2);
                  Adv.o.popupWindow.css('height', height);
                  Adv.o.popupDiv.css({width:Adv.hoverWindow.width, 'height':height, 'left':left, 'top':top});
                }},
              popupWindow:  function () {
+               var top = ($(window).height() / 2 - 50)//
+                 , left = ($(window).width() / 2 - 50);
                if (Adv.o.popupWindow) {
                  Adv.o.popupWindow.parent().remove();
                }
@@ -213,10 +221,11 @@ Adv.extend({  headerHeight:Adv.o.header.height(),
                  onload:'Adv.hoverWindow.loaded()'
                }).css({background:'white'}).hide();
                Adv.o.popupDiv = $('<div>', {
-                 id:    'iframePopup',
-                 width: 100,
-                 height:100}).html(Adv.o.popupWindow).on('mouseleave',
-                                                         function () { $(this).remove(); }).appendTo(Adv.o.wrapper).position({my:"center center", at:"center center", of:document.body});
+                 id:'iframePopup'})//
+                 .html(Adv.o.popupWindow)//
+                 .on('mouseleave', function () { $(this).css({height:0, width:0, top:$(window).height() / 2, left:$(window).width() / 2 })})//
+                 .appendTo(Adv.o.wrapper)//
+                 .css({width:100, 'height':100, 'left':left, 'top':top});
              },
              TabMenu:      (function () {
                var deferreds = [];
@@ -245,69 +254,76 @@ Adv.extend({  headerHeight:Adv.o.header.height(),
                }
              }()),
              Forms:        (function () {
-               var currentForm, focusOff = false, tooltip, hidden = [], tooltiptimeout, focusonce, focus, menu = {
-                 current:   null,
-                 closetimer:null,
-                 open:      function (el) {
-                   menu.close();
-                   menu.current = el.find('ul').stop(true, true).show('');
-                 },
-                 close:     function () {
-                   if (menu.current !== null) {
-                     menu.current.stop(true, true).hide('');
-                   }
-                   menu.current = null;
-                 }
-               }, _setFormValue = function (el, value, disabled, isdefault) {
-                 var exists;
-                 if (!el) {
-                   return false;
-                 }
-                 if (typeof disabled === 'boolean') {
-                   el.disabled = disabled;
-                 }
-                 if (el.tagName === 'SELECT') {
-                   value = String(value);
-                   for (var i = 0, opts = el.options; i < opts.length; ++i) {
-                     if (opts[i].value === value) {
-                       exists = opts[i];
-                       break;
+               var focusOff = false//
+                 , tooltip//
+                 , hidden = []//
+                 , tooltiptimeout//
+                 , focusonce//
+                 , focus//
+                 , menu = {
+                   current:   null,
+                   closetimer:null,
+                   open:      function (el) {
+                     menu.close();
+                     menu.current = el.find('ul').stop(true, true).show('');
+                   },
+                   close:     function () {
+                     if (menu.current !== null) {
+                       menu.current.stop(true, true).hide('');
                      }
+                     menu.current = null;
                    }
-                   if (!exists || el.value === null || value.length === 0) {
-                     exists = $(el).find('option:first')[0];
+                 }//
+                 , _setFormValue = function (el, value, disabled, isdefault) {
+                   var exists;
+                   if (!el) {
+                     return false;
                    }
-                   if (exists) {
+                   if (typeof disabled === 'boolean') {
+                     el.disabled = disabled;
+                   }
+                   if (el.tagName === 'SELECT') {
+                     value = String(value);
+                     for (var i = 0, opts = el.options; i < opts.length; ++i) {
+                       if (opts[i].value === value) {
+                         exists = opts[i];
+                         break;
+                       }
+                     }
+                     if (!exists || el.value === null || value.length === 0) {
+                       exists = $(el).find('option:first')[0];
+                     }
+                     if (exists) {
+                       if (isdefault) {
+                         $(el).find('option').prop('defaultSelected', false);
+                         exists.defaultSelected = true
+                       }
+                       exists.selected = true;
+                     }
+                     return el;
+                   }
+                   if (el.type === 'checkbox') {
+                     value = (!(value === 'false' || !value || value == 0));
+                     el.value = el.checked = value;
                      if (isdefault) {
-                       $(el).find('option').prop('defaultSelected', false);
-                       exists.defaultSelected = true
+                       el.defaultChecked = value;
                      }
-                     exists.selected = true;
+                     return el;
                    }
-                   return el;
-                 }
-                 if (el.type === 'checkbox') {
-                   value = (!(value === 'false' || !value || value == 0));
-                   el.value = el.checked = value;
+                   if (el.tagName !== 'SELECT') {
+                     if (String(value).length === 0) {
+                       value = '';
+                     }
+                     el.value = value;
+                   }
                    if (isdefault) {
-                     el.defaultChecked = value;
+                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                       $(el).attr('value', value);
+                       el.defaultValue = value;
+                     }
                    }
                    return el;
-                 }
-                 if (el.tagName !== 'SELECT') {
-                   if (String(value).length === 0) {
-                     value = '';
-                   }
-                   el.value = value;
-                 }
-                 if (isdefault) {
-                   if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                     $(el).attr('value', value);
-                     el.defaultValue = value;
-                   }
-                 }
-                 return el;
-               };
+                 };
                Adv.o.wrapper.on('mouseenter', '.dropdown-toggle.auto, .btn-group', function () {
                  if (menu.closetimer) {
                    window.clearTimeout(menu.closetimer);
@@ -353,7 +369,7 @@ Adv.extend({  headerHeight:Adv.o.header.height(),
                    return els;
                  },
                  getFormEl:      function (name, form) {
-                   return form.querySelectorAll('[name=' + name + ']');
+                   return form.querySelectorAll('[name=' + name.replace(/([^A-Za-z0-9_\u00A1-\uFFFF-])/g, "\\$1") + ']');
                  },
                  setFormValue:   function (id, value, form, disabled) {
                    var isdefault, els, values = {};
@@ -391,7 +407,7 @@ Adv.extend({  headerHeight:Adv.o.header.height(),
                    $.each(data, function (k, v) {
                      var el, label;
                      el = Adv.Forms.setFormValue(k, v, form);
-                     if (!el || el.type === 'hidden') {
+                     if (!v || !el || el.type === 'hidden') {
                        return;
                      }
                      if (!focused && v.focus !== undefined) {

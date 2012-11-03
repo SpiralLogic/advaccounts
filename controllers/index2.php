@@ -1,2 +1,2 @@
 <?php
-  (new \ADV\App\DB\Generator())->getTableDetails('chart_types');
+  (new \ADV\App\DB\Generator())->getTableDetails('chart_class');

@@ -12,10 +12,13 @@
      */
   namespace ADV\Core;
 
+  use RangeException;
+
   /**
 
    */
-  class Assets {
+  class Assets
+  {
     protected $baseDir = ROOT_WEB;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -32,36 +35,38 @@
     protected $clientCache = true;
     protected $clientCacheCheck = true;
     protected $file = [];
-    protected $minifyTypes = array(
-      'js'  => array(
-        'minify'   => true, //
-        'minifier' => '\\ADV\\Core\\JSMin', //
-        'settings' => [] //
-      ), //
-      'css' => array( //
-        'minify'   => true, //
-        'minifier' => '\\ADV\\Core\\CSSMin', //
-        'settings' => array( //
-          'embed'           => true, //
-          'embedMaxSize'    => 5120, //
-          'embedExceptions' => 'htc',
+    protected $minifyTypes
+      = array(
+        'js' => array(
+          'minify' => true, //
+          'minifier' => '\\ADV\\Core\\JSMin', //
+          'settings' => [] //
+        ), //
+        'css' => array( //
+          'minify' => true, //
+          'minifier' => '\\ADV\\Core\\CSSMin', //
+          'settings' => array( //
+            'embed' => true, //
+            'embedMaxSize' => 5120, //
+            'embedExceptions' => 'htc',
+          )
         )
-      )
-    );
-    protected $mimeTypes = array(
-      "js"   => "text/javascript",
-      "css"  => "text/css",
-      "htm"  => "text/html",
-      "html" => "text/html",
-      "xml"  => "text/xml",
-      "txt"  => "text/plain",
-      "jpg"  => "image/jpeg",
-      "jpeg" => "image/jpeg",
-      "png"  => "image/png",
-      "gif"  => "image/gif",
-      "swf"  => "application/x-shockwave-flash",
-      "ico"  => "image/x-icon",
-    );
+      );
+    protected $mimeTypes
+      = array(
+        "js" => "text/javascript",
+        "css" => "text/css",
+        "htm" => "text/html",
+        "html" => "text/html",
+        "xml" => "text/xml",
+        "txt" => "text/plain",
+        "jpg" => "image/jpeg",
+        "jpeg" => "image/jpeg",
+        "png" => "image/png",
+        "gif" => "image/gif",
+        "swf" => "application/x-shockwave-flash",
+        "ico" => "image/x-icon",
+      );
     protected $files = [];
     protected $fileType;
     protected $cacheFile;
@@ -174,14 +179,14 @@
         $minify_type_settings = $this->minifyTypes[$this->fileType];
         if (isset($minify_type_settings['minify']) && $minify_type_settings['minify']) {
           if (isset($minify_type_settings['minifier'])) {
-            $minifier_class                   = $minify_type_settings['minifier'];
+            $minifier_class = $minify_type_settings['minifier'];
             $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : [];
-            $minifier                         = new $minifier_class($content, array(
-                                                                                   'fileDir'             => $this->fileDir,
-                                                                                   'minify_type_settings'=> $minify_type_settings['settings'],
-                                                                                   'mimeTypes'           => $this->mimeTypes
-                                                                              ));
-            $content                          = $minifier->minify();
+            $minifier = new $minifier_class($content, array(
+                                                           'fileDir' => $this->fileDir,
+                                                           'minify_type_settings' => $minify_type_settings['settings'],
+                                                           'mimeTypes' => $this->mimeTypes
+                                                      ));
+            $content = $minifier->minify();
           }
         }
       }
@@ -194,9 +199,18 @@
      * @param $content
      */
     protected function writeCache($content) {
-      $handle = fopen($this->cacheFile, 'w');
-      fwrite($handle, $content);
-      fclose($handle);
+      $tmpfile = tempnam($this->cacheDir, 'ADV');
+      $handle = fopen($tmpfile, 'w');
+      if (flock($handle, LOCK_EX)) {
+        fwrite($handle, $content);
+        fflush($handle);
+        flock($handle, LOCK_UN);
+        fclose($handle);
+      } else {
+        throw new RangeException('Could not write to cache!');
+      }
+      unlink($this->cacheFile);
+      rename($tmpfile, $this->cacheFile);
     }
     protected function sendFile() {
       header('Content-Length: ' . filesize($this->cacheFile));
@@ -240,7 +254,8 @@
      * @return bool
      */
     protected function serverCache() {
-      $this->cacheFile = $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5(serialize($this->files)) . '.' . $this->fileType . ($this->gzip ? '.gz' : '');
+      $this->cacheFile = $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5(serialize($this->files)) . '.' . $this->fileType . ($this->gzip ? '.gz' :
+        '');
       if (!$this->serverCache) {
         $this->generate = true;
       } else {
@@ -260,14 +275,14 @@
       $fileNames = '';
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
-        $fileNames     = $matchResult[2];
+        $fileNames = $matchResult[2];
         $this->fileDir = $this->baseDir . $matchResult[1];
       } else {
         $this->debugExit("Invalid file name ($query)");
       }
       if ($this->concatenate) {
-        $this->files       = explode('&', $fileNames);
-        $this->files       = explode($this->separator, $this->files[0]);
+        $this->files = explode('&', $fileNames);
+        $this->files = explode($this->separator, $this->files[0]);
         $this->concatenate = count($this->files) > 1;
       } else {
         $this->files = [$fileNames];
