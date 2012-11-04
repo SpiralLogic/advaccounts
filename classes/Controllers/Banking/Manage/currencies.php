@@ -44,7 +44,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       return [
         ['type' => "skip"],
         'Currency',

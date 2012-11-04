@@ -21,6 +21,7 @@
    */
   abstract class FormPager extends \ADV\App\Controller\Pager
   {
+    /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';
@@ -60,7 +61,7 @@
      * @return \ADV\App\Pager\Pager
      */
     protected function generateTable() {
-      $cols = $this->generateTableCols();
+      $cols = $this->getPagerColumns();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
       Pager::kill($pager_name);
       $table = Pager::newPager($pager_name, $cols);

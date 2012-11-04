@@ -24,7 +24,7 @@
     public $shelf_primary;
     public $shelf_secondary;
     public $reorder_level = 0;
-    public function generatePagerColumns() {
+    public function getPagerColumns() {
     }
     /**
      * @return \ADV\Core\Traits\Status|bool
@@ -57,7 +57,7 @@
       DB::_query($sql, "an item reorder could not be retreived");
       return DB::_fetchAll(\PDO::FETCH_ASSOC);
     }
-    public function generateTableCols() {
+    public function getPagerColumns() {
       return [
         ['type' => 'skip'],
         ['type' => 'skip'],

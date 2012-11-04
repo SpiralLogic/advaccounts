@@ -45,7 +45,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         'Type' => ['type' => 'group'],
         ['type' => 'skip'],

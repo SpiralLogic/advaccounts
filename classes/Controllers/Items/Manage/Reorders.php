@@ -46,8 +46,8 @@
     protected function getTableRows($pagername) {
       return $this->object->getAll($this->stock_id);
     }
-    protected function generateTableCols() {
-      return $this->object->generateTableCols();
+    protected function getPagerColumns() {
+      return $this->object->getPagerColumns();
     }
     protected function runValidation() {
       Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);

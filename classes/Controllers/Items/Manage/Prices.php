@@ -72,8 +72,8 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
-      return $this->object->generatePagerColumns();
+    protected function getPagerColumns() {
+      return $this->object->getPagerColumns();
     }
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));

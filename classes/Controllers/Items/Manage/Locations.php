@@ -50,7 +50,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         ['type' => 'skip'],
         _("Location Code"), //

@@ -8,7 +8,7 @@
    */
   namespace ADV\App\Pager;
 
-  interface Managable
+  interface Pageable
   {
-    public function generatePagerColumns();
+    public function getPagerColumns();
   }

@@ -83,7 +83,7 @@
       Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
     }
-    protected function generateTableCols() {
-      return $this->object->generatePagerColumns();
+    protected function getPagerColumns() {
+      return $this->object->getPagerColumns();
     }
   }

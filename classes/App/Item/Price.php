@@ -72,7 +72,7 @@
       /**
        * @return array
        */
-      public function generatePagerColumns() {
+      public function getPagerColumns() {
         $cols = [
           ['type' => 'hidden'],
           ['type' => 'skip'],

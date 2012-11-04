@@ -25,11 +25,11 @@
    **/
   class Types extends \ADV\App\Controller\FormPager
   {
-    protected $title = "Sales Types";
     protected $security = SA_SALESTYPES;
     protected function before() {
       $this->object = new Type();
       $this->runPost();
+      $this->setTitle("Sales Types");
     }
     /**
      * @param $form
@@ -48,7 +48,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       return $cols = [
         ['type' => 'skip'],
         'Sales Type',

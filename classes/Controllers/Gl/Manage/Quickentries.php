@@ -10,7 +10,6 @@
    **/
   namespace ADV\Controllers\GL\Manage;
 
-  use ADV\App\Controller\Pager;
   use GL_UI;
   use Tax_Type;
   use ADV\App\Pager\Pager;
@@ -40,25 +39,33 @@
       $this->Page->start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
       $this->generateTable();
       echo '<br>';
-      $this->generateForm();
+      if (!REQUEST_POST || $this->Input->post('_form_id') != 'QE_Lines_form') {
+        $this->generateForm();
+      }
+      $this->generateLineTable();
+      $this->Page->end_page(true);
+    }
+    protected function generateLineTable() {
       $cols = [
-        ['type' => 'skip'],
-        ['type' => 'skip'],
+        ['type' => 'hidden'],
+        ['type' => 'hidden'],
         'Action' => ['fun' => [$this, 'formatActionLine'], 'edit' => [$this, 'formatActionLineEdit']],
-        'Account/Tax Type' => ['edit' => 'skip'],
-        ['type' => 'skip', 'edit' => [$this, 'formatAccountLineEdit']],
+        'Account/Tax Type' => ['edit' => 'hidden'],
+        ['type' => 'hidden', 'edit' => [$this, 'formatAccountLineEdit']],
         'Amount' => ['type' => 'amount', 'edit' => [$this, 'formatAmountLineEdit']],
-        ['type' => 'skip'],
-        ['type' => 'skip'],
+        ['type' => 'hidden'],
+        ['type' => 'hidden'],
       ];
       $pager_name = 'QE_Lines';
       $linestable = \ADV\App\Pager\Edit::newPager($pager_name, $cols);
       $linestable->setObject($this->line);
       $linestable->editing->qid = $this->object->id;
+      if ($this->Input->post('_action') == CHANGED && $this->Input->post('_control') == 'action') {
+        $this->line->action = $this->Input->post('action');
+      }
       $linestable->width = $this->tableWidth;
       $linestable->setData($this->object->getLines());
       $linestable->display();
-      $this->Page->end_page(true);
     }
     /**≈
      * @param \ADV\App\Form\Form $form
@@ -77,7 +84,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         ['type' => 'skip'],
         'Type' => ['fun' => [$this, 'formatType']],

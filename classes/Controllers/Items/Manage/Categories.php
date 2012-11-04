@@ -64,8 +64,8 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
-      return $this->object->generateTableCols();
+    protected function getPagerColumns() {
+      return $this->object->getPagerColumns();
     }
   }
 

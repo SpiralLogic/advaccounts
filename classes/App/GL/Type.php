@@ -69,7 +69,7 @@
         }
         return $q->fetch()->all();
       }
-      public function generatePagerColumns() {
+      public function getPagerColumns() {
         return [['type' => 'skip'], 'Name', 'Class', 'Parent', 'Inactive' => ['type' => 'inactive']];
       }
       public static function selectBoxItems() {

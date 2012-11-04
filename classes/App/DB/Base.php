@@ -35,7 +35,7 @@
     protected $_table;
     protected $_id_column;
     protected $_classname;
-    public static function getAll() { }
+    public static function getAll() { return []; }
     abstract protected function canProcess();
     /**
      * @param int             $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object

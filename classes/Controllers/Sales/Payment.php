@@ -7,7 +7,6 @@
   use GL_ExchangeRate;
   use Debtor_Branch;
   use ADV\Core\Num;
-  use ADV\App\Page;
   use GL_UI;
   use ADV\Core\Event;
   use Debtor_Payment;
@@ -15,7 +14,6 @@
   use Bank_Account;
   use GL_Allocation;
   use Sales_Branch;
-  use ADV\App\User;
   use ADV\App\Ref;
   use ADV\App\Display;
   use ADV\App\Validation;
@@ -26,33 +24,35 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Payment extends \ADV\App\Controller\Action {
+  class Payment extends \ADV\App\Controller\Action
+  {
     public $date_banked;
     public $debtor_id;
     protected function before() {
       if (REQUEST_GET && $this->Input->get('account', 'amount', 'memo', 'date')) {
         $_POST['bank_acount'] = $this->Input->get('account');
-        $_POST['amount']      = $this->Input->get('amount');
-        $_POST['memo_']       = $this->Input->get('memo');
-        $_POST['DateBanked']  = $this->Input->get('date');
-        $_POST['charge']      = $this->Input->get('fee', Input::NUMERIC);
+        $_POST['amount'] = $this->Input->get('amount');
+        $_POST['memo_'] = $this->Input->get('memo');
+        $_POST['DateBanked'] = $this->Input->get('date');
+        $_POST['charge'] = $this->Input->get('fee', Input::NUMERIC);
       }
       $this->JS->openWindow(900, 500);
       $this->JS->footerFile('/js/payalloc.js');
-      $this->debtor_id = &$this->Input->postGetGlobal('debtor_id');
+      $this->debtor_id = & $this->Input->postGetGlobal('debtor_id');
       if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
-        $br              = Sales_Branch::get($this->Input->post('branch_id'));
+        $br = Sales_Branch::get($this->Input->post('branch_id'));
         $this->debtor_id = $br['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
       $this->Session->setGlobal('debtor_id', $this->debtor_id);
-      $this->date_banked = &$this->Input->post('DateBanked', null, Dates::_newDocDate());
+      $this->date_banked = & $this->Input->post('DateBanked', null, Dates::_newDocDate());
       if (!Dates::_isDateInFiscalYear($this->date_banked)) {
         $this->date_banked = Dates::_endFiscalYear();
       }

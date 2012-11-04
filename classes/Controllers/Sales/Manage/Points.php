@@ -16,16 +16,11 @@
    **/
   class Points extends \ADV\App\Controller\FormPager
   {
+    protected $security = SA_SALESAREA;
     protected function before() {
       $this->object = new Point();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Sales Points"), SA_SALESAREA);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page(true);
+      $this->setTitle("Sales Points");
     }
     /**
      * @param $form
@@ -45,7 +40,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         ['type' => 'skip'],
         'Name',

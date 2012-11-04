@@ -78,7 +78,7 @@
         $this->last_update = null;
         return true;
       }
-      public function generatePagerColumns() {
+      public function getPagerColumns() {
         return [
           ['type' => 'hidden'],
           ['type' => 'hidden'],

@@ -25,8 +25,10 @@
     protected $defaultFocus;
     protected $tableWidth = '50';
     protected $security;
+    protected $form_id = null;
     protected function runPost() {
       if (REQUEST_POST) {
+        $this->form_id = $this->Input->post('_form_id');
         $id = $this->getActionId([DELETE, EDIT, INACTIVE]);
         switch ($this->action) {
           case DELETE:
@@ -155,5 +157,9 @@
       $button->type('mini')->type($type);
       return $button;
     }
-    abstract protected function generateTableCols();
+    protected function getPagerColumns() {
+      if ($this->object instanceof \ADV\App\Pager\Pageable) {
+        return $this->object->getPagerColumns();
+      }
+    }
   }

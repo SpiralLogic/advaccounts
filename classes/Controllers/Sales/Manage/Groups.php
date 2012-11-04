@@ -10,16 +10,11 @@
    */
   class Groups extends \ADV\App\Controller\FormPager
   {
+    protected $security = SA_SALESGROUP;
     protected function before() {
       $this->object = new Group();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Sales Groups"), SA_SALESGROUP);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page(true);
+      $this->setTitle("Sales Groups");
     }
     /**
      * @param \ADV\App\Form\Form|\Form   $form
@@ -35,7 +30,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         ['type' => 'skip'],
         'Group Name',

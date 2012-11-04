@@ -17,16 +17,11 @@
   class Creditstatuses extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '80';
+    protected $security = SA_CRSTATUS;
     protected function before() {
       $this->object = new CreditStatus();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Credit Statuses"), SA_CRSTATUS);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page(true);
+      $this->setTitle("Credit Statuses");
     }
     /**
      * @param $form
@@ -43,7 +38,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         ['type' => 'skip'],
         'Description',

@@ -24,13 +24,7 @@
     protected function before() {
       $this->object = new ItemType();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Item Tax Types"), SA_ITEMTAXTYPE);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page(true);
+      $this->setTitle("Item Tax Types");
     }
     /**
      * @param $form
@@ -55,7 +49,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         ['type' => 'skip'],
         'Item Tax Type',

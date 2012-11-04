@@ -303,10 +303,12 @@
     public function arraySelect($name, $items, $selected_id = null, Array $options = []) {
       $field = $this->addField(new Select($name, $items, $options));
       $field->initial($selected_id);
-      if ($this->Input->post("_{$name}_update")) {
-        $field->async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
+      if ($this->Input->post('_action') == CHANGED && $this->Input->post('_control') == $name) {
+        if ($this->uniqueid == $this->Input->post('_form_id')) {
+          $field->async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
+        }
       }
-      $this->Ajax->addUpdate($name, "_" . $name . "_sel", $field);
+      $this->Ajax->addUpdate($name, "_" . $name . "_sel", (string)$field);
       return $field;
     }
     /**
@@ -375,6 +377,9 @@
      */
     public function hide($id) {
       $this->fields[$this->nameToId($id)]->hide = true;
+    }
+    public function getID() {
+      return $this->uniqueid;
     }
     /**
      * @param      $values

@@ -19,11 +19,11 @@
   class Types extends \ADV\App\Controller\FormPager
   {
     protected $security = SA_TAXRATES;
-    protected $title = 'Tax Types';
     public function before() {
       $this->object = new Type();
       $this->tableWidth = '80';
       $this->runPost();
+      $this->setTitle('Tax Types');
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -43,7 +43,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       return [
         ['type' => "skip"],
         'Name',

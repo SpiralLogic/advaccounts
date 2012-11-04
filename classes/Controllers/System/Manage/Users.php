@@ -25,16 +25,11 @@
   class Users extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '80';
+    protected $security = SA_SALESMAN;
     protected function before() {
       $this->object = new User();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Sales Persons"), SA_SALESMAN);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page();
+      $this->setTitle("Sales Persons");
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -59,7 +54,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = array(
         ['type' => "skip"],
         _("User ID"),

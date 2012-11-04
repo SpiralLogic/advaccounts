@@ -18,8 +18,6 @@
   class Types extends \ADV\App\Controller\FormPager
   {
     protected $security = SA_GLACCOUNTGROUP;
-    protected $pager_type = self::PAGER_EDIT;
-    protected $display_form = false;
     protected function before() {
       $this->setTitle('GL Account Types');
       $this->object = new Type();
@@ -33,8 +31,8 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
-      return $this->object->generatePagerColumns();
+    protected function getPagerColumns() {
+      return $this->object->getPagerColumns();
     }
     /**
      * @param \ADV\App\Form\Form $form

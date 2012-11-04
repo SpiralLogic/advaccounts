@@ -20,13 +20,7 @@
     protected function before() {
       $this->object = new Area();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Sales Areas"), SA_SALESAREA);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page(true);
+      $this->setTitle("Sales Areas");
     }
     /**
      * @param $form
@@ -42,7 +36,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       $cols = [
         ['type' => 'skip'],
         'Area Name',

@@ -10,7 +10,6 @@
    **/
   namespace ADV\Controllers\Items\Manage;
 
-  use ADV\App\Controller\Pager;
   use ADV\App\Validation;
   use ADV\App\Item\Unit;
   use ADV\Core\View;
@@ -26,6 +25,7 @@
     protected function before() {
       $this->object = new Unit();
       $this->runPost();
+      $this->setTitle("Item Units");
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -44,7 +44,7 @@
     /**
      * @return array
      */
-    protected function generateTableCols() {
+    protected function getPagerColumns() {
       return [
         ['type' => 'skip'],
         _("Abbr"),
