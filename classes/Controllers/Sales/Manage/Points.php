@@ -2,12 +2,13 @@
   namespace ADV\Controllers\Sales\Manage;
 
   use ADV\App\Form\Form;
+  use Inv_Location;
+  use Bank_UI;
   use ADV\App\Sales\Point;
   use ADV\Core\View;
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,6 +17,7 @@
    **/
   class Points extends \ADV\App\Controller\FormPager
   {
+
     protected $security = SA_SALESAREA;
     protected function before() {
       $this->object = new Point();
@@ -44,11 +46,11 @@
       $cols = [
         ['type' => 'skip'],
         'Name',
-        'Cash Sale' => ['type' => 'bool'],
+        'Cash Sale'   => ['type' => 'bool'],
         'Credit Sale' => ['type' => 'bool'],
         'Location',
         'Account',
-        'Inactive' => ['type', 'inactive'],
+        'Inactive'    => ['type', 'inactive'],
         ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
         ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];

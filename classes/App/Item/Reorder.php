@@ -15,6 +15,7 @@
    */
   class Reorder extends \ADV\App\DB\Base
   {
+
     protected $_table = 'stock_location';
     protected $_classname = 'Stock Location';
     protected $_id_column = 'loc_code';
@@ -24,8 +25,6 @@
     public $shelf_primary;
     public $shelf_secondary;
     public $reorder_level = 0;
-    public function getPagerColumns() {
-    }
     /**
      * @return \ADV\Core\Traits\Status|bool
      */
@@ -42,6 +41,7 @@
       return true;
     }
     /**
+     * @param null $stockid
      * @param bool $inactive
      *
      * @return array
@@ -57,24 +57,42 @@
       DB::_query($sql, "an item reorder could not be retreived");
       return DB::_fetchAll(\PDO::FETCH_ASSOC);
     }
+    /**
+     * @return array
+     */
     public function getPagerColumns() {
       return [
         ['type' => 'skip'],
         ['type' => 'skip'],
-        _("Location") => ['type' => 'readonly'],
+        _("Location")     => ['type' => 'readonly'],
         ['type' => 'skip'],
         ['type' => 'skip'],
-        "Primary Shelf" => ['fun' => [$this, 'formatPrimaryShelf']],
+        "Primary Shelf"   => ['fun' => [$this, 'formatPrimaryShelf']],
         "Secondary Shelf" => ['fun' => [$this, 'formatSecondaryShelf']],
-        "Reorder Level" => ['fun' => [$this, 'formatReorderLevel']],
+        "Reorder Level"   => ['fun' => [$this, 'formatReorderLevel']],
       ];
     }
+    /**
+     * @param $row
+     *
+     * @return \ADV\App\Form\Field
+     */
     public function formatPrimaryShelf($row) {
       return (new \ADV\App\Form\Field('input', 'shelf_primary'))->initial($row['shelf_primary']);
     }
+    /**
+     * @param $row
+     *
+     * @return \ADV\App\Form\Field
+     */
     public function formatSecondaryShelf($row) {
       return (new \ADV\App\Form\Field('input', 'shelf_secondary'))->initial($row['shelf_secondary']);
     }
+    /**
+     * @param $row
+     *
+     * @return \ADV\App\Form\Field
+     */
     public function formatReorderLevel($row) {
       return (new \ADV\App\Form\Field('input', 'reorder_level'))->initial($row['reorder_level']);
     }

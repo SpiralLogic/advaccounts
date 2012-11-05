@@ -13,7 +13,9 @@
     /**
 
      */
-    class Location extends \ADV\App\DB\Base {
+    class Location extends \ADV\App\DB\Base
+    {
+
       const OUTWARD = 'OUTWARD';
       const INWARD  = 'INWARD';
       const BOTH    = 'BOTH';
@@ -37,7 +39,6 @@
        */
       protected function canProcess() {
         $this->loc_code = strtoupper($this->loc_code);
-
         if (strlen($this->loc_code) > 5) {
           return $this->status(false, 'Loc_code must be not be longer than 5 characters!', 'loc_code');
         }
@@ -94,7 +95,6 @@
           default:
             $q->andWhere('type!=', self::SPECIAL);
         }
-
         return $q->fetch()->all();
       }
       /**
@@ -149,8 +149,19 @@
         if ($myrow[0] > 0) {
           return $this->status(false, _("Cannot delete this location because it is used by some related records in other tables."));
         }
-
         return parent::delete();
+      }
+      /**
+       * @return array
+       */
+      public static function selectBoxItems() {
+        $self  = new static();
+        $q     = DB::_select($self->_id_column, 'location_name')->from($self->_table)->andWhere('inactive=', 0)->fetch();
+        $items = [];
+        foreach ($q as $row) {
+          $items[$row[$self->_id_column]] = $row['location_name'];
+        }
+        return $items;
       }
     }
   }
@@ -161,7 +172,9 @@
     /**
 
      */
-    class Inv_Location {
+    class Inv_Location
+    {
+
       /**
        * @static
        *
@@ -228,7 +241,6 @@
       public static function get($item_location) {
         $sql    = "SELECT * FROM locations WHERE loc_code=" . DB::_escape($item_location);
         $result = DB::_query($sql, "a location could not be retrieved");
-
         return DB::_fetch($result);
       }
       /**
@@ -273,7 +285,6 @@
         AND stock_location.stock_id = " . DB::_escape($stock_id) . " AND stock_location.loc_code <> " . DB::_escape(
           LOC_DROP_SHIP
         ) . " AND stock_location.loc_code <> " . DB::_escape(LOC_NOT_FAXED_YET) . " ORDER BY stock_location.loc_code";
-
         return DB::_query($sql, "an item reorder could not be retreived");
       }
       /**
@@ -288,10 +299,8 @@
         $result = DB::_query($sql, "could not retreive the location name for $loc_code");
         if (DB::_numRows($result) == 1) {
           $row = DB::_fetchRow($result);
-
           return $row[0];
         }
-
         return Event::error("could not retreive the location name for $loc_code", $sql, true);
       }
       /***
@@ -311,7 +320,6 @@
         if (DB::_numRows($result)) {
           return DB::_fetch($result);
         }
-
         return null;
       }
       /**
@@ -329,7 +337,6 @@
         if (!$selected_id && !isset($_POST[$name])) {
           $selected_id = $all_option === true ? -1 : Config::_get('default.location');
         }
-
         return Forms::selectBox(
           $name,
           $selected_id,
@@ -337,10 +344,10 @@
           'loc_code',
           'location_name',
           array(
-               'spec_option'   => $all_option === true ? _("All Locations") : $all_option,
-               'spec_id'       => ALL_TEXT,
-               'select_submit' => $submit_on_change,
-               'class'         => 'med'
+            'spec_option'   => $all_option === true ? _("All Locations") : $all_option,
+            'spec_id'       => ALL_TEXT,
+            'select_submit' => $submit_on_change,
+            'class'         => 'med'
           )
         );
       }

@@ -13,7 +13,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -25,6 +24,7 @@
    */
   abstract class Base
   {
+
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
@@ -35,7 +35,12 @@
     protected $_table;
     protected $_id_column;
     protected $_classname;
-    public static function getAll() { return []; }
+    /**
+     * @return array
+     */
+    public static function getAll() {
+      return [];
+    }
     abstract protected function canProcess();
     /**
      * @param int             $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
@@ -47,7 +52,7 @@
       static::$DB = DIC::get('DB');
       $this->load($id, $extra);
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
-      $_id_column = $this->_id_column;
+      $_id_column       = $this->_id_column;
       if ($_id_column && $_id_column != 'id') {
         $this->id = & $this->$_id_column;
       }
@@ -94,7 +99,7 @@
       if ($this->id == 0) {
         return $this->saveNew();
       }
-      $data = (array)$this;
+      $data = (array) $this;
       static::$DB->begin();
       try {
         $updated = static::$DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
@@ -167,7 +172,7 @@
         }
         static::$DB->fetch()->intoClass($this);
       } catch (DBSelectException $e) {
-        return $this->status(false, 'Could not read ' . $this->_classname, (string)$id);
+        return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
       }
       return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
     }
@@ -184,7 +189,7 @@
      */
     protected function saveNew() {
       try {
-        $this->id = static::$DB->insert($this->_table)->values((array)$this)->exec();
+        $this->id = static::$DB->insert($this->_table)->values((array) $this)->exec();
       } catch (DBInsertException $e) {
         $error = static::$DB->getLastError();
         if ($error) {

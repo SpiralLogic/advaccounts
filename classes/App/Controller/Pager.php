@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -20,6 +19,7 @@
    */
   abstract class Pager extends Action
   {
+
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
@@ -29,7 +29,7 @@
     protected function runPost() {
       if (REQUEST_POST) {
         $this->form_id = $this->Input->post('_form_id');
-        $id = $this->getActionId([DELETE, EDIT, INACTIVE]);
+        $id            = $this->getActionId([DELETE, EDIT, INACTIVE]);
         switch ($this->action) {
           case DELETE:
             $status = $this->onDelete($id);
@@ -43,10 +43,10 @@
             $changes['inactive'] = $this->Input->post('_value', Input::NUMERIC);
           case SAVE:
             $changes = isset($changes) ? $changes : $_POST;
-            $status = $this->onSave($changes);
+            $status  = $this->onSave($changes);
             break;
           case CANCEL:
-            $status = $this->object->getStatus();
+            $this->object->getStatus();
             break;
           case 'showInactive':
             $this->generateTable();
@@ -60,7 +60,6 @@
     /**
      * @param                       $changes
      * @param \ADV\App\DB\Base|null $object
-     *
      * @param int                   $id
      *
      * @return \ADV\Core\Status|array

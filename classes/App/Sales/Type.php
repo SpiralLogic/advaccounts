@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,13 +9,13 @@
    **/
   namespace ADV\App\Sales {
     use ADV\Core\DB\DB;
-    use ADV\App\Form\Select;
     use ADV\App\Validation;
 
     /**
      */
     class Type extends \ADV\App\DB\Base
     {
+
       protected $_table = 'sales_types';
       protected $_classname = 'Sales Type';
       protected $_id_column = 'id';
@@ -50,13 +49,18 @@
         }
         return $q->fetch()->all();
       }
+      /**
+       * @param bool $inactive
+       *
+       * @return array
+       */
       public static function selectBoxItems($inactive = false) {
         $q = DB::_select('id', 'sales_type')->from('sales_types')->orderby('sales_type');
         if (!$inactive) {
           $q->andWhere('inactive=', 0);
         }
         $result = $q->fetch();
-        $types = [];
+        $types  = [];
         foreach ($result as $row) {
           $types[$row['id']] = $row['sales_type'];
         }
@@ -65,8 +69,18 @@
     }
   }
   namespace {
+    use ADV\Core\DB\DB;
+    use ADV\App\Validation;
+    use ADV\Core\JS;
+    use ADV\Core\Event;
+    use ADV\App\Forms;
+
+    /**
+     *
+     */
     class Sales_Type
     {
+
       /**
        * @static
        *
@@ -113,7 +127,7 @@
        * @return \ADV\Core\DB\Query\Result|Array
        */
       public static function get($id) {
-        $sql = "SELECT * FROM sales_types WHERE id=" . DB::_escape($id);
+        $sql    = "SELECT * FROM sales_types WHERE id=" . DB::_escape($id);
         $result = DB::_query($sql, "could not get sales type");
         return DB::_fetch($result);
       }
@@ -125,9 +139,9 @@
        * @return mixed
        */
       public static function get_name($id) {
-        $sql = "SELECT sales_type FROM sales_types WHERE id=" . DB::_escape($id);
+        $sql    = "SELECT sales_type FROM sales_types WHERE id=" . DB::_escape($id);
         $result = DB::_query($sql, "could not get sales type");
-        $row = DB::_fetchRow($result);
+        $row    = DB::_fetchRow($result);
         return $row[0];
       }
       /**
@@ -160,10 +174,10 @@
           'id',
           'sales_type',
           array(
-               'spec_option' => $special_option === true ? _("All Sales Types") : $special_option,
-               'spec_id' => 0,
-               'select_submit' => $submit_on_change,
-               //	 'async' => false,
+            'spec_option'   => $special_option === true ? _("All Sales Types") : $special_option,
+            'spec_id'       => 0,
+            'select_submit' => $submit_on_change,
+            //	 'async' => false,
           )
         );
       }
