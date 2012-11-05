@@ -9,7 +9,7 @@
     /**
 
      */
-    class Purchase extends \ADV\App\DB\Base implements \ADV\App\Pager\Managable
+    class Purchase extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
     {
       protected $_table = 'purch_data';
       protected $_classname = 'Purchase Price';

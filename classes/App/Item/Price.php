@@ -20,7 +20,7 @@
     /**
 
      */
-    class Price extends \ADV\App\DB\Base implements \ADV\App\Pager\Managable
+    class Price extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
     {
       const PURCHASE = 1;
       const SALE = 2;
