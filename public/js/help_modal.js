@@ -49,7 +49,7 @@ Adv.extend({ Help:(function () {
       clearTimeout(indicatortimer);
       indicatortimer = setTimeout(function () {indicator.animate({opacity:0}, 300, function () {$(this).hide();})}, 500);
       $current.off('mouseleave.indicator');
-      $(document).off('keypress.indicator keydown.indicator');
+      $(document).off('keydown.indicator');
     } //
     , showIndicator = function () {
       var $this = $(this);
