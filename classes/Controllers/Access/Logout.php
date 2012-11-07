@@ -14,8 +14,7 @@
   /**
    *
    */
-  class Logout extends \ADV\App\Controller\Base
-  {
+  class Logout extends \ADV\App\Controller\Base {
     protected function index() {
       $this->Page->start('Logout', SA_OPEN, true);
       (new View('logout'))->render();
@@ -26,6 +25,6 @@
       $this->after();
     }
     protected function after() {
-      $this->User->_logout();
+      $this->User->logout();
     }
   }

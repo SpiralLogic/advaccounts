@@ -17,8 +17,7 @@
   /**
 
    */
-  class Assets
-  {
+  class Assets {
     protected $baseDir = ROOT_WEB;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -37,35 +36,35 @@
     protected $file = [];
     protected $minifyTypes
       = array(
-        'js' => array(
-          'minify' => true, //
+        'js'  => array(
+          'minify'   => true, //
           'minifier' => '\\ADV\\Core\\JSMin', //
           'settings' => [] //
         ), //
         'css' => array( //
-          'minify' => true, //
+          'minify'   => true, //
           'minifier' => '\\ADV\\Core\\CSSMin', //
           'settings' => array( //
-            'embed' => true, //
-            'embedMaxSize' => 5120, //
+            'embed'           => true, //
+            'embedMaxSize'    => 5120, //
             'embedExceptions' => 'htc',
           )
         )
       );
     protected $mimeTypes
       = array(
-        "js" => "text/javascript",
-        "css" => "text/css",
-        "htm" => "text/html",
+        "js"   => "text/javascript",
+        "css"  => "text/css",
+        "htm"  => "text/html",
         "html" => "text/html",
-        "xml" => "text/xml",
-        "txt" => "text/plain",
-        "jpg" => "image/jpeg",
+        "xml"  => "text/xml",
+        "txt"  => "text/plain",
+        "jpg"  => "image/jpeg",
         "jpeg" => "image/jpeg",
-        "png" => "image/png",
-        "gif" => "image/gif",
-        "swf" => "application/x-shockwave-flash",
-        "ico" => "image/x-icon",
+        "png"  => "image/png",
+        "gif"  => "image/gif",
+        "swf"  => "application/x-shockwave-flash",
+        "ico"  => "image/x-icon",
       );
     protected $files = [];
     protected $fileType;
@@ -170,26 +169,32 @@
      * @return string
      */
     protected function generate() {
-      $content = [];
-      foreach ($this->files as $file) {
-        (($content[] = file_get_contents($file)) !== false) || $this->debugExit("File not found ($file).");
-      }
-      $content = implode("\n", $content);
+      $minify = false;
       if ($this->minify && isset($this->minifyTypes[$this->fileType])) {
         $minify_type_settings = $this->minifyTypes[$this->fileType];
         if (isset($minify_type_settings['minify']) && $minify_type_settings['minify']) {
           if (isset($minify_type_settings['minifier'])) {
-            $minifier_class = $minify_type_settings['minifier'];
+            $minifier_class                   = $minify_type_settings['minifier'];
             $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : [];
-            $minifier = new $minifier_class($content, array(
-                                                           'fileDir' => $this->fileDir,
-                                                           'minify_type_settings' => $minify_type_settings['settings'],
-                                                           'mimeTypes' => $this->mimeTypes
-                                                      ));
-            $content = $minifier->minify();
+            $minify                           = true;
           }
         }
       }
+      $content = [];
+      foreach ($this->files as $file) {
+        (($current = file_get_contents($file)) !== false) || $this->debugExit("File not found ($file).");
+        if ($minify && strpos($file, '.min.' . $this->fileType) === false) {
+          $minifier = new $minifier_class($current, array(
+                                                         'fileDir'              => $this->fileDir,
+                                                         'minify_type_settings' => $minify_type_settings['settings'],
+                                                         'mimeTypes'            => $this->mimeTypes
+                                                    ));
+          $current  = $minifier->minify();
+        }
+        $content[] = $current;
+      }
+      $content = implode("\n", $content);
+
       if ($this->gzip) {
         return gzencode($content, $this->compressionLevel);
       }
@@ -200,7 +205,7 @@
      */
     protected function writeCache($content) {
       $tmpfile = tempnam($this->cacheDir, 'ADV');
-      $handle = fopen($tmpfile, 'w');
+      $handle  = fopen($tmpfile, 'w');
       if (flock($handle, LOCK_EX)) {
         fwrite($handle, $content);
         fflush($handle);
@@ -275,14 +280,14 @@
       $fileNames = '';
       list($query) = explode('?', urldecode($_SERVER['QUERY_STRING']));
       if (preg_match('/^\/?(.+\/)?(.+)$/', $query, $matchResult)) {
-        $fileNames = $matchResult[2];
+        $fileNames     = $matchResult[2];
         $this->fileDir = $this->baseDir . $matchResult[1];
       } else {
         $this->debugExit("Invalid file name ($query)");
       }
       if ($this->concatenate) {
-        $this->files = explode('&', $fileNames);
-        $this->files = explode($this->separator, $this->files[0]);
+        $this->files       = explode('&', $fileNames);
+        $this->files       = explode($this->separator, $this->files[0]);
         $this->concatenate = count($this->files) > 1;
       } else {
         $this->files = [$fileNames];

@@ -257,7 +257,8 @@
      * @return bool
      */
     public static function is_account($account_code) {
-      $sql    = "SELECT id FROM tax_types WHERE
+      $sql
+              = "SELECT id FROM tax_types WHERE
         sales_gl_code=" . DB::_escape($account_code) . " OR purchasing_gl_code=" . DB::_escape($account_code);
       $result = DB::_query($sql, "checking account is tax account");
       if (DB::_numRows($result) > 0) {
@@ -284,7 +285,7 @@
         if ($tax_included) {
           Table::label(
             _("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " . _("Amount:") . " ",
-            Num::_format($taxitem['Value'], User::price_dec()),
+            Num::_format($taxitem['Value'], User::_price_dec()),
             "colspan=$columns class='alignright'",
             "class='alignright'",
             $leftspan
@@ -293,7 +294,7 @@
           $total += $taxitem['Value'];
           Table::label(
             $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
-            Num::_format($taxitem['Value'], User::price_dec()),
+            Num::_format($taxitem['Value'], User::_price_dec()),
             "colspan=$columns class='alignright'",
             "class='alignright'",
             $leftspan
@@ -302,7 +303,7 @@
       }
       if ($tax_correcting) {
         Cell::label(_("Tax Correction"), "colspan=$columns style='background:inherit; text-align:right; width:90%'");
-        Forms::amountCellsSmall(null, 'ChgTax', Num::_priceFormat(Input::_post('ChgTax'), User::price_dec()));
+        Forms::amountCellsSmall(null, 'ChgTax', Num::_priceFormat(Input::_post('ChgTax'), User::_price_dec()));
         echo '</tr>';
         $total += Input::_post('ChgTax');
       }

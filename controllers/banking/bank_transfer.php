@@ -93,7 +93,7 @@
       JS::_setFocus('charge');
       return false;
     }
-    if (isset($_POST['charge']) && Validation::input_num('charge') > 0 && DB_Company::get_pref('bank_charge_act') == '') {
+    if (isset($_POST['charge']) && Validation::input_num('charge') > 0 && DB_Company::_get_pref('bank_charge_act') == '') {
       Event::error(_("The Bank Charge Account has not been set in System and General GL Setup ."));
       JS::_setFocus('charge');
       return false;

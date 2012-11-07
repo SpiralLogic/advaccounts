@@ -1065,9 +1065,6 @@
   function newrelic_disable_autorum() {
   }
 
-  function session_status() {
-  }
-
   /**
    * @return string
    */
@@ -1080,50 +1077,11 @@
   /**
 
    */
-  class XHProfRuns_Default
-  {
+  class XHProfRuns_Default {
     function save_run() {
     }
   }
-  /**
 
-   */
-  interface SessionHandlerInterface
-  {
-    public function close();
-    /**
-     * @param $session_id
-     *
-     * @return mixed
-     */
-    public function destroy($session_id);
-    /**
-     * @param $maxlifetime
-     *
-     * @return mixed
-     */
-    public function gc($maxlifetime);
-    /**
-     * @param $save_path
-     * @param $session_id
-     *
-     * @return mixed
-     */
-    public function open($save_path, $session_id);
-    /**
-     * @param $session_id
-     *
-     * @return mixed
-     */
-    public function read($session_id);
-    /**
-     * @param $session_id
-     * @param $session_data
-     *
-     * @return mixed
-     */
-    public function write($session_id, $session_data);
-  }
   /**
    * @param $string
    */

@@ -70,7 +70,8 @@
         Event::error("Exchange rates cannot be set for company currency", "", true);
       }
       $date = Dates::_dateToSql($date_);
-      $sql  = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
+      $sql
+            = "INSERT INTO exchange_rates (curr_code, date_, rate_buy, rate_sell)
         VALUES (" . DB::_escape($curr_code) . ", '$date', " . DB::_escape($buy_rate) . ", " . DB::_escape($sell_rate) . ")";
       DB::_query($sql, "could not add exchange rate for $curr_code");
     }
@@ -111,7 +112,7 @@
      * @return float|int|mixed|string
      */
     public static function get_external($curr_b, $provider = 'ECB', $date) {
-      $curr_a = DB_Company::get_pref('curr_default');
+      $curr_a = DB_Company::_get_pref('curr_default');
       if ($provider == 'ECB') {
         $filename = "/stats/eurofxref/eurofxref-daily.xml";
         $site     = "www.ecb.int";
@@ -231,7 +232,7 @@
         if ($from_currency != $comp_currency) {
           $rate = 1 / ($rate / Bank_Currency::exchange_rate_from_home($to_currency, $date_));
         }
-        $rate = Num::_format($rate, User::exrate_dec());
+        $rate = Num::_format($rate, User::_exrate_dec());
         if ($edit_rate) {
           Forms::textCells(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "class='label'", " $from_currency = 1 $to_currency");
         } else {

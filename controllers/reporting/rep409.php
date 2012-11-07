@@ -23,17 +23,17 @@
     if ($to == null) {
       $to = 0;
     }
-    $dec  = User::price_dec();
+    $dec  = User::_price_dec();
     $fno  = explode("-", $from);
     $tno  = explode("-", $to);
     $cols = array(4, 60, 190, 255, 320, 385, 450, 515);
     // $headers in doctext.inc
     $aligns = array('left', 'left', 'left', 'left', 'right', 'right', 'right');
     $params = array('comments' => $comments);
-    $cur    = DB_Company::get_pref('curr_default');
+    $cur    = DB_Company::_get_pref('curr_default');
     if ($email == 0) {
-      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-      $rep           = new $report_type(_('WORK ORDER'), "WorkOrderBulk",$_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP, User::page_size());
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+      $rep           = new $report_type(_('WORK ORDER'), "WorkOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP, User::_page_size());
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
@@ -45,7 +45,7 @@
       }
       $date_ = Dates::_sqlToDate($myrow["date_"]);
       if ($email == 1) {
-        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP,User::page_size());
+        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP, User::_page_size());
         $rep->currency = $cur;
         $rep->Font();
         $rep->title    = _('WORK ORDER');
@@ -69,7 +69,7 @@
         if ($show_qoh) {
           $qoh = Item::get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
         }
-        if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) && !DB_Company::get_pref('allow_negative_stock')
+        if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) && !DB_Company::_get_pref('allow_negative_stock')
         ) {
           // oops, we don't have enough of one of the component items
           $has_marked = true;

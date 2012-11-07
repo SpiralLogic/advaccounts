@@ -17,10 +17,9 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($supplier, $date)
-  {
+  function get_transactions($supplier, $date) {
     $date = Dates::_dateToSql($date);
-    $dec  = User::price_dec();
+    $dec  = User::_price_dec();
     $sql
           = "SELECT creditor_trans.supplier_reference,
             creditor_trans.tran_date,
@@ -41,8 +40,7 @@
     return DB::_query($sql, "No transactions were returned");
   }
 
-  function print_payment_report()
-  {
+  function print_payment_report() {
 
     $to          = $_POST['PARAM_0'];
     $fromsupp    = $_POST['PARAM_1'];
@@ -62,7 +60,7 @@
     } else {
       $from = Creditor::get_name($fromsupp);
     }
-    $dec = User::price_dec();
+    $dec = User::_price_dec();
     if ($currency == ALL_TEXT) {
       $convert  = true;
       $currency = _('Balances in Home Currency');
@@ -76,7 +74,14 @@
     }
     $cols    = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
     $headers = array(
-      _('Trans Type'), _('#'), _('Due Date'), '', '', '', _('Total'), _('Balance')
+      _('Trans Type'),
+      _('#'),
+      _('Due Date'),
+      '',
+      '',
+      '',
+      _('Total'),
+      _('Balance')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params  = array(
@@ -86,8 +91,8 @@
       3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
       4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Payment Report'), "PaymentReport",SA_SUPPPAYMREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Payment Report'), "PaymentReport", SA_SUPPPAYMREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

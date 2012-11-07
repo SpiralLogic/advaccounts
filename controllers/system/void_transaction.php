@@ -192,7 +192,7 @@
       unset($_SESSION['voiding']);
       $void_entry = Voiding::get($_POST['filterType'], $_POST['trans_no']);
       $error      = false;
-      if ($_POST['filterType'] == ST_SALESINVOICE && !User::i()->hasAccess(SA_VOIDINVOICE)) {
+      if ($_POST['filterType'] == ST_SALESINVOICE && !User::_i()->hasAccess(SA_VOIDINVOICE)) {
         $error = _("You don't not have permissions required to delete this transaction.");
       } elseif ($void_entry != null) {
         $error = _("The selected transaction has already been voided.");

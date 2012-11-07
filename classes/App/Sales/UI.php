@@ -125,9 +125,9 @@
         'id',
         'description',
         array(
-             'spec_option'                    => $special_option === true ? ' ' : $special_option,
-             'order'                          => 'description',
-             'spec_id'                        => 0,
+             'spec_option' => $special_option === true ? ' ' : $special_option,
+             'order'       => 'description',
+             'spec_id'     => 0,
         )
       );
     }
@@ -243,7 +243,8 @@
      * @return string
      */
     public static function templates($name, $selected_id = null, $special_option = false) {
-      $sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
+      $sql
+        = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
                 FROM sales_orders as sorder, sales_order_details as line
                 WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
       return Forms::selectBox(
@@ -253,10 +254,10 @@
         'order_no',
         'OrderValue',
         array(
-             'format'                         => 'Forms::templateItemsFormat',
-             'spec_option'                    => $special_option === true ? ' ' : $special_option,
-             'order'                          => 'order_no',
-             'spec_id'                        => 0,
+             'format'      => 'Forms::templateItemsFormat',
+             'spec_option' => $special_option === true ? ' ' : $special_option,
+             'order'       => 'order_no',
+             'spec_id'     => 0,
         )
       );
     }
@@ -327,10 +328,10 @@
           $name,
           array_merge(
             array(
-                 'selected'  => $selected_id,
-                 'type'      => $type,
-                 'cells'     => true,
-                 'sale'      => true
+                 'selected' => $selected_id,
+                 'type'     => $type,
+                 'cells'    => true,
+                 'sale'     => true
             ),
             $opts
           )
@@ -341,7 +342,8 @@
       if ($type == 'kits') {
         $where .= " AND !i.is_foreign AND i.item_code!=i.stock_id ";
       }
-      $sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
+      $sql
+        = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
                      i.inactive, if(count(*)>1, '0', s.editable) as editable, s.long_description
                     FROM stock_master s, item_codes i LEFT JOIN stock_category c ON i.category_id=c.category_id
                     WHERE i.stock_id=s.stock_id $where AND !i.inactive AND !s.inactive AND !s.no_sale GROUP BY i.item_code";
@@ -362,7 +364,7 @@
                  "c.description",
                  "i.description"
                ),
-               'search_submit' => DB_Company::get_pref('no_item_list') != 0,
+               'search_submit' => DB_Company::_get_pref('no_item_list') != 0,
                'size'          => 15,
                'select_submit' => $submit_on_change,
                'category'      => 2,

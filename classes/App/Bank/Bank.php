@@ -39,13 +39,14 @@
 
    */
   class Bank {
-    public static $payment_person_types = array(
-      "Miscellaneous", //
-      "Work Order", //
-      "Debtor", //
-      "Creditor", //
-      "Quick Entry"
-    );
+    public static $payment_person_types
+      = array(
+        "Miscellaneous", //
+        "Work Order", //
+        "Debtor", //
+        "Creditor", //
+        "Quick Entry"
+      );
     /**
      * @static
      *
@@ -119,8 +120,8 @@
       if (Bank_Currency::is_company($curr)) {
         return;
       }
-      $inv_amt = Num::_round($amount * $trans['rate'], User::price_dec());
-      $pay_amt = Num::_round($amount * $pyt_trans['rate'], User::price_dec());
+      $inv_amt = Num::_round($amount * $trans['rate'], User::_price_dec());
+      $pay_amt = Num::_round($amount * $pyt_trans['rate'], User::_price_dec());
       if ($inv_amt != $pay_amt) {
         $diff = $inv_amt - $pay_amt;
         if ($person_type == PT_SUPPLIER) {
@@ -129,7 +130,7 @@
         if ($neg) {
           $diff = -$diff;
         }
-        $exc_var_act = DB_Company::get_pref('exchange_diff_act');
+        $exc_var_act = DB_Company::_get_pref('exchange_diff_act');
         if (Dates::_isGreaterThan($date, $pyt_date)) {
           $memo = SysTypes::$names[$pyt_type] . " " . $pyt_no;
           GL_Trans::add($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);

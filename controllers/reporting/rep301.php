@@ -17,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($category, $location)
-  {
+  function get_transactions($category, $location) {
     $sql
       = "SELECT stock_master.category_id,
             stock_category.description AS cat_name,
@@ -56,8 +55,7 @@
     return DB::_query($sql, "No transactions were returned");
   }
 
-  function print_inventory_valuation_report()
-  {
+  function print_inventory_valuation_report() {
     $category    = $_POST['PARAM_0'];
     $location    = $_POST['PARAM_1'];
     $detail      = $_POST['PARAM_2'];
@@ -71,7 +69,7 @@
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $detail = !$detail;
-    $dec    = User::price_dec();
+    $dec    = User::_price_dec();
     if ($category == ALL_NUMERIC) {
       $category = 0;
     }
@@ -92,14 +90,20 @@
     $headers = array(_('Category'), '', _('Quantity'), _('Unit Cost'), _('Value'));
     $aligns  = array('left', 'left', 'right', 'right', 'right');
     $params  = array(
-      0    => $comments, 1 => array(
-        'text' => _('Category'), 'from' => $cat, 'to'   => ''
-      ), 2 => array(
-        'text' => _('Location'), 'from' => $loc, 'to'   => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Category'),
+        'from' => $cat,
+        'to'   => ''
+      ),
+      2 => array(
+        'text' => _('Location'),
+        'from' => $loc,
+        'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Inventory Valuation Report'), "InventoryValReport",SA_ITEMSVALREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Inventory Valuation Report'), "InventoryValReport", SA_ITEMSVALREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

@@ -163,7 +163,7 @@
       if ($id == -1) {
         Inv_Adjustment::item_controls($order);
       }
-      Table::label(_("Total"), Num::_format($total, User::price_dec()), "class='alignright' colspan=5", "class='alignright'", 2);
+      Table::label(_("Total"), Num::_format($total, User::_price_dec()), "class='alignright' colspan=5", "class='alignright'", 2);
       Table::end();
       Ajax::_end_div();
     }

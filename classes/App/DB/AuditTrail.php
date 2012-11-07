@@ -11,8 +11,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class DB_AuditTrail
-  {
+  class DB_AuditTrail {
     /**
      * @static
      *
@@ -26,8 +25,8 @@
         array(
              'type'        => $trans_type,
              'trans_no'    => $trans_no,
-             'user'        => User::i()->user,
-             'fiscal_year' => DB_Company::get_pref('f_year'),
+             'user'        => User::_i()->user,
+             'fiscal_year' => DB_Company::_get_pref('f_year'),
              'gl_date'     => Dates::_dateToSql($trans_date),
              'description' => $descr,
              'gl_seq'      => 0
@@ -119,7 +118,7 @@
      * @param $fromdate
      */
     public static function open_transactions($fromdate) {
-      $sql = "SELECT a.id, a.gl_date, a.fiscal_year" . " FROM gl_trans gl" . " LEFT JOIN audit_trail a ON
+      $sql    = "SELECT a.id, a.gl_date, a.fiscal_year" . " FROM gl_trans gl" . " LEFT JOIN audit_trail a ON
             (gl.type=a.type AND gl.type_no=a.trans_no)" . " WHERE gl_date>='" . Dates::_dateToSql(
         $fromdate
       ) . "'" . " AND !ISNULL(gl_seq)" . " ORDER BY a.fiscal_year, a.gl_date, a.id";

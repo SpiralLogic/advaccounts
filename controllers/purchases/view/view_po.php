@@ -60,7 +60,7 @@
     echo '</tr>';
     $total += $line_total;
   }
-  $display_total = Num::_format($total, User::price_dec());
+  $display_total = Num::_format($total, User::_price_dec());
   Table::label(_("Total Excluding Tax/Shipping"), $display_total, "class='alignright' colspan=6", ' class="alignright nowrap"', 3);
   Table::end();
   if ($overdue_items) {

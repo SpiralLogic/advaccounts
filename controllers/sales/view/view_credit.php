@@ -81,7 +81,7 @@
       if ($myrow2["quantity"] == 0) {
         continue;
       }
-      $value = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
+      $value = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::_price_dec());
       $sub_total += $value;
       if ($myrow2["discount_percent"] == 0) {
         $display_discount = "";

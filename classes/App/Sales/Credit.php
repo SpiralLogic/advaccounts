@@ -48,14 +48,14 @@
       }
       $credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
       DB::_begin();
-      $company_data      = DB_Company::get_prefs();
+      $company_data      = DB_Company::_get_prefs();
       $branch_data       = Sales_Branch::get_accounts($credit_note->Branch);
       $credit_note_total = $credit_note->get_items_total_dispatch();
       $freight_tax       = $credit_note->get_shipping_tax();
       $taxes             = $credit_note->get_taxes();
       $tax_total         = 0;
       foreach ($taxes as $taxitem) {
-        $taxitem['Value'] = Num::_round($taxitem['Value'], User::price_dec());
+        $taxitem['Value'] = Num::_round($taxitem['Value'], User::_price_dec());
         $tax_total += $taxitem['Value'];
       }
       if ($credit_note->tax_included == 0) {
@@ -462,14 +462,14 @@ debit freight re-charged and debit sales */
       }
       Forms::dateRow(_("Date:"), 'OrderDate', '', $order->trans_no == 0, 0, 0, 0, null, true);
       if (isset($_POST['_OrderDate_changed'])) {
-        if (!Bank_Currency::is_company($order->customer_currency) && (DB_Company::get_base_sales_type() > 0)
+        if (!Bank_Currency::is_company($order->customer_currency) && (DB_Company::_get_base_sales_type() > 0)
         ) {
           $change_prices = 1;
         }
         Ajax::_activate('_ex_rate');
       }
       // 2008-11-12 Joe Hunt added dimensions
-      $dim = DB_Company::get_pref('use_dimension');
+      $dim = DB_Company::_get_pref('use_dimension');
       if ($dim > 0) {
         Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
       } else {
@@ -518,7 +518,7 @@ debit freight re-charged and debit sales */
       $k        = 0; //row colour counter
       $id       = Forms::findPostPrefix(MODE_EDIT);
       foreach ($order->line_items as $line_no => $line) {
-        $line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::price_dec());
+        $line_total = round($line->qty_dispatched * $line->price * (1 - $line->discount_percent), User::_price_dec());
         if ($id != $line_no) {
           Cell::label("<a target='_blank' href='" . ROOT_URL . "inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
           Cell::label($line->description, ' class="nowrap"');
@@ -600,7 +600,7 @@ debit freight re-charged and debit sales */
       Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
       Cell::label($_POST['units']);
       Forms::amountCells(null, 'price', null);
-      Forms::amountCellsSmall(null, 'Disc', Num::_percentFormat(0), null, '%', User::percent_dec());
+      Forms::amountCellsSmall(null, 'Disc', Num::_percentFormat(0), null, '%', User::_percent_dec());
       Cell::amount(Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100));
       if ($id != -1) {
         Forms::buttonCell(Orders::UPDATE_ITEM, _("Update"), _('Confirm changes'), ICON_UPDATE);

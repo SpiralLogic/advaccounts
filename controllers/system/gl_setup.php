@@ -13,14 +13,14 @@
     $_POST['po_over_receive']      = Validation::input_num('po_over_receive');
     $_POST['po_over_charge']       = Validation::input_num('po_over_charge');
     $_POST['accumulate_shipping']  = Input::_hasPost('accumulate_shipping');
-    DB_Company::update_gl_setup($_POST);
+    DB_Company::_update_gl_setup($_POST);
     Event::success(_("The general GL setup has been updated."));
   } /* end of if submit */
   Forms::start();
   //Table::startOuter("class='padded'");
   Table::startOuter('standard');
   Table::section(1);
-  $myrow                               = DB_Company::get_prefs();
+  $myrow                               = DB_Company::_get_prefs();
   $_POST['retained_earnings_act']      = $myrow["retained_earnings_act"];
   $_POST['profit_loss_year_act']       = $myrow["profit_loss_year_act"];
   $_POST['debtors_act']                = $myrow["debtors_act"];

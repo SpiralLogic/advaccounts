@@ -44,7 +44,8 @@
         exit;
       }
       $date = Dates::_dateToSql($date_);
-      $sql  = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
+      $sql
+            = "INSERT INTO wo_manufacture (workorder_id, reference, quantity, date_)
         VALUES (" . DB::_escape($woid) . ", " . DB::_escape($ref) . ", " . DB::_escape($quantity) . ", '$date')";
       DB::_query($sql, "A work order manufacture could not be added");
       $id = DB::_insertId();
@@ -149,7 +150,7 @@
           echo '</tr>';
         }
         //end of while
-        Table::label(_("Total"), Num::_format($total_qty, User::qty_dec()), "colspan=3", ' class="alignright nowrap"');
+        Table::label(_("Total"), Num::_format($total_qty, User::_qty_dec()), "colspan=3", ' class="alignright nowrap"');
         Table::end();
       }
     }

@@ -12,7 +12,7 @@
 </table>
 <td class='center' colspan=2>
     <a target='_blank' href='{{POWERED_URL}}'><img width=440 height=64 src='/themes/{{$def_theme}}/images/logo_advaccounts.png' alt='ADVAccounts'/></a>
-    <span class='font5'>Authorization timeout</span><br>You were idle for: {{User::i()->last_action + User::i()->timeout - time()}}
+    <span class='font5'>Authorization timeout</span><br>You were idle for: {{User::_i()->last_action + User::_i()->timeout - time()}}
 </td>
 <tr>
     <td class='label'><label for='login_company'>Company</label></td>
@@ -31,7 +31,7 @@
 {{$def_theme}}</a>
     <br><br><a target='_blank' href='POWERED_URL' tabindex='-1'>{{POWERED_BY}}</a></div>
 <script>
-    (function () {document.forms[0].login_company.value = '{{User::i()->company}}';})();
+    (function () {document.forms[0].login_company.value = '{{User::_i()->company}}';})();
     document.forms[0].user_name.select();
     document.forms[0].user_name.focus();</script>
 </body>

@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,10 +12,9 @@
   namespace ADV\Core\Cache;
 
   /**
-
+   *
    */
-  interface Cachable
-  {
+  interface Cachable {
     /**
      * @abstract
      *
@@ -49,4 +47,11 @@
      * @param int $time
      */
     public function flush($time = 0);
+    /**
+     * @param $name
+     * @param $constants
+     *
+     * @return mixed
+     */
+    public function defineConstants($name, $constants);
   }

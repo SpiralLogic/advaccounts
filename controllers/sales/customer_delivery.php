@@ -204,7 +204,7 @@
     }
     // if it's a non-stock item (eg. service) don't show qoh
     $show_qoh = true;
-    if (DB_Company::get_pref('allow_negative_stock') || !WO::has_stock_holding($line->mb_flag) || $line->qty_dispatched == 0
+    if (DB_Company::_get_pref('allow_negative_stock') || !WO::has_stock_holding($line->mb_flag) || $line->qty_dispatched == 0
     ) {
       $show_qoh = false;
     }

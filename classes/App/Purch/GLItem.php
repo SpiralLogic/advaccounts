@@ -40,9 +40,9 @@ all the info to do the necessary entries without looking up ie additional querie
     public $order_price;
     /** @var */
     public $chg_price;
-    /** @var null **/
+    /** @var null * */
     public $exp_price;
-    /** @var int **/
+    /** @var int * */
     public $discount;
     /** @var */
     public $Complete;
@@ -136,7 +136,7 @@ all the info to do the necessary entries without looking up ie additional querie
       $accs             = Creditor::get_accounts_name($creditor_trans->creditor_id);
       $_POST['gl_code'] = $accs['purchase_account'];
       echo GL_UI::all('gl_code', null, true, true);
-      $dim = DB_Company::get_pref('use_dimension');
+      $dim = DB_Company::_get_pref('use_dimension');
       if ($dim >= 1) {
         Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
         Forms::hidden('dimension_id', 0);
@@ -187,7 +187,7 @@ all the info to do the necessary entries without looking up ie additional querie
           }
           echo "&nbsp;" . $qid['base_desc'] . ":&nbsp;";
           $amount = Validation::input_num('total_amount', $qid['base_amount']);
-          $dec    = User::price_dec();
+          $dec    = User::_price_dec();
           echo "<input class='amount' type='text' name='total_amount' data-dec='$dec' maxlength='12'  value='$amount'>&nbsp;";
           Forms::submit('go', _("Go"), true, false, true);
           echo "</div>";
@@ -195,7 +195,7 @@ all the info to do the necessary entries without looking up ie additional querie
       }
       Ajax::_start_div('gl_items');
       Table::start('padded grid width80');
-      $dim = DB_Company::get_pref('use_dimension');
+      $dim = DB_Company::_get_pref('use_dimension');
       if ($dim == 2) {
         $th = array(_("Account"), _("Name"), _("Dimension") . " 1", _("Dimension") . " 2", _("Memo"), _("Amount"));
       } else {

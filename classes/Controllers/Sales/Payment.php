@@ -24,30 +24,28 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Payment extends \ADV\App\Controller\Action
-  {
+  class Payment extends \ADV\App\Controller\Action {
     public $date_banked;
     public $debtor_id;
     protected function before() {
       if (REQUEST_GET && $this->Input->get('account', 'amount', 'memo', 'date')) {
         $_POST['bank_acount'] = $this->Input->get('account');
-        $_POST['amount'] = $this->Input->get('amount');
-        $_POST['memo_'] = $this->Input->get('memo');
-        $_POST['DateBanked'] = $this->Input->get('date');
-        $_POST['charge'] = $this->Input->get('fee', Input::NUMERIC);
+        $_POST['amount']      = $this->Input->get('amount');
+        $_POST['memo_']       = $this->Input->get('memo');
+        $_POST['DateBanked']  = $this->Input->get('date');
+        $_POST['charge']      = $this->Input->get('fee', Input::NUMERIC);
       }
       $this->JS->openWindow(900, 500);
       $this->JS->footerFile('/js/payalloc.js');
       $this->debtor_id = & $this->Input->postGetGlobal('debtor_id');
       if (Forms::isListUpdated('branch_id') || !$_POST['debtor_id']) {
-        $br = Sales_Branch::get($this->Input->post('branch_id'));
+        $br              = Sales_Branch::get($this->Input->post('branch_id'));
         $this->debtor_id = $br['debtor_id'];
         $this->Ajax->activate('debtor_id');
       }
@@ -228,7 +226,7 @@
         return false;
       }
       if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
-        $charge_acct = DB_Company::get_pref('bank_charge_act');
+        $charge_acct = DB_Company::_get_pref('bank_charge_act');
         if (GL_Account::get($charge_acct) == false) {
           Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
           $this->JS->setFocus('charge');

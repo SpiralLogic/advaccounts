@@ -69,7 +69,13 @@
       foreach ($delivery->line_items as $delivery_line) {
         $line_price         = $delivery_line->line_price();
         $line_taxfree_price = Tax::tax_free_price($delivery_line->stock_id, $delivery_line->price, 0, $delivery->tax_included, $delivery->tax_group_array);
-        $line_tax           = Tax::full_price_for_item($delivery_line->stock_id, $delivery_line->price, 0, $delivery->tax_included, $delivery->tax_group_array) - $line_taxfree_price;
+        $line_tax           = Tax::full_price_for_item(
+          $delivery_line->stock_id,
+          $delivery_line->price,
+          0,
+          $delivery->tax_included,
+          $delivery->tax_group_array
+        ) - $line_taxfree_price;
         if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt
         {
           $delivery_line->standard_cost = Item_Price::get_standard_cost($delivery_line->stock_id);
@@ -92,16 +98,42 @@
           Sales_Order::update_parent_line(ST_CUSTDELIVERY, $delivery_line->src_id, $delivery_line->qty_dispatched - $delivery_line->qty_old);
         }
         if ($delivery_line->qty_dispatched != 0) {
-          Inv_Movement::add_for_debtor(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no, $delivery->location, $delivery->document_date, $delivery->reference, -$delivery_line->qty_dispatched, $delivery_line->standard_cost, 1, $line_price, $delivery_line->discount_percent);
+          Inv_Movement::add_for_debtor(
+            ST_CUSTDELIVERY,
+            $delivery_line->stock_id,
+            $delivery_no,
+            $delivery->location,
+            $delivery->document_date,
+            $delivery->reference,
+            -$delivery_line->qty_dispatched,
+            $delivery_line->standard_cost,
+            1,
+            $line_price,
+            $delivery_line->discount_percent
+          );
           $stock_gl_code = Item::get_gl_code($delivery_line->stock_id);
           /* insert gl_trans to credit stock and debit cost of sales at standard cost*/
           if ($delivery_line->standard_cost != 0) {
             /*first the cost of sales entry*/
             // 2008-08-01. If there is a Customer Dimension, then override with this,
             // else take the Item Dimension (if any)
-            $dim  = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id : ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
-            $dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id : ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
-            GL_Trans::add_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "", $delivery_line->standard_cost * $delivery_line->qty_dispatched, PT_CUSTOMER, $delivery->debtor_id, "The cost of sales GL posting could not be inserted");
+            $dim  = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id :
+              ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
+            $dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id :
+              ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
+            GL_Trans::add_std_cost(
+              ST_CUSTDELIVERY,
+              $delivery_no,
+              $delivery->document_date,
+              $stock_gl_code["cogs_account"],
+              $dim,
+              $dim2,
+              "",
+              $delivery_line->standard_cost * $delivery_line->qty_dispatched,
+              PT_CUSTOMER,
+              $delivery->debtor_id,
+              "The cost of sales GL posting could not be inserted"
+            );
             /*now the stock entry*/
             GL_Trans::add_std_cost(
               ST_CUSTDELIVERY,
@@ -127,7 +159,18 @@
       foreach ($taxes as $taxitem) {
         if ($taxitem['Net'] != 0) {
           $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($delivery->debtor_id), $delivery->document_date);
-          GL_Trans::add_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'], $taxitem['rate'], $delivery->tax_included, $taxitem['Value'], $taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference);
+          GL_Trans::add_tax_details(
+            ST_CUSTDELIVERY,
+            $delivery_no,
+            $taxitem['tax_type_id'],
+            $taxitem['rate'],
+            $delivery->tax_included,
+            $taxitem['Value'],
+            $taxitem['Net'],
+            $ex_rate,
+            $delivery->document_date,
+            $delivery->reference
+          );
         }
       }
       DB_Comments::add(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $delivery->Comments);
@@ -296,7 +339,7 @@
      * @return bool
      */
     public static function check_qoh($order) {
-      if (!DB_Company::get_pref('allow_negative_stock')) {
+      if (!DB_Company::_get_pref('allow_negative_stock')) {
         foreach ($order->line_items as $itm) {
           if ($itm->qty_dispatched && WO::has_stock_holding($itm->mb_flag)) {
             $qoh = Item::get_qoh_on_date($itm->stock_id, $_POST['location'], $_POST['DispatchDate']);

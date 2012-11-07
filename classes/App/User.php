@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -19,23 +18,22 @@
   use ADV\Core\Traits\StaticAccess;
 
   /**
-   * @method static theme
+   * @method static _theme
    * @method User ii()
-   * @method static logout()
-   * @method static date_format()
-   * @method static date_sep()
-   * @method static int qty_dec()
-   * @method static price_dec()
-   * @method static numeric($input)
-   * @method static print_profile()
-   * @method static page_size()
-   * @method static show_gl()
-   * @method static rep_popup()
-   * @method static percent_dec()
-   *  @method static graphic_links()
+   * @method static _logout()
+   * @method static _date_format()
+   * @method static _date_sep()
+   * @method static int _qty_dec()
+   * @method static _price_dec()
+   * @method static _numeric($input)
+   * @method static _print_profile()
+   * @method static _page_size()
+   * @method static _show_gl()
+   * @method static _rep_popup()
+   * @method static _percent_dec()
+   *  @method static _graphic_links()
    */
-  class User extends \ADV\App\DB\Base
-  {
+  class User extends \ADV\App\DB\Base {
     use \ADV\Core\Traits\Hook;
     use StaticAccess;
 
@@ -120,7 +118,7 @@
     public function __construct($id = 0) {
       parent::__construct($id = 0);
       $this->logged = false;
-      $this->prefs = new UserPrefs();
+      $this->prefs  = new UserPrefs();
     }
     /**
      * @return bool
@@ -136,21 +134,21 @@
     /**
      * @param $company
      * @param $loginname
+     * @param $password
      *
-     * @internal param $password
      * @return bool
      */
     public function login($company, $loginname, $password) {
       $this->company = $company;
-      $this->logged = false;
-      $myrow = $this->get_for_login($loginname, $password);
+      $this->logged  = false;
+      $myrow         = $this->get_for_login($loginname, $password);
       if ($myrow) {
         if ($myrow["inactive"]) {
           return false;
         }
         $this->role_set = [];
-        $this->access = $myrow['role_id'];
-        $this->hash = $myrow["hash"];
+        $this->access   = $myrow['role_id'];
+        $this->hash     = $myrow["hash"];
         $this->Security = new Security();
         // store area codes available for current user role
         $role = $this->Security->get_role($myrow['role_id']);
@@ -165,16 +163,16 @@
           }
         }
         $this->change_password = $myrow['change_password'];
-        $this->logged = true;
-        $this->name = $myrow['real_name'];
-        $this->pos = $myrow['pos'];
-        $this->username = $this->loginname = $loginname;
-        $this->prefs = new UserPrefs($myrow);
-        $this->user = $myrow['id'];
-        $this->last_action = time();
-        $this->timeout = DB_Company::get_pref('login_tout');
-        $this->company_name = DB_Company::get_pref('coy_name');
-        $this->salesmanid = $this->get_salesmanid();
+        $this->logged          = true;
+        $this->name            = $myrow['real_name'];
+        $this->pos             = $myrow['pos'];
+        $this->username        = $this->loginname = $loginname;
+        $this->prefs           = new UserPrefs($myrow);
+        $this->user            = $myrow['id'];
+        $this->last_action     = time();
+        $this->timeout         = DB_Company::_get_pref('login_tout');
+        $this->company_name    = DB_Company::_get_pref('coy_name');
+        $this->salesmanid      = $this->get_salesmanid();
         $this->fireHooks('login');
         Event::registerShutdown(['Users', 'update_visitdate'], [$this->username]);
         Event::registerShutdown([$this, '_addLog']);
@@ -182,11 +180,9 @@
       return $this->logged;
     }
     /**
-     * @static
-     *
      * @param $user_id
+     * @param $password
      *
-     * @internal param $password
      * @return bool|mixed
      */
     public function  get_for_login($user_id, $password) {
@@ -197,23 +193,21 @@
       return $auth->checkUserPassword($user_id, $password);
     }
     /**
-     * @static
-     *
-     * @param       $object
      * @param       $function
      * @param array $arguments
+     *
+     * @return void
      */
-    public function _register_login($function = null, $arguments = []) {
+    public function register_login($function = null, $arguments = []) {
       $this->registerHook('login', $function, $arguments);
     }
     /**
-     * @static
-     *
-     * @param       $object
      * @param       $function
      * @param array $arguments
+     *
+     * @return void
      */
-    public function _register_logout($function, $arguments = []) {
+    public function register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
     }
     public function timeout() {
@@ -226,11 +220,11 @@
       }
       $this->last_action = time();
     }
-    public function _addLog() {
+    public function addLog() {
       DB::_insert('user_login_log')->values(
         array(
-             'user' => $this->username,
-             'IP' => Auth::get_ip(),
+             'user'    => $this->username,
+             'IP'      => Auth::get_ip(),
              'success' => 2
         )
       )->exec();
@@ -269,14 +263,10 @@
       $this->prefs->update($this->user, $prefs);
     }
     /**
-     * @static
-     *
-     * @param $id
-     *
      * @return \ADV\Core\DB\Query\Result
      */
     protected function  get() {
-      $sql = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
+      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
       $result = DB::_query($sql, "could not get user " . $this->user);
       return DB::_fetch($result);
     }
@@ -284,19 +274,14 @@
      * @static
      * @return UserPrefs
      */
-    public function _prefs() {
+    public function prefs() {
       return $this->prefs;
     }
     /**
      * @static
      */
-    public function _add_js_data() {
-      $js = "var user = {theme: '/themes/" . $this->prefs->theme . "/'" //
-        . ",loadtxt: '" . _('Requesting data...') //
-        . "',date: '" . Dates::_today() //
-        . "',datefmt: " . $this->prefs->date_format //
-        . ",datesep: '" . $this->prefs->date_sep //
-        . "',ts: '" . $this->prefs->tho_sep //
+    public function add_js_data() {
+      $js = "var user = {" . "ts: '" . $this->prefs->tho_sep //
         . "',ds: '" . $this->prefs->dec_sep //
         . "',pdec: " . $this->prefs->price_dec //
         . "};";
@@ -309,7 +294,7 @@
      *
      * @return bool|float|int|mixed|string
      */
-    public function _numeric($input) {
+    public function numeric($input) {
       $num = trim($input);
       $sep = $this->prefs->tho_sep;
       if ($sep != '') {
@@ -322,9 +307,9 @@
       if (!is_numeric($num)) {
         return false;
       }
-      $num = (float)$num;
-      if ($num == (int)$num) {
-        return (int)$num;
+      $num = (float) $num;
+      if ($num == (int) $num) {
+        return (int) $num;
       } else {
         return $num;
       }
@@ -333,153 +318,153 @@
      * @static
      * @return mixed
      */
-    public function _pos() {
+    public function pos() {
       return $this->pos;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _language() {
+    public function language() {
       return $this->prefs->language;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _qty_dec() {
+    public function qty_dec() {
       return $this->prefs->qty_dec;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _price_dec() {
+    public function price_dec() {
       return $this->prefs->price_dec;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _exrate_dec() {
+    public function exrate_dec() {
       return $this->prefs->exrate_dec;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _percent_dec() {
+    public function percent_dec() {
       return $this->prefs->percent_dec;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _show_gl() {
+    public function show_gl() {
       return $this->prefs->show_gl;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _show_codes() {
+    public function show_codes() {
       return $this->prefs->show_codes;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _date_format() {
+    public function date_format() {
       return $this->prefs->date_format;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _date_display() {
+    public function date_display() {
       return $this->prefs->date_display();
     }
     /**
      * @static
      * @return int
      */
-    public function _date_sep() {
+    public function date_sep() {
       return (isset($_SESSION["User"])) ? $this->prefs->date_sep : 0;
     }
     /**
      * @return int
      */
-    public function _tho_sep() {
+    public function tho_sep() {
       return $this->prefs->tho_sep;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _dec_sep() {
+    public function dec_sep() {
       return $this->prefs->dec_sep;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _theme() {
+    public function theme() {
       return $this->prefs->theme;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _page_size() {
+    public function page_size() {
       return $this->prefs->page_size;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _hints() {
+    public function hints() {
       return $this->prefs->show_hints;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _print_profile() {
+    public function print_profile() {
       return $this->prefs->print_profile;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _rep_popup() {
+    public function rep_popup() {
       return $this->prefs->rep_popup;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _query_size() {
+    public function query_size() {
       return $this->prefs->query_size;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _graphic_links() {
+    public function graphic_links() {
       return $this->prefs->graphic_links;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _sticky_doc_date() {
+    public function sticky_doc_date() {
       return $this->prefs->sticky_doc_date;
     }
     /**
      * @static
      * @return mixed
      */
-    public function _startup_tab() {
+    public function startup_tab() {
       return $this->prefs->startup_tab;
     }
     /**
@@ -488,7 +473,7 @@
     private function get_salesmanid() {
       return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
-    public function _logout() {
+    public function logout() {
       \ADV\Core\Config::_removeAll();
       Session::_kill();
       $this->logged = false;

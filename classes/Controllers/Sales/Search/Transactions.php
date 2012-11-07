@@ -28,9 +28,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Action
-  {
-
+  class Transactions extends \ADV\App\Controller\Action {
     public $isQuickSearch;
     public $filterType;
     public $debtor_id;
@@ -162,7 +160,8 @@
     protected function prepareSearch() {
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
-      $sql        = "SELECT
+      $sql
+                  = "SELECT
  		trans.type,
  		trans.trans_no,
  		trans.order_,
@@ -178,7 +177,8 @@
       if ($this->filterType) {
         $sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
       }
-      $sql .= "trans.alloc AS Allocated,
+      $sql
+        .= "trans.alloc AS Allocated,
  		((trans.type = " . ST_SALESINVOICE . ")
  			AND trans.due_date < '" . Dates::_today(true) . "') AS OverDue, SUM(details.quantity - qty_done) as
  			still_to_deliver
@@ -280,7 +280,8 @@
      * @return string
      */
     public function formatDebit($row) {
-      $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] : $row["TotalAmount"];
+      $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] :
+        $row["TotalAmount"];
       return $value >= 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -289,7 +290,8 @@
      * @return string
      */
     public function formatCredit($row) {
-      $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] : $row["TotalAmount"];
+      $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] :
+        $row["TotalAmount"];
       return $value > 0 ? Num::_priceFormat($value) : '';
     }
     /**
@@ -353,8 +355,8 @@
         false,
         'Email',
         array(
-          'class'        => 'button email-button',
-          'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+             'class'        => 'button email-button',
+             'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
         )
       )->__toString();
     }
@@ -369,7 +371,7 @@
      * @return bool
      */
     public function formatMarker($row) {
-      if ((isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"] - $row["Allocated"], 2) != 0)) {
+      if ((isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"], 2) - Num::_round($row["Allocated"], 2) != 0)) {
         return "class='overduebg'";
       }
     }

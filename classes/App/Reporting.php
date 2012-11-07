@@ -281,7 +281,7 @@ JS;
      */
     public static function print_link($link_text, $rep, $pars = [], $dir = '', $icon = false, $class = 'printlink', $id = '', $raw = false) {
       if (!static::$User) {
-        static::$User = User::i();
+        static::$User = User::_i();
       }
       if (!static::$JS) {
         static::$JS = JS::i();
@@ -303,7 +303,7 @@ JS;
         $id = "id='" . e($id) . "'";
       }
       $pars = Display::access_string($link_text);
-      if (static::$User->_graphic_links() && $icon) {
+      if (static::$User->graphic_links() && $icon) {
         $pars[0] = Forms::setIcon($icon, $pars[0]);
       }
       if ($raw) {

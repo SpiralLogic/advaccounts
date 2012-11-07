@@ -4,7 +4,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -17,7 +16,7 @@
     exit;
   }
   $sql
-    = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
+          = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM gl_trans as gl
 	LEFT JOIN chart_master as cm ON gl.account = cm.account_code
 	LEFT JOIN refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)" . " WHERE gl.type= " . DB::_quote($_GET['type_id']) . " AND gl.type_no = " . DB::_quote(
     $_GET['trans_no']
@@ -32,7 +31,7 @@
     exit;
   }
   /*show a table of the transactions returned by the sql */
-  $dim = DB_Company::get_pref('use_dimension');
+  $dim = DB_Company::_get_pref('use_dimension');
   if ($dim == 2) {
     $th = array(
       _("Account Code"),
@@ -63,9 +62,9 @@
       );
     }
   }
-  $k = 0; //row colour counter
+  $k             = 0; //row colour counter
   $heading_shown = false;
-  $total = 0;
+  $total         = 0;
   while ($myrow = DB::_fetch($result)) {
     if ($myrow['amount'] == 0) {
       continue;

@@ -14,9 +14,7 @@
     /**
 
      */
-    class Currency extends \ADV\App\DB\Base
-    {
-
+    class Currency extends \ADV\App\DB\Base {
       protected $_table = 'currencies';
       protected $_classname = 'Currency';
       protected $_id_column = 'id';
@@ -33,8 +31,9 @@
        */
       protected function canProcess() {
         if (strlen($this->curr_abrev) == 0) {
-          return $this->status(false, "The currency abbreviation must be entered.",'curr_abrev');
-        }        if (strlen($this->currency) == 0) {
+          return $this->status(false, "The currency abbreviation must be entered.", 'curr_abrev');
+        }
+        if (strlen($this->currency) == 0) {
           return $this->status(false, "The currency name must be entered.");
         }
         if (strlen($this->curr_symbol) == 0) {
@@ -103,9 +102,7 @@
     /**
 
      */
-    class Bank_Currency
-    {
-
+    class Bank_Currency {
       /**
        * @static
        *
@@ -124,8 +121,7 @@
         try {
           $result = DB::_select('curr_default')->from('company')->fetch()->one();
           return $result['curr_default'];
-        }
-        catch (DBSelectException $e) {
+        } catch (DBSelectException $e) {
           Event::error('Could not get company currency');
         }
         return false;
@@ -247,7 +243,7 @@
        */
       public static function to_home($amount, $currency_code, $date_) {
         $ex_rate = static::exchange_rate_to_home($currency_code, $date_);
-        return Num::_round($amount / $ex_rate, User::price_dec());
+        return Num::_round($amount / $ex_rate, User::_price_dec());
       }
     }
   }

@@ -120,7 +120,7 @@
         JS::_setFocus('Costs');
         return false;
       }
-      if (!DB_Company::get_pref('allow_negative_stock')) {
+      if (!DB_Company::_get_pref('allow_negative_stock')) {
         if ($_POST['type'] == WO_ASSEMBLY) {
           // check bom if assembling
           $result = WO::get_bom(Input::_post('stock_id'));
@@ -292,7 +292,7 @@
       Table::label(_("Quantity Manufactured:"), number_format($_POST['units_issued'], Item::qty_dec(Input::_post('stock_id'))));
     }
     Forms::dateRow(_("Date") . ":", 'date_', '', true);
-    Forms::dateRow(_("Date Required By") . ":", 'RequDate', '', null, DB_Company::get_pref('default_workorder_required'));
+    Forms::dateRow(_("Date Required By") . ":", 'RequDate', '', null, DB_Company::_get_pref('default_workorder_required'));
   } else {
     Forms::qtyRow(_("Quantity:"), 'quantity', null, null, null, $dec);
     Forms::dateRow(_("Date") . ":", 'date_', '', true);

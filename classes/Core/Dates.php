@@ -41,7 +41,7 @@
    * @method static _beginFiscalYear()
    */
   class Dates {
-    use \ADV\Core\Traits\StaticAccess2;
+    use \ADV\Core\Traits\StaticAccess;
 
     protected $sep = '-';
     public $formats = array("m/d/Y", "d/m/Y", "Y/m/d");
@@ -69,11 +69,11 @@
       $how  = ($format !== null) ? $format : $this->format;
       $date = str_replace($this->separators, '/', trim($date));
       if ($how == 0) {
-        list($month, $day, $year) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
+        list($month, $day, $year) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
       } elseif ($how == 1) {
-        list($day, $month, $year) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
+        list($day, $month, $year) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
       } else {
-        list($year, $month, $day) = explode('/', $date) + [0=> false, 1=> false, 2=> false];
+        list($year, $month, $day) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
       }
       if (!isset($year) || (int) $year > 9999) {
         return false;

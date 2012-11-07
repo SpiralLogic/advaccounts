@@ -18,8 +18,7 @@
    *
    * @return \ADV\Core\DB\Query\Result|Array
    */
-  function get_open_balance($creditor_id, $to, $convert)
-  {
+  function get_open_balance($creditor_id, $to, $convert) {
     $to  = Dates::_dateToSql($to);
     $sql = "SELECT SUM(IF(creditor_trans.type = " . ST_SUPPINVOICE . ", (creditor_trans.ov_amount + creditor_trans.ov_gst +
      creditor_trans.ov_discount)";
@@ -63,8 +62,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($creditor_id, $from, $to)
-  {
+  function get_transactions($creditor_id, $from, $to) {
     $from = Dates::_dateToSql($from);
     $to   = Dates::_dateToSql($to);
     $sql
@@ -82,8 +80,7 @@
     return $trans_rows;
   }
 
-  function print_supplier_balances()
-  {
+  function print_supplier_balances() {
 
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -104,7 +101,7 @@
     } else {
       $supp = Creditor::get_name($fromsupp);
     }
-    $dec = User::price_dec();
+    $dec = User::_price_dec();
     if ($currency == ALL_TEXT) {
       $convert  = true;
       $currency = _('Balances in Home currency');
@@ -136,8 +133,8 @@
       3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
       4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Supplier Balances'), "SupplierBalances",SA_SUPPLIERANALYTIC, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Supplier Balances'), "SupplierBalances", SA_SUPPLIERANALYTIC, User::_page_size());
     $rep->Font();
     $rep->fontSize -= 2;
     $rep->Info($params, $cols, $headers, $aligns);

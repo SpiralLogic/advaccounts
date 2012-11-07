@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -22,8 +21,7 @@
   /**
 
    */
-  class Users extends \ADV\App\Controller\FormPager
-  {
+  class Users extends \ADV\App\Controller\FormPager {
     protected $tableWidth = '80';
     protected $security = SA_SALESMAN;
     protected function before() {
@@ -196,10 +194,10 @@
     Table::label(_("User login:"), Input::_post('user_id'));
   } else { //end of if $selected_id only do the else when a new record is being entered
     Forms::textRow(_("User Login:"), "user_id", null, 22, 20);
-    $_POST['language']  = User::language();
-    $_POST['profile']   = User::print_profile();
-    $_POST['rep_popup'] = User::rep_popup();
-    $_POST['pos']       = User::pos();
+    $_POST['language']  = User::_language();
+    $_POST['profile']   = User::_print_profile();
+    $_POST['rep_popup'] = User::_rep_popup();
+    $_POST['pos']       = User::_pos();
   }
   $_POST['password'] = "";
   Forms::passwordRow(_("Password:"), 'password', $_POST['password']);

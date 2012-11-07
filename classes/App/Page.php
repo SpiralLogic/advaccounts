@@ -23,8 +23,7 @@
   /**
 
    */
-  class Page
-  {
+  class Page {
     /** @var */
     public $encoding;
     /** @var */
@@ -36,22 +35,22 @@
     protected $User;
     protected $Config;
     protected $sel_app;
-    /** @var bool **/
+    /** @var bool * */
     protected $frame = false;
-    /** @var bool **/
+    /** @var bool * */
     protected $menu = true;
     public static $before_box = '';
-    /** @var bool **/
+    /** @var bool * */
     protected $isIndex = false;
-    /** @var array **/
+    /** @var array * */
     protected $css = [];
-    /** @var bool **/
+    /** @var bool * */
     protected $header = true;
-    /** @var string **/
+    /** @var string * */
     protected $theme = 'default';
-    /** @var string **/
+    /** @var string * */
     protected $title = '';
-    /** @var Page  */
+    /** @var Page */
     public static $i = null;
     protected $JS = null;
     /** @var Dates */
@@ -88,7 +87,7 @@
      */
     public static function start($title, $security = SA_OPEN, $no_menu = false, $isIndex = false) {
       if (static::$i === null) {
-        static::$i = new static(Session::i(), User::i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
+        static::$i = new static(Session::i(), User::_i(), Config::i(), \ADV\Core\Ajax::i(), \ADV\Core\JS::i(), \ADV\App\Dates::i());
       }
       static::$i->init($title, $security, $no_menu, $isIndex);
       return static::$i;
@@ -197,7 +196,7 @@
         $item['href'] = '/' . strtolower($app);
         $app          = '\\ADV\\Controllers\\' . $app;
         if (class_exists($app)) {
-          /** @var \ADV\App\Controller\Menu $app  */
+          /** @var \ADV\App\Controller\Menu $app */
           $app           = new $app($this->Session, $this->User);
           $item['extra'] = $app->getModules();
         }
@@ -232,7 +231,7 @@
       $validate = [];
       $footer   = $this->menu_footer();
       $footer->set('beforescripts', "_focus = '" . Input::_post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
-      $this->User->_add_js_data();
+      $this->User->add_js_data();
       $footer->set('sidemenu', ($this->header && $this->menu ? ['bank' => $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
       $footer->set('messages', (!REQUEST_AJAX ? Messages::show() : ''));

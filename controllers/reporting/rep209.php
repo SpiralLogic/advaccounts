@@ -25,7 +25,7 @@
   function get_po($order_no) {
     # __ADVANCEDEDIT__ BEGIN # include suppliers phone and fax number
     $sql
-      = "SELECT purch_orders.*, suppliers.name, suppliers.account_no,
+            = "SELECT purch_orders.*, suppliers.name, suppliers.account_no,
          suppliers.curr_code, suppliers.payment_terms, suppliers.phone, suppliers.fax, locations.location_name,
          suppliers.email, suppliers.address,suppliers.city,suppliers.state,suppliers.postcode, suppliers.contact
         FROM purch_orders, suppliers, locations
@@ -54,46 +54,46 @@
 
   function print_po() {
     $report_type = '\\ADV\\App\\Reports\\PDF';
-    $from = $_POST['PARAM_0'];
-    $to = $_POST['PARAM_1'];
-    $currency = $_POST['PARAM_2'];
-    $email = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
+    $from        = $_POST['PARAM_0'];
+    $to          = $_POST['PARAM_1'];
+    $currency    = $_POST['PARAM_2'];
+    $email       = $_POST['PARAM_3'];
+    $comments    = $_POST['PARAM_4'];
     if ($from == null) {
       $from = 0;
     }
     if ($to == null) {
       $to = 0;
     }
-    $dec = User::price_dec();
+    $dec  = User::_price_dec();
     $cols = array(4, 80, 310, 330, 380, 410, 450, 460, 300);
     // $headers in doctext.inc
     $aligns = array('left', 'left', 'center', 'center', 'right', 'right', 'right', 'right');
     $params = array('comments' => $comments);
-    $cur = DB_Company::get_pref('curr_default');
+    $cur    = DB_Company::_get_pref('curr_default');
     if ($email == 0) {
       /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
-      $rep = new $report_type(_('PURCHASE ORDER'), "PurchaseOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
+      $rep           = new $report_type(_('PURCHASE ORDER'), "PurchaseOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::_page_size());
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
     }
     for ($i = $from; $i <= $to; $i++) {
-      $myrow = get_po($i);
-      $baccount = Bank_Account::get_default($myrow['curr_code']);
+      $myrow                 = get_po($i);
+      $baccount              = Bank_Account::get_default($myrow['curr_code']);
       $params['bankaccount'] = $baccount['id'];
       if ($email == 1) {
-        $rep = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
+        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::_page_size());
         $rep->currency = $cur;
         $rep->Font();
-        $rep->title = _('PURCHASE ORDER');
+        $rep->title    = _('PURCHASE ORDER');
         $rep->filename = "PurchaseOrder" . $i . ".pdf";
         $rep->Info($params, $cols, null, $aligns);
       } else {
         $rep->title = _('PURCHASE ORDER');
       }
       $rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
-      $result = get_po_details($i);
+      $result   = get_po_details($i);
       $SubTotal = 0;
       while ($myrow2 = DB::_fetch($result)) {
         if ($myrow2['item_code'] != 'freight' || $myrow['freight'] != $myrow2['unit_price']) {
@@ -106,14 +106,14 @@
               $myrow2['units'] = $data['suppliers_uom'];
             }
             if ($data['conversion_factor'] > 1) {
-              $myrow2['unit_price'] = Num::_round($myrow2['unit_price'] * $data['conversion_factor'], User::price_dec());
-              $myrow2['quantity_ordered'] = Num::_round($myrow2['quantity_ordered'] / $data['conversion_factor'], User::qty_dec());
+              $myrow2['unit_price']       = Num::_round($myrow2['unit_price'] * $data['conversion_factor'], User::_price_dec());
+              $myrow2['quantity_ordered'] = Num::_round($myrow2['quantity_ordered'] / $data['conversion_factor'], User::_qty_dec());
             }
           }
-          $Net = Num::_round(($myrow2["unit_price"] * $myrow2["quantity_ordered"] * (1 - $myrow2["discount"])), User::price_dec());
+          $Net = Num::_round(($myrow2["unit_price"] * $myrow2["quantity_ordered"] * (1 - $myrow2["discount"])), User::_price_dec());
           $SubTotal += $Net;
-          $price = $myrow2["unit_price"];
-          $DisplayPrice = Num::_priceFormat($price);
+          $price           = $myrow2["unit_price"];
+          $DisplayPrice    = Num::_priceFormat($price);
           $DisplayDiscount = Num::_percentFormat($myrow2['discount'] * 100);
           $DisplayDiscount .= $DisplayDiscount > 0 ? '%' : '';
           $DisplayQty = Num::_format($myrow2["quantity_ordered"], Item::qty_dec($myrow2['item_code']));
@@ -121,7 +121,7 @@
           $rep->TextCol(0, 1, $myrow2['item_code'], -2);
           $oldrow = $rep->row;
           $rep->TextColLines(1, 2, $myrow2['description'], -2);
-          $newrow = $rep->row;
+          $newrow   = $rep->row;
           $rep->row = $oldrow;
           $rep->TextCol(2, 3, $DisplayQty, -2);
           $rep->TextCol(4, 5, $DisplayPrice, -2);
@@ -139,9 +139,9 @@
         $rep->TextColLines(1, 5, $myrow['comments'], -2);
       }
       $display_sub_total = Num::_format($SubTotal, $dec);
-      $rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype = true;
-      $doctype = ST_PURCHORDER;
+      $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
+      $linetype          = true;
+      $doctype           = ST_PURCHORDER;
       extract($rep->getHeaderArray($doctype, false, $linetype));
       $rep->TextCol(3, 6, Report::SUBTOTAL, -2);
       $rep->TextCol(6, 7, $display_sub_total, -2);

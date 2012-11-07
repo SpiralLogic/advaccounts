@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -31,8 +30,7 @@
   /**
 
    */
-  class PDF extends \Cpdf
-  {
+  class PDF extends \Cpdf {
     use Doctext;
 
     /** @var array * */
@@ -111,17 +109,17 @@
      * @param null         $excelColWidthFactor
      */
     public function __construct($title, $filename, $security_level, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = null, $excelColWidthFactor = null) {
-      if (!User::i()->hasAccess($security_level)) {
+      if (!User::_i()->hasAccess($security_level)) {
         Event::error(_("The security settings on your account do not permit you to print this report"));
         Page::end();
         exit;
       }
       // Page margins - if user-specified, use those. Otherwise, use defaults below.
       if (isset($margins)) {
-        $this->topMargin = $margins['top'];
+        $this->topMargin    = $margins['top'];
         $this->bottomMargin = $margins['bottom'];
-        $this->leftMargin = $margins['left'];
-        $this->rightMargin = $margins['right'];
+        $this->leftMargin   = $margins['left'];
+        $this->rightMargin  = $margins['right'];
       }
       // Page orientation - P: portrait, L: landscape
       $orientation = strtoupper($orientation);
@@ -131,117 +129,117 @@
         case 'A4':
           // Portrait
           if ($orientation == 'P') {
-            $this->pageWidth = 595;
+            $this->pageWidth  = 595;
             $this->pageHeight = 842;
             if (!isset($margins)) {
-              $this->topMargin = 40;
+              $this->topMargin    = 40;
               $this->bottomMargin = 30;
-              $this->leftMargin = 40;
-              $this->rightMargin = 30;
+              $this->leftMargin   = 40;
+              $this->rightMargin  = 30;
             }
           } // Landscape
           else {
-            $this->pageWidth = 842;
+            $this->pageWidth  = 842;
             $this->pageHeight = 595;
             if (!isset($margins)) {
-              $this->topMargin = 30;
+              $this->topMargin    = 30;
               $this->bottomMargin = 30;
-              $this->leftMargin = 40;
-              $this->rightMargin = 30;
+              $this->leftMargin   = 40;
+              $this->rightMargin  = 30;
             }
           }
           break;
         case 'A3':
           // Portrait
           if ($orientation == 'P') {
-            $this->pageWidth = 842;
+            $this->pageWidth  = 842;
             $this->pageHeight = 1190;
             if (!isset($margins)) {
-              $this->topMargin = 50;
+              $this->topMargin    = 50;
               $this->bottomMargin = 50;
-              $this->leftMargin = 50;
-              $this->rightMargin = 40;
+              $this->leftMargin   = 50;
+              $this->rightMargin  = 40;
             }
           } // Landscape
           else {
-            $this->pageWidth = 1190;
+            $this->pageWidth  = 1190;
             $this->pageHeight = 842;
             if (!isset($margins)) {
-              $this->topMargin = 50;
+              $this->topMargin    = 50;
               $this->bottomMargin = 50;
-              $this->leftMargin = 50;
-              $this->rightMargin = 40;
+              $this->leftMargin   = 50;
+              $this->rightMargin  = 40;
             }
           }
           break;
         case 'LETTER':
           // Portrait
           if ($orientation == 'P') {
-            $this->pageWidth = 612;
+            $this->pageWidth  = 612;
             $this->pageHeight = 792;
             if (!isset($margins)) {
-              $this->topMargin = 30;
+              $this->topMargin    = 30;
               $this->bottomMargin = 30;
-              $this->leftMargin = 30;
-              $this->rightMargin = 25;
+              $this->leftMargin   = 30;
+              $this->rightMargin  = 25;
             }
           } // Landscape
           else {
-            $this->pageWidth = 792;
+            $this->pageWidth  = 792;
             $this->pageHeight = 612;
             if (!isset($margins)) {
-              $this->topMargin = 30;
+              $this->topMargin    = 30;
               $this->bottomMargin = 30;
-              $this->leftMargin = 30;
-              $this->rightMargin = 25;
+              $this->leftMargin   = 30;
+              $this->rightMargin  = 25;
             }
           }
           break;
         case 'LEGAL':
           // Portrait
           if ($orientation == 'P') {
-            $this->pageWidth = 612;
+            $this->pageWidth  = 612;
             $this->pageHeight = 1008;
             if (!isset($margins)) {
-              $this->topMargin = 50;
+              $this->topMargin    = 50;
               $this->bottomMargin = 40;
-              $this->leftMargin = 30;
-              $this->rightMargin = 25;
+              $this->leftMargin   = 30;
+              $this->rightMargin  = 25;
             }
           } // Landscape
           else {
-            $this->pageWidth = 1008;
+            $this->pageWidth  = 1008;
             $this->pageHeight = 612;
             if (!isset($margins)) {
-              $this->topMargin = 50;
+              $this->topMargin    = 50;
               $this->bottomMargin = 40;
-              $this->leftMargin = 30;
-              $this->rightMargin = 25;
+              $this->leftMargin   = 30;
+              $this->rightMargin  = 25;
             }
           }
           break;
       }
-      $this->size = array(0, 0, $this->pageWidth, $this->pageHeight);
-      $this->title = $title;
-      $this->filename = $filename . ".pdf";
-      $this->pageNumber = 0;
-      $this->endLine = $this->pageWidth - $this->rightMargin;
-      $this->lineHeight = 12;
-      $this->fontSize = $fontsize;
-      $this->oldFontSize = 0;
-      $this->row = $this->pageHeight - $this->topMargin;
-      $this->currency = '';
+      $this->size           = array(0, 0, $this->pageWidth, $this->pageHeight);
+      $this->title          = $title;
+      $this->filename       = $filename . ".pdf";
+      $this->pageNumber     = 0;
+      $this->endLine        = $this->pageWidth - $this->rightMargin;
+      $this->lineHeight     = 12;
+      $this->fontSize       = $fontsize;
+      $this->oldFontSize    = 0;
+      $this->row            = $this->pageHeight - $this->topMargin;
+      $this->currency       = '';
       $this->scaleLogoWidth = false; // if Logo, scale on width (else height).
-      $this->headerFunc = 'Header'; // default to the original header template
-      $rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
-      $code = $_SESSION['language']->code;
-      $enc = strtoupper($_SESSION['language']->encoding);
+      $this->headerFunc     = 'Header'; // default to the original header template
+      $rtl                  = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
+      $code                 = $_SESSION['language']->code;
+      $enc                  = strtoupper($_SESSION['language']->encoding);
       // for the language array in class.pdf.inc
       $l = array(
-        'a_meta_charset' => $enc,
-        'a_meta_dir' => $rtl,
+        'a_meta_charset'  => $enc,
+        'a_meta_dir'      => $rtl,
         'a_meta_language' => $code,
-        'w_page' => 'page'
+        'w_page'          => 'page'
       );
       parent::__construct($size, $l, $orientation);
     }
@@ -311,40 +309,40 @@
       $this->addinfo('Subject', $this->title);
       $this->addinfo('Author', APP_TITLE . ' ' . VERSION);
       $this->addinfo('Creator', POWERED_BY . ' - ' . POWERED_URL);
-      $year = DB_Company::get_current_fiscalyear();
+      $year = DB_Company::_get_current_fiscalyear();
       if ($year['closed'] == 0) {
         $how = _("Active");
       } else {
         $how = _("Closed");
       }
       $this->fiscal_year = Dates::_sqlToDate($year['begin']) . " - " . Dates::_sqlToDate($year['end']) . " (" . $how . ")";
-      $this->company = DB_Company::get_prefs();
-      $this->user = User::i()->name;
-      $this->host = $_SERVER['SERVER_NAME'];
-      $this->params = $params;
-      $this->cols = $cols;
+      $this->company     = DB_Company::_get_prefs();
+      $this->user        = User::_i()->name;
+      $this->host        = $_SERVER['SERVER_NAME'];
+      $this->params      = $params;
+      $this->cols        = $cols;
       for ($i = 0; $i < count($this->cols); $i++) {
         $this->cols[$i] += $this->leftMargin;
       }
       $this->headers = $headers;
-      $this->aligns = $aligns;
-      $this->cols2 = $cols2;
+      $this->aligns  = $aligns;
+      $this->cols2   = $cols2;
       if ($this->cols2 != null) {
         for ($i = 0; $i < count($this->cols2); $i++) {
           $this->cols2[$i] += $this->leftMargin;
         }
       }
       $this->headers2 = $headers2;
-      $this->aligns2 = $aligns2;
+      $this->aligns2  = $aligns2;
       // Set whether to display company logo in some header templates
       $this->companyLogoEnable = $companylogoenable;
       // Store footer settings
       $this->footerEnable = $footerenable;
-      $this->footerText = $footertext;
+      $this->footerText   = $footertext;
     }
     public function Header() {
       $companyCol = $this->endLine - 150;
-      $titleCol = $this->leftMargin + 100;
+      $titleCol   = $this->leftMargin + 100;
       $this->pageNumber++;
       if ($this->pageNumber > 1) {
         $this->newPage();
@@ -430,10 +428,10 @@
         $this->newPage();
       }
       $header2type = true;
-      $isproforma = false;
+      $isproforma  = false;
       if ($doctype == ST_PROFORMA || $doctype == ST_PROFORMAQ) {
         $isproforma = true;
-        $doctype = ($doctype == ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
+        $doctype    = ($doctype == ST_PROFORMA) ? ST_SALESORDER : ST_SALESQUOTE;
       }
       if ($doctype == ST_STATEMENT) {
         $customer = new Debtor($myrow['debtor_id']);
@@ -444,24 +442,24 @@
       extract($this->getHeaderArray($doctype, $header2type, false, $isproforma));
       // New version (without vertical lines)
       $this->row = $this->pageHeight - $this->topMargin;
-      $upper = $this->row - 2 * $this->lineHeight;
-      $lower = $this->bottomMargin + 8 * $this->lineHeight;
-      $iline1 = $upper - 7.5 * $this->lineHeight;
-      $iline2 = $iline1 - 8 * $this->lineHeight;
-      $iline3 = $iline2 - 1.5 * $this->lineHeight;
-      $iline4 = $iline3 - 1.5 * $this->lineHeight;
-      $iline5 = $iline4 - 3 * $this->lineHeight;
-      $iline6 = $iline5 - 1.5 * $this->lineHeight;
-      $iline7 = $lower;
-      $right = $this->pageWidth - $this->rightMargin;
-      $width = ($right - $this->leftMargin) / 5;
-      $icol = $this->pageWidth / 2;
-      $ccol = $this->cols[0] + 4;
-      $c2col = $ccol + 60;
-      $ccol2 = $icol / 2;
-      $mcol = $icol + 8;
-      $mcol2 = $this->pageWidth - $ccol2;
-      $cols = count($this->cols);
+      $upper     = $this->row - 2 * $this->lineHeight;
+      $lower     = $this->bottomMargin + 8 * $this->lineHeight;
+      $iline1    = $upper - 7.5 * $this->lineHeight;
+      $iline2    = $iline1 - 8 * $this->lineHeight;
+      $iline3    = $iline2 - 1.5 * $this->lineHeight;
+      $iline4    = $iline3 - 1.5 * $this->lineHeight;
+      $iline5    = $iline4 - 3 * $this->lineHeight;
+      $iline6    = $iline5 - 1.5 * $this->lineHeight;
+      $iline7    = $lower;
+      $right     = $this->pageWidth - $this->rightMargin;
+      $width     = ($right - $this->leftMargin) / 5;
+      $icol      = $this->pageWidth / 2;
+      $ccol      = $this->cols[0] + 4;
+      $c2col     = $ccol + 60;
+      $ccol2     = $icol / 2;
+      $mcol      = $icol + 8;
+      $mcol2     = $this->pageWidth - $ccol2;
+      $cols      = count($this->cols);
       $this->SetDrawColor(205, 205, 205);
       $this->Line($iline1, 3);
       $this->SetDrawColor(128, 128, 128);
@@ -482,7 +480,7 @@
       $this->LineTo($right, $iline2, $right, $iline4);
       $this->LineTo($this->leftMargin, $iline5, $this->leftMargin, $iline7);
       $adjustment = (end($this->aligns) == 'right') ? 5 : -5;
-      $bar = ($cols > count($this->aligns) + 1) ? $cols - 1 : $cols - 2;
+      $bar        = ($cols > count($this->aligns) + 1) ? $cols - 1 : $cols - 2;
       $this->LineTo($this->cols[$bar] + $adjustment, $iline5, $this->cols[$bar] + $adjustment, $iline7);
       $this->LineTo($right, $iline5, $right, $iline7);
       $this->NewLine();
@@ -507,7 +505,7 @@
         $this->NewLine();
         $this->Font('bold');
         if (Dates::_isGreaterThan($myrow['tran_date'], Dates::_today())) {
-          $date = _("Current");
+          $date               = _("Current");
           $myrow['tran_date'] = Dates::_today(true);
         } else {
           $date = date('F Y', strtotime($myrow['tran_date'] . '- 1 day'));
@@ -613,11 +611,11 @@
         } else {
           $id = isset($myrow['salesman']) ? $myrow['salesman'] : '';
         }
-        $sql = "SELECT salesman_name FROM salesman WHERE salesman_code='$id'";
+        $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code='$id'";
         $result = DB::_query($sql, "could not get sales person");
-        $row = DB::_fetch($result);
+        $row    = DB::_fetch($result);
         if (empty($row['salesman_name'])) {
-          $user = User::i()->name;
+          $user = User::_i()->name;
         } else {
           $user = $row['salesman_name'];
         }
@@ -626,7 +624,7 @@
         //$row = DB::_fetch($result);
         $this->Text($mcol + 180, $user);
         //$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-        //$this->TextWrap($col, $this->row, $width, User::i(), 'C');
+        //$this->TextWrap($col, $this->row, $width, User::_i(), 'C');
       }
       if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk")) {
         $this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
@@ -641,8 +639,8 @@
       $this->Font('');
       //		$this->fontSize += 4;
       $this->row = $this->row - $this->lineHeight - 5;
-      $temp = $this->row;
-      $name = !isset($myrow['DebtorName']) ? : $myrow['DebtorName'];
+      $temp      = $this->row;
+      $name      = !isset($myrow['DebtorName']) ? : $myrow['DebtorName'];
       if (isset($companyto) && isset($companyto->accounts)) {
         $addr = $companyto->accounts->getAddress();
       }
@@ -685,7 +683,7 @@
       }
       $this->TextWrapLines($mcol + 60, 180, $addr);
       $this->row = $iline2 - $this->lineHeight - 1;
-      $col = $this->leftMargin;
+      $col       = $this->leftMargin;
       $this->TextWrap($col, $this->row, $width, $this->doc_Customers_Ref, 'C');
       $col += $width;
       $this->TextWrap($col, $this->row, $width, $this->doc_Our_Ref, 'C');
@@ -696,7 +694,7 @@
       $col += $width;
       $this->TextWrap($col, $this->row, $width, $this->doc_Due_Date, 'C');
       $this->row = $iline3 - $this->lineHeight - 1;
-      $col = $this->leftMargin;
+      $col       = $this->leftMargin;
       if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) {
         $this->TextWrap($col, $this->row, $width, $myrow['account_no'], 'C');
       } elseif ($doctype == ST_WORKORDER) {
@@ -709,12 +707,12 @@
       $col += $width;
       $report_contact = (!empty($myrow['contact_name'])) ? $myrow['contact_name'] : $branch['contact_name'];
       if ($doctype == ST_PURCHORDER) {
-        $id = $branch['salesman'];
-        $sql = "SELECT salesman_name FROM salesman WHERE salesman_code='$id'";
+        $id     = $branch['salesman'];
+        $sql    = "SELECT salesman_name FROM salesman WHERE salesman_code='$id'";
         $result = DB::_query($sql, "could not get sales person");
-        $row = DB::_fetch($result);
+        $row    = DB::_fetch($result);
         $this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
-        //$this->TextWrap($col, $this->row, $width, User::i(), 'C');
+        //$this->TextWrap($col, $this->row, $width, User::_i(), 'C');
       } # __ADVANCEDEDIT__ END #
       elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT || $doctype == ST_CUSTREFUND) {
         $this->TextWrap($col, $this->row, $width, SysTypes::$names[$myrow["type"]], 'C');
@@ -796,11 +794,11 @@
         if ($doctype == ST_WORKORDER) {
           $str = Dates::_sqlToDate($myrow["required_by"]);
         } else {
-          $id = $myrow['payment_terms'];
-          $sql = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
+          $id     = $myrow['payment_terms'];
+          $sql    = "SELECT terms FROM payment_terms WHERE terms_indicator='$id'";
           $result = DB::_query($sql, "could not get paymentterms");
-          $row = DB::_fetch($result);
-          $str = $row["terms"];
+          $row    = DB::_fetch($result);
+          $str    = $row["terms"];
         }
         $this->Font('bold');
         $this->text($ccol, $this->doc_Payment_Terms . ": " . $str);
@@ -811,7 +809,7 @@
       }
       $this->row = $iline5 - $this->lineHeight - 1;
       $this->Font('bold');
-      $count = count($this->headers);
+      $count              = count($this->headers);
       $this->cols[$count] = $right - 3;
       for ($i = 0; $i < $count; $i++) {
         $this->TextCol($i, $i + 1, $this->headers[$i], -2);
@@ -842,10 +840,10 @@
       }
       if ($doctype == ST_SALESINVOICE && $branch['disable_branch'] > 0) { // payment links
         if ($branch['disable_branch'] == 1) {
-          $amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::price_dec());
-          $txt = $this->doc_Payment_Link . " PayPal: ";
+          $amt  = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::_price_dec());
+          $txt  = $this->doc_Payment_Link . " PayPal: ";
           $name = urlencode($this->title . " " . $myrow['reference']);
-          $url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+          $url  = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
           $this->fontSize -= 2;
           $this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
           $this->row -= $this->lineHeight;
@@ -898,11 +896,11 @@
         define('FOOTER_MARGIN', 4);
       }
       // Set some variables which control header item layout
-      $companyCol = $this->endLine - COMPANY_WIDTH;
+      $companyCol     = $this->endLine - COMPANY_WIDTH;
       $headerFieldCol = $this->leftMargin + LABEL_WIDTH;
-      $pageNumCol = $this->endLine - PAGE_NUM_WIDTH;
-      $footerCol = $this->leftMargin + PAGE_NUM_WIDTH;
-      $footerRow = $this->bottomMargin - FOOTER_MARGIN;
+      $pageNumCol     = $this->endLine - PAGE_NUM_WIDTH;
+      $footerCol      = $this->leftMargin + PAGE_NUM_WIDTH;
+      $footerRow      = $this->bottomMargin - FOOTER_MARGIN;
       // Calling this public function generates a new PDF page after the first instance
       $this->pageNumber++;
       if ($this->pageNumber > 1) {
@@ -922,7 +920,7 @@
       // Footer
       if ($this->footerEnable) {
         $this->Line($footerRow, 1);
-        $prevFontSize = $this->fontSize;
+        $prevFontSize   = $this->fontSize;
         $this->fontSize = FOOTER_FONT_SIZE;
         $this->TextWrap(
           $footerCol,
@@ -955,7 +953,7 @@
       $this->Line($this->row + 8, 1);
       $this->NewLine();
       // Print the report title nice and big
-      $oldFontSize = $this->fontSize;
+      $oldFontSize    = $this->fontSize;
       $this->fontSize = TITLE_FONT_SIZE;
       $this->Font('B');
       $this->Text($this->leftMargin, $this->title, $companyCol);
@@ -1065,7 +1063,7 @@
       // restore user-specified cell padding for column headers
       $this->SetCellPadding($oldcMargin);
       // scoot down the page a bit
-      $oldLineHeight = $this->lineHeight;
+      $oldLineHeight    = $this->lineHeight;
       $this->lineHeight = $this->fontSize + 1;
       $this->row -= ($this->lineHeight + 6);
       $this->lineHeight = $oldLineHeight;
@@ -1099,10 +1097,10 @@
      */
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
       if ($date != '') {
-        $date = Dates::_dateToSql($date);
-        $year = (int)(substr($date, 0, 4));
-        $month = (int)(substr($date, 5, 2));
-        $day = (int)(substr($date, 8, 2));
+        $date  = Dates::_dateToSql($date);
+        $year  = (int) (substr($date, 0, 4));
+        $month = (int) (substr($date, 5, 2));
+        $day   = (int) (substr($date, 8, 2));
         if ($output_format == 0) {
           return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
         } elseif ($output_format == 1) {
@@ -1140,10 +1138,10 @@
       // Test last value: G == grayscale, single number; RG == RGB, 3 numbers
       if ($colorFields[count($colorFields) - 1] == 'G') // Convert a grayscale string value to the equivalent RGB value
       {
-        $drawColor = array((float)$colorFields[0], (float)$colorFields[0], (float)$colorFields[0]);
+        $drawColor = array((float) $colorFields[0], (float) $colorFields[0], (float) $colorFields[0]);
       } else // Convert RGB string values to the a numeric array
       {
-        $drawColor = array((float)$colorFields[0], (float)$colorFields[1], (float)$colorFields[2]);
+        $drawColor = array((float) $colorFields[0], (float) $colorFields[1], (float) $colorFields[2]);
       }
       return $drawColor;
     }
@@ -1169,7 +1167,6 @@
     }
     /**
      * Set the fill color for table cells.
-     *
      * @see reporting/includes/TCPDF#SetFillColor($col1, $col2, $col3, $col4)
      *
      * @param int $r
@@ -1568,9 +1565,9 @@
           $fname = $dir . '/' . uniqid('') . '.pdf';
         }
         $this->Output($fname, 'F');
-        $this->doc_Dear_Sirs = '';
-        $this->doc_AttachedFile = '';
-        $this->doc_Payment_Link = '';
+        $this->doc_Dear_Sirs       = '';
+        $this->doc_AttachedFile    = '';
+        $this->doc_Payment_Link    = '';
         $this->doc_Kindest_regards = '';
         if ($email == 1) {
           extract($this->getHeaderArray($doctype, true, false, true));
@@ -1581,9 +1578,9 @@
           $msg = $this->doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $this->doc_AttachedFile . " " . $subject . "\n\n";
           if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) { // helper for payment links
             if ($myrow['dimension_id'] == 1) {
-              $amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::price_dec());
+              $amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"], User::_price_dec());
               $txt = $this->doc_Payment_Link . " PayPal: ";
-              $nn = urlencode($this->title . " " . $myrow['reference']);
+              $nn  = urlencode($this->title . " " . $myrow['reference']);
               $url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" . $nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
               $msg .= $txt . $url . "\n\n";
             }
@@ -1592,7 +1589,7 @@
           $sender = $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
           //$mail->to($to);
           if (!empty($myrow['debtor_id'])) {
-            $customer = new Debtor($myrow['debtor_id']);
+            $customer     = new Debtor($myrow['debtor_id']);
             $emailAddress = $customer->accounts->email;
           }
           if (empty($emailAddress)) {
@@ -1616,10 +1613,10 @@
           }
           unlink($fname);
         } else {
-          $printer = Printer::get_report(User::print_profile(), $_POST['REP_ID']);
+          $printer = Printer::get_report(User::_print_profile(), $_POST['REP_ID']);
           if ($printer == false) {
             if (Ajax::_inAjax()) {
-              if (User::rep_popup()) {
+              if (User::_rep_popup()) {
                 Ajax::_popup($fname);
               } // when embeded pdf viewer used
               else {
@@ -1645,7 +1642,7 @@
               $this->Stream();
             }
           } else { // send report to network printer
-            $prn = new Reports_Printer_Remote($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
+            $prn   = new Reports_Printer_Remote($printer['queue'], $printer['host'], $printer['port'], $printer['timeout']);
             $error = $prn->print_file($fname);
             if ($error) {
               Event::error($error);

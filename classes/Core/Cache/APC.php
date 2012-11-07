@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,13 +13,12 @@
   /**
 
    */
-  class APC implements Cachable
-  {
-    public $defineFucntion;
+  class APC implements Cachable {
+    public $defineFunction;
     public $loadFunction;
     public function init() {
-      $this->loadFunction = (function_exists('apc_load_constants')) ? 'apc_load_constants' : false;
-      $this->defineFucntion = (function_exists('apc_define_constants')) ? 'apc_define_constants' : false;
+      $this->loadFunction   = (function_exists('apc_load_constants')) ? 'apc_load_constants' : false;
+      $this->defineFunction = (function_exists('apc_define_constants')) ? 'apc_define_constants' : false;
     }
     /**
      * @static
@@ -75,5 +73,35 @@
     public function flush($time = 0) {
       apc_clear_cache('user');
       apc_clear_cache();
+    }
+    /**
+     * @param                $name
+     * @param \Closure|Array $constants
+     *
+     * @return bool
+     * @return \ADV\Core\Cache|bool
+     */
+    public function defineConstants($name, $constants) {
+      $loader = $this->loadFunction;
+      if (is_callable($loader)) {
+        $loader = $loader($name);
+      }
+      if ($loader === true) {
+        return true;
+      }
+      if (is_callable($constants)) {
+        $constants = (array) call_user_func($constants);
+      }
+      $definer = $this->defineFunction;
+      if (is_callable($definer)) {
+        $definer = $definer($name, $constants);
+      }
+      if ($definer === true) {
+        return true;
+      }
+      foreach ($constants as $constant => $value) {
+        define($constant, $value);
+      }
+      return false;
     }
   }

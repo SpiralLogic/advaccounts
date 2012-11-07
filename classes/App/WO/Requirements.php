@@ -16,7 +16,8 @@
      * @return null|PDOStatement
      */
     public static function get($woid) {
-      $sql = "SELECT wo_requirements.*, stock_master.description,
+      $sql
+        = "SELECT wo_requirements.*, stock_master.description,
         stock_master.mb_flag,
         locations.location_name,
         workcentres.name AS WorkCentreDescription FROM
@@ -37,7 +38,8 @@
       // create Work Order Requirements based on the bom
       $result = WO::get_bom($stock_id);
       while ($myrow = DB::_fetch($result)) {
-        $sql = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
+        $sql
+          = "INSERT INTO wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
             VALUES (" . DB::_escape($woid) . ", '" . $myrow["component"] . "', '" . $myrow["workcentre_added"] . "', '" . $myrow["quantity"] . "', '" . $myrow["loc_code"] . "')";
         DB::_query($sql, "The work order requirements could not be added");
       }
@@ -112,14 +114,14 @@
           if ($show_qoh) {
             $qoh = Item::get_qoh_on_date($myrow["stock_id"], $myrow["loc_code"], $date);
           }
-          if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) && !DB_Company::get_pref('allow_negative_stock')
+          if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) && !DB_Company::_get_pref('allow_negative_stock')
           ) {
             // oops, we don't have enough of one of the component items
             echo "<tr class='stockmankobg'>";
             $has_marked = true;
           } else {
           }
-          if (User::show_codes()) {
+          if (User::_show_codes()) {
             Cell::label($myrow["stock_id"] . " - " . $myrow["description"]);
           } else {
             Cell::label($myrow["description"]);

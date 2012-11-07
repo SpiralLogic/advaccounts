@@ -40,7 +40,7 @@
   }
   Page::start(_($help_context = "Backup and Restore Database"), SA_BACKUP);
   check_paths();
-  $db_name     = User::i()->company;
+  $db_name     = User::_i()->company;
   $connections = Config::_getAll('db');
   $conn        = $connections[$db_name];
   if (Input::_post('creat')) {

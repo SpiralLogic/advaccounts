@@ -232,7 +232,7 @@
       if ($id == -1) {
         WO_Issue::edit_controls($order);
       }
-      //	Table::label(_("Total"), Num::_format($total,User::price_dec()), "colspan=5", "class='alignright'");
+      //	Table::label(_("Total"), Num::_format($total,User::_price_dec()), "colspan=5", "class='alignright'");
       Table::end();
       Ajax::_end_div();
     }

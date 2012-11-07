@@ -57,10 +57,10 @@
         if ($rate == 0) {
           $amount_in_home_currency = Bank_Currency::to_home($amount, $currency, $date_);
         } else {
-          $amount_in_home_currency = Num::_round($amount * $rate, User::price_dec());
+          $amount_in_home_currency = Num::_round($amount * $rate, User::_price_dec());
         }
       } else {
-        $amount_in_home_currency = Num::_round($amount, User::price_dec());
+        $amount_in_home_currency = Num::_round($amount, User::_price_dec());
       }
       if ($dimension == null || $dimension < 0) {
         $dimension = 0;
@@ -70,9 +70,9 @@
       }
       if (Config::_get('accounts.logs_audits')) {
         if ($memo_ == "" || $memo_ == null) {
-          $memo_ = User::i()->username;
+          $memo_ = User::_i()->username;
         } else {
-          $memo_ = User::i()->username . " - " . $memo_;
+          $memo_ = User::_i()->username . " - " . $memo_;
         }
       }
       $sql
@@ -135,13 +135,13 @@
      * public static function for even out rounding problems
      */
     public static function add_balance($type, $trans_id, $date_, $amount, $person_type_id = null, $person_id = null) {
-      $amount = Num::_round($amount, User::price_dec());
+      $amount = Num::_round($amount, User::_price_dec());
       if ($amount != 0) {
         return static::add(
           $type,
           $trans_id,
           $date_,
-          DB_Company::get_pref('exchange_diff_act'),
+          DB_Company::_get_pref('exchange_diff_act'),
           0,
           0,
           "",

@@ -30,9 +30,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Action
-  {
-
+  class Transactions extends \ADV\App\Controller\Action {
     public $creditor_id;
     protected function before() {
       JS::_openWindow(950, 500);
@@ -82,7 +80,8 @@
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
-      $sql = "SELECT trans.type,
+      $sql
+        = "SELECT trans.type,
     		trans.trans_no,
     		trans.reference,
     		supplier.name,
@@ -110,7 +109,8 @@
           ) . " OR trans.supplier_reference LIKE " . DB::_quote($quicksearch) . ")";
         }
       } else {
-        $sql .= " AND trans . tran_date >= '$date_after'
+        $sql
+          .= " AND trans . tran_date >= '$date_after'
     	 AND trans . tran_date <= '$date_to'";
       }
       if ($this->creditor_id > 0) {
@@ -248,7 +248,7 @@
      * @param $supplier_record
      */
     function displaySupplierSummary($supplier_record) {
-      $past_due1     = DB_Company::get_pref('past_due_days');
+      $past_due1     = DB_Company::_get_pref('past_due_days');
       $past_due2     = 2 * $past_due1;
       $txt_now_due   = "1-" . $past_due1 . " " . _('Days');
       $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');

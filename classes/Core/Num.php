@@ -20,16 +20,16 @@
 
    */
   class Num {
-    use Traits\StaticAccess2;
+    use Traits\StaticAccess;
 
-    /** @var int **/
+    /** @var int * */
     public $price_dec = 2;
     public $qty_dec = 0;
-    /** @var string **/
+    /** @var string * */
     public $tho_sep = ',';
-    /** @var string **/
+    /** @var string * */
     public $dec_sep = '.';
-    /** @var string **/
+    /** @var string * */
     public $exrate_dec = 4;
     /** @var */
     public $percent_dec;

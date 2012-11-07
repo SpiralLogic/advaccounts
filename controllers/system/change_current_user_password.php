@@ -17,7 +17,7 @@
       JS::_setFocus('password');
       return false;
     }
-    if (strstr($_POST['password'], User::i()->username) != false) {
+    if (strstr($_POST['password'], User::_i()->username) != false) {
       Event::error(_("The password cannot contain the user login."));
       JS::_setFocus('password');
       return false;
@@ -35,27 +35,27 @@
       if (Config::_get('demo_mode')) {
         Event::warning(_("Password cannot be changed in demo mode."));
       } else {
-        $auth  = new Auth(User::i()->username);
+        $auth  = new Auth(User::_i()->username);
         $check = $auth->checkPasswordStrength($_POST['password']);
         if ($check['error'] > 0) {
           Event::error($check['text']);
         } elseif ($check['strength'] < 3) {
           Event::error(_("Password Too Weak!"));
         } else {
-          $auth->updatePassword(User::i()->user, $_POST['password']);
-          User::i()->change_password = false;
+          $auth->updatePassword(User::_i()->user, $_POST['password']);
+          User::_i()->change_password = false;
           Event::success(_("Password Changed"));
         }
       }
       Ajax::_activate('_page_body');
     }
-  } elseif (User::i()->change_password) {
+  } elseif (User::_i()->change_password) {
     Event::warning('You are required to change your password!');
   }
   Forms::start();
   Table::start('padded');
   Table::sectionTitle(_("Enter your new password in the fields."));
-  $myrow = Users::get(User::i()->user);
+  $myrow = Users::get(User::_i()->user);
   Table::label(_("User login:"), $myrow['user_id']);
   $_POST['password'] = $_POST['passwordConfirm'] = "";
   Forms::passwordRow(_("Password:"), 'password', $_POST['password']);

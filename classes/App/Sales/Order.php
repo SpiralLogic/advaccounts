@@ -43,21 +43,21 @@
 
    */
   class Sales_Order {
-    /** @var int **/
+    /** @var int * */
     public $trans_type; // invoice, order, quotation, delivery note ...
-    /** @var array **/
+    /** @var array * */
     public $trans_no = []; // array (num1=>ver1,..) or 0 for new
-    /** @var int **/
+    /** @var int * */
     public $so_type = 0; // for sales order: simple=0 template=1
     /** @var */
     public $order_id; // used to detect multi-tab edition conflits
-    /** @var array **/
+    /** @var array * */
     public $line_items; //array of objects of class Sales_Line
-    /** @var array **/
+    /** @var array * */
     public $src_docs = []; // array of arrays(num1=>ver1,...) or 0 for no src
     /** @var */
     public $src_date; // src document date (for info only)
-    /** @var null **/
+    /** @var null * */
     public $source_no = null;
     /** @var */
     public $document_date;
@@ -65,7 +65,7 @@
     public $due_date;
     /** @var */
     public $salesman;
-    /** @var string **/
+    /** @var string * */
     public $sales_type; // set to the customer's sales type
     /** @var */
     public $sales_type_name; // set to customer's sales type name
@@ -103,17 +103,17 @@
     public $location_name;
     /** @var */
     public $order_no; // the original order number
-    /** @var int **/
+    /** @var int * */
     public $trans_link = 0;
     /** @var */
     public $ship_via;
-    /** @var int **/
+    /** @var int * */
     public $freight_cost = 0;
     /** @var */
     public $tax_group_id;
     /** @var */
     public $tax_group_name;
-    /** @var null **/
+    /** @var null * */
     public $tax_group_array = null; // saves db queries
     /** @var */
     public $price_factor; // ditto for price calculations
@@ -125,9 +125,9 @@
     public $cash_account;
     /** @var */
     public $account_name;
-    /** @var int **/
+    /** @var int * */
     public $dimension_id;
-    /** @var int **/
+    /** @var int * */
     public $dimension2_id;
     /** @var */
     public $payment;
@@ -137,7 +137,7 @@
     public $credit;
     /** @var */
     protected $uniqueid;
-    /** @var bool **/
+    /** @var bool * */
     public $view_only = false;
     //
     // $trans_no==0 => open new/direct document
@@ -239,7 +239,7 @@
         $this->set_salesman();
         if ($type == ST_SALESINVOICE) {
           $this->due_date = Sales_Order::get_invoice_duedate($this->debtor_id, $this->document_date);
-          $this->pos      = User::pos();
+          $this->pos      = User::_pos();
           $pos            = Sales_Point::get($this->pos);
           $this->cash     = !$pos['credit_sale'];
           if (!$pos['cash_sale'] || !$pos['credit_sale'] || $this->due_date == Dates::_today()) {
@@ -255,7 +255,7 @@
             $this->account_name  = $pos['bank_account_name'];
           }
         } else {
-          $this->due_date = Dates::_addDays($this->document_date, DB_Company::get_pref('default_delivery_required'));
+          $this->due_date = Dates::_addDays($this->document_date, DB_Company::_get_pref('default_delivery_required'));
         }
       }
       if ($this->trans_type == ST_SALESORDER) {
@@ -341,7 +341,7 @@
       $this->default_discount  = $discount;
       $this->customer_currency = $currency;
       $this->payment           = $payment;
-      $this->payment_terms     = DB_Company::get_payment_terms($payment);
+      $this->payment_terms     = DB_Company::_get_payment_terms($payment);
       if ($this->payment_terms['cash_sale']) {
         $pos                 = Sales_Point::get($this->pos);
         $this->location      = $pos['pos_location'];
@@ -371,7 +371,7 @@
      */
     public function set_salesman($salesman_code = null) {
       if ($salesman_code == null) {
-        $salesman_name = User::i()->name;
+        $salesman_name = User::_i()->name;
         $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::_escape($salesman_name);
         $query         = DB::_query($sql, 'Couldn\'t find current salesman');
         $result        = DB::_fetchAssoc($query);
@@ -508,7 +508,7 @@
       foreach ($this->line_items as $line) {
         /* @var Sales_Line $line */
         $price = $line->line_price();
-        $total += round($line->quantity * $price * (1 - $line->discount_percent), User::price_dec());
+        $total += round($line->quantity * $price * (1 - $line->discount_percent), User::_price_dec());
       }
       return $total;
     }
@@ -520,7 +520,7 @@
       foreach ($this->line_items as $line) {
         /* @var Sales_Line $line */
         $price = $line->price;
-        $total += round(($line->qty_dispatched * $price * (1 - $line->discount_percent)), User::price_dec());
+        $total += round(($line->qty_dispatched * $price * (1 - $line->discount_percent)), User::_price_dec());
       }
       return $total;
     }
@@ -573,7 +573,7 @@
       foreach ($this->line_items as $ln_item) {
         /* @var Sales_Line $ln_item */
         $items[]  = $ln_item->stock_id;
-        $prices[] = round(($ln_item->quantity * $ln_item->line_price() * (1 - $ln_item->discount_percent)), User::price_dec());
+        $prices[] = round(($ln_item->quantity * $ln_item->line_price() * (1 - $ln_item->discount_percent)), User::_price_dec());
       }
       $taxes = Tax::for_items($items, $prices, $shipping_cost, $this->tax_group_id, $this->tax_included, $this->tax_group_array);
       // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
@@ -598,7 +598,7 @@
       foreach ($this->line_items as $line) {
         /* @var Sales_Line $line */
         $items[]  = $line->stock_id;
-        $prices[] = round(($line->qty_dispatched * $line->line_price() * (1 - $line->discount_percent)), User::price_dec());
+        $prices[] = round(($line->qty_dispatched * $line->line_price() * (1 - $line->discount_percent)), User::_price_dec());
       }
       $taxes = Tax::for_items($items, $prices, $shipping_cost, $this->tax_group_id, $this->tax_included, $this->tax_group_array);
       // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
@@ -634,9 +634,9 @@
         }
       }
       if ($this->tax_included) {
-        return round($this->freight_cost * $tax_rate / ($tax_rate + 100), User::price_dec());
+        return round($this->freight_cost * $tax_rate / ($tax_rate + 100), User::_price_dec());
       } else {
-        return round($this->freight_cost * $tax_rate / 100, User::price_dec());
+        return round($this->freight_cost * $tax_rate / 100, User::_price_dec());
       }
     }
     /**
@@ -647,7 +647,8 @@
       $order_no   = SysTypes::get_next_trans_no($this->trans_type);
       $del_date   = Dates::_dateToSql($this->due_date);
       $order_type = 0; // this is default on new order
-      $sql        = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
+      $sql
+                  = "INSERT INTO sales_orders (order_no, type, debtor_id, trans_type, branch_id, customer_ref, reference, salesman, comments, source_no, ord_date,
             order_type, ship_via, deliver_to, delivery_address, contact_name, contact_phone,
             contact_email, freight_cost, from_stk_loc, delivery_date)
             VALUES (" . DB::_escape($order_no) . "," . DB::_escape($order_type) . "," . DB::_escape($this->debtor_id) . ", " . DB::_escape($this->trans_type) . "," . DB::_escape(
@@ -669,7 +670,8 @@
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::_get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql
+               = "SELECT stock_location.*, locations.location_name, locations.email
                     FROM stock_location, locations
                     WHERE stock_location.loc_code=locations.loc_code
                     AND stock_location.stock_id = '" . $line->stock_id . "'
@@ -797,7 +799,7 @@
           }
           $item_price = $price;
         }
-        $item_price = round($item_price, User::price_dec());
+        $item_price = round($item_price, User::_price_dec());
         if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id']) { // this is sales kit - recurse
           $this->add_line($item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $std_price);
         } else { // stock item record eventually with foreign code
@@ -883,7 +885,8 @@
       }
       foreach ($this->line_items as $position => $line) {
         if (Config::_get('accounts.stock_emailnotify') == 1 && Item::is_inventory_item($line->stock_id)) {
-          $sql = "SELECT stock_location.*, locations.location_name, locations.email
+          $sql
+               = "SELECT stock_location.*, locations.location_name, locations.email
                             FROM stock_location, locations
                             WHERE stock_location.loc_code=locations.loc_code
                              AND stock_location.stock_id = " . DB::_escape($line->stock_id) . "
@@ -903,7 +906,8 @@
             }
           }
         }
-        $sql = "INSERT INTO sales_order_details
+        $sql
+          = "INSERT INTO sales_order_details
                      (id, order_no, trans_type, stk_code, description, unit_price, quantity,
                      discount_percent, qty_sent, sort_order)
                      VALUES (";
@@ -941,7 +945,7 @@
      * @param $st_num
      */
     protected function email_notify($loc, $st_ids, $st_names, $st_reorder, $st_num) {
-      $company = DB_Company::get_prefs();
+      $company = DB_Company::_get_prefs();
       $mail    = new Email($company['coy_name'], $company['email']);
       $to      = $loc['location_name'] . " <" . $loc['email'] . ">";
       $subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
@@ -1078,12 +1082,12 @@
       $editable_items = ($editable_items === false) ? false : true;
       $has_marked     = false;
       foreach ($this->line_items as $line_no => $stock_item) {
-        $line_total    = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
-        $line_discount = round($stock_item->qty_dispatched * $stock_item->price, User::price_dec()) - $line_total;
+        $line_total    = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), User::_price_dec());
+        $line_discount = round($stock_item->qty_dispatched * $stock_item->price, User::_price_dec()) - $line_total;
         $qoh_msg       = '';
         if (!$editable_items || $id != $line_no) {
           $row_class = '';
-          if (!DB_Company::get_pref('allow_negative_stock') && Item::is_inventory_item($stock_item->stock_id)) {
+          if (!DB_Company::_get_pref('allow_negative_stock') && Item::is_inventory_item($stock_item->stock_id)) {
             $qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['location'], $_POST['OrderDate']);
             if ($stock_item->qty_dispatched > $qoh) {
               // oops, we don't have enough of one of the component items
@@ -1161,7 +1165,7 @@
       if ($has_marked) {
         Event::notice(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
       }
-      if ($this->trans_type != 30 && !DB_Company::get_pref('allow_negative_stock')) {
+      if ($this->trans_type != 30 && !DB_Company::_get_pref('allow_negative_stock')) {
         Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
       }
       Ajax::_end_div();
@@ -1301,20 +1305,20 @@
         }
         Forms::dateRow($date_text, 'OrderDate', null, $this->trans_no == 0, 0, 0, 0, null, true);
         if (isset($_POST['_OrderDate_changed'])) {
-          if (!Bank_Currency::is_company($this->customer_currency) && (DB_Company::get_base_sales_type() > 0)) {
+          if (!Bank_Currency::is_company($this->customer_currency) && (DB_Company::_get_base_sales_type() > 0)) {
             $change_prices = 1;
           }
           Ajax::_activate('_ex_rate');
           if ($this->trans_type == ST_SALESINVOICE) {
             $_POST['delivery_date'] = Sales_Order::get_invoice_duedate(Input::_post('debtor_id'), Input::_post('OrderDate'));
           } else {
-            $_POST['delivery_date'] = Dates::_addDays(Input::_post('OrderDate'), DB_Company::get_pref('default_delivery_required'));
+            $_POST['delivery_date'] = Dates::_addDays(Input::_post('OrderDate'), DB_Company::_get_pref('default_delivery_required'));
           }
           Ajax::_activate('items_table');
           Ajax::_activate('delivery_date');
         }
         if ($this->trans_type != ST_SALESORDER && $this->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt added dimensions
-          $dim = DB_Company::get_pref('use_dimension');
+          $dim = DB_Company::_get_pref('use_dimension');
           if ($dim > 0) {
             Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
           } else {
@@ -1334,7 +1338,7 @@
         Table::label(_("Tax Group:"), $this->tax_group_name);
         Forms::hidden('tax_group_id', $this->tax_group_id);
       }
-      Sales_UI::persons_row(_("Sales Person:"), 'salesman', (isset($this->salesman)) ? $this->salesman : User::i()->salesmanid);
+      Sales_UI::persons_row(_("Sales Person:"), 'salesman', (isset($this->salesman)) ? $this->salesman : User::_i()->salesmanid);
       Table::endOuter(1); // outer table
       if ($change_prices != 0) {
         foreach ($this->line_items as $line) {
@@ -1492,7 +1496,8 @@
      * @throws DBException
      */
     public static function get_header($order_no, $trans_type) {
-      $sql    = "SELECT DISTINCT sales_orders.*,
+      $sql
+              = "SELECT DISTINCT sales_orders.*,
          debtors.name,
          debtors.curr_code,
          debtors.email AS master_email,
@@ -1539,7 +1544,8 @@
      * @return null|PDOStatement
      */
     public static function get_details($order_no, $trans_type) {
-      $sql = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
+      $sql
+        = "SELECT sales_order_details.id, stk_code, unit_price, sales_order_details.description,sales_order_details.quantity,
         discount_percent, qty_sent as qty_done, stock_master.units,stock_master.tax_type_id,stock_master.material_cost + stock_master.labour_cost + stock_master.overhead_cost AS standard_cost
         FROM sales_order_details, stock_master WHERE sales_order_details.stk_code = stock_master.stock_id AND order_no =" . DB::_escape(
         $order_no
@@ -1563,7 +1569,8 @@
      * @param $order_no
      */
     public static function close($order_no) {
-      $sql = "UPDATE sales_order_details
+      $sql
+        = "UPDATE sales_order_details
             SET quantity = qty_sent WHERE order_no = " . DB::_escape($order_no) . " AND trans_type=" . ST_SALESORDER . "";
       DB::_query($sql, "The sales order detail record could not be updated");
     }
@@ -1579,7 +1586,8 @@
       if (!Dates::_isDate($invdate)) {
         return Dates::_newDocDate();
       }
-      $sql    = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
+      $sql
+              = "SELECT debtors.debtor_id, debtors.payment_terms, payment_terms.* FROM debtors,
             payment_terms WHERE debtors.payment_terms = payment_terms.terms_indicator AND
             debtors.debtor_id = " . DB::_escape($debtorno);
       $result = DB::_query($sql, "The customer details could not be retrieved");
@@ -1600,11 +1608,11 @@
      * @param $debtor_id
      *
      * @return \ADV\Core\DB\Query\Result
-
      */
     public static function get_customer($debtor_id) {
       // Now check to ensure this account is not on hold */
-      $sql    = "SELECT debtors.name,
+      $sql
+              = "SELECT debtors.name,
          debtors.address,
          credit_status.dissallow_invoices,
          debtors.sales_type AS salestype,
@@ -1634,7 +1642,8 @@
      */
     public static function get_branch($debtor_id, $branch_id) {
       // the branch was also selected from the customer selection so default the delivery details from the customer branches table branches. The order process will ask for branch details later anyway
-      $sql = "SELECT branches.br_name,
+      $sql
+        = "SELECT branches.br_name,
      branches.br_address,
      branches.city, branches.state, branches.postcode, branches.contact_name, branches.br_post_address, branches.phone, branches.email,
                  default_location, location_name, default_ship_via, tax_groups.name AS tax_group_name, tax_groups.id AS tax_group_id
@@ -1687,11 +1696,13 @@
         return false;
       } else {
         if ($doc_type == ST_SALESORDER) {
-          $sql = "UPDATE sales_order_details
+          $sql
+            = "UPDATE sales_order_details
                                 SET qty_sent = qty_sent + $qty_dispatched
                                 WHERE id=" . DB::_escape($line_id);
         } else {
-          $sql = "UPDATE debtor_trans_details
+          $sql
+            = "UPDATE debtor_trans_details
                                 SET qty_done = qty_done + $qty_dispatched
                                 WHERE id=" . DB::_escape($line_id);
         }

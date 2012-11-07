@@ -311,7 +311,7 @@
   Forms::checkRow(_("Editable description:"), 'editable');
   Forms::checkRow(_("Exclude from sales:"), 'no_sale');
   Table::section(2);
-  $dim = DB_Company::get_pref('use_dimension');
+  $dim = DB_Company::_get_pref('use_dimension');
   if ($dim >= 1) {
     Table::sectionTitle(_("Dimensions"));
     Dimensions::select_row(_("Dimension") . " 1", 'dimension_id', null, true, " ", false, 1);

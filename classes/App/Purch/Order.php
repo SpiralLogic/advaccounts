@@ -39,7 +39,7 @@
     public $creditor_id;
     /** @var */
     public $supplier_details;
-    /** @var array **/
+    /** @var array * */
     public $line_items; /*array of objects of class Sales_Line using the product id as the pointer */
     /** @var */
     public $curr_code;
@@ -57,13 +57,13 @@
     public $orig_order_date;
     /** @var */
     public $trans_no;
-    /** @var int **/
+    /** @var int * */
     public $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
-    /** @var string **/
+    /** @var string * */
     protected $uniqueid;
-    /** @var int **/
+    /** @var int * */
     public $lines_on_order;
-    /** @var string **/
+    /** @var string * */
     public $order_id;
     /** @var */
     public $freight;
@@ -71,7 +71,7 @@
     public $salesman;
     /** @var */
     public $reference;
-    /** @var int **/
+    /** @var int * */
     public $trans_type = ST_PURCHORDER;
     /**
      * @param int  $order_no
@@ -122,7 +122,7 @@
      */
     public function set_salesman($salesman_code = null) {
       if ($salesman_code == null) {
-        $salesman_name = User::i()->name;
+        $salesman_name = User::_i()->name;
         $sql           = "SELECT salesman_code FROM salesman WHERE salesman_name = " . DB::_escape($salesman_name);
         $query         = DB::_query($sql, 'Couldn\'t find current salesman');
         $result        = DB::_fetchAssoc($query);
@@ -250,7 +250,7 @@
       // Check whether trying to deliver more items than are recorded on the actual purchase order (+ overreceive allowance)
       $delivery_qty_too_large = 0;
       foreach ($this->line_items as $order_line) {
-        if ($order_line->receive_qty + $order_line->qty_received > $order_line->quantity * (1 + (DB_Company::get_pref('po_over_receive') / 100))) {
+        if ($order_line->receive_qty + $order_line->qty_received > $order_line->quantity * (1 + (DB_Company::_get_pref('po_over_receive') / 100))) {
           $delivery_qty_too_large = 1;
           break;
         }
@@ -262,7 +262,7 @@
         Event::error(
           _(
             "Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage"
-          ) . " (" . DB_Company::get_pref('po_over_receive') . "%).<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities.")
+          ) . " (" . DB_Company::_get_pref('po_over_receive') . "%).<br>" . _("Modify the ordered items on the purchase order if you wish to increase the quantities.")
         );
         return false;
       }
@@ -275,7 +275,8 @@
       /*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
       // Sherifoz 22.06.03 Compare against COMPLETED items only !!
       // Otherwise if you try to fullfill item quantities separately will give error.
-      $sql     = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+      $sql
+               = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
               FROM purch_order_details
               WHERE order_no=" . DB::_escape($this->order_no) . " ORDER BY po_detail_item";
       $result  = DB::_query($sql, "could not query purch order details");
@@ -388,7 +389,8 @@
      * @return bool
      */
     public function get_header($order_no) {
-      $sql    = "SELECT purch_orders.*, suppliers.name,
+      $sql
+              = "SELECT purch_orders.*, suppliers.name,
              suppliers.curr_code, locations.location_name
             FROM purch_orders, suppliers, locations
             WHERE purch_orders.creditor_id = suppliers.creditor_id
@@ -421,7 +423,8 @@
      */
     public function get_items($order_no, $view = false) {
       /*now populate the line po array with the purchase order details records */
-      $sql = "SELECT purch_order_details.*, units
+      $sql
+        = "SELECT purch_order_details.*, units
             FROM purch_order_details
             LEFT JOIN stock_master
             ON purch_order_details.item_code=stock_master.stock_id
@@ -493,7 +496,8 @@
      * @param $creditor_id
      */
     public function supplier_to_order($creditor_id) {
-      $sql                    = "SELECT * FROM suppliers
+      $sql
+                              = "SELECT * FROM suppliers
             WHERE creditor_id = '$creditor_id'";
       $result                 = DB::_query($sql, "The supplier details could not be retreived");
       $myrow                  = DB::_fetchAssoc($result);
@@ -664,7 +668,7 @@
       } else {
         foreach ($this->line_items as $line_no => $po_line) {
           if ($po_line->Deleted == false) {
-            $line_total = Num::_round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::price_dec());
+            $line_total = Num::_round($po_line->quantity * $po_line->price * (1 - $po_line->discount), User::_price_dec());
             if (!$editable || ($id != $line_no)) {
               Cell::label($po_line->stock_id, " class='stock' data-stock_id='{$po_line->stock_id}'");
               Cell::label($po_line->description);
@@ -818,7 +822,8 @@
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_data($creditor_id, $stock_id) {
-      $sql    = "SELECT * FROM purch_data
+      $sql
+              = "SELECT * FROM purch_data
                 WHERE creditor_id = " . DB::_escape($creditor_id) . "
                 AND stock_id = " . DB::_escape($stock_id);
       $result = DB::_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");
@@ -840,7 +845,8 @@
       if ($data === false) {
         $supplier_code = $stock_id;
         try {
-          $sql = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
+          $sql
+            = "INSERT INTO purch_data (creditor_id, stock_id, price, suppliers_uom,
                     conversion_factor, supplier_description) VALUES (" . DB::_escape($creditor_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape(
             $price
           ) . ", " . DB::_escape(
@@ -852,7 +858,7 @@
           return true;
         }
       }
-      $price = round($price * $data['conversion_factor'], User::price_dec());
+      $price = round($price * $data['conversion_factor'], User::_price_dec());
       $sql   = "UPDATE purch_data SET price=" . DB::_escape($price);
       if ($uom != "") {
         $sql .= ",suppliers_uom=" . DB::_escape($uom);

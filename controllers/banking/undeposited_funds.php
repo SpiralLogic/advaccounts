@@ -12,9 +12,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class UndepositedFunds extends \ADV\App\Controller\Action
-  {
-
+  class UndepositedFunds extends \ADV\App\Controller\Action {
     /** @var Dates */
     protected $Dates;
     public $updateData;
@@ -79,7 +77,7 @@
         }
         $sql        = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited) VALUES (" . ST_GROUPDEPOSIT . ", 5, $total," . $this->DB->_quote(
           'Group Deposit'
-        ) . ",'" . $this->Dates->dateToSql($_POST['deposit_date']) . "', 6, '" . User::i()->user . "',0)";
+        ) . ",'" . $this->Dates->dateToSql($_POST['deposit_date']) . "', 6, '" . User::_i()->user . "',0)";
         $query      = $this->DB->_query($sql, "Undeposited Cannot be Added");
         $deposit_id = $this->DB->_insertId($query);
         foreach ($togroup as $trans) {
@@ -119,8 +117,9 @@
       echo HTML::button('deposit', _("Deposit"));
       Ajax::_end_div();
       echo "<hr>";
-      $date  = $this->Dates->addDays($_POST['deposit_date'], 10);
-      $sql   = "SELECT	type, trans_no, ref, trans_date,
+      $date = $this->Dates->addDays($_POST['deposit_date'], 10);
+      $sql
+             = "SELECT	type, trans_no, ref, trans_date,
                     amount,	person_id, person_type_id, reconciled, id
             FROM bank_trans
             WHERE undeposited=1 AND trans_date <= '" . $this->Dates->dateToSql($date) . "' AND reconciled IS null AND amount<>0

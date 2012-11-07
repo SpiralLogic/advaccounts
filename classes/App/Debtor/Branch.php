@@ -12,67 +12,67 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class Debtor_Branch extends \ADV\App\DB\Base {
-    /** @var string **/
+    /** @var string * */
     public $post_address = '';
-    /** @var int **/
+    /** @var int * */
     public $branch_id = 0;
-    /** @var string **/
+    /** @var string * */
     public $br_name = "New Address";
-    /** @var string **/
+    /** @var string * */
     public $br_address = '';
-    /** @var string **/
+    /** @var string * */
     public $city = '';
-    /** @var string **/
+    /** @var string * */
     public $state = '';
-    /** @var string **/
+    /** @var string * */
     public $postcode = '';
-    /** @var int **/
+    /** @var int * */
     public $area = DEFAULT_AREA;
     /** @var */
     public $br_post_address;
     /** @var */
     public $debtor_id;
-    /** @var string **/
+    /** @var string * */
     public $branch_ref = "New";
-    /** @var string **/
+    /** @var string * */
     public $contact_name = "";
     /** @var */
     public $default_location;
-    /** @var int **/
+    /** @var int * */
     public $default_ship_via = DEFAULT_SHIP_VIA;
-    /** @var int **/
+    /** @var int * */
     public $disable_trans = 0;
-    /** @var string **/
+    /** @var string * */
     public $phone = '';
-    /** @var string **/
+    /** @var string * */
     public $phone2 = '';
-    /** @var string **/
+    /** @var string * */
     public $fax = '';
-    /** @var string **/
+    /** @var string * */
     public $website = '';
-    /** @var string **/
+    /** @var string * */
     public $email = '';
-    /** @var int **/
+    /** @var int * */
     public $inactive = 0;
-    /** @var string **/
+    /** @var string * */
     public $notes = '';
-    /** @var int **/
+    /** @var int * */
     public $group_no = 1;
     /** @var */
     public $payment_discount_account;
     /** @var */
     public $receivables_account;
-    /** @var string **/
+    /** @var string * */
     public $sales_account = "";
     /** @var */
     public $sales_discount_account;
     /** @var */
     public $salesman;
-    /** @var int **/
+    /** @var int * */
     public $tax_group_id = DEFAULT_TAX_GROUP;
-    /** @var string **/
+    /** @var string * */
     protected $_table = 'branches';
-    /** @var string **/
+    /** @var string * */
     protected $_id_column = 'branch_id';
     /**
      * @param int|null $id
@@ -119,12 +119,12 @@
      */
     protected function defaults() {
       parent::defaults();
-      $company_record                 = DB_Company::get_prefs();
+      $company_record                 = DB_Company::_get_prefs();
       $this->default_location         = Config::_get('default.location');
       $this->sales_discount_account   = $company_record['default_sales_discount_act'];
       $this->receivables_account      = $company_record['debtors_act'];
       $this->payment_discount_account = $company_record['default_prompt_payment_act'];
-      $this->salesman                 = User::i()->salesmanid ? : 1;
+      $this->salesman                 = User::_i()->salesmanid ? : 1;
     }
     /**
      * @return array|null
@@ -190,7 +190,8 @@
      * @return string
      */
     public static function select($debtor_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
-      $sql   = "SELECT branch_id, branch_ref FROM branches
+      $sql
+             = "SELECT branch_id, branch_ref FROM branches
             WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : [];
       return Forms::selectBox(

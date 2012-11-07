@@ -34,12 +34,12 @@
   Table::end(1);
   $total_gl        = Purch_GLItem::display_items($creditor_trans, 3);
   $total_grn       = Purch_GRN::display_items($creditor_trans, 2);
-  $display_sub_tot = Num::_format($total_gl + $total_grn, User::price_dec());
+  $display_sub_tot = Num::_format($total_gl + $total_grn, User::_price_dec());
   Table::start('padded width95');
   Table::label(_("Sub Total"), $display_sub_tot, "class='alignright'", " class='nowrap alignright width17' ");
   $tax_items = GL_Trans::get_tax_details(ST_SUPPCREDIT, $trans_no);
   Creditor_Trans::trans_tax_details($tax_items, 1);
-  $display_total = Num::_format(-($creditor_trans->ov_amount + $creditor_trans->ov_gst), User::price_dec());
+  $display_total = Num::_format(-($creditor_trans->ov_amount + $creditor_trans->ov_gst), User::_price_dec());
   Table::label(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 class='alignright'", ' class="alignright nowrap"');
   Table::end(1);
   $voided = Voiding::is_voided(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));

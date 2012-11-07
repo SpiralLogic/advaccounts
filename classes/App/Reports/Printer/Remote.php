@@ -5,11 +5,11 @@
 
    */
   class Reports_Printer_Remote {
-    /** @var string **/
+    /** @var string * */
     public $host;
-    /** @var int **/
+    /** @var int * */
     public $port;
-    /** @var int **/
+    /** @var int * */
     public $timeout;
     /** @var */
     public $queue;
@@ -62,7 +62,7 @@
       }
       // Send Control file.
       $server = $_SERVER['SERVER_NAME'];
-      $ctrl   = "H" . $server . "\nP" . substr(User::i()->loginname, 0, 31) . "\nfdfA" . $job . $server . "\n";
+      $ctrl   = "H" . $server . "\nP" . substr(User::_i()->loginname, 0, 31) . "\nfdfA" . $job . $server . "\n";
       fwrite($stream, chr(2) . strlen($ctrl) . " cfA" . $job . $server . "\n");
       $ack = fread($stream, 1);
       if ($ack != 0) {

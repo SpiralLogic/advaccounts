@@ -42,7 +42,7 @@
       } else {
         $currency = null;
       }
-      $dec = User::price_dec();
+      $dec = User::_price_dec();
       Num::_priceDecimal($price, $dec);
       $price = Num::_round($price, $dec);
       if ($currency != null) {
@@ -555,10 +555,10 @@
             } else {
               Forms::qtyCellsSmall(null, 'this_quantityCredited' . $n, Num::_format(max($myrow["quantity_inv"], 0), $dec), null, null, $dec);
             }
-            $dec2 = User::price_dec();
+            $dec2 = User::_price_dec();
             Forms::amountCellsSmall(null, 'ChgPrice' . $n, Num::_priceFormat($myrow["unit_price"]), null, ['$'], $dec2, 'ChgPriceCalc' . $n);
             Forms::amountCellsSmall(null, 'ExpPrice' . $n, Num::_priceFormat($myrow["unit_price"]), null, ['$'], $dec2, 'ExpPriceCalc' . $n);
-            Forms::amountCellsSmall(null, 'ChgDiscount' . $n, Num::_percentFormat($myrow['discount'] * 100), null, '%', User::percent_dec());
+            Forms::amountCellsSmall(null, 'ChgDiscount' . $n, Num::_percentFormat($myrow['discount'] * 100), null, '%', User::_percent_dec());
             Cell::amount(
               Num::_priceDecimal(($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]) * (1 - $myrow['discount'])) / $myrow["qty_recd"], $dec2),
               false,
@@ -587,7 +587,7 @@
               );
             }
             Forms::submitCells('grn_item_id' . $n, _("Add"), '', ($creditor_trans->is_invoice ? _("Add to Invoice") : _("Add to Credit Note")), true);
-            if ($creditor_trans->is_invoice && User::i()->hasAccess(SA_GRNDELETE)
+            if ($creditor_trans->is_invoice && User::_i()->hasAccess(SA_GRNDELETE)
             ) { // Added 2008-10-18 by Joe Hunt. Special access rights needed.
               Forms::submitCells(
                 'void_item_id' . $n,
@@ -639,7 +639,7 @@
       if ($mode == 1) {
         if ($creditor_trans->is_invoice) {
           $heading = _("Items Received Yet to be Invoiced");
-          if (User::i()->hasAccess(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+          if (User::_i()->hasAccess(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
           {
             $heading2 = _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!");
           }
@@ -699,7 +699,7 @@
           "",
           ""
         );
-        // if ($creditor_trans->is_invoice && CurrentUser::get()->hasAccess(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+        // if ($creditor_trans->is_invoice && CurrentUser::_get()->hasAccess(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
         // $th[] = "";
         if (!$creditor_trans->is_invoice) {
           unset($th[14]);
@@ -743,18 +743,18 @@
           Cell::percent($entered_grn->discount);
           Cell::amountDecimal(
             Num::_round(($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100)) / abs($entered_grn->this_quantity_inv)),
-            User::price_dec()
+            User::_price_dec()
           );
-          Cell::amount(Num::_round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::price_dec()));
+          Cell::amount(Num::_round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::_price_dec()));
           if ($mode == 1) {
-            if ($creditor_trans->is_invoice && User::i()->hasAccess(SA_GRNDELETE)) {
+            if ($creditor_trans->is_invoice && User::_i()->hasAccess(SA_GRNDELETE)) {
               Cell::label("");
             }
             Cell::label(""); // PO
             Forms::buttonDeleteCell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
           }
           echo '</tr>';
-          $total_grn_value += Num::_round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::price_dec());
+          $total_grn_value += Num::_round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv) * (1 - $entered_grn->discount / 100), User::_price_dec());
           $i++;
           if ($i > 15) {
             $i = 0;

@@ -13,38 +13,39 @@
   function print_sales_quotations() {
     global $print_as_quote;
     $report_type = '\\ADV\\App\\Reports\\PDF';
-    $from = $_POST['PARAM_0'];
-    $to = $_POST['PARAM_1'];
-    $currency = $_POST['PARAM_2'];
-    $email = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
+    $from        = $_POST['PARAM_0'];
+    $to          = $_POST['PARAM_1'];
+    $currency    = $_POST['PARAM_2'];
+    $email       = $_POST['PARAM_3'];
+    $comments    = $_POST['PARAM_4'];
     if ($from == null) {
       $from = 0;
     }
     if ($to == null) {
       $to = 0;
     }
-    $dec = User::price_dec();
+    $dec  = User::_price_dec();
     $cols = array(4, 70, 300, 320, 360, 395, 450, 475, 515);
     // $headers in doctext.inc
     $aligns = array('left', 'left', 'center', 'left', 'left', 'left', 'left', 'right');
     $params = array('comments' => $comments);
-    $cur = DB_Company::get_pref('curr_default');
+    $cur    = DB_Company::_get_pref('curr_default');
     if ($email == 0) {
       /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
-      $rep = new $report_type(_("PROFORMA INVOICE"), "SalesQuotationBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
+      $rep           = new $report_type(_("PROFORMA INVOICE"), "SalesQuotationBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::_page_size(
+      ));
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
     }
     for ($i = $from; $i <= $to; $i++) {
-      $myrow = Sales_Order::get_header($i, ST_SALESQUOTE);
-      $baccount = Bank_Account::get_default($myrow['curr_code']);
+      $myrow                 = Sales_Order::get_header($i, ST_SALESQUOTE);
+      $baccount              = Bank_Account::get_default($myrow['curr_code']);
       $params['bankaccount'] = $baccount['id'];
-      $branch = Sales_Branch::get($myrow["branch_id"]);
+      $branch                = Sales_Branch::get($myrow["branch_id"]);
       if ($email == 1) {
         /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
-        $rep = new $report_type("PROFORMA INVOICE", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
+        $rep           = new $report_type("PROFORMA INVOICE", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::_page_size());
         $rep->currency = $cur;
         $rep->Font();
         $rep->filename = "ProformaInvoice" . $i . ".pdf";
@@ -52,28 +53,28 @@
       }
       $rep->title = _("PROFORMA INVOICE");
       $rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMAQ);
-      $result = Sales_Order::get_details($i, ST_SALESQUOTE);
+      $result   = Sales_Order::get_details($i, ST_SALESQUOTE);
       $SubTotal = 0;
       $TaxTotal = 0;
       while ($myrow2 = DB::_fetch($result)) {
-        $Net = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
+        $Net = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::_price_dec());
         $SubTotal += $Net;
         # __ADVANCEDEDIT__ BEGIN #
         $TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
         $TaxTotal += Tax::for_item($myrow2['stk_code'], $Net, $TaxType);
         # __ADVANCEDEDIT__ END #
         $DisplayPrice = Num::_format($myrow2["unit_price"], $dec);
-        $DisplayQty = Num::_format($myrow2["quantity"], Item::qty_dec($myrow2['stk_code']));
-        $DisplayNet = Num::_format($Net, $dec);
+        $DisplayQty   = Num::_format($myrow2["quantity"], Item::qty_dec($myrow2['stk_code']));
+        $DisplayNet   = Num::_format($Net, $dec);
         if ($myrow2["discount_percent"] == 0) {
           $DisplayDiscount = "";
         } else {
-          $DisplayDiscount = Num::_format($myrow2["discount_percent"] * 100, User::percent_dec()) . "%";
+          $DisplayDiscount = Num::_format($myrow2["discount_percent"] * 100, User::_percent_dec()) . "%";
         }
         $rep->TextCol(0, 1, $myrow2['stk_code'], -2);
         $oldrow = $rep->row;
         $rep->TextColLines(1, 2, $myrow2['description'], -2);
-        $newrow = $rep->row;
+        $newrow   = $rep->row;
         $rep->row = $oldrow;
         $rep->TextCol(2, 3, $DisplayQty, -2);
         $rep->TextCol(3, 4, $myrow2['units'], -2);
@@ -96,11 +97,11 @@
       }
       $display_freight = Num::_format($myrow["freight_cost"], $dec);
       $TaxTotal += $myrow["freight_cost"] * .1;
-      $DisplayTaxTot = Num::_format($TaxTotal, $dec);
+      $DisplayTaxTot     = Num::_format($TaxTotal, $dec);
       $display_sub_total = Num::_format($SubTotal, $dec);
-      $rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
-      $linetype = true;
-      $doctype = ST_SALESQUOTE;
+      $rep->row          = $rep->bottomMargin + (15 * $rep->lineHeight);
+      $linetype          = true;
+      $doctype           = ST_SALESQUOTE;
       extract($rep->getHeaderArray($doctype, false, $linetype));
       $rep->TextCol(4, 7, $doc_sub_total, -2);
       $rep->TextCol(7, 8, $display_sub_total, -2);

@@ -17,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function getTaxTransactions($from, $to)
-  {
+  function getTaxTransactions($from, $to) {
     $fromdate = Dates::_dateToSql($from);
     $todate   = Dates::_dateToSql($to);
     $sql
@@ -46,8 +45,7 @@
   /**
    * @return null|PDOStatement
    */
-  function getTaxTypes()
-  {
+  function getTaxTypes() {
     $sql = "SELECT * FROM tax_types ORDER BY id";
 
     return DB::_query($sql, "No transactions were returned");
@@ -58,16 +56,14 @@
    *
    * @return \ADV\Core\DB\Query\Result|Array
    */
-  function getTaxInfo($id)
-  {
+  function getTaxInfo($id) {
     $sql    = "SELECT * FROM tax_types WHERE id=$id";
     $result = DB::_query($sql, "No transactions were returned");
 
     return DB::_fetch($result);
   }
 
-  function print_tax_report()
-  {
+  function print_tax_report() {
     global $trans_dir, $Hooks;
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -81,9 +77,9 @@
 
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    $dec = User::price_dec();
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Tax Report'), "TaxReport", SA_TAXREP,User::page_size());
+    $dec = User::_price_dec();
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Tax Report'), "TaxReport", SA_TAXREP, User::_page_size());
     if ($summaryOnly == 1) {
       $summary = _('Summary Only');
     } else {
@@ -101,7 +97,14 @@
     );
     $cols    = array(0, 100, 130, 180, 290, 370, 420, 470, 520);
     $headers = array(
-      _('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'), _('Net'), _('Rate'), _('Tax')
+      _('Trans Type'),
+      _('Ref'),
+      _('Date'),
+      _('Name'),
+      _('Branch Name'),
+      _('Net'),
+      _('Rate'),
+      _('Tax')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     $rep->Font();

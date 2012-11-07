@@ -158,7 +158,7 @@
   }
 
   function display_companies() {
-    $coyno = User::i()->company;
+    $coyno = User::_i()->company;
     echo "
             <script language='javascript'>
             function deleteCompany(id)
@@ -201,7 +201,7 @@
       Cell::label($what);
       $edit   = _("Edit");
       $delete = _("Delete");
-      if (User::graphic_links()) {
+      if (User::_graphic_links()) {
         $edit   = Forms::setIcon(ICON_EDIT, $edit);
         $delete = Forms::setIcon(ICON_DELETE, $delete);
       }

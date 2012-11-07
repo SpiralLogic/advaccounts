@@ -250,7 +250,7 @@
       } else {
         $backupfile = $filename;
       }
-      $company = DB_Company::get_pref('coy_name');
+      $company = DB_Company::_get_pref('coy_name');
       //create comment
       $out = "# MySQL dump of database '" . $conn["dbname"] . "' on host '" . $conn["host"] . "'\n";
       $out .= "# Backup Date and Time: " . date("Y-m-d H:i") . "\n";

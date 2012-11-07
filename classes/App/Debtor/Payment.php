@@ -50,7 +50,7 @@
         return false;
       }
       DB::_begin();
-      $company_record  = DB_Company::get_prefs();
+      $company_record  = DB_Company::_get_prefs();
       $payment_no      = Debtor_Trans::write(ST_CUSTPAYMENT, $trans_no, $debtor_id, $branch_id, $date_, $ref, $amount, $discount, $tax, 0, 0, 0, 0, 0, 0, $date_, 0, $rate);
       $bank_gl_account = Bank_Account::get_gl($bank_account);
       if ($trans_no != 0) {
@@ -114,7 +114,7 @@
       }
       if ($charge != 0) {
         /* Now Debit bank charge account with charges */
-        $charge_act = DB_Company::get_pref('bank_charge_act');
+        $charge_act = DB_Company::_get_pref('bank_charge_act');
         $total += Debtor_TransDetail::add_gl_trans(
           ST_CUSTPAYMENT,
           $payment_no,
@@ -191,7 +191,7 @@
         '5'      => _("Delivery Notes"),
         '6'      => _("Invoices Only")
       );
-      echo Forms::arraySelect($name, $selected, $allocs, ['class'=> 'med']);
+      echo Forms::arraySelect($name, $selected, $allocs, ['class' => 'med']);
       echo "</td>\n";
     }
     /**

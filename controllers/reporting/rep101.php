@@ -18,8 +18,7 @@
    *
    * @return \ADV\Core\DB\Query\Result|Array
    */
-  function get_open_balance($debtorno, $to, $convert)
-  {
+  function get_open_balance($debtorno, $to, $convert) {
     $to  = Dates::_dateToSql($to);
     $sql = "SELECT SUM(IF(" . '' . "debtor_trans.type = " . ST_SALESINVOICE . ", (" . '' . "debtor_trans.ov_amount + " . '' . "debtor_trans.ov_gst +
      " . '' . "debtor_trans.ov_freight + " . '' . "debtor_trans.ov_freight_tax + " . '' . "debtor_trans.ov_discount)";
@@ -71,8 +70,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($debtorno, $from, $to)
-  {
+  function get_transactions($debtorno, $from, $to) {
     $from = Dates::_dateToSql($from);
     $to   = Dates::_dateToSql($to);
     $sql  = "SELECT " . '' . "debtor_trans.*,
@@ -91,8 +89,7 @@
     return DB::_query($sql, "No transactions were returned");
   }
 
-  function print_customer_balances()
-  {
+  function print_customer_balances() {
 
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -111,7 +108,7 @@
     } else {
       $cust = Debtor::get_name($fromcust);
     }
-    $dec = User::price_dec();
+    $dec = User::_price_dec();
     if ($currency == ALL_TEXT) {
       $convert  = true;
       $currency = _('Balances in Home Currency');
@@ -125,7 +122,14 @@
     }
     $cols    = array(0, 100, 130, 190, 250, 320, 385, 450, 515);
     $headers = array(
-      _('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'), _('Credits'), _('Allocated'), _('Outstanding')
+      _('Trans Type'),
+      _('#'),
+      _('Date'),
+      _('Due Date'),
+      _('Charges'),
+      _('Credits'),
+      _('Allocated'),
+      _('Outstanding')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params  = array(
@@ -135,8 +139,8 @@
       3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
       4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => '')
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Customer Balances'), "CustomerBalances", SA_CUSTPAYMREP,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Customer Balances'), "CustomerBalances", SA_CUSTPAYMREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

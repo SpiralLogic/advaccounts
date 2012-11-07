@@ -37,12 +37,12 @@
   Table::end(1);
   $total_gl        = Purch_GLItem::display_items($creditor_trans, 2);
   $total_grn       = Purch_GRN::display_items($creditor_trans, 2);
-  $display_sub_tot = Num::_format($total_gl + $total_grn, User::price_dec());
+  $display_sub_tot = Num::_format($total_gl + $total_grn, User::_price_dec());
   Table::start('padded width95');
   Table::label(_("Sub Total"), $display_sub_tot, "class='alignright'", "class='alignright nowrap width15'");
   $tax_items     = GL_Trans::get_tax_details(ST_SUPPINVOICE, $trans_no);
   $tax_total     = Creditor_Trans::trans_tax_details($tax_items, 1, $creditor_trans->ov_gst);
-  $display_total = Num::_format($creditor_trans->ov_amount + $creditor_trans->ov_gst, User::price_dec());
+  $display_total = Num::_format($creditor_trans->ov_amount + $creditor_trans->ov_gst, User::_price_dec());
   Table::label(_("TOTAL INVOICE"), $display_total, "colspan=1 class='alignright'", ' class="alignright nowrap"');
   Table::end(1);
   Voiding::is_voided(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));

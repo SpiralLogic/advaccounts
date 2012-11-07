@@ -70,7 +70,8 @@
        * @param $disallow_invoicing
        */
       public static function add($description, $disallow_invoicing) {
-        $sql = "INSERT INTO credit_status (reason_description, dissallow_invoices)
+        $sql
+          = "INSERT INTO credit_status (reason_description, dissallow_invoices)
         VALUES (" . DB::_escape($description) . "," . DB::_escape($disallow_invoicing) . ")";
         DB::_query($sql, "could not add credit status");
       }
@@ -132,7 +133,7 @@
        */
       public static function select($name, $selected_id = null, $disabled = null) {
         if ($disabled === null) {
-          $disabled = (!User::i()->hasAccess(SA_CUSTOMER_CREDIT));
+          $disabled = (!User::_i()->hasAccess(SA_CUSTOMER_CREDIT));
         }
         $sql = "SELECT id, reason_description, inactive FROM credit_status";
         return Forms::selectBox($name, $selected_id, $sql, 'id', 'reason_description', array('disabled' => $disabled));
@@ -174,7 +175,8 @@
        * @return bool
        */
       public static function can_delete($selected_id) {
-        $sql    = "SELECT COUNT(*) FROM debtors
+        $sql
+                = "SELECT COUNT(*) FROM debtors
             WHERE credit_status=" . DB::_escape($selected_id);
         $result = DB::_query($sql, "could not query customers");
         $myrow  = DB::_fetchRow($result);

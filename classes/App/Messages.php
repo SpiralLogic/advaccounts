@@ -16,9 +16,9 @@
 
    */
   class Messages {
-    /** @var string **/
+    /** @var string * */
     protected static $messages = '';
-    /** @var int **/
+    /** @var int * */
     protected static $count = 0;
     /**
 
@@ -36,7 +36,9 @@
       if (!$userid) {
         return false;
       }
-      $result        = DB::_select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)->andWhere('um.from=u.id')->andWhere('unread>', 0)->fetch()->all();
+      $result        = DB::_select('um.*,u.real_name as `from`')->from('user_messages um, users u')->where('um.user=', $userid)->andWhere('um.from=u.id')->andWhere('unread>', 0)
+        ->fetch()
+        ->all();
       static::$count = count($result);
       foreach ($result as $row) {
         if (!empty($row['subject'])) {
@@ -64,7 +66,7 @@
     public static function set($userid, $subject, $message) {
       $sql    = "INSERT INTO user_messages (user, subject,message,unread,`from`) VALUES (" . DB::_escape($userid) . ", " . DB::_escape($subject) . ", " . DB::_escape(
         $message
-      ) . ", 1, " . DB::_escape(User::i()->user) . ")";
+      ) . ", 1, " . DB::_escape(User::_i()->user) . ")";
       $result = DB::_query($sql, "Couldn't add message for $userid");
       return $result;
     }
@@ -76,7 +78,7 @@
      * @return string
      */
     public static function show($user = null) {
-      $user = $user ? : User::i();
+      $user = $user ? : User::_i();
       if (!$user || !$user->logged) {
         return '';
       }

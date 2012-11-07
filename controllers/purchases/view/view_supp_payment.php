@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,15 +12,15 @@
   if (isset($_GET["trans_no"])) {
     $trans_no = $_GET["trans_no"];
   }
-  $receipt = Creditor_Trans::get($trans_no, ST_SUPPAYMENT);
-  $company_currency = Bank_Currency::for_company();
-  $show_currencies = false;
+  $receipt           = Creditor_Trans::get($trans_no, ST_SUPPAYMENT);
+  $company_currency  = Bank_Currency::for_company();
+  $show_currencies   = false;
   $show_both_amounts = false;
   if (($receipt['bank_curr_code'] != $company_currency) || ($receipt['SupplierCurrCode'] != $company_currency)) {
     $show_currencies = true;
   }
   if ($receipt['bank_curr_code'] != $receipt['SupplierCurrCode']) {
-    $show_currencies = true;
+    $show_currencies   = true;
     $show_both_amounts = true;
   }
   echo "<div class='center'>";
@@ -38,7 +37,7 @@
   if ($show_currencies) {
     Cell::labelled(_("Payment Currency"), $receipt['bank_curr_code']);
   }
-  Cell::labelled(_("Amount"), Num::_format(-$receipt['BankAmount'], User::price_dec()));
+  Cell::labelled(_("Amount"), Num::_format(-$receipt['BankAmount'], User::_price_dec()));
   Cell::labelled(_("Payment Type"), Bank_Trans::$types[$receipt['BankTransType']]);
   echo '</tr>';
   echo '<tr>';
@@ -46,7 +45,7 @@
     Cell::labelled(_("Supplier's Currency"), $receipt['SupplierCurrCode']);
   }
   if ($show_both_amounts) {
-    Cell::labelled(_("Amount"), Num::_format(-$receipt['Total'], User::price_dec()));
+    Cell::labelled(_("Amount"), Num::_format(-$receipt['Total'], User::_price_dec()));
   }
   Cell::labelled(_("Reference"), $receipt['ref']);
   echo '</tr>';

@@ -17,8 +17,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Creditor_Payment
-  {
+  class Creditor_Payment {
     /**
      * @static
      *
@@ -35,7 +34,10 @@
      * @return int
      */
     public static function add($creditor_id, $date_, $bank_account, $amount, $discount, $ref, $memo_, $rate = 0, $charge = 0) {
-      $result = DB::_select('trans_no')->from('creditor_trans')->where('creditor_id=', $creditor_id)->andWhere('tran_date=', Dates::_dateToSql($date_))->andWhere('type=', ST_SUPPAYMENT)->andWhere('ov_amount=', -$amount)->fetch()->one();
+      $result = DB::_select('trans_no')->from('creditor_trans')->where('creditor_id=', $creditor_id)->andWhere('tran_date=', Dates::_dateToSql($date_))->andWhere(
+        'type=',
+        ST_SUPPAYMENT
+      )->andWhere('ov_amount=', -$amount)->fetch()->one();
       if ($result && $result['trans_no'] !== Session::_getFlash('Creditor_Payment')) {
         Session::_setFlash('Creditor_Payment', $result['trans_no']);
         Event::warning('A payment for same amount and date already exists for this supplier, do you want to process anyway?');
@@ -50,9 +52,9 @@
         $supplier_discount = Bank::exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
         $supplier_charge   = Bank::exchange_from_to($charge, $bank_account_currency, $supplier_currency, $date_);
       } else {
-        $supplier_amount   = round($amount / $rate, User::price_dec());
-        $supplier_discount = round($discount / $rate, User::price_dec());
-        $supplier_charge   = round($charge / $rate, User::price_dec());
+        $supplier_amount   = round($amount / $rate, User::_price_dec());
+        $supplier_discount = round($discount / $rate, User::_price_dec());
+        $supplier_charge   = round($charge / $rate, User::_price_dec());
       }
       // it's a supplier payment
       $trans_type = ST_SUPPAYMENT;
@@ -61,13 +63,24 @@
       // Now debit creditors account with payment + discount
       $total             = 0;
       $supplier_accounts = Creditor::get_accounts_name($creditor_id);
-      $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0, $supplier_amount + $supplier_discount, $creditor_id, "", $rate);
+      $total += Creditor_Trans::add_gl(
+        $trans_type,
+        $payment_id,
+        $date_,
+        $supplier_accounts["payable_account"],
+        0,
+        0,
+        $supplier_amount + $supplier_discount,
+        $creditor_id,
+        "",
+        $rate
+      );
       // Now credit discount received account with discounts
       if ($supplier_discount != 0) {
         $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $supplier_accounts["payment_discount_account"], 0, 0, -$supplier_discount, $creditor_id, "", $rate);
       }
       if ($supplier_charge != 0) {
-        $charge_act = DB_Company::get_pref('bank_charge_act');
+        $charge_act = DB_Company::_get_pref('bank_charge_act');
         $total += Creditor_Trans::add_gl($trans_type, $payment_id, $date_, $charge_act, 0, 0, $supplier_charge, $creditor_id, "", $rate);
       }
       if ($supplier_amount != 0) {
@@ -76,7 +89,18 @@
       /*Post a balance post if $total != 0 */
       GL_Trans::add_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $creditor_id);
       /*now enter the bank_trans entry */
-      Bank_Trans::add($trans_type, $payment_id, $bank_account, $ref, $date_, -($amount + $supplier_charge), PT_SUPPLIER, $creditor_id, $bank_account_currency, "Could not add the supplier payment bank transaction");
+      Bank_Trans::add(
+        $trans_type,
+        $payment_id,
+        $bank_account,
+        $ref,
+        $date_,
+        -($amount + $supplier_charge),
+        PT_SUPPLIER,
+        $creditor_id,
+        $bank_account_currency,
+        "Could not add the supplier payment bank transaction"
+      );
       DB_Comments::add($trans_type, $payment_id, $date_, $memo_);
       Ref::save($trans_type, $ref);
       DB::_commit();
@@ -120,7 +144,7 @@
         return false;
       }
       if (isset($_POST['charge']) && Validation::input_num('charge') > 0) {
-        $charge_acct = DB_Company::get_pref('bank_charge_act');
+        $charge_acct = DB_Company::_get_pref('bank_charge_act');
         if (GL_Account::get($charge_acct) == false) {
           Event::error(_("The Bank Charge Account has not been set in System and General GL Setup."));
           JS::_setFocus('charge');
