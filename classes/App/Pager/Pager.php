@@ -607,6 +607,9 @@
       Ajax::_end_div();
       return true;
     }
+    /**
+     * @param \ADV\Core\View $view
+     */
     protected function generateNav(View $view) {
       $navigation = [
         [self::FIRST, 1, $this->first_page, 'fast-backward'],

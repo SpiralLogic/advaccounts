@@ -13,7 +13,7 @@
     /**
 
      */
-    class ChartClass extends \ADV\App\DB\Base
+    class ChartClass extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
     {
       protected $_table = 'chart_class';
       protected $_classname = 'Chart Class';
@@ -53,6 +53,19 @@
           $q->andWhere('inactive=', 0);
         }
         return $q->fetch()->all();
+      }
+      /**
+       * @return array
+       */
+      protected function getPagerColumns() {
+        $cols = [
+          ['type' => 'skip'],
+          'Class Name', //
+          'Class Type', //
+          'Sign Convert' => ['type' => Edit::TYPE_BOOL], //
+          'Inactive' => ['type' => 'inactive'],
+        ];
+        return $cols;
       }
     }
   }

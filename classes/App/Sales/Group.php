@@ -11,12 +11,11 @@
   namespace ADV\App\Sales;
 
   use ADV\Core\DB\DB;
-  use ADV\App\Validation;
 
   /**
 
    */
-  class Group extends \ADV\App\DB\Base {
+  class Group extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable {
     protected $_table = 'groups';
     protected $_classname = 'Group';
     protected $_id_column = 'id';
@@ -68,5 +67,14 @@
         return $this->status(false, _("Cannot delete this group because customers have been created using this group."));
       }
       return parent::delete();
-    }
+    }  /**
+         * @return array
+         */
+    public function getPagerColumns() {
+          $cols = [
+            ['type' => 'skip'],
+            'Group Name',
+          ];
+          return $cols;
+        }
   }

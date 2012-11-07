@@ -41,31 +41,7 @@
       $form->number('decimals', 0)->label('Decimals:');
       $form->checkbox('use_pref')->label('Use user preference:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      return [
-        ['type' => 'skip'],
-        _("Abbr"),
-        _("Name"),
-        _("Decimals") => ["align" => "center", 'fun' => [$this, 'formatDecimals']],
-        _("Inactive") => ['type' => 'inactive'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-    }
-    /**
-     * @param $row
-     *
-     * @return string
-     */
-    public function formatDecimals($row) {
-      if ($row['decimals'] == -1) {
-        return 'User Preference';
-      }
-      return $row['decimals'];
-    }
+
     protected function runValidation() {
       Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));

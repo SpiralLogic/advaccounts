@@ -15,7 +15,7 @@
     /**
 
      */
-    class Type extends \ADV\App\DB\Base {
+    class Type extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable {
       protected $_table = 'tax_types';
       protected $_classname = 'Tax Type';
       protected $_id_column = 'id';
@@ -77,6 +77,19 @@
           $q->andWhere('inactive=', 0);
         }
         return $q->fetch()->all();
+      }
+      /**
+       * @return array
+       */
+      public function getPagerColumns() {
+        return [
+          ['type' => "skip"],
+          'Name',
+          'Rate' => ['type' => "percent"],
+          'Sales GL Account',
+          'Purchasing GL Account',
+          'Inactive' => ['type' => 'inactive'],
+        ];
       }
     }
   }

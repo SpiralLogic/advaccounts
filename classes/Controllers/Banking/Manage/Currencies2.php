@@ -41,22 +41,6 @@
       $form->text('auto_update ')->label('Auto Update');
       ;
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      return [
-        ['type' => "skip"],
-        'Currency',
-        'Abbreviation',
-        'Symbol',
-        'Country',
-        'Hundreds',
-        'Inactive' => ['type' => 'inactive'],
-        'Auto Update',
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-    }
+
   }
 

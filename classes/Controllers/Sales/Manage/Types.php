@@ -45,19 +45,6 @@
       $form->checkbox('tax_included')->label('Tax Included:');
       $form->checkbox('inactive')->label('Inactive:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      return $cols = [
-        ['type' => 'skip'],
-        'Sales Type',
-        'Tax Incl.' => ['type' => 'bool'],
-        'Factor' => ['type' => 'percent'],
-        'Inactive' => ['type' => 'inactive'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-    }
+
   }
 

@@ -10,12 +10,11 @@
   namespace ADV\App\Sales {
     use ADV\Core\DB\DB;
     use ADV\Core\Event;
-    use ADV\App\Validation;
 
     /**
 
      */
-    class Point extends \ADV\App\DB\Base {
+    class Point extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable{
       protected $_table = 'sales_pos';
       protected $_classname = 'Sales POS';
       protected $_id_column = 'id';
@@ -57,7 +56,23 @@
           $q->andWhere('inactive=', 0);
         }
         return $q->fetch()->all();
-      }
+      }    /**
+           * @return array
+           */
+      public function getPagerColumns() {
+            $cols = [
+              ['type' => 'skip'],
+              'Name',
+              'Cash Sale'   => ['type' => 'bool'],
+              'Credit Sale' => ['type' => 'bool'],
+              'Location',
+              'Account',
+              'Inactive'    => ['type', 'inactive'],
+              ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+              ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
+            ];
+            return $cols;
+          }
     }
   }
 

@@ -27,17 +27,6 @@
       $form->hidden('id');
       $form->text('description')->label('Group Name:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        'Group Name',
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
   }
 

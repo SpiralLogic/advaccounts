@@ -46,20 +46,7 @@
       }
       $form->nest('exemptions', $exemptions);
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        'Item Tax Type',
-        'Fully Exempt' => ['type' => 'bool'],
-        'Inactive' => ['type' => 'inactive'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
   }
 
 /*

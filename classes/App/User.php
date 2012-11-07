@@ -481,6 +481,22 @@
     public function getHash() {
       return $this->hash;
     }
+    /**
+     * @return array
+     */
+    public function getPagerColumns() {
+      $cols = array(
+        ['type' => "skip"],
+        _("User ID"),
+        _("Name"),
+        _("Phone"),
+        _("Email"),
+        _("Last Visit Date"),
+        _("Role"),
+        _('Inactive') => ['type' => 'inactive'],
+      );
+      return $cols;
+    }
   }
 
 

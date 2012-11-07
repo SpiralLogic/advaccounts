@@ -40,19 +40,5 @@
       $form->custom(GL_UI::all('purchasing_gl_code'))->label('Purchasing GL Account');
       $form->checkbox('inactive')->label('Inactive:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      return [
-        ['type' => "skip"],
-        'Name',
-        'Rate' => ['type' => "percent"],
-        'Sales GL Account' => ['fun' => [$this, 'formatAccount']],
-        'Purchasing GL Account' => ['fun' => [$this, 'formatAccount']],
-        'Inactive' => ['type' => 'inactive'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-    }
+
   }

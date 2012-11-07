@@ -2,12 +2,11 @@
   namespace ADV\App\Sales;
 
   use ADV\Core\DB\DB;
-  use ADV\App\Validation;
 
   /**
 
    */
-  class Area extends \ADV\App\DB\Base {
+  class Area extends \ADV\App\DB\Base   implements \ADV\App\Pager\Pageable {
     protected $_table = 'areas';
     protected $_classname = 'Area';
     protected $_id_column = 'area_code';
@@ -38,4 +37,14 @@
       }
       return $q->fetch()->all();
     }
+    /**
+      * @return array
+      */
+    public function getPagerColumns() {
+       $cols = [
+         ['type' => 'skip'],
+         'Area Name',
+       ];
+       return $cols;
+     }
   }

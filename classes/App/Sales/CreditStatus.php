@@ -15,7 +15,7 @@
     /**
 
      */
-    class CreditStatus extends \ADV\App\DB\Base {
+    class CreditStatus extends \ADV\App\DB\Base   implements \ADV\App\Pager\Pageable {
       protected $_table = 'credit_status';
       protected $_classname = 'Credit Status';
       protected $_id_column = 'id';
@@ -55,6 +55,18 @@
           $q->andWhere('inactive=', 0);
         }
         return $q->fetch()->all();
+      }
+      /**
+       * @return array
+       */
+      public function getPagerColumns() {
+        $cols = [
+          ['type' => 'skip'],
+          'Description',
+          'Dissallow Invoices' => ['type' => 'bool'],
+          'Inactive' => ['type' => 'inactive'],
+        ];
+        return $cols;
       }
     }
   }

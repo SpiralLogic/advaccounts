@@ -47,27 +47,7 @@
       $form->text('email')->label('Email:');
       $form->text('contact')->label('Contact Name:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        _("Location Code"), //
-        _("Location Name"), //
-        _("Address"), //
-        _("Phone"), //
-        ['type' => 'skip'],
-        _("Fax"),
-        _("Email"),
-        ['type' => 'skip'],
-        _("Inactive") => ['type' => 'inactive'],
-        _("type"),
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
     /**
      * @param $pager_name
      *

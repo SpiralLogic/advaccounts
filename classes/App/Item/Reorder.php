@@ -13,7 +13,7 @@
   /**
 
    */
-  class Reorder extends \ADV\App\DB\Base
+  class Reorder extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
   {
 
     protected $_table = 'stock_location';

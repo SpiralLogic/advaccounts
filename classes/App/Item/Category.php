@@ -16,7 +16,7 @@
     /**
 
      */
-    class Category extends \ADV\App\DB\Base {
+    class Category extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable{
       protected $_table = 'stock_category';
       protected $_classname = 'Stock Category';
       protected $_id_column = 'category_id';
@@ -34,6 +34,9 @@
       public $dflt_dim1;
       public $dflt_dim2;
       public $dflt_no_sale = 0;
+      /**
+       * @return \ADV\Core\Traits\Status|bool
+       */
       public function delete() {
         $sql    = "SELECT  COUNT(*) FROM stock_master WHERE category_id=" . DB::_escape($this->id);
         $result = DB::_query($sql, "could not query stock master");
@@ -120,8 +123,6 @@
           ['type' => 'skip'],
           ['type' => 'skip'],
           'Tax'         => ['ord' => 'asc'],
-          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
         ];
         return $cols;
       }

@@ -42,23 +42,7 @@
       $form->checkbox('inactive')->label('Inactive:');
       $form->custom(GL_Type::select('account_type'))->label('Type:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        'Type' => ['type' => 'group'],
-        ['type' => 'skip'],
-        'Name' => ['ord' => 'asc'],
-        'Code',
-        'Code2',
-        'Inactive' => ['type' => 'inactive'],
-        ['type' => 'skip'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
   }
 
 

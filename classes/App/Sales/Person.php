@@ -14,12 +14,11 @@
   use ADV\App\Validation;
   use ADV\Core\DB\DB;
   use ADV\Core\Num;
-  use ADV\App\User;
 
   /**
 
    */
-  class Person extends \ADV\App\DB\Base {
+  class Person extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable {
     protected $_id_column = 'salesman_code';
     protected $_table = 'salesman';
     protected $_classname = 'Sales Person';
@@ -95,5 +94,23 @@
       }
       DB::_query($sql, 'Could not fetch sales people');
       return DB::_fetchAll();
-    }
+    }    /**
+         * @return array
+         */
+    public function getPagerColumns() {
+          $cols = array(
+            _("ID"),
+            ['type' => "skip"],
+            _("Name"),
+            _("User"),
+            _("Phone"),
+            _("Fax"),
+            _("Email"),
+            _("Provision"),
+            _("Break Pt."),
+            _("Provision") . " 2",
+            _('Inactive') => ['type' => 'inactive'],
+          );
+          return $cols;
+        }
   }

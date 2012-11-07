@@ -33,17 +33,6 @@
       $form->hidden('area_code');
       $form->text('description')->label('Area Name:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        'Area Name',
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
   }
 

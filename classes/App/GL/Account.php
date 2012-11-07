@@ -16,7 +16,7 @@
     /**
 
      */
-    class Account extends \ADV\App\DB\Base {
+    class Account extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable{
       protected $_table = 'chart_master';
       protected $_classname = 'GL Account';
       protected $_id_column = 'account_code';
@@ -146,6 +146,21 @@
           $q->andWhere('c.inactive=', 0);
         }
         return $q->fetch()->all();
+      }
+      /**
+       * @return array
+       */
+      public function getPagerColumns() {
+        $cols = [
+          'Type' => ['type' => 'group'],
+          ['type' => 'skip'],
+          'Name' => ['ord' => 'asc'],
+          'Code',
+          'Code2',
+          'Inactive' => ['type' => 'inactive'],
+          ['type' => 'skip'],
+        ];
+        return $cols;
       }
     }
   }

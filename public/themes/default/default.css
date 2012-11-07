@@ -2644,8 +2644,11 @@ ul {
 img {
 	border: 0;
 }
-
-#content {
+body>div {
+  display:none;
+}
+body #content {
+  display:block;
 	position:   relative;
 	z-index:    3;
 	box-shadow: 0 20px 50px 0 #111111;
@@ -2667,7 +2670,7 @@ img {
 	-moz-transition-duration:             .2s;
 	-webkit-transition-property:          height, top, left, width;
 	-webkit-transition-duration:          .2s;
-	  -webkit-transition-timing-function: ease-out;
+	-webkit-transition-timing-function: ease-out;
 }
 
 #header {

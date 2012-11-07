@@ -35,19 +35,6 @@
       $form->text('reason_description')->label('Description:');
       $form->arraySelect('dissallow_invoices', ['No', 'Yes'])->label('Disallow Invoices:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        'Description',
-        'Dissallow Invoices' => ['type' => 'bool'],
-        'Inactive' => ['type' => 'inactive'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
   }
 

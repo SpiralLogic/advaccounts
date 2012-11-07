@@ -1,11 +1,4 @@
 <?php
-  namespace ADV\Controllers\Items\Manage;
-
-  use ADV\App\Item\Price;
-  use Item_Price;
-  use ADV\App\UI;
-  use ADV\App\Validation;
-
   /**
    * PHP version 5.4
    *
@@ -15,6 +8,16 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  namespace ADV\Controllers\Items\Manage;
+
+  use ADV\App\Item\Price;
+  use Item_Price;
+  use ADV\App\UI;
+  use ADV\App\Validation;
+
+  /**
+   * @property \ADV\App\Item\Price $object
+   */
   class Prices extends \ADV\App\Controller\InlinePager
   {
     protected $stock_id;
@@ -57,7 +60,7 @@
      */
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
       $pager->setObject($this->object);
-      $pager->editing->stock_id = $this->stock_id;
+      $this->object->stock_id = $this->stock_id;
     }
     protected function generateTable() {
       $this->Ajax->start_div('table');
@@ -69,12 +72,7 @@
       }
       $this->Ajax->end_div();
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      return $this->object->getPagerColumns();
-    }
+
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
       Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));

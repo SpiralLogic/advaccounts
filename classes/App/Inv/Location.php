@@ -13,7 +13,7 @@
     /**
 
      */
-    class Location extends \ADV\App\DB\Base
+    class Location extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable
     {
 
       const OUTWARD = 'OUTWARD';
@@ -162,6 +162,25 @@
           $items[$row[$self->_id_column]] = $row['location_name'];
         }
         return $items;
+      }
+      /**
+       * @return array
+       */
+      public function getPagerColumns() {
+        $cols = [
+          ['type' => 'skip'],
+          _("Location Code"), //
+          _("Location Name"), //
+          _("Address"), //
+          _("Phone"), //
+          ['type' => 'skip'],
+          _("Fax"),
+          _("Email"),
+          ['type' => 'skip'],
+          _("Inactive") => ['type' => 'inactive'],
+          _("type"),
+        ];
+        return $cols;
       }
     }
   }

@@ -22,19 +22,7 @@
       $this->object = new ChartClass();
       $this->runPost();
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        'Class Name', //
-        'Class Type', //
-        'Sign Convert' => ['type' => Edit::TYPE_BOOL], //
-        'Inactive' => ['type' => 'inactive'],
-      ];
-      return $cols;
-    }
+
     /**
      * @param $pager_name
      *

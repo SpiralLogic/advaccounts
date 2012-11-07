@@ -8,6 +8,9 @@
    */
   namespace ADV\App\Pager;
 
+  /**
+   *
+   */
   interface Pageable
   {
     public function getPagerColumns();

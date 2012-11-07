@@ -51,8 +51,6 @@
     public function setLanguage($name = null, $code = null, $encoding = null, $dir = 'ltr') {
       $changed = $this->code != $code;
       if ($changed) {
-        // flush cache as we can use several languages in one account
-        Files::flushDir(PATH_COMPANY . 'js_cache');
         $this->name           = $name;
         $this->code           = $code;
         $this->encoding       = $encoding;

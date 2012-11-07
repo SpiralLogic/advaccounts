@@ -39,22 +39,6 @@
       $form->custom(Bank_UI::cash_accounts_row(null, 'pos_account', null, false, true))->label('Name: ');
       $form->custom(Inv_Location::select('pos_location'))->label('Location: ');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        'Name',
-        'Cash Sale'   => ['type' => 'bool'],
-        'Credit Sale' => ['type' => 'bool'],
-        'Location',
-        'Account',
-        'Inactive'    => ['type', 'inactive'],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
   }
 

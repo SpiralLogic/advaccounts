@@ -81,21 +81,7 @@
       $form->amount('base_amount')->label('Base Amount');
       $form->text('base_desc')->label('Base Description');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = [
-        ['type' => 'skip'],
-        'Type' => ['fun' => [$this, 'formatType']],
-        'Description',
-        'Base Amount' => ['type' => Pager::TYPE_AMOUNT],
-        'Description',
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-      ];
-      return $cols;
-    }
+
     /**
      * @param $id
      */
@@ -103,14 +89,7 @@
       $this->linesid = $id;
       parent::onEdit($id);
     }
-    /**
-     * @param $row
-     *
-     * @return mixed
-     */
-    public function formatType($row) {
-      return GL_QuickEntry::$types[$row['type']];
-    }
+
     /**
      * @param $form
      */

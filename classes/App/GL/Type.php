@@ -14,7 +14,7 @@
     /**
 
      */
-    class Type extends \ADV\App\DB\Base
+    class Type extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable
     {
 
       protected $_table = 'chart_types';
@@ -69,9 +69,13 @@
         }
         return $q->fetch()->all();
       }
+      /**
+       * @return array
+       */
       public function getPagerColumns() {
         return [['type' => 'skip'], 'Name', 'Class', 'Parent', 'Inactive' => ['type' => 'inactive']];
       }
+
       /**
        * @return array
        */

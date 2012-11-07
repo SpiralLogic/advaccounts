@@ -28,7 +28,7 @@
        *
        * @param $stock_id
        *
-       * @return null|\PDOStatement
+       * @return array|\PDOStatement
        */
       public static function getAll($stock_id) {
         $sql
@@ -78,6 +78,9 @@
         $this->last_update = null;
         return true;
       }
+      /**
+       * @return array
+       */
       public function getPagerColumns() {
         return [
           ['type' => 'hidden'],

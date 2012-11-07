@@ -9,7 +9,6 @@
    **/
   namespace ADV\Controllers\System\Manage;
 
-  use ADV\App\Controller\Pager;
   use Reports_UI;
   use Sales_Point;
   use ADV\App\Languages;
@@ -21,7 +20,7 @@
   /**
 
    */
-  class Users extends \ADV\App\Controller\FormPager {
+  class Users extends \ADV\App\Controller\FormPager implements \ADV\App\Pager\Pageable {
     protected $tableWidth = '80';
     protected $security = SA_SALESMAN;
     protected function before() {
@@ -49,24 +48,7 @@
       $form->checkbox('rep_popup')->label('Use popup window for reports:');
       $form->checkbox('change_password')->label('Must change password next logon:');
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = array(
-        ['type' => "skip"],
-        _("User ID"),
-        _("Name"),
-        _("Phone"),
-        _("Email"),
-        _("Last Visit Date"),
-        _("Role"),
-        _('Inactive') => ['type' => 'inactive'],
-        ['insert' => true, "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['insert' => true, "align" => "center", 'fun' => [$this, 'formatDeleteBtn']]
-      );
-      return $cols;
-    }
+
   }
 
 /*

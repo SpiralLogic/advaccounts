@@ -14,7 +14,7 @@
     /**
 
      */
-    class Currency extends \ADV\App\DB\Base {
+    class Currency extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable {
       protected $_table = 'currencies';
       protected $_classname = 'Currency';
       protected $_id_column = 'id';
@@ -90,7 +90,21 @@
           $q->andWhere('inactive=', 0);
         }
         return $q->fetch()->all();
-      }
+      }    /**
+           * @return array
+           */
+      public function getPagerColumns() {
+            return [
+              ['type' => "skip"],
+              'Currency',
+              'Abbreviation',
+              'Symbol',
+              'Country',
+              'Hundreds',
+              'Inactive' => ['type' => 'inactive'],
+              'Auto Update',
+            ];
+          }
     }
   }
 

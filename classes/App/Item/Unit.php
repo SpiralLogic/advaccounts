@@ -6,7 +6,7 @@
     /**
 
      */
-    class Unit extends \ADV\App\DB\Base {
+    class Unit extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable {
       protected $_table = 'item_units';
       protected $_classname = 'Units of Measure';
       protected $_id_column = 'id';
@@ -74,6 +74,29 @@
           $this->decimals = '';
         }
         return $result;
+      }
+      /**
+       * @return array
+       */
+      public function getPagerColumns() {
+        return [
+          ['type' => 'skip'],
+          _("Abbr"),
+          _("Name"),
+          _("Decimals") => ["align" => "center", 'fun' => [$this, 'formatDecimals']],
+          _("Inactive") => ['type' => 'inactive'],
+        ];
+      }
+      /**
+       * @param $row
+       *
+       * @return string
+       */
+      public function formatDecimals($row) {
+        if ($row['decimals'] == -1) {
+          return 'User Preference';
+        }
+        return $row['decimals'];
       }
     }
   }

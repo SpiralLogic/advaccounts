@@ -61,12 +61,7 @@
         $form->hide('dflt_sales_act');
       }
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      return $this->object->getPagerColumns();
-    }
+
   }
 
 

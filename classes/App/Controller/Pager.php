@@ -20,7 +20,6 @@
   abstract class Pager extends Action
   {
 
-    /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';
@@ -156,9 +155,14 @@
       $button->type('mini')->type($type);
       return $button;
     }
+    /**
+     * @return mixed
+     * @throws \UnexpectedValueException
+     */
     protected function getPagerColumns() {
       if ($this->object instanceof \ADV\App\Pager\Pageable) {
         return $this->object->getPagerColumns();
       }
+      throw new \UnexpectedValueException(get_class($this->object) . " is not pageable!");
     }
   }

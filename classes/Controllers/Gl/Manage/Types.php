@@ -28,12 +28,7 @@
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
       $pager->setObject($this->object);
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      return $this->object->getPagerColumns();
-    }
+
     /**
      * @param \ADV\App\Form\Form $form
      * @param \ADV\Core\View     $view

@@ -44,7 +44,10 @@
       $table->display();
     }
     /**
-     * @param \ADV\App\Pager\Pager $table
+     * @param \ADV\App\Pager\Edit|\ADV\App\Pager\Pager $table
+     *
+     * @throws \InvalidArgumentException
+     * @return void
      */
     protected function getEditing(Edit $table) {
       if (!$table->editing instanceof \ADV\App\DB\Base) {

@@ -10,7 +10,6 @@
    **/
   namespace ADV\Controllers\Sales\Manage;
 
-  use ADV\App\Controller\Pager;
   use ADV\App\Users;
   use ADV\App\Sales\Person;
   use ADV\App\Form\Form;
@@ -46,26 +45,6 @@
       $form->amount('break_pt')->label("Break Pt.:");
       $form->percent('provision2')->label("Provision 2: ");
     }
-    /**
-     * @return array
-     */
-    protected function getPagerColumns() {
-      $cols = array(
-        _("ID"),
-        ['type' => "skip"],
-        _("Name"),
-        _("User"),
-        _("Phone"),
-        _("Fax"),
-        _("Email"),
-        _("Provision"),
-        _("Break Pt."),
-        _("Provision") . " 2",
-        _('Inactive') => ['type' => 'inactive'],
-        ['insert' => true, "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-        ['insert' => true, "align" => "center", 'fun' => [$this, 'formatDeleteBtn']]
-      );
-      return $cols;
-    }
+
   }
 

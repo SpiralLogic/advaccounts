@@ -15,7 +15,7 @@
   use ADV\App\Item\Purchase;
 
   /**
-
+   * @property \ADV\App\Item\Purchase $object
    */
   class Purchasing extends \ADV\App\Controller\InlinePager
   {
@@ -67,7 +67,7 @@
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
       $pager->setObject($this->object);
       if ($this->stock_id) {
-        $pager->editing->stock_id = $this->stock_id;
+        $this->object->stock_id = $this->stock_id;
         $this->object->stockid = \ADV\App\Item\Item::getStockID($this->stock_id);
       }
     }
@@ -83,7 +83,5 @@
       Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
     }
-    protected function getPagerColumns() {
-      return $this->object->getPagerColumns();
-    }
+
   }

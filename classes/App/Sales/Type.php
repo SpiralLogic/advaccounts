@@ -13,7 +13,7 @@
 
     /**
      */
-    class Type extends \ADV\App\DB\Base
+    class Type extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
     {
 
       protected $_table = 'sales_types';
@@ -65,6 +65,18 @@
           $types[$row['id']] = $row['sales_type'];
         }
         return $types;
+      }
+      /**
+       * @return array
+       */
+      public function getPagerColumns() {
+        return $cols = [
+          ['type' => 'skip'],
+          'Sales Type',
+          'Tax Incl.' => ['type' => 'bool'],
+          'Factor'    => ['type' => 'percent'],
+          'Inactive'  => ['type' => 'inactive'],
+        ];
       }
     }
   }
