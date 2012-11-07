@@ -39,14 +39,11 @@
   <div class='pad20'><a target='_blank' href='{{POWERED_URL}}' tabindex='-1'>{{APP_TITLE}} {{VERSION}} - Theme: {{$theme}} </a>| {{$date}}
     <p><a target='_blank' href='{{POWERED_URL}}' tabindex='-1'>{{POWERED_BY}}</a></p></div>
   <script src="/js/libs/aes.js"></script>
-  <script src="/js/libs/jquery.js"></script>
-  <script>
-    {{#if $timeout}}
-    (function () {document.forms[0].login_company.value = '{{$company}}';})();
-    {{/if}}
-    document.forms[0].user_name.select();
+    <script src="/js/libs/jquery.min.js"></script>
+    <script>{{#if $timeout}}(function () {document.forms[0].login_company.value = '{{$company}}';})();
+    {{/if}}document.forms[0].user_name.select();
     document.forms[0].user_name.focus();
-    var password_iv = document.getElementById('password_iv'), iv = password_iv.value, password_el = document.getElementById('password');
+    var password_iv = document.forms[0].password_iv, iv = password_iv.value, password_el = document.forms[0].password;
     password_iv.parentNode.removeChild(password_iv);
     $(document.getElementsByName('_action')[0]).on('click', function () {
       password_el.value = Base64.encode(Aes.Ctr.encrypt(password_el.value, iv, 256));
@@ -56,4 +53,3 @@
   </script>
 </body>
 </html>
-

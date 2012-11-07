@@ -371,8 +371,8 @@
      * @return bool
      */
     public function formatMarker($row) {
-      if ((isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"] - $row["Allocated"], 2) != 0)) {
-        return "<tr class='overduebg'>";
+      if ((isset($row['OverDue']) && $row['OverDue'] == 1) && (Num::_round($row["TotalAmount"], 2) - Num::_round($row["Allocated"], 2) != 0)) {
+        return "class='overduebg'";
       }
     }
     /**
@@ -402,7 +402,6 @@
         $dd->addItem('Make Payment', "/sales/payment?debtor_id=" . $row['debtor_id']);
       }
       $dd->addItem('Email', "#", ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']], ['class'=> 'email-button']);
-
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
         $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
