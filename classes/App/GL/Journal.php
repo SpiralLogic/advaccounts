@@ -68,7 +68,7 @@
      */
     public static function items($title, &$order) {
       Display::heading($title);
-      $dim = DB_Company::get_pref('use_dimension');
+      $dim = DB_Company::_get_pref('use_dimension');
       Ajax::_start_div('items_table');
       Table::start('padded grid width95');
       if ($dim == 2) {
@@ -174,7 +174,7 @@
         $_POST['description'] = $item->description;
         $_POST['LineMemo']    = $item->reference;
         Forms::hidden('Index', $id);
-        $skip_bank = !User::i()->hasAccess(SA_BANKJOURNAL);
+        $skip_bank = !User::_i()->hasAccess(SA_BANKJOURNAL);
         echo GL_UI::all('code_id', null, $skip_bank, true);
         if ($dim >= 1) {
           Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -194,7 +194,7 @@
         if (isset($_POST['_code_id_update'])) {
           Ajax::_activate('code_id');
         }
-        $skip_bank = !User::i()->hasAccess(SA_BANKJOURNAL);
+        $skip_bank = !User::_i()->hasAccess(SA_BANKJOURNAL);
         echo GL_UI::all('code_id', null, $skip_bank, true);
         if ($dim >= 1) {
           Dimensions::cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -350,7 +350,7 @@
       }
       DB_AuditTrail::add($trans_type, $trans_id, $date_);
       if ($reverse) {
-        //$reversingDate = date(User::date_display(),
+        //$reversingDate = date(User::_date_display(),
         //	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
         $reversingDate    = Dates::_beginMonth(Dates::_addMonths($date_, 1));
         $trans_id_reverse = SysTypes::get_next_trans_no($trans_type);

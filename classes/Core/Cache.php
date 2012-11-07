@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,6 +10,7 @@
   namespace ADV\Core;
 
   use ADV\Core\Cache\Cachable;
+  use RuntimeException;
 
   /**
    * @method static mixed _get($key, $default = false)
@@ -19,9 +19,8 @@
    * @method static _delete($key)
    * @method static Cache i()
    */
-  class Cache
-  {
-    use \ADV\Core\Traits\StaticAccess2;
+  class Cache {
+    use \ADV\Core\Traits\StaticAccess;
 
     /** @var Cachable * */
     protected $driver = false;
@@ -79,32 +78,15 @@
       $this->driver->flush($time);
     }
     /**
-     * @param                $name
-     * @param \Closure|Array $constants
+     * @param $name
+     * @param $constants
      *
-     * @return Cache|bool
-     * @return \ADV\Core\Cache|bool
+     * @return \ADV\Core\Cache
+     * @throws \RuntimeException
      */
     public function defineConstants($name, $constants) {
-      $loader = $this->driver->loadFunction;
-      if (is_callable($loader)) {
-        $loader = $loader($name);
-      }
-      if ($loader === true) {
-        return true;
-      }
-      if (is_callable($constants)) {
-        $constants = (array)call_user_func($constants);
-      }
-      $definer = $this->driver->defineFunction;
-      if (is_callable($definer)) {
-        $definer = $definer($name, $constants);
-      }
-      if ($definer === true) {
-        return true;
-      }
-      foreach ($constants as $constant => $value) {
-        define($constant, $value);
+      if (!$this->driver->defineConstants($name, $constants)) {
+        throw new RuntimeException("Could not define constants");
       }
       return $this;
     }

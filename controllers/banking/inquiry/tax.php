@@ -17,7 +17,7 @@
   }
   if (Input::_post('TransFromDate') == "" && Input::_post('TransToDate') == "") {
     $date                   = Dates::_today();
-    $row                    = DB_Company::get_prefs();
+    $row                    = DB_Company::_get_prefs();
     $edate                  = Dates::_addMonths($date, -$row['tax_last']);
     $edate                  = Dates::_endMonth($edate);
     $bdate                  = Dates::_beginMonth($edate);

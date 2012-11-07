@@ -20,8 +20,7 @@
    *
    * @return null|PDOStatement
    */
-  function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0)
-  {
+  function GetSalesOrders($from, $to, $category = 0, $location = null, $backorder = 0) {
     $fromdate = Dates::_dateToSql($from);
     $todate   = Dates::_dateToSql($to);
     $sql
@@ -60,8 +59,7 @@
     return DB::_query($sql, "Error getting order details");
   }
 
-  function print_order_status_list()
-  {
+  function print_order_status_list() {
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $category    = $_POST['PARAM_2'];
@@ -99,27 +97,50 @@
     }
     $cols     = array(0, 60, 150, 260, 325, 385, 450, 515);
     $headers2 = array(
-      _('Order'), _('Customer'), _('Branch'), _('Customer Ref'), _('Ord Date'), _('Del Date'), _('Loc')
+      _('Order'),
+      _('Customer'),
+      _('Branch'),
+      _('Customer Ref'),
+      _('Ord Date'),
+      _('Del Date'),
+      _('Loc')
     );
     $aligns   = array('left', 'left', 'right', 'right', 'right', 'right', 'right');
     $headers  = array(
-      _('Code'), _('Description'), _('Ordered'), _('Invoiced'), _('Outstanding'), ''
+      _('Code'),
+      _('Description'),
+      _('Ordered'),
+      _('Invoiced'),
+      _('Outstanding'),
+      ''
     );
     $params   = array(
-      0    => $comments, 1 => array(
-        'text' => _('Period'), 'from' => $from, 'to'   => $to
-      ), 2 => array(
-        'text' => _('Category'), 'from' => $cat, 'to'   => ''
-      ), 3 => array(
-        'text' => _('location'), 'from' => $loc, 'to'   => ''
-      ), 4 => array(
-        'text' => _('Selection'), 'from' => $back, 'to'   => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Period'),
+        'from' => $from,
+        'to'   => $to
+      ),
+      2 => array(
+        'text' => _('Category'),
+        'from' => $cat,
+        'to'   => ''
+      ),
+      3 => array(
+        'text' => _('location'),
+        'from' => $loc,
+        'to'   => ''
+      ),
+      4 => array(
+        'text' => _('Selection'),
+        'from' => $back,
+        'to'   => ''
       )
     );
     $cols2    = $cols;
     $aligns2  = $aligns;
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep      = new $report_type(_('Order Status Listing'), "OrderStatusListing",SA_SALESBULKREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Order Status Listing'), "OrderStatusListing", SA_SALESBULKREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
     $rep->Header();

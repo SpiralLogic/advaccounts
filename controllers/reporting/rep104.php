@@ -72,8 +72,8 @@
 
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    $dec       = User::price_dec();
-    $home_curr = DB_Company::get_pref('curr_default');
+    $dec       = User::_price_dec();
+    $home_curr = DB_Company::_get_pref('curr_default');
     if ($currency == ALL_TEXT) {
       $currency = $home_curr;
     }
@@ -104,30 +104,30 @@
     $headers = array(_('Category/Items'), _('Description'), _('Price'), _('GP %'));
     $aligns  = array('left', 'left', 'right', 'right');
     $params  = array(
-      0    => $comments,
-      1    => array(
+      0 => $comments,
+      1 => array(
         'text' => _('Currency'),
         'from' => $curr_sel,
         'to'   => ''
       ),
-      2    => array(
+      2 => array(
         'text' => _('Category'),
         'from' => $cat,
         'to'   => ''
       ),
-      3    => array(
+      3 => array(
         'text' => _('Sales Type'),
         'from' => $stype,
         'to'   => ''
       ),
-      4    => array(
+      4 => array(
         'text' => _('Show GP %'),
         'from' => $GP,
         'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Price Listing'), "PriceListing", SA_PRICEREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Price Listing'), "PriceListing", SA_PRICEREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -156,7 +156,7 @@
         } else {
           $disp = 0.0;
         }
-        $rep->TextCol(3, 4, Num::_format($disp, User::percent_dec()) . " %");
+        $rep->TextCol(3, 4, Num::_format($disp, User::_percent_dec()) . " %");
       }
       if ($pictures) {
         $image = PATH_COMPANY . "images/" . Item::img_name($myrow['stock_id']) . ".jpg";

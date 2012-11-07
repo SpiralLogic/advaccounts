@@ -29,13 +29,12 @@
    * @method static Ajax _start_div($id = null, $trigger = null, $non_ajax = false)
    * @method static Ajax _end_div($return_div = false)
    */
-  class Ajax extends \JsHttpRequest
-  {
-    use Traits\StaticAccess2;
+  class Ajax extends \JsHttpRequest {
+    use Traits\StaticAccess;
 
-    /** @var array **/
+    /** @var array * */
     protected $aCommands = [];
-    /** @var array **/
+    /** @var array * */
     protected $triggers = [];
     protected $ajax_divs = [];
     public $debug;

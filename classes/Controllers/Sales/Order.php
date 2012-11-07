@@ -42,10 +42,10 @@
   class Order extends Action {
     protected $addTitles
       = array(
-        ST_SALESQUOTE  => "New Sales Quotation Entry", //
-        ST_SALESINVOICE=> "Direct Sales Invoice", //
-        ST_CUSTDELIVERY=> "Direct Sales Delivery", //
-        ST_SALESORDER  => "New Sales Order Entry"
+        ST_SALESQUOTE   => "New Sales Quotation Entry", //
+        ST_SALESINVOICE => "Direct Sales Invoice", //
+        ST_CUSTDELIVERY => "Direct Sales Delivery", //
+        ST_SALESORDER   => "New Sales Order Entry"
       );
     protected $modifyTitles
       = array(
@@ -393,7 +393,7 @@
         );
         return false;
       } // Joe Hunt added 2008-09-22 -------------------------
-      elseif ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE && !DB_Company::get_pref(
+      elseif ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE && !DB_Company::_get_pref(
         'allow_negative_stock'
       ) && Item::is_inventory_item($_POST['stock_id'])
       ) {
@@ -441,7 +441,7 @@
         $doc->document_date = Dates::_newDocDate();
         if ($type == ST_SALESINVOICE) {
           $doc->due_date = Sales_Order::get_invoice_duedate($doc->debtor_id, $doc->document_date);
-          $doc->pos      = $this->User->_pos();
+          $doc->pos      = $this->User->pos();
           $pos           = Sales_Point::get($doc->pos);
           $doc->pos      = -1;
         } else {
@@ -606,7 +606,7 @@
     protected function setLineOrder() {
       $line_map = $this->Input->getPost('lineMap', []);
       $this->order->setLineOrder($line_map);
-      $data = ['lineMap'=> $this->order, 'status'=> true];
+      $data = ['lineMap' => $this->order, 'status' => true];
       $this->JS->renderJSON($data);
     }
     protected function setSecurity() {

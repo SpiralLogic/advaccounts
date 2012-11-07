@@ -37,14 +37,15 @@
 
    */
   class WO {
-    public static $types = array(
-      WO_ASSEMBLY   => "Assemble", //
-      WO_UNASSEMBLY => "Unassemble", //
-      WO_ADVANCED   => "Advanced Manufacture"
-    );
-    /** @var array **/
+    public static $types
+      = array(
+        WO_ASSEMBLY   => "Assemble", //
+        WO_UNASSEMBLY => "Unassemble", //
+        WO_ADVANCED   => "Advanced Manufacture"
+      );
+    /** @var array * */
     public static $bom_list = [];
-    /** @var null **/
+    /** @var null * */
     public static $qoh_stock = null;
     /**
      * @static
@@ -137,7 +138,8 @@
      */
     public static function get_demand_asm_qty($stock_id, $location) {
       $demand_qty = 0.0;
-      $sql        = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
+      $sql
+                  = "SELECT sales_order_details.stk_code, SUM(sales_order_details.quantity-sales_order_details.qty_sent)
                  AS Demmand
                  FROM sales_order_details,
                         sales_orders,
@@ -148,7 +150,8 @@
       if ($location != "") {
         $sql .= "sales_orders.from_stk_loc =" . DB::_escape($location) . " AND ";
       }
-      $sql .= "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
+      $sql
+        .= "sales_order_details.quantity-sales_order_details.qty_sent > 0 AND
                  stock_master.stock_id=sales_order_details.stk_code AND
                  (stock_master.mb_flag='" . STOCK_MANUFACTURE . "' OR stock_master.mb_flag='A')
                  GROUP BY sales_order_details.stk_code";
@@ -192,7 +195,8 @@
      * @return float
      */
     public static function get_on_worder_qty($stock_id, $location) {
-      $sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued) *
+      $sql
+        = "SELECT SUM((workorders.units_reqd-workorders.units_issued) *
         (wo_requirements.units_req-wo_requirements.units_issued)) AS qoo
         FROM wo_requirements INNER JOIN workorders
             ON wo_requirements.workorder_id=workorders.id
@@ -210,7 +214,8 @@
       }
       $flag = WO::get_mb_flag($stock_id);
       if ($flag == 'A' || $flag == STOCK_MANUFACTURE) {
-        $sql = "SELECT SUM((workorders.units_reqd-workorders.units_issued)) AS qoo
+        $sql
+          = "SELECT SUM((workorders.units_reqd-workorders.units_issued)) AS qoo
             FROM workorders
             WHERE workorders.stock_id=" . DB::_escape($stock_id) . " ";
         if ($location != "") {
@@ -249,7 +254,8 @@
      * @return null|\PDOStatement
      */
     public static function get_bom($item) {
-      $sql = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
+      $sql
+        = "SELECT bom.*, locations.location_name, workcentres.name AS WorkCentreDescription,
      stock_master.description, stock_master.mb_flag AS ResourceType,
      stock_master.material_cost+ stock_master.labour_cost+stock_master.overhead_cost AS standard_cost, units,
      bom.quantity * (stock_master.material_cost+ stock_master.labour_cost+ stock_master.overhead_cost) AS ComponentCost
@@ -314,7 +320,7 @@
         //end of while
         Table::label(
           "<span class='bold'>" . _("Total Cost") . "</span>",
-          "<span class='bold'>" . Num::_format($total_cost, User::price_dec()) . "</span>",
+          "<span class='bold'>" . Num::_format($total_cost, User::_price_dec()) . "</span>",
           "colspan=6 class='alignright'",
           ' class="alignright nowrap"'
         );
@@ -390,7 +396,8 @@
       WO_Cost::add_material($stock_id, $units_reqd, $date_);
       $date     = Dates::_dateToSql($date_);
       $required = Dates::_dateToSql($required_by);
-      $sql      = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
+      $sql
+                = "INSERT INTO workorders (wo_ref, loc_code, units_reqd, stock_id,
                 type, date_, required_by)
              VALUES (" . DB::_escape($wo_ref) . ", " . DB::_escape($loc_code) . ", " . DB::_escape($units_reqd) . ", " . DB::_escape($stock_id) . ",
                 " . DB::_escape($type) . ", '$date', " . DB::_escape($required) . ")";
@@ -455,7 +462,8 @@
      * @return \ADV\Core\DB\Query\Result|Array
      */
     public static function get($woid, $allow_null = false) {
-      $sql    = "SELECT workorders.*, stock_master.description As StockItemName,
+      $sql
+              = "SELECT workorders.*, stock_master.description As StockItemName,
                 locations.location_name, locations.delivery_address
                 FROM workorders, stock_master, locations
                 WHERE stock_master.stock_id=workorders.stock_id
@@ -517,7 +525,8 @@
       $myrow    = WO::get($woid);
       $stock_id = $myrow["stock_id"];
       $date     = Dates::_dateToSql($releaseDate);
-      $sql      = "UPDATE workorders SET released_date='$date',
+      $sql
+                = "UPDATE workorders SET released_date='$date',
                 released=1 WHERE id = " . DB::_escape($woid);
       DB::_query($sql, "could not release work order");
       // create Work Order Requirements based on the bom

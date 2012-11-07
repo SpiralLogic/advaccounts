@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -23,8 +22,7 @@
    * @param string $action
    * @param string $name
    */
-  class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable, \Countable
-  {
+  class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable, \Countable {
     const NO_VALUES = 1;
     public $useDefaults = false;
     /** @var Ajax */
@@ -48,7 +46,7 @@
      * @param \ADV\Core\Session                                        $session
      */
     public function __construct(\ADV\Core\Input\Input $input = null, \ADV\Core\Ajax $ajax = null, \ADV\Core\Session $session = null) {
-      $this->Ajax = $ajax ? : Ajax::i();
+      $this->Ajax  = $ajax ? : Ajax::i();
       $this->Input = $input ? : Input::i();
       $this->group();
     }
@@ -71,7 +69,7 @@
       if ($this->Input->hasPost($name)) {
         $field->value($this->Input->post($name));
       }
-      $this->fields[$field->id] = $field;
+      $this->fields[$field->id]     = $field;
       $this->validators[$field->id] =& $field->validator;
       $this->Ajax->addUpdate($name, $name, $field->value);
       return $field;
@@ -100,18 +98,18 @@
      * @return \ADV\Core\HTML|string
      */
     public function start($name = '', $action = '', $multi = false, Array $attrs = []) {
-      $name = $name . '_form';
+      $name            = $name . '_form';
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
-      $attr['method'] = 'post';
-      $attr['action'] = $action;
-      $attr['name'] = $this->name($name);
-      $attr = array_merge($attr, $attrs);
-      $this->start = (new HTML)->form($name, $attr)->input(
+      $attr['method']  = 'post';
+      $attr['action']  = $action;
+      $attr['name']    = $this->name($name);
+      $attr            = array_merge($attr, $attrs);
+      $this->start     = (new HTML)->form($name, $attr)->input(
         null,
         [
-        'type' => 'hidden',
+        'type'  => 'hidden',
         'value' => $this->uniqueid,
-        'name' => '_form_id'
+        'name'  => '_form_id'
         ]
       );
       return $this->start;
@@ -150,7 +148,7 @@
      * @return Field
      */
     public function hidden($name) {
-      $field = $this->addField(new Field('input', $name));
+      $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'hidden';
       return $field;
     }
@@ -162,7 +160,7 @@
      * @return \ADV\App\Form\Field
      */
     public function text($name, Array $attrs = []) {
-      $field = $this->addField(new Field('input', $name));
+      $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'text';
       return $field->mergeAttr($attrs);
     }
@@ -174,7 +172,7 @@
      * @return \ADV\App\Form\Field
      */
     public function password($name, Array $attrs = []) {
-      $field = $this->addField(new Field('input', $name));
+      $field         = $this->addField(new Field('input', $name));
       $field['type'] = 'password';
       return $field->mergeAttr($attrs);
     }
@@ -197,10 +195,10 @@
      * @return Field
      */
     public function date($name, Array $attrs = []) {
-      $field = $this->addField(new Field('input', $name));
-      $field['type'] = 'text';
+      $field              = $this->addField(new Field('input', $name));
+      $field['type']      = 'text';
       $field['maxlength'] = 10;
-      $field['class'] = 'datepicker';
+      $field['class']     = 'datepicker';
       return $field->mergeAttr($attrs);
     }
     /**
@@ -223,7 +221,7 @@
      */
     public function percent($name, Array $attrs = []) {
       $attrs = array_merge(['class' => 'amount'], $attrs);
-      return $this->number($name, User::percent_dec(), $attrs)->append('%');
+      return $this->number($name, User::_percent_dec(), $attrs)->append('%');
     }
     /**
      * @param       $name
@@ -234,9 +232,9 @@
      * @return \ADV\App\Form\Field
      */
     public function number($name, $dec = 0, Array $attrs = []) {
-      $field = $this->addField(new Field('input', $name));
-      $field['data-dec'] = (int)$dec;
-      $field['type'] = 'text';
+      $field             = $this->addField(new Field('input', $name));
+      $field['data-dec'] = (int) $dec;
+      $field['type']     = 'text';
       $this->Ajax->addAssign($name, $name, 'data-dec', $dec);
       $field->mergeAttr($attrs);
       $field['value'] = Num::_format($field['value'] ? : 0, $field['data-dec']);
@@ -252,7 +250,7 @@
      */
     public function amount($name, Array $attrs = []) {
       $attrs = array_merge(['class' => 'amount'], $attrs);
-      return $this->number($name, User::price_dec(), $attrs)->prepend('$');
+      return $this->number($name, User::_price_dec(), $attrs)->prepend('$');
     }
     /**
      * @param $control
@@ -308,7 +306,7 @@
           $field->async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
         }
       }
-      $this->Ajax->addUpdate($name, "_" . $name . "_sel", (string)$field);
+      $this->Ajax->addUpdate($name, "_" . $name . "_sel", (string) $field);
       return $field;
     }
     /**
@@ -349,13 +347,13 @@
      */
     public function submit($action, $caption = null, $attrs = []) {
       if (is_array($caption)) {
-        $attrs = $caption;
+        $attrs   = $caption;
         $caption = null;
       }
       if ($caption === null) {
         $caption = $action;
       }
-      $button = new Button('_action', $action, $caption);
+      $button     = new Button('_action', $action, $caption);
       $button->id = $this->nameToId($action);
       if (is_array($this->currentgroup)) {
         $this->currentgroup[] = $button;
@@ -368,8 +366,8 @@
      * @param Form $form
      */
     public function nest($name, Form $form) {
-      $form->nest = $name;
-      $this->fields[$name] = $form;
+      $form->nest           = $name;
+      $this->fields[$name]  = $form;
       $this->currentgroup[] = $form;
     }
     /**
@@ -388,7 +386,7 @@
      * @return void
      */
     public function setValues($values, $group = null) {
-      $values = (array)$values;
+      $values = (array) $values;
       $fields = $group ? $this->groups[$group] : $this->fields;
       foreach ($values as $id => $value) {
         if (array_key_exists($id, $fields)) {
@@ -433,8 +431,8 @@
      * @return array
      */
     public function jsonSerialize() {
-      $return = [];
-      $use = ($this->useDefaults) ? 'default' : 'value';
+      $return    = [];
+      $use       = ($this->useDefaults) ? 'default' : 'value';
       $autofocus = false;
       foreach ($this->fields as $id => $field) {
         if ($field instanceof Button) {
@@ -464,7 +462,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -485,7 +482,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -515,7 +511,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -533,7 +528,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>
@@ -548,7 +542,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Return the current element
-     *
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
@@ -558,7 +551,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Move forward to next element
-     *
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
@@ -568,7 +560,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Return the key of the current element
-     *
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar on success, or null on failure.
      */
@@ -578,7 +569,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Checks if current position is valid
-     *
      * @link http://php.net/manual/en/iterator.valid.php
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
@@ -589,7 +579,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Rewind the Iterator to the first element
-     *
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
@@ -612,7 +601,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Returns if an iterator can be created for the current entry.
-     *
      * @link http://php.net/manual/en/recursiveiterator.haschildren.php
      * @return bool true if the current entry can be iterated over, otherwise returns false.
      */
@@ -622,7 +610,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Returns an iterator for the current entry.
-     *
      * @link http://php.net/manual/en/recursiveiterator.getchildren.php
      * @return RecursiveIterator An iterator for the current entry.
      */
@@ -632,7 +619,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
-     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>

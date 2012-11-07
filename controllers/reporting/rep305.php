@@ -17,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($from, $to)
-  {
+  function get_transactions($from, $to) {
     $from = Dates::_dateToSql($from);
     $to   = Dates::_dateToSql($to);
     $sql
@@ -38,8 +37,7 @@
     return DB::_query($sql, "No transactions were returned");
   }
 
-  function print_grn_valuation()
-  {
+  function print_grn_valuation() {
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $comments    = $_POST['PARAM_2'];
@@ -51,19 +49,28 @@
 
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    $dec     = User::price_dec();
+    $dec     = User::_price_dec();
     $cols    = array(0, 75, 225, 275, 345, 390, 445, 515);
     $headers = array(
-      _('Stock ID'), _('Description'), _('PO No'), _('Qty Received'), _('Unit Price'), _('Actual Price'), _('Total')
+      _('Stock ID'),
+      _('Description'),
+      _('PO No'),
+      _('Qty Received'),
+      _('Unit Price'),
+      _('Actual Price'),
+      _('Total')
     );
     $aligns  = array('left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params  = array(
-      0 => $comments, 1 => array(
-        'text' => _('Period'), 'from' => $from, 'to'   => $to
+      0 => $comments,
+      1 => array(
+        'text' => _('Period'),
+        'from' => $from,
+        'to'   => $to
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('GRN Valuation Report'), "GRNValuationReport",SA_SUPPLIERANALYTIC, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('GRN Valuation Report'), "GRNValuationReport", SA_SUPPLIERANALYTIC, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

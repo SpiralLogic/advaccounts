@@ -11,7 +11,6 @@
          Write/update customer refund.
        */
   class Debtor_Refund {
-
     /**
      * @static
      *
@@ -32,7 +31,7 @@
     public static function add($trans_no, $debtor_id, $branch_id, $bank_account, $date_, $ref, $amount, $discount, $memo_, $rate = 0, $charge = 0) {
       $amount = $amount * -1;
       DB::_begin();
-      $company_record  = DB_Company::get_prefs();
+      $company_record  = DB_Company::_get_prefs();
       $refund_no       = Debtor_Trans::write(ST_CUSTREFUND, $trans_no, $debtor_id, $branch_id, $date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
       $bank_gl_account = Bank_Account::get_gl($bank_account);
       if ($trans_no != 0) {
@@ -43,24 +42,56 @@
       }
       $total = 0;
       /* Bank account entry first */
-      $total += Debtor_TransDetail::add_gl_trans(ST_CUSTREFUND, $refund_no, $date_, $bank_gl_account, 0, 0, $amount - $charge, $debtor_id, "Cannot insert a GL transaction for the bank account debit", $rate);
+      $total += Debtor_TransDetail::add_gl_trans(
+        ST_CUSTREFUND,
+        $refund_no,
+        $date_,
+        $bank_gl_account,
+        0,
+        0,
+        $amount - $charge,
+        $debtor_id,
+        "Cannot insert a GL transaction for the bank account debit",
+        $rate
+      );
       if ($branch_id != ANY_NUMERIC) {
         $branch_data      = Sales_Branch::get_accounts($branch_id);
         $debtors_account  = $branch_data["receivables_account"];
         $discount_account = $branch_data["payment_discount_account"];
-      }
-      else {
+      } else {
         $debtors_account  = $company_record["debtors_act"];
         $discount_account = $company_record["default_prompt_payment_act"];
       }
       if (($discount + $amount) != 0) {
         /* Now Credit Debtors account with receipts + discounts */
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTREFUND, $refund_no, $date_, $debtors_account, 0, 0, -($discount + $amount), $debtor_id, "Cannot insert a GL transaction for the debtors account credit", $rate);
+        $total += Debtor_TransDetail::add_gl_trans(
+          ST_CUSTREFUND,
+          $refund_no,
+          $date_,
+          $debtors_account,
+          0,
+          0,
+          -($discount + $amount),
+          $debtor_id,
+          "Cannot insert a GL transaction for the debtors account credit",
+          $rate
+        );
       }
       if ($charge != 0) {
         /* Now Debit bank charge account with charges */
-        $charge_act = DB_Company::get_pref('bank_charge_act');
-        $total += Debtor_TransDetail::add_gl_trans(ST_CUSTREFUND, $refund_no, $date_, $charge_act, 0, 0, $charge, $debtor_id, "Cannot insert a GL transaction for the refund bank charge debit", $rate);
+        $charge_act = DB_Company::_get_pref('bank_charge_act');
+        $total += Debtor_TransDetail::add_gl_trans(
+          ST_CUSTREFUND,
+          $refund_no,
+          $date_,
+          $charge_act,
+          0,
+          0,
+          $charge,
+          $debtor_id,
+          "Cannot insert a GL transaction for the refund bank charge debit",
+          $rate
+        );
       }
       /*Post a balance post if $total != 0 */
       GL_Trans::add_balance(ST_CUSTREFUND, $refund_no, $date_, -$total, PT_CUSTOMER, $debtor_id);

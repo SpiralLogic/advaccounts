@@ -17,8 +17,7 @@
    *
    * @return mixed
    */
-  function get_bank_balance_to($to, $account)
-  {
+  function get_bank_balance_to($to, $account) {
     $to = Dates::_dateToSql($to);
     $sql
             = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
@@ -36,8 +35,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_bank_transactions($from, $to, $account)
-  {
+  function get_bank_transactions($from, $to, $account) {
     $from = Dates::_dateToSql($from);
     $to   = Dates::_dateToSql($to);
     $sql
@@ -50,8 +48,7 @@
     return DB::_query($sql, "The transactions for '$account' could not be retrieved");
   }
 
-  function print_bank_transactions()
-  {
+  function print_bank_transactions() {
 
     $acc         = $_POST['PARAM_0'];
     $from        = $_POST['PARAM_1'];
@@ -65,21 +62,34 @@
 
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Bank Statement'), "BankStatement",SA_BANKREP, User::page_size());
-    $dec     = User::price_dec();
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep     = new $report_type(_('Bank Statement'), "BankStatement", SA_BANKREP, User::_page_size());
+    $dec     = User::_price_dec();
     $cols    = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     $headers = array(
-      _('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'), _('Debit'), _('Credit'), _('Balance')
+      _('Type'),
+      _('#'),
+      _('Reference'),
+      _('Date'),
+      _('Person/Item'),
+      _('Debit'),
+      _('Credit'),
+      _('Balance')
     );
     $account = Bank_Account::get($acc);
     $act     = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
     $params  = array(
-      0    => $comments, 1 => array(
-        'text' => _('Period'), 'from' => $from, 'to'   => $to
-      ), 2 => array(
-        'text' => _('Bank Account'), 'from' => $act, 'to'   => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Period'),
+        'from' => $from,
+        'to'   => $to
+      ),
+      2 => array(
+        'text' => _('Bank Account'),
+        'from' => $act,
+        'to'   => ''
       )
     );
     $rep->Font();

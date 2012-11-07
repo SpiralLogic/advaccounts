@@ -97,7 +97,7 @@
 
   print_balance_sheet();
   function print_balance_sheet() {
-    $dim       = DB_Company::get_pref('use_dimension');
+    $dim       = DB_Company::_get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
     $to        = $_POST['PARAM_1'];
@@ -133,7 +133,7 @@
     if (!$decimals) {
       $dec = 0;
     } else {
-      $dec = User::price_dec();
+      $dec = User::_price_dec();
     }
     $cols = array(0, 50, 200, 350, 425, 500);
     //------------0--1---2----3----4----5--
@@ -147,18 +147,18 @@
     $aligns  = array('left', 'left', 'right', 'right', 'right');
     if ($dim == 2) {
       $params = array(
-        0    => $comments,
-        1    => array(
+        0 => $comments,
+        1 => array(
           'text' => _('Period'),
           'from' => $from,
           'to'   => $to
         ),
-        2    => array(
+        2 => array(
           'text' => _('Dimension') . " 1",
           'from' => Dimensions::get_string($dimension),
           'to'   => ''
         ),
-        3    => array(
+        3 => array(
           'text' => _('Dimension') . " 2",
           'from' => Dimensions::get_string($dimension2),
           'to'   => ''
@@ -167,13 +167,13 @@
     } else {
       if ($dim == 1) {
         $params = array(
-          0    => $comments,
-          1    => array(
+          0 => $comments,
+          1 => array(
             'text' => _('Period'),
             'from' => $from,
             'to'   => $to
           ),
-          2    => array(
+          2 => array(
             'text' => _('Dimension'),
             'from' => Dimensions::get_string($dimension),
             'to'   => ''
@@ -190,8 +190,8 @@
         );
       }
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Balance Sheet'), "BalanceSheet", SA_GLANALYTIC, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Balance Sheet'), "BalanceSheet", SA_GLANALYTIC, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -273,7 +273,7 @@
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
       $pg->fontfile       = ROOT_URL . "reporting/fonts/Vera.ttf";
-      $pg->latin_notation = (User::prefs()->dec_sep != ".");
+      $pg->latin_notation = (User::_prefs()->dec_sep != ".");
       $filename           = PATH_COMPANY . "pdf_files/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;

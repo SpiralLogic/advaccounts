@@ -15,8 +15,7 @@
   /**
 
    */
-  class Dimensions extends Application
-  {
+  class Dimensions extends Application {
     public $name = "Dimensions";
     public $help_context = "&Dimensions";
     public $enabled = false;
@@ -24,7 +23,7 @@
 
      */
     public function __construct() {
-      $this->enabled = DB_Company::get_pref('use_dimension');
+      $this->enabled = DB_Company::_get_pref('use_dimension');
       parent::__construct();
     }
     public function buildMenu() {

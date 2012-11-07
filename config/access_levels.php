@@ -16,14 +16,14 @@
      Section codes 0-99 are reserved for core ADV functionalities.
      Every security section can contain up to 256 different areas.
      External modules can extend security roles system by adding rows to
-     $security_sections and User::i()->Security['areas'] using section codes >=100.
+     $security_sections and User::_i()->Security['areas'] using section codes >=100.
      Security areas and sections created by extension modules/plugins
      have dynamically assigned 3-byte integer codes. The highest byte is zero
      for sections/areas defined in this file, and extid+1 for those defined
      by extensions
    */
   return [
-    'sections'    => array(
+    'sections' => array(
       SS_SADMIN  => "System administration",
       SS_SETUP   => "Company setup",
       SS_SPEC    => "Special maintenance",
@@ -46,7 +46,7 @@
       SS_GL_A    => "Banking & GL analytics",
       SS_ADV     => "Advanced"
     ),
-    'areas'       => array(
+    'areas'    => array(
       //
       //	Advanced
       //

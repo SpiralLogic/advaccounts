@@ -23,7 +23,8 @@
   function get_transactions($category, $location, $fromcust, $from, $to) {
     $from = Dates::_dateToSql($from);
     $to   = Dates::_dateToSql($to);
-    $sql  = "SELECT stock_master.category_id,
+    $sql
+          = "SELECT stock_master.category_id,
             stock_category.description AS cat_name,
             stock_master.stock_id,
             stock_master.description, stock_master.inactive,
@@ -57,7 +58,8 @@
     if ($fromcust != -1) {
       $sql .= " AND debtors.debtor_id = " . DB::_escape($fromcust);
     }
-    $sql .= " GROUP BY stock_master.stock_id, debtors.name ORDER BY stock_master.category_id,
+    $sql
+      .= " GROUP BY stock_master.stock_id, debtors.name ORDER BY stock_master.category_id,
             stock_master.stock_id, debtors.name";
     return DB::_query($sql, "No transactions were returned");
   }
@@ -75,7 +77,7 @@
     } else {
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    $dec = User::price_dec();
+    $dec = User::_price_dec();
     if ($category == ALL_NUMERIC) {
       $category = 0;
     }
@@ -104,18 +106,30 @@
     }
     $aligns = array('left', 'left', 'left', 'right', 'right', 'right', 'right');
     $params = array(
-      0    => $comments, 1 => array(
-        'text' => _('Period'), 'from' => $from, 'to'   => $to
-      ), 2 => array(
-        'text' => _('Category'), 'from' => $cat, 'to'   => ''
-      ), 3 => array(
-        'text' => _('Location'), 'from' => $loc, 'to'   => ''
-      ), 4 => array(
-        'text' => _('Customer'), 'from' => $fromc, 'to'   => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Period'),
+        'from' => $from,
+        'to'   => $to
+      ),
+      2 => array(
+        'text' => _('Category'),
+        'from' => $cat,
+        'to'   => ''
+      ),
+      3 => array(
+        'text' => _('Location'),
+        'from' => $loc,
+        'to'   => ''
+      ),
+      4 => array(
+        'text' => _('Customer'),
+        'from' => $fromc,
+        'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Inventory Sales Report'), "InventorySalesReport",SA_SALESANALYTIC, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Inventory Sales Report'), "InventorySalesReport", SA_SALESANALYTIC, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

@@ -10,8 +10,7 @@
    * Time: 5:25 PM
    * To change this template use File | Settings | File Templates.
    */
-  class Bank_Undeposited
-  {
+  class Bank_Undeposited {
     /** @var \ADV\Core\DB\DB */
     static $DB;
     /** @var \ADV\App\Dates */
@@ -47,7 +46,7 @@
                   = "INSERT INTO bank_trans (type, bank_act, amount, ref, trans_date, person_type_id, person_id, undeposited)
           VALUES (" . ST_GROUPDEPOSIT . ", " . static::$DB->_quote($account) . ", 0," . static::$DB->_quote('Group Deposit') . "," . //
         static::$DB->_quote($date) . ", 6," . //
-        static::$DB->_quote(User::i()->user) . ",0)";
+        static::$DB->_quote(User::_i()->user) . ",0)";
       $query      = static::$DB->_query($sql, "Undeposited Cannot be Added");
       $deposit_id = static::$DB->_insertId($query);
 

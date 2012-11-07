@@ -48,24 +48,24 @@
         'chart.account_code',
         'chart.account_name',
         array(
-             'cache'                  => true,
-             'format'                 => 'Forms::accountFormat',
-             'type'                   => 2,
-             'spec_option'            => $all_option === true ? _("Use Item Sales Accounts") : $all_option,
-             'spec_id'                => '',
-             'order'                  => array(
+             'cache'         => true,
+             'format'        => 'Forms::accountFormat',
+             'type'          => 2,
+             'spec_option'   => $all_option === true ? _("Use Item Sales Accounts") : $all_option,
+             'spec_id'       => '',
+             'order'         => array(
                'type.id',
                'account_code'
              ),
-             'search_box'             => $cells,
-             'search_submit'          => false,
-             'size'                   => 12,
-             'max'                    => 10,
-             'cells'                  => true,
-             'select_submit'          => $submit_on_change,
-             'async'                  => false,
-             'category'               => 2,
-             'show_inactive'          => $all
+             'search_box'    => $cells,
+             'search_submit' => false,
+             'size'          => 12,
+             'max'           => 10,
+             'cells'         => true,
+             'select_submit' => $submit_on_change,
+             'async'         => false,
+             'category'      => 2,
+             'show_inactive' => $all
         )
       );
     }
@@ -126,7 +126,7 @@
      * @return string
      */
     public static function  view($type, $trans_no, $label = "", $force = false, $class = '', $id = '') {
-      if (!$force && !User::show_gl()) {
+      if (!$force && !User::_show_gl()) {
         return "";
       }
       $icon = false;
@@ -217,7 +217,7 @@
         '',
         array(
              'order'         => 'begin',
-             'default'       => DB_Company::get_pref('f_year'),
+             'default'       => DB_Company::_get_pref('f_year'),
              'format'        => '\\ADV\\App\\Forms::fiscalYearFormat(',
              'select_submit' => $submit_on_change,
              'async'         => false
@@ -262,7 +262,7 @@
      */
     public static function payment_terms($name, $selected_id = null, $disabled = null) {
       if ($disabled === null) {
-        $disabled = (!User::i()->hasAccess(SA_CUSTOMER_CREDIT));
+        $disabled = (!User::_i()->hasAccess(SA_CUSTOMER_CREDIT));
       }
       $sql = "SELECT terms_indicator, terms, inactive FROM payment_terms";
       return Forms::selectBox($name, $selected_id, $sql, 'terms_indicator', 'terms_indicator', array('disabled' => $disabled));

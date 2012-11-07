@@ -66,7 +66,7 @@
       return false;
     }
     // if unassembling we need to check the qoh
-    if (($_POST['ProductionType'] == 0) && !DB_Company::get_pref('allow_negative_stock')) {
+    if (($_POST['ProductionType'] == 0) && !DB_Company::_get_pref('allow_negative_stock')) {
       $wo_details = WO::get($_POST['selected_id']);
       $qoh        = Item::get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
       if (-Validation::input_num('quantity') + $qoh < 0) {
@@ -76,7 +76,7 @@
       }
     }
     // if production we need to check the qoh of the wo requirements
-    if (($_POST['ProductionType'] == 1) && !DB_Company::get_pref('allow_negative_stock')) {
+    if (($_POST['ProductionType'] == 1) && !DB_Company::_get_pref('allow_negative_stock')) {
       $err    = false;
       $result = WO_Requirements::get($_POST['selected_id']);
       while ($row = DB::_fetch($result)) {

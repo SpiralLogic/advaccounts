@@ -72,15 +72,15 @@
       $_POST['round_to'] = 1;
     }
     if ($input_error != 1) {
-      DB_Company::update_setup($_POST);
-      User::i()->timeout = $_POST['login_tout'];
+      DB_Company::_update_setup($_POST);
+      User::_i()->timeout = $_POST['login_tout'];
       Event::success(_("Company setup has been updated."));
     }
     JS::_setFocus('coy_name');
     Ajax::_activate('_page_body');
   } /* end of if submit */
   Forms::start(true);
-  $myrow                     = DB_Company::get_prefs();
+  $myrow                     = DB_Company::_get_prefs();
   $_POST['coy_name']         = $myrow["coy_name"];
   $_POST['gst_no']           = $myrow["gst_no"];
   $_POST['tax_prd']          = $myrow["tax_prd"];

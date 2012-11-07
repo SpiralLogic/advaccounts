@@ -118,7 +118,7 @@ echo "<td>" . $myrow["type" . $i] . "</td>";*/
       //if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
       //	$_POST['rate' . $i] = Num::_percentFormat($default_rate);
       // Forms::amountCellsSmall(null, 'rate' . $i, $_POST['rate' . $i], null, null,
-      // User::percent_dec());
+      // User::_percent_dec());
     }
     echo '</tr>';
   }

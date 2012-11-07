@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -26,8 +25,7 @@
    * @param string $action
    * @param string $name
    */
-  class Forms
-  {
+  class Forms {
     /** @var \ADV\Core\DB\DB */
     static $DB;
     static $Ajax;
@@ -39,8 +37,8 @@
      * @param string $name
      */
     public static function start($multi = false, $action = '', $name = '') {
-      $multi = $multi ? "enctype='multipart/form-data'" : '';
-      $name = $name ? "id='$name' name='$name'" : '';
+      $multi  = $multi ? "enctype='multipart/form-data'" : '';
+      $name   = $name ? "id='$name' name='$name'" : '';
       $action = $action ? : $_SERVER['DOCUMENT_URI'];
       echo "<form $multi method='post' action='$action' $name>";
     }
@@ -66,7 +64,7 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
-          return $numeric ? (int)$id : $id;
+          return $numeric ? (int) $id : $id;
         }
       }
       return $numeric ? -1 : null;
@@ -131,25 +129,25 @@
      */
     public static function arraySelect($name, $selected_id = null, $items, $options = []) {
       $opts = array( // default options
-        'spec_option' => false, // option text or false
-        'spec_id' => 0, // option id
+        'spec_option'   => false, // option text or false
+        'spec_id'       => 0, // option id
         'select_submit' => false, //submit on select: true/false
-        'async' => true, // select update via ajax (true) vs _page_body reload
-        'default' => '', // default value when $_POST is not set
-        'multi' => false, // multiple select
+        'async'         => true, // select update via ajax (true) vs _page_body reload
+        'default'       => '', // default value when $_POST is not set
+        'multi'         => false, // multiple select
         // search box parameters
-        'height' => false, // number of lines in select box
-        'sel_hint' => null, //
-        'class' => '', //
-        'disabled' => false
+        'height'        => false, // number of lines in select box
+        'sel_hint'      => null, //
+        'class'         => '', //
+        'disabled'      => false
       );
       // ------ merge options with defaults ----------
-      $opts = array_merge($opts, $options);
+      $opts          = array_merge($opts, $options);
       $select_submit = $opts['select_submit'];
-      $spec_id = $opts['spec_id'];
-      $spec_option = $opts['spec_option'];
-      $disabled = $opts['disabled'] ? "disabled" : '';
-      $multi = $opts['multi'];
+      $spec_id       = $opts['spec_id'];
+      $spec_option   = $opts['spec_option'];
+      $disabled      = $opts['disabled'] ? "disabled" : '';
+      $multi         = $opts['multi'];
       if ($selected_id === null) {
         $selected_id = Input::_post($name, null, $opts['default']);
       }
@@ -166,12 +164,12 @@
       // ------ make selector ----------
       $selector = $first_opt = '';
       $first_id = false;
-      $found = false;
+      $found    = false;
       //if($name=='SelectStockFromList') Event::error($sql);
       foreach ($items as $value => $descr) {
         $sel = '';
-        if (in_array((string)$value, $selected_id)) {
-          $sel = 'selected';
+        if (in_array((string) $value, $selected_id)) {
+          $sel   = 'selected';
           $found = $value;
         }
         if ($first_id === false) {
@@ -184,21 +182,21 @@
       if ($spec_option !== false) { // if special option used - add it
         $first_id = $spec_id;
         //$first_opt = $spec_option;
-        $sel = $found === false ? 'selected' : '';
+        $sel      = $found === false ? 'selected' : '';
         $selector = "<option $sel value='$spec_id'>$spec_option</option>\n" . $selector;
       }
       if ($found === false) {
         $selected_id = array($first_id);
       }
       $_POST[$name] = $multi ? $selected_id : $selected_id[0];
-      $selector = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' : '') . "$disabled id='$name' name='$name" . ($multi ?
-        '[]' : '') . "' class='" . $opts['class'] . " combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
-      $sel_name = str_replace(['[', ']'], ['-', ''], $name);
+      $selector     = "<select " . ($multi ? "multiple" : '') . ($opts['height'] !== false ? ' size="' . $opts['height'] . '"' :
+        '') . "$disabled id='$name' name='$name" . ($multi ? '[]' : '') . "' class='" . $opts['class'] . " combo' title='" . $opts['sel_hint'] . "'>" . $selector . "</select>\n";
+      $sel_name     = str_replace(['[', ']'], ['-', ''], $name);
       static::$Ajax->addUpdate($name, "_{$sel_name}_sel", $selector);
       $selector = "<span id='_{$sel_name}_sel' class='combodiv'>" . $selector . "</span>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
         $_select_button = "<input %s type='submit' class='combo_select' name='%s' value=' ' title='" . _("Select") . "'> ";
-        $selector .= sprintf($_select_button, $disabled, User::theme(), 'display:none;', '_' . $name . '_update') . "\n";
+        $selector .= sprintf($_select_button, $disabled, User::_theme(), 'display:none;', '_' . $name . '_update') . "\n";
       }
       //  JS::_defaultFocus($name);
       return $selector;
@@ -233,12 +231,12 @@
         $aspect = " style='display:none;'";
       } elseif (!is_bool($atype)) { // necessary: switch uses '=='
         $aspect = " data-aspect='$atype' ";
-        $types = explode(' ', $atype);
+        $types  = explode(' ', $atype);
         foreach ($types as $type) {
           switch ($type) {
             case 'selector':
               $aspect = " data-aspect='selector' rel='$value'";
-              $value = _("Select");
+              $value  = _("Select");
               if ($icon === false) {
                 $icon = ICON_SUBMIT;
               }
@@ -335,7 +333,7 @@
     public static function submitAddUpdate($add = true, $title = false, $async = false, $clone = false) {
       $cancel = $async;
       if ($async === 'both') {
-        $async = 'default';
+        $async  = 'default';
         $cancel = 'cancel';
       } else {
         if ($async === 'default') {
@@ -447,12 +445,12 @@
       // to underscore in POST names, to maintain compatibility with register_globals
       $rel = '';
       if ($aspect == 'selector') {
-        $rel = " rel='$value'";
+        $rel   = " rel='$value'";
         $value = _("Select");
       }
       $caption = ($name == '_action') ? $title : $value;
-      $name = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
-      if (User::graphic_links() && $icon) {
+      $name    = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
+      if (User::_graphic_links() && $icon) {
         if ($value == _("Delete")) // Helper during implementation
         {
           $icon = ICON_DELETE;
@@ -701,7 +699,7 @@
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? '' : $init;
       }
-      Forms::SmallAmountRow($label, $name, $_POST[$name], null, "%", User::percent_dec(), 0, $inputparams);
+      Forms::SmallAmountRow($label, $name, $_POST[$name], null, "%", User::_percent_dec(), 0, $inputparams);
     }
     /**
      * @param        $label
@@ -745,7 +743,7 @@
      */
     public static function qtyRow($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = User::qty_dec();
+        $dec = User::_qty_dec();
       }
       echo "<tr>";
       Forms::amountCells($label, $name, $init, $params, $post_label, $dec);
@@ -761,7 +759,7 @@
      */
     public static function qtyRowSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = User::qty_dec();
+        $dec = User::_qty_dec();
       }
       echo "<tr>";
       Forms::amountCellsSmall($label, $name, $init, $params, $post_label, $dec, null, true);
@@ -815,7 +813,7 @@
      * @return string
      */
     public static function yesnoList($name, $selected_id = null, $name_yes = "", $name_no = "", $submit_on_change = false) {
-      $items = [];
+      $items      = [];
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect(
@@ -824,7 +822,7 @@
         $items,
         array(
              'select_submit' => $submit_on_change,
-             'async' => false
+             'async'         => false
         )
       );
     }
@@ -868,7 +866,7 @@
         $items,
         array(
              'spec_option' => $no_option,
-             'spec_id' => ALL_NUMERIC
+             'spec_id'     => ALL_NUMERIC
         )
       );
     }
@@ -951,7 +949,7 @@
      * @return string
      */
     public static function stockItemsFormat($row) {
-      return (User::show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
+      return (User::_show_codes() ? ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
     }
     /**
      * @param $row
@@ -1017,7 +1015,7 @@
      * @param $key
      */
     public static function inactiveControlCell($id, $value, $table, $key) {
-      $name = "Inactive" . $id;
+      $name  = "Inactive" . $id;
       $value = $value ? 1 : 0;
       if (Input::_hasPost('show_inactive')) {
         if (isset($_POST['LInact'][$id]) && (Input::_post('_Inactive' . $id . '_update') || Input::_post('Update')) && (Input::_hasPost('Inactive' . $id) != $value)
@@ -1139,7 +1137,7 @@
         echo "<td class='label'><label for=\"$name\"> $label</label></td>";
       }
       echo "<td >";
-      $class = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
+      $class  = $submit_on_change ? 'searchbox datepicker' : 'datepicker';
       $aspect = $check ? ' data-aspect="cdate"' : '';
       if ($check && (Input::_post($name) != Dates::_today())) {
         $aspect .= ' style="color:#FF0000"';
@@ -1231,7 +1229,7 @@
         $class = $size;
       }
       $class = 'class="' . $class . ($submit_on_change ? ' searchbox' : '') . '"';
-      $id = $name ? "id=\"$name\"" : '';
+      $id    = $name ? "id=\"$name\"" : '';
       $value = 'value="' . $_POST[$name] . '"';
       Ajax::_addUpdate($name, $name, $_POST[$name]);
       $name = $name ? "name=\"$name\"" : '';
@@ -1285,7 +1283,7 @@
       if (!isset($_POST[$name]) || $_POST[$name] == "") {
         $_POST[$name] = ($init === null) ? 0 : $init;
       }
-      Forms::amountCellsSmall($label, $name, null, null, "%", User::percent_dec(), $inputparams);
+      Forms::amountCellsSmall($label, $name, null, null, "%", User::_percent_dec(), $inputparams);
     }
     /**
      * @param        $label
@@ -1320,23 +1318,23 @@
       } else {
         echo "<td class='alignright nowrap' >";
       }
-      $dec = $dec === null ? User::price_dec() : $dec;
+      $dec = $dec === null ? User::_price_dec() : $dec;
       if ($init === null) {
         $init = Input::_post($name, Input::NUMERIC);
       }
-      $init = $_POST[$name] = Num::_priceDecimal($init, $dec);
-      $input_attr['name'] = $name;
-      $input_attr['value'] = $init;
+      $init                   = $_POST[$name] = Num::_priceDecimal($init, $dec);
+      $input_attr['name']     = $name;
+      $input_attr['value']    = $init;
       $input_attr['data-dec'] = $dec;
-      $input_attr['class'] = ($name == 'freight') ? 'freight ' : 'amount ';
+      $input_attr['class']    = ($name == 'freight') ? 'freight ' : 'amount ';
       if ($size && is_numeric($size)) {
         $input_attr['size'] = $size;
       } elseif (is_string($size)) {
         $input_attr['class'] .= $size;
       }
       $input_attr['maxlength'] = $max ? : $size;
-      $input_attr['id'] = $id ? : $name;
-      $input_attr['type'] = 'text';
+      $input_attr['id']        = $id ? : $name;
+      $input_attr['type']      = 'text';
       foreach ($input_attr as $k => $v) {
         if ($v === null) {
           continue;
@@ -1345,7 +1343,7 @@
       }
       $pre_label = '';
       if (is_array($post_label)) {
-        $pre_label = $post_label[0];
+        $pre_label  = $post_label[0];
         $post_label = null;
       }
       if ($post_label) {
@@ -1390,7 +1388,7 @@
      */
     public static function unitAmountCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = User::price_dec() + 2;
+        $dec = User::_price_dec() + 2;
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec + 2);
     }
@@ -1417,7 +1415,7 @@
      */
     public static function qtyCellsSmall($label, $name, $init = null, $params = null, $post_label = null, $dec = null) {
       if (!isset($dec)) {
-        $dec = User::qty_dec();
+        $dec = User::_qty_dec();
       }
       Forms::amountCellsEx($label, $name, 'small', 12, $init, $params, $post_label, $dec, null, null, true);
     }
@@ -1489,12 +1487,12 @@
      */
     public static function qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
       if (!isset($dec)) {
-        $dec = User::qty_dec();
-        $dec = User::qty_dec();
+        $dec = User::_qty_dec();
+        $dec = User::_qty_dec();
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, $inputparams = '', true);
     }
   }
 
   Forms::$Ajax = Ajax::i();
-  Forms::$DB = \ADV\Core\DB\DB::i();
+  Forms::$DB   = \ADV\Core\DB\DB::i();

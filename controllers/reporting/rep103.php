@@ -17,7 +17,8 @@
    * @return null|PDOStatement
    */
   function get_customer_details_for_report($area = 0, $salesid = 0) {
-    $sql = "SELECT debtors.debtor_id,
+    $sql
+      = "SELECT debtors.debtor_id,
 			debtors.name,
 			debtors.address,
 			sales_types.sales_type,
@@ -51,7 +52,8 @@
     } elseif ($salesid != 0) {
       $sql .= " WHERE salesman.salesman_code=" . DB::_escape($salesid);
     }
-    $sql .= " ORDER BY description,
+    $sql
+      .= " ORDER BY description,
 			salesman.salesman_name,
 			debtors.debtor_id,
 			branches.branch_id";
@@ -66,8 +68,9 @@
    * @return mixed
    */
   function get_transactions($debtorno, $branchcode, $date) {
-    $date   = Dates::_dateToSql($date);
-    $sql    = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
+    $date = Dates::_dateToSql($date);
+    $sql
+            = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM debtor_trans
 		WHERE debtor_id=" . DB::_escape($debtorno) . "
 		AND branch_id=" . DB::_escape($branchcode) . "
@@ -122,7 +125,10 @@
     $less    = (double) $less;
     $cols    = array(0, 150, 300, 400, 550);
     $headers = array(
-      _('Customer Postal Address'), _('Price/Turnover'), _('Branch Contact Information'), _('Branch Delivery Address')
+      _('Customer Postal Address'),
+      _('Price/Turnover'),
+      _('Branch Contact Information'),
+      _('Branch Delivery Address')
     );
     $aligns  = array('left', 'left', 'left', 'left');
     $params  = array(
@@ -132,8 +138,8 @@
       3 => array('text' => _('Sales Folk'), 'from' => $salesfolk, 'to' => ''),
       4 => array('text' => _('Activity'), 'from' => $morestr, 'to' => $lessstr)
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Customer Details Listing'), "CustomerDetailsListing", SA_CUSTBULKREP,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Customer Details Listing'), "CustomerDetailsListing", SA_CUSTBULKREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

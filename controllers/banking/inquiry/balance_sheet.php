@@ -101,7 +101,7 @@
   function display_balance_sheet() {
     $from      = Dates::_beginFiscalYear();
     $to        = $_POST['TransToDate'];
-    $dim       = DB_Company::get_pref('use_dimension');
+    $dim       = DB_Company::_get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $lconvert  = $econvert = 1;
     if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0)) {

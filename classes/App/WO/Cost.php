@@ -8,10 +8,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   class WO_Cost {
-    public static $types = array(
-      WO_LABOUR   => "Labour Cost", //
-      WO_OVERHEAD => "Overhead Cost", ////
-    );
+    public static $types
+      = array(
+        WO_LABOUR   => "Labour Cost", //
+        WO_OVERHEAD => "Overhead Cost", ////
+      );
     /**
      * @static
      *
@@ -26,7 +27,7 @@
         $standard_cost = Item_Price::get_standard_cost($bom_item['component']);
         $m_cost += ($bom_item['quantity'] * $standard_cost);
       }
-      $dec = User::price_dec();
+      $dec = User::_price_dec();
       Num::_priceDecimal($m_cost, $dec);
       $sql           = "SELECT material_cost FROM stock_master WHERE stock_id = " . DB::_escape($stock_id);
       $result        = DB::_query($sql);
@@ -40,7 +41,8 @@
         $material_cost = ($qoh * $material_cost + $qty * $m_cost) / ($qoh + $qty);
       }
       $material_cost = Num::_round($material_cost, $dec);
-      $sql           = "UPDATE stock_master SET material_cost=$material_cost
+      $sql
+                     = "UPDATE stock_master SET material_cost=$material_cost
 		WHERE stock_id=" . DB::_escape($stock_id);
       DB::_query($sql, "The cost details for the inventory item could not be updated");
     }
@@ -53,7 +55,7 @@
      * @param $costs
      */
     public static function add_overhead($stock_id, $qty, $date_, $costs) {
-      $dec = User::price_dec();
+      $dec = User::_price_dec();
       Num::_priceDecimal($costs, $dec);
       if ($qty != 0) {
         $costs /= $qty;
@@ -83,7 +85,7 @@
      * @param $costs
      */
     public static function add_labour($stock_id, $qty, $date_, $costs) {
-      $dec = User::price_dec();
+      $dec = User::_price_dec();
       Num::_priceDecimal($costs, $dec);
       if ($qty != 0) {
         $costs /= $qty;
@@ -120,7 +122,7 @@
       $result        = DB::_query($sql);
       $myrow         = DB::_fetch($result);
       $material_cost = $myrow['material_cost'];
-      $dec           = User::price_dec();
+      $dec           = User::_price_dec();
       Num::_priceDecimal($material_cost, $dec);
       $qoh = Item::get_qoh_on_date($stock_id, null, $date_);
       if ($qoh < 0) {

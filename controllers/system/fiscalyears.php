@@ -97,13 +97,13 @@
    * @return bool
    */
   function close_year($year) {
-    $co = DB_Company::get_prefs();
+    $co = DB_Company::_get_prefs();
     if (GL_Account::get($co['retained_earnings_act']) == false || GL_Account::get($co['profit_loss_year_act']) == false) {
       Event::error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
       return false;
     }
     DB::_begin();
-    $myrow = DB_Company::get_fiscalyear($year);
+    $myrow = DB_Company::_get_fiscalyear($year);
     $to    = $myrow['end'];
     // retrieve total balances from balance sheet accounts
     $sql
@@ -112,7 +112,7 @@
         WHERE ctype>=" . CL_ASSETS . " AND ctype <=" . CL_EQUITY . " AND tran_date <= '$to'";
     $result  = DB::_query($sql, "The total balance could not be calculated");
     $row     = DB::_fetchRow($result);
-    $balance = Num::_round($row[0], User::price_dec());
+    $balance = Num::_round($row[0], User::_price_dec());
     $to      = Dates::_sqlToDate($to);
     if ($balance != 0.0) {
       $trans_type = ST_JOURNAL;
@@ -129,7 +129,7 @@
    * @param $year
    */
   function open_year($year) {
-    $myrow = DB_Company::get_fiscalyear($year);
+    $myrow = DB_Company::_get_fiscalyear($year);
     $from  = Dates::_sqlToDate($myrow['begin']);
     DB::_begin();
     DB_AuditTrail::open_transactions($from);
@@ -156,14 +156,14 @@
         open_year($selected_id);
       }
       if ($ok) {
-        DB_Company::update_fiscalyear($selected_id, $_POST['closed']);
+        DB_Company::_update_fiscalyear($selected_id, $_POST['closed']);
         Event::success(_('Selected fiscal year has been updated'));
       }
     } else {
       if (!check_data()) {
         return false;
       }
-      DB_Company::add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
+      DB_Company::_add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
       Event::success(_('New fiscal year has been added'));
     }
     $Mode = MODE_RESET;
@@ -175,7 +175,7 @@
    * @return bool
    */
   function check_can_delete($selected_id) {
-    $myrow = DB_Company::get_fiscalyear($selected_id);
+    $myrow = DB_Company::_get_fiscalyear($selected_id);
     // PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
     if (check_years_before(Dates::_sqlToDate($myrow['begin']), true)) {
       Event::error(_("Cannot delete this fiscal year because thera are fiscal years before."));
@@ -213,10 +213,10 @@
    * @param $selected_id
    */
   function delete_this_fiscalyear($selected_id) {
-    Utils::backup(Config::_get('db.' . User::i()->company), 'Security backup before Fiscal Year Removal');
+    Utils::backup(Config::_get('db.' . User::_i()->company), 'Security backup before Fiscal Year Removal');
     DB::_begin();
     $ref    = _("Open Balance");
-    $myrow  = DB_Company::get_fiscalyear($selected_id);
+    $myrow  = DB_Company::_get_fiscalyear($selected_id);
     $to     = $myrow['end'];
     $sql    = "SELECT order_no, trans_type FROM sales_orders WHERE ord_date <= '$to' AND type <> 1"; // don't take the templates
     $result = DB::_query($sql, "Could not retrieve sales orders");
@@ -319,7 +319,7 @@
       $sql = "DELETE FROM stock_moves WHERE tran_date <= '$to' AND loc_code = '{$row['loc_code']}' AND stock_id = '{$row['stock_id']}'";
       DB::_query($sql, "Could not delete stock moves");
       $qty      = $row['qty'];
-      $std_cost = ($qty == 0 ? 0 : Num::_round($row['std_cost'] / $qty, User::price_dec()));
+      $std_cost = ($qty == 0 ? 0 : Num::_round($row['std_cost'] / $qty, User::_price_dec()));
       $sql
                 = "INSERT INTO stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
             ('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $std_cost)";
@@ -382,7 +382,7 @@
         DB::_query($sql, "Could not delete refs");
       }
     }
-    DB_Company::delete_fiscalyear($selected_id);
+    DB_Company::_delete_fiscalyear($selected_id);
     DB::_commit();
   }
 
@@ -400,8 +400,8 @@
   }
 
   function display_fiscalyears() {
-    $company_year = DB_Company::get_pref('f_year');
-    $result       = DB_Company::getAll_fiscalyears();
+    $company_year = DB_Company::_get_pref('f_year');
+    $result       = DB_Company::_getAll_fiscalyears();
     Forms::start();
     Event::warning(
       _(
@@ -461,7 +461,7 @@
     Table::start('standard');
     if ($selected_id != -1) {
       if ($Mode == MODE_EDIT) {
-        $myrow              = DB_Company::get_fiscalyear($selected_id);
+        $myrow              = DB_Company::_get_fiscalyear($selected_id);
         $_POST['from_date'] = Dates::_sqlToDate($myrow["begin"]);
         $_POST['to_date']   = Dates::_sqlToDate($myrow["end"]);
         $_POST['closed']    = $myrow["closed"];

@@ -1,15 +1,13 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Line
-  {
+  class Item_Line {
     /** @var */
     public $stock_id;
     /**
@@ -42,7 +40,7 @@
         Event::error("invalid item added to order : $stock_id", "");
       }
       $this->mb_flag = $item_row["mb_flag"];
-      $this->units = $item_row["units"];
+      $this->units   = $item_row["units"];
       if ($description == null) {
         $this->description = $item_row["description"];
       } else {
@@ -66,7 +64,7 @@
      * @return Item_Line|null
      */
     public function check_qoh($location, $date_, $reverse) {
-      if (!DB_Company::get_pref('allow_negative_stock')) {
+      if (!DB_Company::_get_pref('allow_negative_stock')) {
         if (WO::has_stock_holding($this->mb_flag)) {
           $quantity = $this->quantity;
           if ($reverse) {

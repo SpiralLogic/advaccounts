@@ -36,7 +36,7 @@
   }
   Forms::start();
   if (Validation::check(Validation::GL_ACCOUNTS)) {
-    $dim = DB_Company::get_pref('use_dimension');
+    $dim = DB_Company::_get_pref('use_dimension');
     Table::start('standard');
     GL_UI::fiscalyears_row(_("Fiscal Year:"), 'fyear', null);
     GL_UI::all_row(_("Account Code:"), 'account', null);

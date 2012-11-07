@@ -17,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($from, $to)
-  {
+  function get_transactions($from, $to) {
     $sql
       = "SELECT bom.parent,
             bom.component,
@@ -39,8 +38,7 @@
     return DB::_query($sql, "No transactions were returned");
   }
 
-  function print_bill_of_material()
-  {
+  function print_bill_of_material() {
     $frompart    = $_POST['PARAM_0'];
     $topart      = $_POST['PARAM_1'];
     $comments    = $_POST['PARAM_2'];
@@ -56,12 +54,15 @@
     $headers = array(_('Component'), _('Description'), _('Loc'), _('Wrk Ctr'), _('Quantity'));
     $aligns  = array('left', 'left', 'left', 'left', 'right');
     $params  = array(
-      0 => $comments, 1 => array(
-        'text' => _('Component'), 'from' => $frompart, 'to' => $topart
+      0 => $comments,
+      1 => array(
+        'text' => _('Component'),
+        'from' => $frompart,
+        'to'   => $topart
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Bill of Material Listing'), "BillOfMaterial",SA_BOMREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Bill of Material Listing'), "BillOfMaterial", SA_BOMREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

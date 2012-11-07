@@ -14,8 +14,7 @@
     /**
 
      */
-    class QuickEntry extends \ADV\App\DB\Base
-    {
+    class QuickEntry extends \ADV\App\DB\Base {
       protected $_table = 'quick_entries';
       protected $_classname = 'Quick Entry';
       protected $_id_column = 'id';
@@ -88,29 +87,30 @@
     /**
 
      */
-    class GL_QuickEntry
-    {
-      public static $actions = array(
-        '='  => 'Remainder', // post current base amount to GL account
-        'a'  => 'Amount', // post amount to GL account
-        'a+' => 'Amount, increase base', // post amount to GL account and increase base
-        'a-' => 'Amount, reduce base', // post amount to GL account and reduce base
-        '%'  => '% amount of base', // store acc*amount% to GL account
-        '%+' => '% amount of base, increase base', // ditto & increase base amount
-        '%-' => '% amount of base, reduce base', // ditto & reduce base amount
-        'T'  => 'Taxes added', // post taxes calculated on base amount
-        'T+' => 'Taxes added, increase base', // ditto & increase base amount
-        'T-' => 'Taxes added, reduce base', // ditto & reduce base amount
-        't'  => 'Taxes included', // post taxes calculated on base amount
-        't+' => 'Taxes included, increase base', // ditto & increase base amount
-        't-' => 'Taxes included, reduce base' // ditto & reduce base amount
-      );
-      public static $types = array(
-        QE_DEPOSIT => "Bank Deposit", //
-        QE_PAYMENT => "Bank Payment", //
-        QE_JOURNAL => "Journal Entry", //
-        QE_SUPPINV => "Supplier Invoice/Credit"
-      );
+    class GL_QuickEntry {
+      public static $actions
+        = array(
+          '='  => 'Remainder', // post current base amount to GL account
+          'a'  => 'Amount', // post amount to GL account
+          'a+' => 'Amount, increase base', // post amount to GL account and increase base
+          'a-' => 'Amount, reduce base', // post amount to GL account and reduce base
+          '%'  => '% amount of base', // store acc*amount% to GL account
+          '%+' => '% amount of base, increase base', // ditto & increase base amount
+          '%-' => '% amount of base, reduce base', // ditto & reduce base amount
+          'T'  => 'Taxes added', // post taxes calculated on base amount
+          'T+' => 'Taxes added, increase base', // ditto & increase base amount
+          'T-' => 'Taxes added, reduce base', // ditto & reduce base amount
+          't'  => 'Taxes included', // post taxes calculated on base amount
+          't+' => 'Taxes included, increase base', // ditto & increase base amount
+          't-' => 'Taxes included, reduce base' // ditto & reduce base amount
+        );
+      public static $types
+        = array(
+          QE_DEPOSIT => "Bank Deposit", //
+          QE_PAYMENT => "Bank Payment", //
+          QE_JOURNAL => "Journal Entry", //
+          QE_SUPPINV => "Supplier Invoice/Credit"
+        );
       /**
        * @static
        *
@@ -120,7 +120,8 @@
        * @param $base_desc
        */
       public static function add($description, $type, $base_amount, $base_desc) {
-        $sql = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
+        $sql
+          = "INSERT INTO quick_entries (description, type, base_amount, base_desc)
         VALUES (" . DB::_escape($description) . ", " . DB::_escape($type) . ", " . DB::_escape($base_amount) . ", " . DB::_escape($base_desc) . ")";
         DB::_query($sql, "could not insert quick entry for $description");
       }
@@ -159,7 +160,8 @@
        * @param $dim2
        */
       public static function add_line($qid, $action, $dest_id, $amount, $dim, $dim2) {
-        $sql = "INSERT INTO quick_entry_lines
+        $sql
+          = "INSERT INTO quick_entry_lines
             (qid, action, dest_id, amount, dimension_id, dimension2_id)
         VALUES
             ($qid, " . DB::_escape($action) . "," . DB::_escape($dest_id) . ",
@@ -242,7 +244,8 @@
        * @return null|PDOStatement
        */
       public static function get_lines($qid) {
-        $sql = "SELECT quick_entry_lines.*, chart_master.account_name,
+        $sql
+          = "SELECT quick_entry_lines.*, chart_master.account_name,
                 tax_types.name as tax_name
             FROM quick_entry_lines
             LEFT JOIN chart_master ON
@@ -346,14 +349,14 @@
                 $base -= $part;
                 break;
               case "%": // store acc*amount% to GL account
-                $part = Num::_round($base * $qe_line['amount'] / 100, User::price_dec());
+                $part = Num::_round($base * $qe_line['amount'] / 100, User::_price_dec());
                 break;
               case "%+": // ditto & increase base amount
-                $part = Num::_round($base * $qe_line['amount'] / 100, User::price_dec());
+                $part = Num::_round($base * $qe_line['amount'] / 100, User::_price_dec());
                 $base += $part;
                 break;
               case "%-": // ditto & reduce base amount
-                $part = Num::_round($base * $qe_line['amount'] / 100, User::price_dec());
+                $part = Num::_round($base * $qe_line['amount'] / 100, User::_price_dec());
                 $base -= $part;
                 break;
               case "t": // post taxes calculated on base amount
@@ -381,7 +384,7 @@
                     continue 2;
                   }
                 }
-                $tax = Num::_round($part * $item_tax['rate'], User::price_dec());
+                $tax = Num::_round($part * $item_tax['rate'], User::_price_dec());
                 if ($tax == 0) {
                   continue 2;
                 }

@@ -37,17 +37,17 @@
     public $trans_no;
     /** @var */
     public $type;
-    /** @var string **/
+    /** @var string * */
     public $person_id = '';
-    /** @var string **/
+    /** @var string * */
     public $person_name = '';
     /** @var */
     public $person_type;
     /** @var */
     public $date_;
-    /** @var int **/
+    /** @var int * */
     public $amount = 0; /*Total amount of the transaction in FX */
-    /** @var array **/
+    /** @var array * */
     public $allocs; /*array of transactions allocated to */
     /**
      * @param $type
@@ -340,7 +340,7 @@ above logic will be overwritten with the prev alloc detail below */
      */
     public static function create_miscorder(Debtor $customer, $branch_id, $date, $memo, $ref, $amount, $discount = 0) {
       $type = ST_SALESINVOICE;
-      if (!User::i()->salesmanid) {
+      if (!User::_i()->salesmanid) {
         Event::error(_("You do not have a salesman id, this is needed to create an invoice."));
         return false;
       }
@@ -350,13 +350,13 @@ above logic will be overwritten with the prev alloc detail below */
       $doc->due_date   = $doc->document_date = Dates::_newDocDate($date);
       $doc->set_customer($customer->id, $customer->name, $customer->curr_code, $customer->discount, $customer->payment_terms);
       $doc->set_branch($customer->branches[$branch_id]->id, $customer->branches[$branch_id]->tax_group_id);
-      $doc->pos        = User::pos();
+      $doc->pos        = User::_pos();
       $doc->ship_via   = Config::_get('default.ship_via', 1);
       $doc->sales_type = 1;
       $doc->location   = Config::_get('default.location');
       $doc->cust_ref   = $ref;
       $doc->Comments   = "Invoice for Customer Payment: " . $doc->cust_ref;
-      $doc->salesman   = User::i()->salesmanid;
+      $doc->salesman   = User::_i()->salesmanid;
       $doc->add_to_order(0, 'MiscSale', '1', Tax::tax_free_price('MiscSale', $amount, 0, true, $doc->tax_group_array), $discount / 100, 1, 0, 'Order: ' . $memo);
       $doc->write(1);
       $doc->finish();
@@ -383,8 +383,8 @@ above logic will be overwritten with the prev alloc detail below */
         Cell::label(SysTypes::$names[$alloc_row['type']]);
         Cell::label(GL_UI::viewTrans($alloc_row['type'], $alloc_row['trans_no']));
         Cell::label(Dates::_sqlToDate($alloc_row['tran_date']));
-        $alloc_row['Total'] = Num::_round($alloc_row['Total'], User::price_dec());
-        $alloc_row['amt']   = Num::_round($alloc_row['amt'], User::price_dec());
+        $alloc_row['Total'] = Num::_round($alloc_row['Total'], User::_price_dec());
+        $alloc_row['amt']   = Num::_round($alloc_row['amt'], User::_price_dec());
         Cell::amount($alloc_row['Total']);
         //Cell::amount($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
         Cell::amount($alloc_row['Total'] - $alloc_row['amt']);
@@ -398,7 +398,7 @@ above logic will be overwritten with the prev alloc detail below */
       echo '</tr>';
       echo '<tr>';
       Cell::label(_("Left to Allocate:"), "class='alignright' colspan=5");
-      $total = Num::_round($total, User::price_dec());
+      $total = Num::_round($total, User::_price_dec());
       Cell::amount($total - $total_allocated);
       echo '</tr>';
       Table::end(1);
@@ -427,6 +427,7 @@ above logic will be overwritten with the prev alloc detail below */
       }
     }
   }
+
   /**
 
    */

@@ -155,7 +155,7 @@
 
   function display_profit_and_loss() {
     global $sel;
-    $dim       = DB_Company::get_pref('use_dimension');
+    $dim       = DB_Company::_get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['TransFromDate'];
     $to        = $_POST['TransToDate'];
@@ -167,7 +167,7 @@
       $drilldown = 0;
     } // Root level
     $dec  = 0;
-    $pdec = User::percent_dec();
+    $pdec = User::_percent_dec();
     if ($compare == 0 || $compare == 2) {
       $end = $to;
       if ($compare == 2) {

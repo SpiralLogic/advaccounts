@@ -48,7 +48,7 @@
       if (!$this->creditor_id) {
         $this->creditor_id = $this->Session->getGlobal('creditor_id');
       }
-      $this->creditor_id = &$this->Input->postGetGlobal('creditor_id');
+      $this->creditor_id = & $this->Input->postGetGlobal('creditor_id');
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
@@ -239,7 +239,7 @@
         }
       }
       if ($this->Input->post('ChgTotal', null, 0) != 0) {
-        $this->trans->add_gl_codes_to_trans(DB_Company::get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, $this->Input->post('ChgTotal'), 'Rounding Correction');
+        $this->trans->add_gl_codes_to_trans(DB_Company::_get_pref('default_cogs_act'), 'Cost of Goods Sold', 0, 0, $this->Input->post('ChgTotal'), 'Rounding Correction');
       }
       $invoice_no                          = Purch_Invoice::add($this->trans);
       $_SESSION['history'][ST_SUPPINVOICE] = $this->trans->reference;
@@ -334,7 +334,7 @@
         $this->JS->setFocus('ExpPrice' . $n);
         return false;
       }
-      $margin = DB_Company::get_pref('po_over_charge');
+      $margin = DB_Company::_get_pref('po_over_charge');
       if (Config::_get('purchases.valid_charged_to_delivered_price') == true && $margin != 0) {
         if ($_POST['order_price' . $n] != Validation::input_num('ChgPrice' . $n)) {
           if ($this->Input->post('order_price' . $n, Input::NUMERIC, 0) != 0 && Validation::input_num('ChgPrice' . $n) / $_POST['order_price' . $n] > (1 + ($margin / 100))) {

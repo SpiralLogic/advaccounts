@@ -184,7 +184,7 @@
       static::$DB->_update('bank_trans')->value('bank_act', $to)->where('type=', $type)->andWhere('trans_no=', $trans_no)->andwhere('bank_act=', $from)->exec();
       static::$DB->_update('gl_trans')->value('account', $togl)->where('type=', $type)->andWhere('type_no=', $trans_no)->andWhere('account=', $fromgl)->exec();
       $sql = "UPDATE comments SET memo_ = CONCAT(memo_," . DB::_quote(
-        ' <br>Bank changed from ' . $from . ' to ' . $to . ' by ' . User::i()->username
+        ' <br>Bank changed from ' . $from . ' to ' . $to . ' by ' . User::_i()->username
       ) . ") WHERE id=" . DB::_quote($trans_no) . " AND type=" . DB::_quote($type);
       DB::_query($sql);
       static::$DB->_commit();
@@ -234,7 +234,7 @@
             static::$DB->_cancel();
             $status->set(\ADV\Core\Status::ERROR, 'chnage date', $bank_trans_id . 'Cannot change date for this transaction');
         }
-        $sql = "UPDATE comments SET memo_ = CONCAT(memo_,'" . ' <br>Date changed from ' . $row['trans_date'] . ' to ' . $sqldate . ' by ' . User::i(
+        $sql = "UPDATE comments SET memo_ = CONCAT(memo_,'" . ' <br>Date changed from ' . $row['trans_date'] . ' to ' . $sqldate . ' by ' . User::_i(
         )->username . "') WHERE id=" . DB::_quote($row["trans_no"]) . " AND type=" . DB::_quote($row['type']);
         DB::_query($sql);
         static::$DB->_commit();

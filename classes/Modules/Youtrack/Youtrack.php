@@ -36,8 +36,8 @@ JS;
     public function youtrack() {
       $ch = curl_init('http://advanced.advancedgroup.com.au:8090/rest/user/login');
       curl_setopt($ch, CURLOPT_POST, 2);
-      $user = User::i()->username;
-      $key  = User::i()->getHash();
+      $user = User::_i()->username;
+      $key  = User::_i()->getHash();
       curl_setopt($ch, CURLOPT_POSTFIELDS, "login=$user&password=$key");
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_HEADER, 1);

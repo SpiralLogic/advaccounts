@@ -47,12 +47,12 @@
       $job = $this->get_job($trans_no);
       if ($trans_no && $this->jobExists($trans_no)) {
         $this->currentJob['Customer']             = $job['Customer'] . ' - CANCELLED';
-        $this->currentJob['Updates']              = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . User::i()->name . ' ' . chr(
+        $this->currentJob['Updates']              = date('Y-m-d h:m:s', strtotime("now")) . ' ' . 'Job has BEEN CANCELLED from acounts by ' . User::_i()->name . ' ' . chr(
           13
         ) . chr(
           10
         ) . $job['Updates'];
-        $this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . User::i()->name . '</div>' . $job['Next_Action_Required'];
+        $this->currentJob['Next_Action_Required'] = '<div>Job has BEEN CANCELLED from accounts by ' . User::_i()->name . '</div>' . $job['Next_Action_Required'];
         $this->currentJob['order_ref']            = '';
         $this->currentJob['order_no']             = '';
         $this->currentJob['Priority_Level']       = 5;
@@ -74,7 +74,7 @@
      */
     public function addjob($job_data) {
       $this->order_no = $order_no = $job_data->trans_no;
-      $user_name      = User::i()->name;
+      $user_name      = User::_i()->name;
       $orderlines     = $this->getOrderLines();
       $update         = var_export($job_data, true);
       $job            = $this->get_job($order_no);
@@ -235,7 +235,6 @@
     }
     /**
      * @static
-
      */
     public function tasks() {
       $result = false;

@@ -162,7 +162,7 @@
       JS::_setFocus('code_id');
       return false;
     }
-    if (!User::i()->hasAccess(SA_BANKJOURNAL) && Bank_Account::is($_POST['code_id'])) {
+    if (!User::_i()->hasAccess(SA_BANKJOURNAL) && Bank_Account::is($_POST['code_id'])) {
       Event::error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
       JS::_setFocus('code_id');
       return false;
@@ -239,5 +239,5 @@
     $_POST['memo_']            = $order->memo_;
     $_POST['ref']              = $order->reference;
     $_POST['date_']            = $order->tran_date;
-    $_SESSION['journal_items'] = &$order;
+    $_SESSION['journal_items'] = & $order;
   }

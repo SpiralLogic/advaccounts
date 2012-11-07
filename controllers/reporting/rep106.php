@@ -10,8 +10,6 @@
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
 
-
-
   print_salesman_list();
   /**
    * @param $from
@@ -19,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function GetSalesmanTrans($from, $to)
-  {
+  function GetSalesmanTrans($from, $to) {
     $fromdate = Dates::_dateToSql($from);
     $todate   = Dates::_dateToSql($to);
     $sql
@@ -41,8 +38,7 @@
     return DB::_query($sql, "Error getting order details");
   }
 
-  function print_salesman_list()
-  {
+  function print_salesman_list() {
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $summary     = $_POST['PARAM_2'];
@@ -58,26 +54,44 @@
     } else {
       $sum = _("Yes");
     }
-    $dec      = User::price_dec();
+    $dec      = User::_price_dec();
     $cols     = array(0, 60, 150, 220, 325, 385, 450, 515);
     $headers  = array(
-      _('Invoice'), _('Customer'), _('Branch'), _('Customer Ref'), _('Inv Date'), _('Total'), _('Provision')
+      _('Invoice'),
+      _('Customer'),
+      _('Branch'),
+      _('Customer Ref'),
+      _('Inv Date'),
+      _('Total'),
+      _('Provision')
     );
     $aligns   = array('left', 'left', 'left', 'left', 'left', 'right', 'right');
     $headers2 = array(
-      _('Salesman'), " ", _('Phone'), _('Email'), _('Provision'), _('Break Pt.'), _('Provision') . " 2"
+      _('Salesman'),
+      " ",
+      _('Phone'),
+      _('Email'),
+      _('Provision'),
+      _('Break Pt.'),
+      _('Provision') . " 2"
     );
     $params   = array(
-      0    => $comments, 1 => array(
-        'text' => _('Period'), 'from' => $from, 'to' => $to
-      ), 2 => array(
-        'text' => _('Summary Only'), 'from' => $sum, 'to' => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Period'),
+        'from' => $from,
+        'to'   => $to
+      ),
+      2 => array(
+        'text' => _('Summary Only'),
+        'from' => $sum,
+        'to'   => ''
       )
     );
     $cols2    = $cols;
     $aligns2  = $aligns;
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep      = new ADVReport(_('Salesman Listing'), "SalesmanListing",SA_SALESMANREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new ADVReport(_('Salesman Listing'), "SalesmanListing", SA_SALESMANREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
     $rep->Header();
@@ -103,9 +117,9 @@
         $rep->TextCol(0, 2, $myrow['salesman_code'] . " " . $myrow['salesman_name']);
         $rep->TextCol(2, 3, $myrow['salesman_phone']);
         $rep->TextCol(3, 4, $myrow['salesman_email']);
-        $rep->TextCol(4, 5, Num::_format($myrow['provision'], User::percent_dec()) . " %");
+        $rep->TextCol(4, 5, Num::_format($myrow['provision'], User::_percent_dec()) . " %");
         $rep->AmountCol(5, 6, $myrow['break_pt'], $dec);
-        $rep->TextCol(6, 7, Num::_format($myrow['provision2'], User::percent_dec()) . " %");
+        $rep->TextCol(6, 7, Num::_format($myrow['provision2'], User::_percent_dec()) . " %");
         $rep->NewLine(2);
         $salesman = $myrow['salesman_code'];
         $total += $subtotal;

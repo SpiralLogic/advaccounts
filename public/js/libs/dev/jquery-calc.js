@@ -1,14 +1,10 @@
 /* http://keith-wood.name/calculator.html
- Calculator field entry extension for jQuery v1.3.2.
+ Calculator field entry extension for jQuery v1.4.0.
  Written by Keith Wood (kbwood{at}iinet.com.au) October 2008.
  Dual licensed under the GPL (http://dev.jquery.com/browser/trunk/jquery/GPL-LICENSE.txt) and
  MIT (http://dev.jquery.com/browser/trunk/jquery/MIT-LICENSE.txt) licenses.
  Please attribute the author if you use it. */
-
 (function ($) { // hide the namespace
-
-  var PROP_NAME = 'calculator';
-
   /* Calculator manager.
    Use the singleton instance of this class, $.calculator, to interact with the plugin.
    Settings for calculator fields are maintained in instance objects,
@@ -22,65 +18,65 @@
      Key is ID. Fields are display text, button type, function,
      class(es), field name, keystroke, keystroke name. */
     this._keyDefs = {
-      '_0':['0', this.digit, null, '', '0', '0'],
-      '_1':['1', this.digit, null, '', '1', '1'],
-      '_2':['2', this.digit, null, '', '2', '2'],
-      '_3':['3', this.digit, null, '', '3', '3'],
-      '_4':['4', this.digit, null, '', '4', '4'],
-      '_5':['5', this.digit, null, '', '5', '5'],
-      '_6':['6', this.digit, null, '', '6', '6'],
-      '_7':['7', this.digit, null, '', '7', '7'],
-      '_8':['8', this.digit, null, '', '8', '8'],
-      '_9':['9', this.digit, null, '', '9', '9'],
-      '_A':['A', this.digit, null, 'hex-digit', 'A', 'a'],
-      '_B':['B', this.digit, null, 'hex-digit', 'B', 'b'],
-      '_C':['C', this.digit, null, 'hex-digit', 'C', 'c'],
-      '_D':['D', this.digit, null, 'hex-digit', 'D', 'd'],
-      '_E':['E', this.digit, null, 'hex-digit', 'E', 'e'],
-      '_F':['F', this.digit, null, 'hex-digit', 'F', 'f'],
-      '_.':['.', this.digit, null, 'decimal', 'DECIMAL', '.'],
-      '_+':['+', this.binary, this._add, 'arith add', 'ADD', '+'],
-      '_-':['-', this.binary, this._subtract, 'arith subtract', 'SUBTRACT', '-'],
-      '_*':['*', this.binary, this._multiply, 'arith multiply', 'MULTIPLY', '*'],
-      '_/':['/', this.binary, this._divide, 'arith divide', 'DIVIDE', '/'],
-      '_%':['%', this.unary, this._percent, 'arith percent', 'PERCENT', '%'],
-      '_=':['=', this.unary, this._equals, 'arith equals', 'EQUALS', '='],
-      '+-':['�', this.unary, this._plusMinus, 'arith plus-minus', 'PLUS_MINUS', '#'],
-      'PI':['pi', this.unary, this._pi, 'pi', 'PI', 'p'],
-      '1X':['1/x', this.unary, this._inverse, 'fn inverse', 'INV', 'i'],
-      'LG':['log', this.unary, this._log, 'fn log', 'LOG', 'l'],
-      'LN':['ln', this.unary, this._ln, 'fn ln', 'LN', 'n'],
-      'EX':['e?', this.unary, this._exp, 'fn exp', 'EXP', 'E'],
-      'SQ':['x�', this.unary, this._sqr, 'fn sqr', 'SQR', '@'],
-      'SR':['?', this.unary, this._sqrt, 'fn sqrt', 'SQRT', '!'],
-      'XY':['x^y', this.binary, this._power, 'fn power', 'POWER', '^'],
-      'RN':['rnd', this.unary, this._random, 'random', 'RANDOM', '?'],
-      'SN':['sin', this.unary, this._sin, 'trig sin', 'SIN', 's'],
-      'CS':['cos', this.unary, this._cos, 'trig cos', 'COS', 'o'],
-      'TN':['tan', this.unary, this._tan, 'trig tan', 'TAN', 't'],
-      'AS':['asin', this.unary, this._asin, 'trig asin', 'ASIN', 'S'],
-      'AC':['acos', this.unary, this._acos, 'trig acos', 'ACOS', 'O'],
-      'AT':['atan', this.unary, this._atan, 'trig atan', 'ATAN', 'T'],
-      'MC':['#memClear', this.unary, this._memClear, 'memory mem-clear', 'MEM_CLEAR', 'x'],
-      'MR':['#memRecall', this.unary, this._memRecall, 'memory mem-recall', 'MEM_RECALL', 'r'],
-      'MS':['#memStore', this.unary, this._memStore, 'memory mem-store', 'MEM_STORE', 'm'],
-      'M+':['#memAdd', this.unary, this._memAdd, 'memory mem-add', 'MEM_ADD', '>'],
-      'M-':['#memSubtract', this.unary, this._memSubtract, 'memory mem-subtract', 'MEM_SUBTRACT', '<'],
-      'BB':['#base2', this.control, this._base2, 'base base2', 'BASE_2', 'B'],
-      'BO':['#base8', this.control, this._base8, 'base base8', 'BASE_8', 'C'],
-      'BD':['#base10', this.control, this._base10, 'base base10', 'BASE_10', 'D'],
-      'BH':['#base16', this.control, this._base16, 'base base16', 'BASE_16', 'H'],
-      'DG':['#degrees', this.control, this._degrees, 'angle degrees', 'DEGREES', 'G'],
-      'RD':['#radians', this.control, this._radians, 'angle radians', 'RADIANS', 'R'],
-      'BS':['#backspace', this.control, this._undo, 'undo', 'UNDO', 8, 'BSp'], // backspace
-      'CE':['#clearError', this.control, this._clearError, 'clear-error', 'CLEAR_ERROR', 36, 'Hom'], // home
-      'CA':['#clear', this.control, this._clear, 'clear', 'CLEAR', 35, 'End'], // end
-      '@X':['#close', this.control, this._close, 'close', 'CLOSE', 27, 'Esc'], // escape
-      '@U':['#use', this.control, this._use, 'use', 'USE', 13, 'Ent'], // enter
-      '@E':['#erase', this.control, this._erase, 'erase', 'ERASE', 46, 'Del'], // delete
-      '  ':['', this.space, null, 'space', 'SPACE'],
-      '_ ':['', this.space, null, 'half-space', 'HALF_SPACE'],
-      '??':['??', this.unary, this._noOp]
+      '_0': ['0', this.digit, null, '', '0', '0'],
+      '_1': ['1', this.digit, null, '', '1', '1'],
+      '_2': ['2', this.digit, null, '', '2', '2'],
+      '_3': ['3', this.digit, null, '', '3', '3'],
+      '_4': ['4', this.digit, null, '', '4', '4'],
+      '_5': ['5', this.digit, null, '', '5', '5'],
+      '_6': ['6', this.digit, null, '', '6', '6'],
+      '_7': ['7', this.digit, null, '', '7', '7'],
+      '_8': ['8', this.digit, null, '', '8', '8'],
+      '_9': ['9', this.digit, null, '', '9', '9'],
+      '_A': ['A', this.digit, null, 'hex-digit', 'A', 'a'],
+      '_B': ['B', this.digit, null, 'hex-digit', 'B', 'b'],
+      '_C': ['C', this.digit, null, 'hex-digit', 'C', 'c'],
+      '_D': ['D', this.digit, null, 'hex-digit', 'D', 'd'],
+      '_E': ['E', this.digit, null, 'hex-digit', 'E', 'e'],
+      '_F': ['F', this.digit, null, 'hex-digit', 'F', 'f'],
+      '_.': ['.', this.digit, null, 'decimal', 'DECIMAL', '.'],
+      '_+': ['+', this.binary, this._add, 'arith add', 'ADD', '+'],
+      '_-': ['-', this.binary, this._subtract, 'arith subtract', 'SUBTRACT', '-'],
+      '_*': ['*', this.binary, this._multiply, 'arith multiply', 'MULTIPLY', '*'],
+      '_/': ['/', this.binary, this._divide, 'arith divide', 'DIVIDE', '/'],
+      '_%': ['%', this.unary, this._percent, 'arith percent', 'PERCENT', '%'],
+      '_=': ['=', this.unary, this._equals, 'arith equals', 'EQUALS', '='],
+      '+-': ['±', this.unary, this._plusMinus, 'arith plus-minus', 'PLUS_MINUS', '#'],
+      'PI': ['pi', this.unary, this._pi, 'pi', 'PI', 'p'],
+      '1X': ['1/x', this.unary, this._inverse, 'fn inverse', 'INV', 'i'],
+      'LG': ['log', this.unary, this._log, 'fn log', 'LOG', 'l'],
+      'LN': ['ln', this.unary, this._ln, 'fn ln', 'LN', 'n'],
+      'EX': ['eⁿ', this.unary, this._exp, 'fn exp', 'EXP', 'E'],
+      'SQ': ['x²', this.unary, this._sqr, 'fn sqr', 'SQR', '@'],
+      'SR': ['√', this.unary, this._sqrt, 'fn sqrt', 'SQRT', '!'],
+      'XY': ['x^y', this.binary, this._power, 'fn power', 'POWER', '^'],
+      'RN': ['rnd', this.unary, this._random, 'random', 'RANDOM', '?'],
+      'SN': ['sin', this.unary, this._sin, 'trig sin', 'SIN', 's'],
+      'CS': ['cos', this.unary, this._cos, 'trig cos', 'COS', 'o'],
+      'TN': ['tan', this.unary, this._tan, 'trig tan', 'TAN', 't'],
+      'AS': ['asin', this.unary, this._asin, 'trig asin', 'ASIN', 'S'],
+      'AC': ['acos', this.unary, this._acos, 'trig acos', 'ACOS', 'O'],
+      'AT': ['atan', this.unary, this._atan, 'trig atan', 'ATAN', 'T'],
+      'MC': ['#memClear', this.unary, this._memClear, 'memory mem-clear', 'MEM_CLEAR', 'x'],
+      'MR': ['#memRecall', this.unary, this._memRecall, 'memory mem-recall', 'MEM_RECALL', 'r'],
+      'MS': ['#memStore', this.unary, this._memStore, 'memory mem-store', 'MEM_STORE', 'm'],
+      'M+': ['#memAdd', this.unary, this._memAdd, 'memory mem-add', 'MEM_ADD', '>'],
+      'M-': ['#memSubtract', this.unary, this._memSubtract, 'memory mem-subtract', 'MEM_SUBTRACT', '<'],
+      'BB': ['#base2', this.control, this._base2, 'base base2', 'BASE_2', 'B'],
+      'BO': ['#base8', this.control, this._base8, 'base base8', 'BASE_8', 'C'],
+      'BD': ['#base10', this.control, this._base10, 'base base10', 'BASE_10', 'D'],
+      'BH': ['#base16', this.control, this._base16, 'base base16', 'BASE_16', 'H'],
+      'DG': ['#degrees', this.control, this._degrees, 'angle degrees', 'DEGREES', 'G'],
+      'RD': ['#radians', this.control, this._radians, 'angle radians', 'RADIANS', 'R'],
+      'BS': ['#backspace', this.control, this._undo, 'undo', 'UNDO', 8, 'BSp'], // backspace
+      'CE': ['#clearError', this.control, this._clearError, 'clear-error', 'CLEAR_ERROR', 36, 'Hom'], // home
+      'CA': ['#clear', this.control, this._clear, 'clear', 'CLEAR', 35, 'End'], // end
+      '@X': ['#close', this.control, this._close, 'close', 'CLOSE', 27, 'Esc'], // escape
+      '@U': ['#use', this.control, this._use, 'use', 'USE', 13, 'Ent'], // enter
+      '@E': ['#erase', this.control, this._erase, 'erase', 'ERASE', 46, 'Del'], // delete
+      '  ': ['', this.space, null, 'space', 'SPACE'],
+      '_ ': ['', this.space, null, 'half-space', 'HALF_SPACE'],
+      '??': ['??', this.unary, this._noOp]
     };
     this._keyCodes = {};
     this._keyChars = {};
@@ -99,115 +95,122 @@
     }
     this.regional = []; // Available regional settings, indexed by language code
     this.regional[''] = { // Default regional settings
-      decimalChar:'.', // Character for the decimal point
-      buttonText:'...', // Display text for trigger button
-      buttonStatus:'Open the calculator', // Status text for trigger button
-      closeText:'Close', // Display text for close link
-      closeStatus:'Close the calculator', // Status text for close link
-      useText:'Use', // Display text for use link
-      useStatus:'Use the current value', // Status text for use link
-      eraseText:'Erase', // Display text for erase link
-      eraseStatus:'Erase the value from the field', // Status text for erase link
-      backspaceText:'BS', // Display text for backspace link
-      backspaceStatus:'Erase the last digit', // Status text for backspace link
-      clearErrorText:'CE', // Display text for clear error link
-      clearErrorStatus:'Erase the last number', // Status text for clear error link
-      clearText:'CA', // Display text for clear link
-      clearStatus:'Reset the calculator', // Status text for clear link
-      memClearText:'MC', // Display text for memory clear link
-      memClearStatus:'Clear the memory', // Status text for memory clear link
-      memRecallText:'MR', // Display text for memory recall link
-      memRecallStatus:'Recall the value from memory', // Status text for memory recall link
-      memStoreText:'MS', // Display text for memory store link
-      memStoreStatus:'Store the value in memory', // Status text for memory store link
-      memAddText:'M+', // Display text for memory add link
-      memAddStatus:'Add to memory', // Status text for memory add link
-      memSubtractText:'M-', // Display text for memory subtract link
-      memSubtractStatus:'Subtract from memory', // Status text for memory subtract link
-      base2Text:'Bin', // Display text for base 2 link
-      base2Status:'Switch to binary', // Status text for base 2 link
-      base8Text:'Oct', // Display text for base 8 link
-      base8Status:'Switch to octal', // Status text for base 8 link
-      base10Text:'Dec', // Display text for base 10 link
-      base10Status:'Switch to decimal', // Status text for base 10 link
-      base16Text:'Hex', // Display text for base 16 link
-      base16Status:'Switch to hexadecimal', // Status text for base 16 link
-      degreesText:'Deg', // Display text for degrees link
-      degreesStatus:'Switch to degrees', // Status text for degrees link
-      radiansText:'Rad', // Display text for radians link
-      radiansStatus:'Switch to radians', // Status text for radians link
-      isRTL:false // True if right-to-left language, false if left-to-right
+      decimalChar:       '.', // Character for the decimal point
+      buttonText:        '...', // Display text for trigger button
+      buttonStatus:      'Open the calculator', // Status text for trigger button
+      closeText:         'Close', // Display text for close link
+      closeStatus:       'Close the calculator', // Status text for close link
+      useText:           'Use', // Display text for use link
+      useStatus:         'Use the current value', // Status text for use link
+      eraseText:         'Erase', // Display text for erase link
+      eraseStatus:       'Erase the value from the field', // Status text for erase link
+      backspaceText:     'BS', // Display text for backspace link
+      backspaceStatus:   'Erase the last digit', // Status text for backspace link
+      clearErrorText:    'CE', // Display text for clear error link
+      clearErrorStatus:  'Erase the last number', // Status text for clear error link
+      clearText:         'CA', // Display text for clear link
+      clearStatus:       'Reset the calculator', // Status text for clear link
+      memClearText:      'MC', // Display text for memory clear link
+      memClearStatus:    'Clear the memory', // Status text for memory clear link
+      memRecallText:     'MR', // Display text for memory recall link
+      memRecallStatus:   'Recall the value from memory', // Status text for memory recall link
+      memStoreText:      'MS', // Display text for memory store link
+      memStoreStatus:    'Store the value in memory', // Status text for memory store link
+      memAddText:        'M+', // Display text for memory add link
+      memAddStatus:      'Add to memory', // Status text for memory add link
+      memSubtractText:   'M-', // Display text for memory subtract link
+      memSubtractStatus: 'Subtract from memory', // Status text for memory subtract link
+      base2Text:         'Bin', // Display text for base 2 link
+      base2Status:       'Switch to binary', // Status text for base 2 link
+      base8Text:         'Oct', // Display text for base 8 link
+      base8Status:       'Switch to octal', // Status text for base 8 link
+      base10Text:        'Dec', // Display text for base 10 link
+      base10Status:      'Switch to decimal', // Status text for base 10 link
+      base16Text:        'Hex', // Display text for base 16 link
+      base16Status:      'Switch to hexadecimal', // Status text for base 16 link
+      degreesText:       'Deg', // Display text for degrees link
+      degreesStatus:     'Switch to degrees', // Status text for degrees link
+      radiansText:       'Rad', // Display text for radians link
+      radiansStatus:     'Switch to radians', // Status text for radians link
+      isRTL:             false // True if right-to-left language, false if left-to-right
     };
     this._defaults = { // Global defaults for all the calculator instances
-      showOn:'focus', // 'focus' for popup on focus, 'button' for trigger button,
+      showOn:          'focus', // 'focus' for popup on focus, 'button' for trigger button,
       // 'both' for either, 'operator' for non-numeric character entered,
       // 'opbutton' for operator/button combination
-      buttonImage:'', // URL for trigger button image
-      buttonImageOnly:false, // True if the image appears alone, false if it appears on a button
-      isOperator:null, // Call back function to determine if a keystroke opens the calculator
-      showAnim:'show', // Name of jQuery animation for popup
-      showOptions:{}, // Options for enhanced animations
-      duration:'normal', // Duration of display/closure
-      appendText:'', // Display text following the input box, e.g. showing the format
-      useThemeRoller:false, // True to add ThemeRoller classes
-      calculatorClass:'', // Additional CSS class for the calculator for an instance
-      prompt:'', // Text across the top of the calculator
-      layout:this.standardLayout, // Layout of keys
-      value:0, // The initial value for inline calculators
-      base:10, // The numeric base for calculations
-      precision:10, // The number of digits of precision to use in rounding for display
-      memoryAsCookie:false, // True to save memory into cookie, false for memory only
-      cookieName:'calculatorMemory', // Name of cookie for memory
-      cookieExpires:24 * 60 * 60, // The time that the memory cookie expires as a Date or number of seconds
-      cookiePath:'', // The path for the memory cookie
-      useDegrees:false, // True to use degress for trigonometric functions, false for radians
-      constrainInput:true, // True to restrict typed characters to numerics, false to allow anything
-      onOpen:null, // Define a callback function before the panel is opened
-      onButton:null, // Define a callback function when a button is activated
-      onClose:null // Define a callback function when the panel is closed
+      buttonImage:     '', // URL for trigger button image
+      buttonImageOnly: false, // True if the image appears alone, false if it appears on a button
+      isOperator:      null, // Call back function to determine if a keystroke opens the calculator
+      showAnim:        'show', // Name of jQuery animation for popup
+      showOptions:     {}, // Options for enhanced animations
+      duration:        'normal', // Duration of display/closure
+      appendText:      '', // Display text following the input box, e.g. showing the format
+      useThemeRoller:  false, // True to add ThemeRoller classes
+      calculatorClass: '', // Additional CSS class for the calculator for an instance
+      prompt:          '', // Text across the top of the calculator
+      layout:          this.standardLayout, // Layout of keys
+      value:           0, // The initial value for inline calculators
+      base:            10, // The numeric base for calculations
+      precision:       10, // The number of digits of precision to use in rounding for display
+      memoryAsCookie:  false, // True to save memory into cookie, false for memory only
+      cookieName:      'calculatorMemory', // Name of cookie for memory
+      cookieExpires:   24 * 60 * 60, // The time that the memory cookie expires as a Date or number of seconds
+      cookiePath:      '', // The path for the memory cookie
+      useDegrees:      false, // True to use degress for trigonometric functions, false for radians
+      constrainInput:  true, // True to restrict typed characters to numerics, false to allow anything
+      onOpen:          null, // Define a callback function before the panel is opened
+      onButton:        null, // Define a callback function when a button is activated
+      onClose:         null // Define a callback function when the panel is closed
     };
     $.extend(this._defaults, this.regional['']);
-    this.mainDiv = $('<div class="' + this._mainDivClass + '" style="display: none;"></div>').
-      click(this._focusEntry);
+    this.mainDiv = $('<div class="' + this._mainDivClass + '" style="display: none;"></div>').bind('click.calculator', this._focusEntry);
   }
 
   $.extend(Calculator.prototype, {
-    // Class name added to elements to indicate already configured with calculator
-    markerClassName:'hasCalculator',
-
-    digit:'d', // Indicator of a digit key
-    binary:'b', // Indicator of a binary operation key
-    unary:'u', // Indicator of a unary operation key
-    control:'c', // Indicator of a control key
-    space:'s', // Indicator of a space
-
-    _mainDivClass:'calculator-popup', // The name of the main calculator division marker class
-    _inlineClass:'calculator-inline', // The name of the inline marker class
-    _appendClass:'calculator-append', // The name of the appended text marker class
-    _triggerClass:'calculator-trigger', // The name of the trigger marker class
-    _disableClass:'calculator-disabled', // The name of the disabled covering marker class
-    _inlineEntryClass:'calculator-keyentry', // The name of the inline entry marker class
-    _resultClass:'calculator-result', // The name of the calculator result marker class
-    _focussedClass:'calculator-focussed', // The name of the focussed marker class
-    _keystrokeClass:'calculator-keystroke', // The name of the keystroke marker class
-    _coverClass:'calculator-cover', // The name of the IE select cover marker class
-
+    /* Class name added to elements to indicate already configured with calculator. */
+    markerClassName: 'hasCalculator',
+    /* Name of the data property for instance settings. */
+    propertyName:    'calculator',
+    digit:   'd', // Indicator of a digit key
+    binary:  'b', // Indicator of a binary operation key
+    unary:   'u', // Indicator of a unary operation key
+    control: 'c', // Indicator of a control key
+    space:   's', // Indicator of a space
+    _mainDivClass:       'calculator-popup', // The name of the main calculator division marker class
+    _inlineClass:        'calculator-inline', // The name of the inline marker class
+    _appendClass:        'calculator-append', // The name of the appended text marker class
+    _triggerClass:       'calculator-trigger', // The name of the trigger marker class
+    _disableClass:       'calculator-disabled', // The name of the disabled covering marker class
+    _inlineEntryClass:   'calculator-keyentry', // The name of the inline entry marker class
+    _promptClass:        'calculator-prompt', // The name of the prompt marker class
+    _resultClass:        'calculator-result', // The name of the calculator result marker class
+    _focussedClass:      'calculator-focussed', // The name of the focussed marker class
+    _keystrokeClass:     'calculator-keystroke', // The name of the keystroke marker class
+    _coverClass:         'calculator-cover', // The name of the IE select cover marker class
+    _rtlClass:           'calculator-rtl', // The name of the right-to-left marker class
+    _rowClass:           'calculator-row', // The name of the row marker class
+    _ctrlClass:          'calculator-ctrl', // The name of the control key marker class
+    _baseActiveClass:    'calculator-base-active', // The name of the active base marker class
+    _angleActiveClass:   'calculator-angle-active', // The name of the active angle marker class
+    _digitClass:         'calculator-digit', // The name of the digit key marker class
+    _operatorClass:      'calculator-oper', // The name of the operator key marker class
+    _memEmptyClass:      'calculator-mem-empty', // The name of the memory empty marker class
+    _keyNameClass:       'calculator-keyname', // The name of the key name marker class
+    _keyDownClass:       'calculator-key-down', // The name of the key down marker class
+    _keyStrokeClass:     'calculator-keystroke', // The name of the key stroke marker class
     /* The standard calculator layout with simple operations. */
-    standardLayout:['  BSCECA', '_1_2_3_+@X', '_4_5_6_-@U', '_7_8_9_*@E', '_0_._=_/'],
+    standardLayout:      ['  BSCECA', '_1_2_3_+@X', '_4_5_6_-@U', '_7_8_9_*@E', '_0_._=_/'],
     /* The extended calculator layout with common scientific operations. */
-    scientificLayout:[
-      '@X@U@E  BSCECA', 'DGRD    _ MC_ _7_8_9_+', 'SNASSRLG_ MR_ _4_5_6_-',
-      'CSACSQLN_ MS_ _1_2_3_*', 'TNATXYEX_ M+_ _0_.+-_/', 'PIRN1X  _ M-_   _%_='
+    scientificLayout:    [
+      '@X@U@E  BSCECA', 'DGRD    _ MC_ _7_8_9_+', 'SNASSRLG_ MR_ _4_5_6_-', 'CSACSQLN_ MS_ _1_2_3_*', 'TNATXYEX_ M+_ _0_.+-_/', 'PIRN1X  _ M-_   _%_='
     ],
-
     /* Override the default settings for all instances of calculator.
-     @param  settings  (object) the new settings to use as defaults
+     @param  options  (object) the new settings to use as defaults
      @return  (object) the calculator object for chaining further calls */
-    setDefaults:function (settings) {
-      extendRemove(this._defaults, settings || {});
+    setDefaults:         function (options) {
+      $.extend(this._defaults, options || {});
       return this;
     },
-
     /* Add a new key definition.
      @param  code       (string) the two-character code for this key
      @param  label      (string) the display label for this key
@@ -221,10 +224,9 @@
      @param  keystroke  (char or number) the character or key code of the keystroke for this key
      @param  keyName    (string) the name of the keystroke for this key
      @return  (object) the calculator object for chaining further calls */
-    addKeyDef:function (code, label, type, func, style, constant, keystroke, keyName) {
+    addKeyDef:           function (code, label, type, func, style, constant, keystroke, keyName) {
       this._keyDefs[code] = [
-        label, (typeof type == 'boolean' ?
-                (type ? this.binary : this.unary) : type), func, style, constant, keystroke, keyName
+        label, (typeof type == 'boolean' ? (type ? this.binary : this.unary) : type), func, style, constant, keystroke, keyName
       ];
       if (constant) {
         this[constant] = code;
@@ -239,131 +241,137 @@
       }
       return this;
     },
-
     /* Attach the calculator to a jQuery selection.
-     @param  target    (element) the target input field or division/span
-     @param  settings  (object) the new settings to use for this instance */
-    _attachCalculator:function (target, settings) {
+     @param  target   (element) the control to affect
+     @param  options  (object) the custom options for this instance */
+    _attachPlugin:       function (target, options) {
       var $target = $(target);
+      if ($target.hasClass(this.markerClassName)) {
+        return;
+      }
       var inline = target.nodeName.toLowerCase() != 'input';
-      var keyEntry = (!inline ? $target :
-                      $('<input type="text" class="' + this._inlineEntryClass + '"/>'));
-      var inst = {_input:keyEntry, _inline:inline, memory:0,
-        _mainDiv:(inline ? $('<div class="' + this._inlineClass + '"></div>') :
-                  this.mainDiv)};
-      inst.settings = $.extend({}, settings || {});
-      if (this._get(inst, 'memoryAsCookie')) {
+      var keyEntry = (!inline ? $target : $('<input type="text" class="' + this._inlineEntryClass + '"/>'));
+      var inst = {options: $.extend({}, this._defaults, options),
+        _input:            keyEntry, _inline: inline, memory: 0,
+        _mainDiv:          (inline ? $('<div class="' + this._inlineClass + '"></div>') : this.mainDiv)};
+      if (inst.options.memoryAsCookie) {
         var memory = this._getMemoryCookie(inst);
         if (memory && !isNaN(memory)) {
           inst.memory = memory;
         }
       }
-      this._connectCalculator(target, inst);
+      this._connectPlugin(target, inst);
       if (inline) {
-        $target.append(keyEntry).append(inst._mainDiv).
-          bind('click.calculator', function () { keyEntry.focus(); });
+        $target.append(keyEntry).append(inst._mainDiv).bind('click.' + plugin.propertyName, function () { keyEntry.focus(); });
         this._reset(inst, '0');
         this._setValue(inst);
         this._updateCalculator(inst);
       }
-      else {
-        if ($(target).is(':disabled')) {
-          this._disableCalculator(target);
-        }
+      else if ($target.is(':disabled')) {
+        this._disablePlugin(target);
       }
     },
-
     /* Attach the calculator to an input field or division/span.
      @param  target  (element) the target control
      @param  inst    (object) the instance settings */
-    _connectCalculator:function (target, inst) {
+    _connectPlugin:      function (target, inst) {
       var control = $(target);
       if (control.hasClass(this.markerClassName)) {
         return;
       }
-      var appendText = this._get(inst, 'appendText');
-      var isRTL = this._get(inst, 'isRTL');
-      if (appendText) {
-        control[isRTL ? 'before' : 'after'](
-          '<span class="' + this._appendClass + '">' + appendText + '</span>');
+      if (inst.options.appendText) {
+        control[inst.options.isRTL ? 'before' : 'after']('<span class="' + this._appendClass + '">' + inst.options.appendText + '</span>');
       }
       if (!inst._inline) {
-        var showOn = this._get(inst, 'showOn');
-        if (showOn == 'focus' || showOn == 'both') { // pop-up calculator when in the marked field
-          control.focus(this._showCalculator);
+        if (inst.options.showOn == 'focus' || inst.options.showOn == 'both') {
+          // pop-up calculator when in the marked field
+          control.bind('focus.' + plugin.propertyName, this._showPlugin);
         }
-        if (showOn == 'button' || showOn == 'both' || showOn == 'opbutton') { // pop-up calculator when button clicked
-          var buttonText = this._get(inst, 'buttonText');
-          var buttonStatus = this._get(inst, 'buttonStatus');
-          var buttonImage = this._get(inst, 'buttonImage');
-          var trigger = $(this._get(inst, 'buttonImageOnly') ?
-                          $('<img/>').attr(
-                            {src:buttonImage, alt:buttonStatus, title:buttonStatus}) :
-                          $('<button type="button" title="' + buttonStatus + '"></button>').
-                            html(buttonImage == '' ? buttonText :
-                                 $('<img/>').attr({src:buttonImage})));
-          control[isRTL ? 'before' : 'after'](trigger);
-          trigger.addClass(this._triggerClass).click(function () {
-            if ($.calculator._showingCalculator && $.calculator._lastInput == target) {
-              $.calculator._hideCalculator();
+        if (inst.options.showOn == 'button' || inst.options.showOn == 'both' || inst.options.showOn == 'opbutton') {
+          // pop-up calculator when button clicked
+          var trigger = $(inst.options.buttonImageOnly ? $('<img/>').attr({src:  inst.options.buttonImage,
+                                                                            alt: inst.options.buttonStatus, title: inst.options.buttonStatus}) :
+                          $('<button type="button" title="' + inst.options.buttonStatus + '"></button>').html(inst.options.buttonImage == '' ? inst.options.buttonText :
+                                                                                                              $('<img/>').attr({src: inst.options.buttonImage})));
+          control[inst.options.isRTL ? 'before' : 'after'](trigger);
+          trigger.addClass(this._triggerClass).bind('click.' + plugin.propertyName, function () {
+            if (plugin._showingCalculator && plugin._lastInput == target) {
+              plugin._hidePlugin();
             }
             else {
-              $.calculator._showCalculator(target);
+              plugin._showPlugin(target);
             }
             return false;
           });
         }
       }
-      inst._input.keydown(this._doKeyDown).keyup(this._doKeyUp).keypress(this._doKeyPress);
+      inst._input.bind('keydown.' + plugin.propertyName, this._doKeyDown).bind('keyup.' + plugin.propertyName, this._doKeyUp).bind('keypress.' + plugin.propertyName, this._doKeyPress);
       if (inst._inline) {
-        inst._mainDiv.keydown(this._doKeyDown).keyup(this._doKeyUp).
-          keypress(this._doKeyPress);
-        inst._input.focus(function () {
-          if (!$.calculator._isDisabledCalculator(control[0])) {
+        inst._mainDiv.bind('keydown.' + plugin.propertyName, this._doKeyDown).bind('keyup.' + plugin.propertyName, this._doKeyUp).bind('keypress.' + plugin.propertyName, this._doKeyPress);
+        inst._input.bind('focus.' + plugin.propertyName,function () {
+          if (!plugin._isDisabledPlugin(control[0])) {
             inst._focussed = true;
-            $('.' + $.calculator._resultClass, inst._mainDiv).
-              addClass($.calculator._focussedClass);
+            $('.' + plugin._resultClass, inst._mainDiv).addClass(plugin._focussedClass);
           }
-        }).blur(function () {
-            inst._focussed = false;
-            $('.' + $.calculator._resultClass, inst._mainDiv).
-              removeClass($.calculator._focussedClass);
-          });
+        }).bind('blur.' + plugin.propertyName, function () {
+                  inst._focussed = false;
+                  $('.' + plugin._resultClass, inst._mainDiv).removeClass(plugin._focussedClass);
+                });
       }
-      control.addClass(this.markerClassName).
-        bind("setData.calculator",function (event, key, value) {
-          inst.settings[key] = value;
-        }).bind("getData.calculator", function (event, key) {
-          return this._get(inst, key);
-        });
-      $.data(target, PROP_NAME, inst);
-      $.data(inst._input[0], PROP_NAME, inst);
+      control.addClass(this.markerClassName).bind('setData.' + plugin.propertyName,function (event, key, value) {
+                                                    inst.options[key] = value;
+                                                  }).bind('getData.' + plugin.propertyName,function (event, key) {
+                                                            return inst.options[key];
+                                                          }).data(this.propertyName, inst);
+      inst._input.data(this.propertyName, inst);
     },
-
-    /* Detach calculator from its control.
-     @param  target  (element) the target input field or division/span */
-    _destroyCalculator:function (target) {
-      var control = $(target);
-      if (!control.hasClass(this.markerClassName)) {
+    /* Retrieve or reconfigure the settings for a calculator control.
+     @param  target   (element) the control to affect
+     @param  options  (object) the new options for this instance or
+     (string) an individual property name
+     @param  value    (any) the individual property value (omit if options
+     is an object or to retrieve the value of a setting)
+     @return  (any) if retrieving a value  */
+    _optionPlugin:       function (target, options, value) {
+      target = $(target);
+      var inst = target.data(this.propertyName);
+      if (!options || (typeof options == 'string' && value == null)) { // Get option
+        var name = options;
+        options = (inst || {}).options;
+        return (options && name ? options[name] : options);
+      }
+      if (!target.hasClass(this.markerClassName)) {
         return;
       }
-      var inst = $.data(target, PROP_NAME);
-      inst._input.unbind('keydown', this._doKeyDown).
-        unbind('keyup', this._doKeyUp).
-        unbind('keypress', this._doKeyPress);
-      control.siblings('.' + this._appendClass).remove().end().
-        siblings('.' + this._triggerClass).remove().end().
-        prev('.' + this._inlineEntryClass).remove().end().
-        removeClass(this.markerClassName).
-        unbind('focus', this._showCalculator).
-        unbind('click.calculator').empty();
-      $.removeData(inst._input[0], PROP_NAME);
-      $.removeData(target, PROP_NAME);
+      options = options || {};
+      if (typeof options == 'string') {
+        var name = options;
+        options = {};
+        options[name] = value;
+      }
+      if (this._curInst == inst) {
+        this._hidePlugin();
+      }
+      $.extend(inst.options, options);
+      if (inst._inline) {
+        this._setValue(inst);
+      }
+      this._updateCalculator(inst);
     },
-
+    /* Detach calculator from its control.
+     @param  target  (element) the target input field or division/span */
+    _destroyPlugin:      function (target) {
+      target = $(target);
+      if (!target.hasClass(this.markerClassName)) {
+        return;
+      }
+      var inst = target.data(this.propertyName);
+      inst._input.unbind('.' + plugin.propertyName).removeData(this.propertyName);
+      target.removeClass(this.markerClassName).empty().unbind('.' + plugin.propertyName).removeData(this.propertyName).siblings('.' + this._appendClass).remove().end().siblings('.' + this._triggerClass).remove().end().prev('.' + this._inlineEntryClass).remove();
+    },
     /* Enable the calculator for a jQuery selection.
      @param  target  (element) the target input field or division/span */
-    _enableCalculator:function (target) {
+    _enablePlugin:       function (target) {
       var control = $(target);
       if (!control.hasClass(this.markerClassName)) {
         return;
@@ -371,24 +379,16 @@
       var nodeName = target.nodeName.toLowerCase();
       if (nodeName == 'input') {
         target.disabled = false;
-        control.siblings('button.' + this._triggerClass).
-          each(function () { this.disabled = false; }).end().
-          siblings('img.' + this._triggerClass).
-          css({opacity:'1.0', cursor:''});
+        control.siblings('button.' + this._triggerClass).each(function () { this.disabled = false; }).end().siblings('img.' + this._triggerClass).css({opacity: '1.0', cursor: ''});
       }
-      else {
-        if (nodeName == 'div' || nodeName == 'span') {
-          control.find('.' + this._inlineEntryClass + ',button').attr('disabled', '').end().
-            children('.' + this._disableClass).remove();
-        }
+      else if (nodeName == 'div' || nodeName == 'span') {
+        control.find('.' + this._inlineEntryClass + ',button').removeAttr('disabled').end().children('.' + this._disableClass).remove();
       }
-      this._disabledFields = $.map(this._disabledFields,
-        function (value) { return (value == target ? null : value); }); // delete entry
+      this._disabledFields = $.map(this._disabledFields, function (value) { return (value == target ? null : value); }); // delete entry
     },
-
     /* Disable the calculator for a jQuery selection.
      @param  target  (element) the target input field or division/span */
-    _disableCalculator:function (target) {
+    _disablePlugin:      function (target) {
       var control = $(target);
       if (!control.hasClass(this.markerClassName)) {
         return;
@@ -396,228 +396,170 @@
       var nodeName = target.nodeName.toLowerCase();
       if (nodeName == 'input') {
         target.disabled = true;
-        control.siblings('button.' + this._triggerClass).
-          each(function () { this.disabled = true; }).end().
-          siblings('img.' + this._triggerClass).
-          css({opacity:'0.5', cursor:'default'});
+        control.siblings('button.' + this._triggerClass).each(function () { this.disabled = true; }).end().siblings('img.' + this._triggerClass).css({opacity: '0.5', cursor: 'default'});
       }
-      else {
-        if (nodeName == 'div' || nodeName == 'span') {
-          var inline = control.children('.' + this._inlineClass);
-          var offset = inline.offset();
-          var relOffset = {left:0, top:0};
-          inline.parents().each(function () {
-            if ($(this).css('position') == 'relative') {
-              relOffset = $(this).offset();
-              return false;
-            }
-          });
-          control.find('.' + this._inlineEntryClass + ',button').attr('disabled', 'disabled').end().
-            prepend('<div class="' + this._disableClass + '" style="width: ' +
-            inline.outerWidth() + 'px; height: ' + inline.outerHeight() +
-            'px; left: ' + (offset.left - relOffset.left) +
-            'px; top: ' + (offset.top - relOffset.top) + 'px;"></div>');
-        }
+      else if (nodeName == 'div' || nodeName == 'span') {
+        var inline = control.children('.' + this._inlineClass);
+        var offset = inline.offset();
+        var relOffset = {left: 0, top: 0};
+        inline.parents().each(function () {
+          if ($(this).css('position') == 'relative') {
+            relOffset = $(this).offset();
+            return false;
+          }
+        });
+        control.find('.' + this._inlineEntryClass + ',button').attr('disabled', 'disabled').end().prepend('<div class="' + this._disableClass + '" style="width: ' + inline.outerWidth() + 'px; height: ' + inline.outerHeight() + 'px; left: ' + (offset.left - relOffset.left) + 'px; top: ' + (offset.top - relOffset.top) + 'px;"></div>');
       }
-      this._disabledFields = $.map(this._disabledFields,
-        function (value) { return (value == target ? null : value); }); // delete entry
+      this._disabledFields = $.map(this._disabledFields, function (value) { return (value == target ? null : value); }); // delete entry
       this._disabledFields[this._disabledFields.length] = target;
     },
-
     /* Is the input field or division/span disabled as a calculator?
      @param  target  (element) the target control
      @return  (boolean) true if disabled, false if enabled */
-    _isDisabledCalculator:function (target) {
+    _isDisabledPlugin:   function (target) {
       return (target && $.inArray(target, this._disabledFields) > -1);
     },
-
-    /* Update the settings for calculator attached to an input field or division/span.
-     @param  target  (element) the target control
-     @param  name    (object) the new settings to update or
-     (string) the name of the setting to change
-     @param  value   (any) the new value for the setting (omit if above is an object) */
-    _changeCalculator:function (target, name, value) {
-      var settings = name || {};
-      if (typeof name == 'string') {
-        settings = {};
-        settings[name] = value;
-      }
-      var inst = $.data(target, PROP_NAME);
-      if (inst) {
-        if (this._curInst == inst) {
-          this._hideCalculator();
-        }
-        extendRemove(inst.settings, settings);
-        if (inst._inline) {
-          this._setValue(inst);
-        }
-        this._updateCalculator(inst);
-      }
-    },
-
     /* Pop-up the calculator for a given input field or division/span.
      @param  input  (element) the control attached to the calculator or
      (event) if triggered by focus */
-    _showCalculator:function (input) {
+    _showPlugin:         function (input) {
       input = input.target || input;
-      if ($.calculator._isDisabledCalculator(input) ||
-        $.calculator._lastInput == input) { // already here
+      if (plugin._isDisabledPlugin(input) || plugin._lastInput == input) { // already here
         return;
       }
-      var inst = $.data(input, PROP_NAME);
-      $.calculator._hideCalculator(null, '');
-      $.calculator._lastInput = input;
-      $.calculator._pos = $.calculator._findPos(input);
-      $.calculator._pos[1] += input.offsetHeight; // add the height
+      var inst = $.data(input, plugin.propertyName);
+      plugin._hidePlugin(null, '');
+      plugin._lastInput = input;
+      plugin._pos = plugin._findPos(input);
+      plugin._pos[1] += input.offsetHeight; // add the height
       var isFixed = false;
       $(input).parents().each(function () {
         isFixed |= $(this).css('position') == 'fixed';
         return !isFixed;
       });
       if (isFixed && $.browser.opera) { // correction for Opera when fixed and scrolled
-        $.calculator._pos[0] -= document.documentElement.scrollLeft;
-        $.calculator._pos[1] -= document.documentElement.scrollTop;
+        plugin._pos[0] -= document.documentElement.scrollLeft;
+        plugin._pos[1] -= document.documentElement.scrollTop;
       }
-      var offset = {left:$.calculator._pos[0], top:$.calculator._pos[1]};
-      $.calculator._pos = null;
+      var offset = {left: plugin._pos[0], top: plugin._pos[1]};
+      plugin._pos = null;
       // determine sizing offscreen
-      inst._mainDiv.css({position:'absolute', display:'block', top:'-1000px',
-        width:($.browser.opera ? '1000px' : 'auto')});
+      inst._mainDiv.css({position: 'absolute', display: 'block', top: '-1000px',
+                          width:   ($.browser.opera ? '1000px' : 'auto')});
       // callback before calculator opening
-      var onOpen = $.calculator._get(inst, 'onOpen');
-      if (onOpen) {
-        onOpen.apply((inst._input ? inst._input[0] : null), // trigger custom callback
-          [(inst._inline ? inst.curValue : inst._input.val()), inst]);
+      if ($.isFunction(inst.options.onOpen)) {
+        inst.options.onOpen.apply((inst._input ? inst._input[0] : null), // trigger custom callback
+                                  [(inst._inline ? inst.curValue : inst._input.val()), inst]);
       }
-      $.calculator._reset(inst, inst._input.val());
-      $.calculator._updateCalculator(inst);
+      plugin._reset(inst, inst._input.val());
+      plugin._updateCalculator(inst);
       // and adjust position before showing
-      offset = $.calculator._checkOffset(inst, offset, isFixed);
-      inst._mainDiv.css({position:(isFixed ? 'fixed' : 'absolute'), display:'none',
-        left:offset.left + 'px', top:offset.top + 'px'});
-      var showAnim = $.calculator._get(inst, 'showAnim');
-      var duration = $.calculator._get(inst, 'duration');
+      offset = plugin._checkOffset(inst, offset, isFixed);
+      inst._mainDiv.css({position: (isFixed ? 'fixed' : 'absolute'), display: 'none',
+                          left:    offset.left + 'px', top: offset.top + 'px'});
+      var duration = inst.options.duration;
       duration = (duration == 'normal' && $.ui && $.ui.version >= '1.8' ? '_default' : duration);
       var postProcess = function () {
-        $.calculator._showingCalculator = true;
-        var borders = $.calculator._getBorders(inst._mainDiv);
-        inst._mainDiv.find('iframe.' + $.calculator._coverClass).// IE6- only
-          css({left:-borders[0], top:-borders[1],
-            width:inst._mainDiv.outerWidth(), height:inst._mainDiv.outerHeight()});
+        plugin._showingCalculator = true;
+        var borders = plugin._getBorders(inst._mainDiv);
+        inst._mainDiv.find('iframe.' + plugin._coverClass).// IE6- onlycss({left:   -borders[0], top: -borders[1],
+                                                                             width: inst._mainDiv.outerWidth(), height: inst._mainDiv.outerHeight()});
       };
-      if ($.effects && $.effects[showAnim]) {
+      if ($.effects && $.effects[inst.options.showAnim]) {
         var data = inst._mainDiv.data(); // Update old effects data
         for (var key in data) {
           if (key.match(/^ec\.storage\./)) {
             data[key] = inst._mainDiv.css(key.replace(/ec\.storage\./, ''));
           }
         }
-        inst._mainDiv.data(data).show(showAnim,
-          $.calculator._get(inst, 'showOptions'), duration, postProcess);
+        inst._mainDiv.data(data).show(inst.options.showAnim, inst.options.showOptions, duration, postProcess);
       }
       else {
-        inst._mainDiv[showAnim || 'show']((showAnim ? duration : ''), postProcess);
+        inst._mainDiv[inst.options.showAnim || 'show']((inst.options.showAnim ? duration : ''), postProcess);
       }
-      if (!showAnim) {
+      if (!inst.options.showAnim) {
         postProcess();
       }
       if (inst._input[0].type != 'hidden') {
         inst._input[0].focus();
       }
-      $.calculator._curInst = inst;
+      plugin._curInst = inst;
     },
-
     /* Reinitialise the calculator.
      @param  inst   (object) the instance settings
      @param  value  (number) the starting value */
-    _reset:function (inst, value) {
-      var base = this._get(inst, 'base');
-      var decimalChar = this._get(inst, 'decimalChar');
+    _reset:              function (inst, value) {
       value = '' + (value || 0);
-      value = (decimalChar != '.' ? value.replace(new RegExp(decimalChar), '.') : value);
-      inst.curValue = (base == 10 ? parseFloat(value) : parseInt(value, base)) || 0;
+      value = (inst.options.decimalChar != '.' ? value.replace(new RegExp(inst.options.decimalChar), '.') : value);
+      inst.curValue = (inst.options.base == 10 ? parseFloat(value) : parseInt(value, inst.options.base)) || 0;
       inst.dispValue = this._setDisplay(inst);
       inst.prevValue = inst._savedValue = 0;
       inst._pendingOp = inst._savedOp = this._noOp;
       inst._newValue = true;
     },
-
     /* Retrieve the memory value from a cookie, if any.
      @param  inst  (object) the instance settings
      @return  the memory cookie value or NaN/null if unavailable */
-    _getMemoryCookie:function (inst) {
-      var re = new RegExp('^.*' + this._get(inst, 'cookieName') + '=([^;]*).*$');
+    _getMemoryCookie:    function (inst) {
+      var re = new RegExp('^.*' + inst.options.cookieName + '=([^;]*).*$');
       return parseFloat(document.cookie.replace(re, '$1'));
     },
-
     /* Save the memory value as a cookie.
      @param  inst  (object) the instance settings */
-    _setMemoryCookie:function (inst) {
-      if (!this._get(inst, 'memoryAsCookie')) {
+    _setMemoryCookie:    function (inst) {
+      if (!inst.options.memoryAsCookie) {
         return;
       }
-      var expires = this._get(inst, 'cookieExpires');
+      var expires = inst.options.cookieExpires;
       if (typeof expires == 'number') {
         var time = new Date();
         time.setTime(time.getTime() + expires * 1000);
         expires = time.toUTCString();
       }
-      else {
-        if (expires.constructor == Date) {
-          expires = time.toUTCString();
-        }
-        else {
-          expires = '';
-        }
+      else if (expires.constructor == Date) {
+        expires = time.toUTCString();
       }
-      document.cookie = this._get(inst, 'cookieName') + '=' + inst.memory + '; expires=' + expires +
-        '; path=' + this._get(inst, 'cookiePath');
+      else {
+        expires = '';
+      }
+      document.cookie = inst.options.cookieName + '=' + inst.memory + '; expires=' + expires + '; path=' + inst.options.cookiePath;
     },
-
     /* Set the initial value for display.
      @param  inst  (object) the instance settings */
-    _setValue:function (inst) {
-      inst.curValue = this._get(inst, 'value') || 0;
+    _setValue:           function (inst) {
+      inst.curValue = inst.options.value || 0;
       inst.dispValue = this._setDisplay(inst);
     },
-
     /* Generate the calculator content.
      @param  inst  (object) the instance settings */
-    _updateCalculator:function (inst) {
+    _updateCalculator:   function (inst) {
       var borders = this._getBorders(inst._mainDiv);
-      inst._mainDiv.html(this._generateHTML(inst)).
-        find('iframe.' + this._coverClass).// IE6- only
-        css({left:-borders[0], top:-borders[1],
-          width:inst._mainDiv.outerWidth(), height:inst._mainDiv.outerHeight()});
-      inst._mainDiv.removeClass().addClass(this._get(inst, 'calculatorClass') +
-        (this._get(inst, 'useThemeRoller') ? ' ui-widget ui-widget-content' : '') +
-        (this._get(inst, 'isRTL') ? ' calculator-rtl ' : '') + ' ' +
-        (inst._inline ? this._inlineClass : this._mainDivClass));
+      inst._mainDiv.html(this._generateHTML(inst)).find('iframe.' + this._coverClass).// IE6- onlycss({left:   -borders[0], top: -borders[1],
+                                                                                                        width: inst._mainDiv.outerWidth(), height: inst._mainDiv.outerHeight()});
+      inst._mainDiv.removeClass().addClass(inst.options.calculatorClass + (inst.options.useThemeRoller ? ' ui-widget ui-widget-content' : '') + (
+        inst.options.isRTL ? ' ' + plugin._rtlClass : '') + ' ' + (inst._inline ? this._inlineClass : this._mainDivClass));
       if (this._curInst == inst) {
         inst._input.focus();
       }
     },
-
     /* Retrieve the size of left and top borders for an element.
      @param  elem  (jQuery object) the element of interest
      @return  (number[2]) the left and top borders */
-    _getBorders:function (elem) {
+    _getBorders:         function (elem) {
       var convert = function (value) {
         var extra = ($.browser.msie ? 1 : 0);
-        return {thin:1 + extra, medium:3 + extra, thick:5 + extra}[value] || value;
+        return {thin: 1 + extra, medium: 3 + extra, thick: 5 + extra}[value] || value;
       };
       return [
-        parseFloat(convert(elem.css('border-left-width'))),
-        parseFloat(convert(elem.css('border-top-width')))
+        parseFloat(convert(elem.css('border-left-width'))), parseFloat(convert(elem.css('border-top-width')))
       ];
     },
-
     /* Check positioning to remain on screen.
      @param  inst    (object) the instance settings
      @param  offset  (object) the current offset
      @param  isFixed  (boolean) true if the input field is fixed in position
      @return  (object) the updated offset */
-    _checkOffset:function (inst, offset, isFixed) {
+    _checkOffset:        function (inst, offset, isFixed) {
       var pos = inst._input ? this._findPos(inst._input[0]) : null;
       var browserWidth = window.innerWidth || document.documentElement.clientWidth;
       var browserHeight = window.innerHeight || document.documentElement.clientHeight;
@@ -626,70 +568,60 @@
       if (($.browser.msie && parseInt($.browser.version, 10) < 7) || $.browser.opera) {
         // recalculate width as otherwise set to 100%
         var width = 0;
-        $('.calculator-row', inst._mainDiv).find('button:last').each(function () {
-          width = Math.max(width, this.offsetLeft + this.offsetWidth +
-            parseInt($(this).css('margin-right'), 10));
+        $('.' + plugin.propertyName + '-row', inst._mainDiv).find('button:last').each(function () {
+          width = Math.max(width, this.offsetLeft + this.offsetWidth + parseInt($(this).css('margin-right'), 10));
         });
         inst._mainDiv.css('width', width);
       }
       // reposition calculator panel horizontally if outside the browser window
-      if (this._get(inst, 'isRTL') ||
-        (offset.left + inst._mainDiv.outerWidth() - scrollX) > browserWidth) {
-        offset.left = Math.max((isFixed ? 0 : scrollX),
-          pos[0] + (inst._input ? inst._input.outerWidth() : 0) -
-            (isFixed ? scrollX : 0) - inst._mainDiv.outerWidth() -
-            (isFixed && $.browser.opera ? document.documentElement.scrollLeft : 0));
+      if (inst.options.isRTL || (offset.left + inst._mainDiv.outerWidth() - scrollX) > browserWidth) {
+        offset.left = Math.max((isFixed ? 0 : scrollX), pos[0] + (inst._input ? inst._input.outerWidth() : 0) - (isFixed ? scrollX : 0) - inst._mainDiv.outerWidth() - (
+          isFixed && $.browser.opera ? document.documentElement.scrollLeft : 0));
       }
       else {
         offset.left -= (isFixed ? scrollX : 0);
       }
       // reposition calculator panel vertically if outside the browser window
       if ((offset.top + inst._mainDiv.outerHeight() - scrollY) > browserHeight) {
-        offset.top = Math.max((isFixed ? 0 : scrollY),
-          pos[1] - (isFixed ? scrollY : 0) - inst._mainDiv.outerHeight() -
-            (isFixed && $.browser.opera ? document.documentElement.scrollTop : 0));
+        offset.top = Math.max((isFixed ? 0 : scrollY), pos[1] - (isFixed ? scrollY : 0) - inst._mainDiv.outerHeight() - (
+          isFixed && $.browser.opera ? document.documentElement.scrollTop : 0));
       }
       else {
         offset.top -= (isFixed ? scrollY : 0);
       }
       return offset;
     },
-
     /* Find an object's position on the screen.
      @param  obj  (element) the element to find the position for
      @return  (int[2]) the element's position */
-    _findPos:function (obj) {
+    _findPos:            function (obj) {
       while (obj && (obj.type == 'hidden' || obj.nodeType != 1)) {
         obj = obj.nextSibling;
       }
       var position = $(obj).offset();
       return [position.left, position.top];
     },
-
     /* Hide the calculator from view.
      @param  input     (element) the control attached to the calculator
      @param  duration  (string) the duration over which to close the calculator */
-    _hideCalculator:function (input, duration) {
+    _hidePlugin:         function (input, duration) {
       var inst = this._curInst;
-      if (!inst || (input && inst != $.data(input, PROP_NAME))) {
+      if (!inst || (input && inst != $.data(input, this.propertyName))) {
         return;
       }
       if (this._showingCalculator) {
-        duration = (duration != null ? duration : this._get(inst, 'duration'));
+        duration = (duration != null ? duration : inst.options.duration);
         duration = (duration == 'normal' && $.ui && $.ui.version >= '1.8' ? '_default' : duration);
-        var showAnim = this._get(inst, 'showAnim');
-        if ($.effects && $.effects[showAnim]) {
-          inst._mainDiv.hide(showAnim, this._get(inst, 'showOptions'), duration);
+        if ($.effects && $.effects[inst.options.showAnim]) {
+          inst._mainDiv.hide(inst.options.showAnim, inst.options.showOptions, duration);
         }
         else {
-          inst._mainDiv[(showAnim == 'slideDown' ? 'slideUp' :
-                         (showAnim == 'fadeIn' ? 'fadeOut' : 'hide'))](showAnim ? duration : '');
+          inst._mainDiv[(inst.options.showAnim == 'slideDown' ? 'slideUp' : (inst.options.showAnim == 'fadeIn' ? 'fadeOut' : 'hide'))](inst.options.showAnim ? duration : '');
         }
       }
-      var onClose = this._get(inst, 'onClose');
-      if (onClose) {
-        onClose.apply((inst._input ? inst._input[0] : null), // trigger custom callback
-          [(inst._inline ? inst.curValue : inst._input.val()), inst]);
+      if ($.isFunction(inst.options.onClose)) {
+        inst.options.onClose.apply((inst._input ? inst._input[0] : null), // trigger custom callback
+                                   [(inst._inline ? inst.curValue : inst._input.val()), inst]);
       }
       if (this._showingCalculator) {
         this._showingCalculator = false;
@@ -697,65 +629,54 @@
       }
       this._curInst = null;
     },
-
     /* Close calculator if clicked elsewhere.
      @param  event  (event) the mouseclick details */
-    _checkExternalClick:function (event) {
-      if (!$.calculator._curInst) {
+    _checkExternalClick: function (event) {
+      if (!plugin._curInst) {
         return;
       }
       var target = $(event.target);
-      if (!target.parents().andSelf().hasClass($.calculator._mainDivClass) &&
-        !target.hasClass($.calculator.markerClassName) &&
-        !target.parents().andSelf().hasClass($.calculator._triggerClass) &&
-        $.calculator._showingCalculator) {
-        $.calculator._hideCalculator();
+      if (!target.parents().andSelf().hasClass(plugin._mainDivClass) && !target.hasClass(plugin.markerClassName) && !target.parents().andSelf().hasClass(plugin._triggerClass) && plugin._showingCalculator) {
+        plugin._hidePlugin();
       }
     },
-
     /* Focus back onto the input field. */
-    _focusEntry:function () {
-      if ($.calculator._curInst && $.calculator._curInst._input) {
-        $.calculator._curInst._input.focus();
+    _focusEntry:         function () {
+      if (plugin._curInst && plugin._curInst._input) {
+        plugin._curInst._input.focus();
       }
     },
-
     /* Handle keystrokes.
      @param  e  (event) the key event */
-    _doKeyDown:function (e) {
+    _doKeyDown:          function (e) {
       var handled = false;
-      var inst = $.data(e.target, PROP_NAME);
+      var inst = $.data(e.target, plugin.propertyName);
       var div = (inst && inst._inline ? $(e.target).parent()[0] : null);
       if (e.keyCode == 9) { // tab
-        $.calculator.mainDiv.stop(true, true);
-        $.calculator._hideCalculator();
+        plugin.mainDiv.stop(true, true);
+        plugin._hidePlugin();
         if (inst && inst._inline) {
           inst._input.blur();
         }
       }
-      else {
-        if ($.calculator._showingCalculator ||
-          (div && !$.calculator._isDisabledCalculator(div))) {
-          if (e.keyCode == 18) { // alt - show keystrokes
-            if (!$.calculator._showingKeystrokes) {
-              inst._mainDiv.find('.' + $.calculator._keystrokeClass).show();
-              $.calculator._showingKeystrokes = true;
-            }
-            handled = true;
+      else if (plugin._showingCalculator || (div && !plugin._isDisabledPlugin(div))) {
+        if (e.keyCode == 18) { // alt - show keystrokes
+          if (!plugin._showingKeystrokes) {
+            inst._mainDiv.find('.' + plugin._keystrokeClass).show();
+            plugin._showingKeystrokes = true;
           }
-          else {
-            var code = $.calculator._keyCodes[e.keyCode];
-            if (code) {
-              $('button[keystroke="' + code + '"]', inst._mainDiv).not(':disabled').click();
-              handled = true;
-            }
-          }
+          handled = true;
         }
         else {
-          if (e.keyCode == 36 && e.ctrlKey && inst && !inst._inline) {
-            $.calculator._showCalculator(this); // display the date picker on ctrl+home
+          var code = plugin._keyCodes[e.keyCode];
+          if (code) {
+            $('button[keystroke="' + code + '"]', inst._mainDiv).not(':disabled').click();
+            handled = true;
           }
         }
+      }
+      else if (e.keyCode == 36 && e.ctrlKey && inst && !inst._inline) {
+        plugin._showPlugin(this); // display the date picker on ctrl+home
       }
       if (handled) {
         e.preventDefault();
@@ -763,53 +684,48 @@
       }
       return !handled;
     },
-
     /* Hide keystrokes, if showing.
      @param  e  (event) the key event */
-    _doKeyUp:function (e) {
-      if ($.calculator._showingKeystrokes) {
-        var inst = $.data(e.target, PROP_NAME);
-        inst._mainDiv.find('.' + $.calculator._keystrokeClass).hide();
-        $.calculator._showingKeystrokes = false;
+    _doKeyUp:            function (e) {
+      if (plugin._showingKeystrokes) {
+        var inst = $.data(e.target, plugin.propertyName);
+        inst._mainDiv.find('.' + plugin._keystrokeClass).hide();
+        plugin._showingKeystrokes = false;
       }
     },
-
     /* Convert characters into button clicks.
      @param  e  (event) the key event
      @return  true if keystroke allowed, false if not */
-    _doKeyPress:function (e) {
-      var inst = $.data(e.target, PROP_NAME);
+    _doKeyPress:         function (e) {
+      var inst = $.data(e.target, plugin.propertyName);
       if (!inst) {
         return true;
       }
       var div = (inst && inst._inline ? $(e.target).parent()[0] : null);
       var ch = String.fromCharCode(e.charCode == undefined ? e.keyCode : e.charCode);
-      var base = $.calculator._get(inst, 'base');
-      var decimalChar = $.calculator._get(inst, 'decimalChar');
-      var showOn = $.calculator._get(inst, 'showOn');
-      var isOperator = $.calculator._get(inst, 'isOperator') || $.calculator._isOperator;
-      if (!$.calculator._showingCalculator && !div &&
-        (showOn == 'operator' || showOn == 'opbutton') &&
-        isOperator.apply(inst._input, [ch, e, inst._input.val(), base, decimalChar])) {
-        $.calculator._showCalculator(this); // display the date picker on operator usage
-        $.calculator._showingCalculator = true;
+      var isOperator = inst.options.isOperator || plugin._isOperator;
+      if (!plugin._showingCalculator && !div && (inst.options.showOn == 'operator' || inst.options.showOn == 'opbutton') && isOperator.apply(inst._input, [
+        ch, e, inst._input.val(),
+        inst.options.base,
+        inst.options.decimalChar
+      ])) {
+        plugin._showPlugin(this); // display the date picker on operator usage
+        plugin._showingCalculator = true;
       }
-      if ($.calculator._showingCalculator ||
-        (div && !$.calculator._isDisabledCalculator(div))) {
-        var code = $.calculator._keyChars[ch == decimalChar ? '.' : ch];
+      if (plugin._showingCalculator || (div && !plugin._isDisabledPlugin(div))) {
+        var code = plugin._keyChars[ch == inst.options.decimalChar ? '.' : ch];
         if (code) {
           $('button[keystroke="' + code + '"]', inst._mainDiv).not(':disabled').click();
         }
         return false;
       }
-      if (ch >= ' ' && $.calculator._get(inst, 'constrainInput')) {
-        var pattern = new RegExp('^-?' + (base == 10 ? '[0-9]*(\\' + decimalChar + '[0-9]*)?' :
-                                          '[' + '0123456789abcdef'.substring(0, base) + ']*') + '$');
+      if (ch >= ' ' && inst.options.constrainInput) {
+        var pattern = new RegExp('^-?' + (
+          inst.options.base == 10 ? '[0-9]*(\\' + inst.options.decimalChar + '[0-9]*)?' : '[' + '0123456789abcdef'.substring(0, inst.options.base) + ']*') + '$');
         return (inst._input.val() + ch).toLowerCase().match(pattern) != null;
       }
       return true;
     },
-
     /* Determine whether or not a keystroke is a trigger for opening the calculator.
      @param  ch           (char) the current character
      @param  event        (KeyEvent) the entire key event
@@ -817,130 +733,92 @@
      @param  base         (number) the current number base
      @param  decimalChar  (char) the current decimal character
      @return  true if a trigger, false if not */
-    _isOperator:function (ch, event, value, base, decimalChar) {
-      return ch > ' ' && !(ch == '-' && value == '') &&
-        ('0123456789abcdef'.substr(0, base) + '.' + decimalChar).indexOf(ch.toLowerCase()) == -1;
+    _isOperator:         function (ch, event, value, base, decimalChar) {
+      return ch > ' ' && !(ch == '-' && value == '') && ('0123456789abcdef'.substr(0, base) + '.' + decimalChar).indexOf(ch.toLowerCase()) == -1;
     },
-
-    /* Get a setting value, defaulting if necessary.
-     @param  inst  (object) the instance settings
-     @param  name  (string) the name of the setting
-     @return  (any) the value of the setting, or its default if not set explicitly */
-    _get:function (inst, name) {
-      return inst.settings[name] !== undefined ?
-             inst.settings[name] : this._defaults[name];
-    },
-
     /* Generate the HTML for the current state of the calculator.
      @param  inst  (object) the instance settings
      @return  (string) the HTML for this calculator */
-    _generateHTML:function (inst) {
-      var useTR = this._get(inst, 'useThemeRoller');
-      var isRTL = this._get(inst, 'isRTL');
-      var prompt = this._get(inst, 'prompt');
-      var layout = this._get(inst, 'layout');
-      var base = this._get(inst, 'base');
-      var useDegrees = this._get(inst, 'useDegrees');
-      var html = (!prompt ? '' : '<div class="calculator-prompt' +
-        (useTR ? ' ui-widget-header ui-corner-all' : '') + '">' + prompt + '</div>') +
-        '<div class="calculator-result' + (useTR ? ' ui-widget-header' : '' ) +
-        (inst._focussed ? ' ' + this._focussedClass : '') + '"><span>' +
-        inst.dispValue + '</span></div>';
-      for (var i = 0; i < layout.length; i++) {
-        html += '<div class="calculator-row">';
-        for (var j = 0; j < layout[i].length; j += 2) {
-          var code = layout[i].substr(j, 2);
+    _generateHTML:       function (inst) {
+      var html = (!inst.options.prompt ? '' : '<div class="' + this._promptClass + (
+        inst.options.useThemeRoller ? ' ui-widget-header ui-corner-all' : '') + '">' + inst.options.prompt + '</div>') + '<div class="' + this._resultClass + (
+        inst.options.useThemeRoller ? ' ui-widget-header' : '' ) + (inst._focussed ? ' ' + this._focussedClass : '') + '"><span>' + inst.dispValue + '</span></div>';
+      for (var i = 0; i < inst.options.layout.length; i++) {
+        html += '<div class="' + this._rowClass + '">';
+        for (var j = 0; j < inst.options.layout[i].length; j += 2) {
+          var code = inst.options.layout[i].substr(j, 2);
           var def = this._keyDefs[code] || this._keyDefs['??'];
-          var label = (def[0].charAt(0) == '#' ? this._get(inst, def[0].substr(1) + 'Text') : def[0]);
-          var status = (def[0].charAt(0) == '#' ? this._get(inst, def[0].substr(1) + 'Status') : '');
+          var label = (def[0].charAt(0) == '#' ? inst.options[def[0].substr(1) + 'Text'] : def[0]);
+          var status = (def[0].charAt(0) == '#' ? inst.options[def[0].substr(1) + 'Status'] : '');
           var styles = (def[3] ? def[3].split(' ') : []);
           for (var k = 0; k < styles.length; k++) {
-            styles[k] = 'calculator-' + styles[k];
+            styles[k] = this.propertyName + '-' + styles[k];
           }
           styles = styles.join(' ');
-          var uiActive = (useTR ? ' ui-state-active' : '');
-          var uiHighlight = (useTR ? ' ui-state-highlight' : '');
-          html += (def[1] == this.space ? '<span class="calculator-' + def[3] + '"></span>' :
-                   (inst._inline && (def[2] == '._close' || def[2] == '._erase') ? '' :
-                    '<button type="button" keystroke="' + code + '"' +
-                      // Control buttons
-                      (def[1] == this.control ? ' class="calculator-ctrl' +
-                        (def[0].match(/^#base/) ? (def[0].replace(/^#base/, '') == base ?
-                                                   uiActive || ' calculator-base-active' : uiHighlight) :
-                         (def[0] == '#degrees' ? (useDegrees ? uiActive || ' calculator-angle-active' : uiHighlight) :
-                          (def[0] == '#radians' ? (!useDegrees ? uiActive || ' calculator-angle-active' : uiHighlight) :
-                           uiHighlight))) :
-                        // Digits
-                       (def[1] == this.digit ? (parseInt(def[0], 16) >= base || (base != 10 && def[0] == '.') ?
-                                                ' disabled="disabled"' : '') + ' class="calculator-digit' :
-                         // Binary operations
-                        (def[1] == this.binary ? ' class="calculator-oper' :
-                          // Unary operations
-                         ' class="calculator-oper' +
-                           (def[0].match(/^#mem(Clear|Recall)$/) && !inst.memory ? ' calculator-mem-empty' : '')))) +
-                      // Common
-                      (useTR ? ' ui-state-default' : '') + (styles ? ' ' + styles : '') + '" ' +
-                      (status ? 'title="' + status + '"' : '') + '>' +
-                      (code == '_.' ? this._get(inst, 'decimalChar') : label) +
-                      // Keystrokes
-                      (def[5] && def[5] != def[0] ?
-                       '<span class="' + this._keystrokeClass + (useTR ? ' ui-state-error' : '') +
-                         (def[6] ? ' calculator-keyname' : '') + '">' + (def[6] || def[5]) + '</span>' : '') +
-                      '</button>'));
+          var uiActive = (inst.options.useThemeRoller ? ' ui-state-active' : '');
+          var uiHighlight = (inst.options.useThemeRoller ? ' ui-state-highlight' : '');
+          html += (def[1] == this.space ? '<span class="' + this.propertyName + '-' + def[3] + '"></span>' :
+                   (inst._inline && (def[2] == '._close' || def[2] == '._erase') ? '' : '<button type="button" keystroke="' + code + '"' + // Control buttons
+                     (def[1] == this.control ? ' class="' + this._ctrlClass + (
+                       def[0].match(/^#base/) ? (def[0].replace(/^#base/, '') == inst.options.base ? uiActive || ' ' + this._baseActiveClass : uiHighlight) : (
+                         def[0] == '#degrees' ? (inst.options.useDegrees ? uiActive || ' ' + this._angleActiveClass : uiHighlight) :
+                         (def[0] == '#radians' ? (!inst.options.useDegrees ? uiActive || ' ' + this._angleActiveClass : uiHighlight) : uiHighlight))) : // Digits
+                      (def[1] == this.digit ? (parseInt(def[0], 16) >= inst.options.base || (inst.options.base != 10 && def[0] == '.') ? ' disabled="disabled"' :
+                                               '') + ' class="' + this._digitClass : // Binary operations
+                       (def[1] == this.binary ? ' class="' + this._operatorClass : // Unary operations
+                        ' class="' + this._operatorClass + (def[0].match(/^#mem(Clear|Recall)$/) && !inst.memory ? ' ' + this._memEmptyClass : '')))) + // Common
+                     (inst.options.useThemeRoller ? ' ui-state-default' : '') + (styles ? ' ' + styles : '') + '" ' + (status ? 'title="' + status + '"' : '') + '>' + (
+                     code == '_.' ? inst.options.decimalChar : label) + // Keystrokes
+                     (def[5] && def[5] != def[0] ? '<span class="' + this._keystrokeClass + (inst.options.useThemeRoller ? ' ui-state-error' : '') + (
+                       def[6] ? ' ' + this._keyNameClass : '') + '">' + (def[6] || def[5]) + '</span>' : '') + '</button>'));
         }
         html += '</div>';
       }
-      html += '<div style="clear: both;"></div>' +
-        (!inst._inline && $.browser.msie && parseInt($.browser.version, 10) < 7 ? // IE6- only
-         '<iframe src="javascript:false;" class="' + this._coverClass + '"></iframe>' : '');
+      html += '<div style="clear: both;"></div>' + (!inst._inline && $.browser.msie && parseInt($.browser.version, 10) < 7 ? // IE6- only
+                                                    '<iframe src="javascript:false;" class="' + this._coverClass + '"></iframe>' : '');
       html = $(html);
-      html.find('button').mouseover(function () { $.calculator._saveClasses = this.className; }).
-        mousedown(function () {
-          $(this).addClass('calculator-key-down' + (useTR ? ' ui-state-active' : ''));
-        }).
-        mouseup(function () { $(this).removeClass().addClass($.calculator._saveClasses); }).
-        mouseout(function () { $(this).removeClass().addClass($.calculator._saveClasses); }).
-        click(function () { $.calculator._handleButton(inst, $(this)); });
+      html.find('button').bind('mouseover.' + this.propertyName,function () {
+        plugin._saveClasses = this.className;
+      }).bind('mousedown.' + this.propertyName,function () {
+                $(this).addClass(this._keyDownClass + (inst.options.useThemeRoller ? ' ui-state-active' : ''));
+              }).bind('mouseup.' + this.propertyName,function () {
+                        $(this).removeClass().addClass(plugin._saveClasses);
+                      }).bind('mouseout.' + this.propertyName,function () {
+                                $(this).removeClass().addClass(plugin._saveClasses);
+                              }).bind('click.' + this.propertyName, function () {
+                                        plugin._handleButton(inst, $(this));
+                                      });
       return html;
     },
-
     /* Generate the display value.
      Tidy the result to avoid JavaScript rounding errors.
      @param  inst   (object) the instance settings
      @return  (string) the rounded and formatted display value */
-    _setDisplay:function (inst) {
-      var precision = this._get(inst, 'precision');
-      var fixed = new Number(inst.curValue).toFixed(precision).valueOf(); // Round to 14 digits precision
+    _setDisplay:         function (inst) {
+      var fixed = new Number(inst.curValue).toFixed(inst.options.precision).valueOf(); // Round to 14 digits precision
       var exp = fixed.replace(/^.+(e.+)$/, '$1').replace(/^[^e].*$/, ''); // Extract exponent
       if (exp) {
-        fixed = new Number(fixed.replace(/e.+$/, '')).toFixed(precision).valueOf(); // Round mantissa
+        fixed = new Number(fixed.replace(/e.+$/, '')).toFixed(inst.options.precision).valueOf(); // Round mantissa
       }
-      return parseFloat(fixed.replace(/0+$/, '') + exp).// Recombine
-        toString(this._get(inst, 'base')).toUpperCase().
-        replace(/\./, this._get(inst, 'decimalChar'));
+      return parseFloat(fixed.replace(/0+$/, '') + exp).// RecombinetoString(inst.options.base).toUpperCase().replace(/\./, inst.options.decimalChar);
     },
-
     /* Send notification of a button activation.
      @param  inst   (object) the instance settings
      @param  label  (string) the label from the button */
-    _sendButton:function (inst, label) {
-      var onButton = this._get(inst, 'onButton');
-      if (onButton) {
-        onButton.apply((inst._input ? inst._input[0] : null),
-          [label, inst.dispValue, inst]);  // trigger custom callback
+    _sendButton:         function (inst, label) {
+      if ($.isFunction(inst.options.onButton)) {
+        inst.options.onButton.apply((inst._input ? inst._input[0] : null), [label, inst.dispValue, inst]);  // trigger custom callback
       }
     },
-
     /* Handle a button press.
      @param  inst    (object) the current instance settings
      @param  button  (jQuery) the button pressed */
-    _handleButton:function (inst, button) {
+    _handleButton:       function (inst, button) {
       var keyDef = this._keyDefs[button.attr('keystroke')];
       if (!keyDef) {
         return;
       }
-      var label = button.text().substr(0, button.text().length -
-        button.children('.calculator-keystroke').text().length);
+      var label = button.text().substr(0, button.text().length - button.children('.' + this._keyStrokeClass).text().length);
       switch (keyDef[1]) {
         case this.control:
           keyDef[2].apply(this, [inst, label]);
@@ -955,47 +833,39 @@
           this._unaryOp(inst, keyDef[2], label);
           break;
       }
-      if ($.calculator._showingCalculator || inst._inline) {
+      if (plugin._showingCalculator || inst._inline) {
         inst._input.focus();
       }
     },
-
     /* Do nothing. */
-    _noOp:function (inst) {
+    _noOp:               function (inst) {
     },
-
     /* Add a digit to the number in the calculator.
      @param  inst   (object) the instance settings
      @param  digit  (string) the digit to append */
-    _digit:function (inst, digit) {
-      var decimalChar = this._get(inst, 'decimalChar');
+    _digit:              function (inst, digit) {
       inst.dispValue = (inst._newValue ? '' : inst.dispValue);
-      if (digit == decimalChar && inst.dispValue.indexOf(digit) > -1) {
+      if (digit == inst.options.decimalChar && inst.dispValue.indexOf(digit) > -1) {
         return;
       }
-      inst.dispValue = (inst.dispValue + digit).replace(/^0(\d)/, '$1').
-        replace(new RegExp('^(-?)([\\.' + decimalChar + '])'), '$10$2');
-      if (decimalChar != '.') {
-        inst.dispValue = inst.dispValue.replace(new RegExp('^' + decimalChar), '0.');
+      inst.dispValue = (inst.dispValue + digit).replace(/^0(\d)/, '$1').replace(new RegExp('^(-?)([\\.' + inst.options.decimalChar + '])'), '$10$2');
+      if (inst.options.decimalChar != '.') {
+        inst.dispValue = inst.dispValue.replace(new RegExp('^' + inst.options.decimalChar), '0.');
       }
-      var base = this._get(inst, 'base');
-      var value = (decimalChar != '.' ?
-                   inst.dispValue.replace(new RegExp(decimalChar), '.') : inst.dispValue);
-      inst.curValue = (base == 10 ? parseFloat(value) : parseInt(value, base));
+      var value = (inst.options.decimalChar != '.' ? inst.dispValue.replace(new RegExp(inst.options.decimalChar), '.') : inst.dispValue);
+      inst.curValue = (inst.options.base == 10 ? parseFloat(value) : parseInt(value, inst.options.base));
       inst._newValue = false;
       this._sendButton(inst, digit);
       this._updateCalculator(inst);
     },
-
     /* Save a binary operation for later use.
      @param  inst   (object) the instance settings
      @param  op     (function) the binary function
      @param  label  (string) the button label */
-    _binaryOp:function (inst, op, label) {
+    _binaryOp:           function (inst, op, label) {
       if (!inst._newValue && inst._pendingOp) {
         inst._pendingOp(inst);
-        var base = this._get(inst, 'base');
-        inst.curValue = (base == 10 ? inst.curValue : Math.floor(inst.curValue));
+        inst.curValue = (inst.options.base == 10 ? inst.curValue : Math.floor(inst.curValue));
         inst.dispValue = this._setDisplay(inst);
       }
       inst.prevValue = inst.curValue;
@@ -1004,79 +874,62 @@
       this._sendButton(inst, label);
       this._updateCalculator(inst);
     },
-
-    _add:function (inst) {
+    _add: function (inst) {
       inst.curValue = inst.prevValue + inst.curValue;
     },
-
-    _subtract:function (inst) {
+    _subtract: function (inst) {
       inst.curValue = inst.prevValue - inst.curValue;
     },
-
-    _multiply:function (inst) {
+    _multiply: function (inst) {
       inst.curValue = inst.prevValue * inst.curValue;
     },
-
-    _divide:function (inst) {
+    _divide: function (inst) {
       inst.curValue = inst.prevValue / inst.curValue;
     },
-
-    _power:function (inst) {
+    _power:   function (inst) {
       inst.curValue = Math.pow(inst.prevValue, inst.curValue);
     },
-
     /* Apply a unary operation to the calculator.
      @param  inst   (object) the instance settings
      @param  op     (function) the unary function
      @param  label  (string) the button label */
-    _unaryOp:function (inst, op, label) {
+    _unaryOp: function (inst, op, label) {
       inst._newValue = true;
       op.apply(this, [inst]);
-      var base = this._get(inst, 'base');
-      inst.curValue = (base == 10 ? inst.curValue : Math.floor(inst.curValue));
+      inst.curValue = (inst.options.base == 10 ? inst.curValue : Math.floor(inst.curValue));
       inst.dispValue = this._setDisplay(inst);
       this._sendButton(inst, label);
       this._updateCalculator(inst);
     },
-
-    _plusMinus:function (inst) {
+    _plusMinus: function (inst) {
       inst.curValue = -1 * inst.curValue;
       inst.dispValue = this._setDisplay(inst);
       inst._newValue = false;
     },
-
-    _pi:function (inst) {
+    _pi:      function (inst) {
       inst.curValue = Math.PI;
     },
-
     /* Perform a percentage calculation.
      @param  inst  (object) the instance settings */
-    _percent:function (inst) {
+    _percent: function (inst) {
       if (inst._pendingOp == this._add) {
         inst.curValue = inst.prevValue * (1 + inst.curValue / 100);
       }
-      else {
-        if (inst._pendingOp == this._subtract) {
-          inst.curValue = inst.prevValue * (1 - inst.curValue / 100);
-        }
-        else {
-          if (inst._pendingOp == this._multiply) {
-            inst.curValue = inst.prevValue * inst.curValue / 100;
-          }
-          else {
-            if (inst._pendingOp == this._divide) {
-              inst.curValue = inst.prevValue / inst.curValue * 100;
-            }
-          }
-        }
+      else if (inst._pendingOp == this._subtract) {
+        inst.curValue = inst.prevValue * (1 - inst.curValue / 100);
+      }
+      else if (inst._pendingOp == this._multiply) {
+        inst.curValue = inst.prevValue * inst.curValue / 100;
+      }
+      else if (inst._pendingOp == this._divide) {
+        inst.curValue = inst.prevValue / inst.curValue * 100;
       }
       inst._savedOp = inst._pendingOp;
       inst._pendingOp = this._noOp;
     },
-
     /* Apply a pending binary operation.
      @param  inst  (object) the instance settings */
-    _equals:function (inst) {
+    _equals:  function (inst) {
       if (inst._pendingOp == this._noOp) {
         if (inst._savedOp != this._noOp) {
           // Following x op y =: =, z =
@@ -1093,204 +946,167 @@
         inst._pendingOp = this._noOp;
       }
     },
-
-    _memAdd:function (inst) {
+    _memAdd: function (inst) {
       inst.memory += inst.curValue;
       this._setMemoryCookie(inst);
     },
-
-    _memSubtract:function (inst) {
+    _memSubtract: function (inst) {
       inst.memory -= inst.curValue;
       this._setMemoryCookie(inst);
     },
-
-    _memStore:function (inst) {
+    _memStore: function (inst) {
       inst.memory = inst.curValue;
       this._setMemoryCookie(inst);
     },
-
-    _memRecall:function (inst) {
+    _memRecall: function (inst) {
       inst.curValue = inst.memory;
     },
-
-    _memClear:function (inst) {
+    _memClear: function (inst) {
       inst.memory = 0;
       this._setMemoryCookie(inst);
     },
-
-    _sin:function (inst) {
+    _sin: function (inst) {
       this._trig(inst, Math.sin);
     },
-
-    _cos:function (inst) {
+    _cos: function (inst) {
       this._trig(inst, Math.cos);
     },
-
-    _tan:function (inst) {
+    _tan: function (inst) {
       this._trig(inst, Math.tan);
     },
-
-    _trig:function (inst, op) {
-      var useDegrees = this._get(inst, 'useDegrees');
-      inst.curValue = op(inst.curValue * (useDegrees ? Math.PI / 180 : 1));
+    _trig: function (inst, op) {
+      inst.curValue = op(inst.curValue * (inst.options.useDegrees ? Math.PI / 180 : 1));
     },
-
-    _asin:function (inst) {
+    _asin: function (inst) {
       this._atrig(inst, Math.asin);
     },
-
-    _acos:function (inst) {
+    _acos: function (inst) {
       this._atrig(inst, Math.acos);
     },
-
-    _atan:function (inst) {
+    _atan: function (inst) {
       this._atrig(inst, Math.atan);
     },
-
-    _atrig:function (inst, op) {
+    _atrig: function (inst, op) {
       inst.curValue = op(inst.curValue);
-      if (this._get(inst, 'useDegrees')) {
+      if (inst.options.useDegrees) {
         inst.curValue = inst.curValue / Math.PI * 180;
       }
     },
-
-    _inverse:function (inst) {
+    _inverse: function (inst) {
       inst.curValue = 1 / inst.curValue;
     },
-
-    _log:function (inst) {
+    _log: function (inst) {
       inst.curValue = Math.log(inst.curValue) / Math.log(10);
     },
-
-    _ln:function (inst) {
+    _ln: function (inst) {
       inst.curValue = Math.log(inst.curValue);
     },
-
-    _exp:function (inst) {
+    _exp: function (inst) {
       inst.curValue = Math.exp(inst.curValue);
     },
-
-    _sqr:function (inst) {
+    _sqr: function (inst) {
       inst.curValue *= inst.curValue;
     },
-
-    _sqrt:function (inst) {
+    _sqrt: function (inst) {
       inst.curValue = Math.sqrt(inst.curValue);
     },
-
-    _random:function (inst) {
+    _random: function (inst) {
       inst.curValue = Math.random();
     },
-
-    _base2:function (inst, label) {
+    _base2: function (inst, label) {
       this._changeBase(inst, label, 2);
     },
-
-    _base8:function (inst, label) {
+    _base8: function (inst, label) {
       this._changeBase(inst, label, 8);
     },
-
-    _base10:function (inst, label) {
+    _base10: function (inst, label) {
       this._changeBase(inst, label, 10);
     },
-
-    _base16:function (inst, label) {
+    _base16:     function (inst, label) {
       this._changeBase(inst, label, 16);
     },
-
     /* Change the number base for the calculator.
      @param  inst     (object) the instance settings
      @param  label    (string) the button label
      @param  newBase  (number) the new number base */
-    _changeBase:function (inst, label, newBase) {
-      inst.settings.base = newBase;
+    _changeBase: function (inst, label, newBase) {
+      inst.options.base = newBase;
       inst.curValue = (newBase == 10 ? inst.curValue : Math.floor(inst.curValue));
       inst.dispValue = this._setDisplay(inst);
       inst._newValue = true;
       this._sendButton(inst, label);
       this._updateCalculator(inst);
     },
-
-    _degrees:function (inst, label) {
+    _degrees: function (inst, label) {
       this._degreesRadians(inst, label, true);
     },
-
-    _radians:function (inst, label) {
+    _radians:        function (inst, label) {
       this._degreesRadians(inst, label, false);
     },
-
     /* Swap between degrees and radians for trigonometric functions.
      @param  inst        (object) the instance settings
      @param  label       (string) the button label
      @param  useDegrees  (boolean) true to use degrees, false for radians */
-    _degreesRadians:function (inst, label, useDegrees) {
-      inst.settings.useDegrees = useDegrees;
+    _degreesRadians: function (inst, label, useDegrees) {
+      inst.options.useDegrees = useDegrees;
       this._sendButton(inst, label);
       this._updateCalculator(inst);
     },
-
     /* Erase the last digit entered.
      @param  inst   (object) the instance settings
      @param  label  (string) the button label */
-    _undo:function (inst, label) {
+    _undo:           function (inst, label) {
       inst.dispValue = inst.dispValue.substr(0, inst.dispValue.length - 1) || '0';
-      var base = this._get(inst, 'base');
-      inst.curValue = (base == 10 ? parseFloat(inst.dispValue) : parseInt(inst.dispValue, base));
+      inst.curValue = (inst.options.base == 10 ? parseFloat(inst.dispValue) : parseInt(inst.dispValue, inst.options.base));
       this._sendButton(inst, label);
       this._updateCalculator(inst);
     },
-
     /* Erase the last number entered.
      @param  inst   (object) the instance settings
      @param  label  (string) the button label */
-    _clearError:function (inst, label) {
+    _clearError:     function (inst, label) {
       inst.dispValue = '0';
       inst.curValue = 0;
       inst._newValue = true;
       this._sendButton(inst, label);
       this._updateCalculator(inst);
     },
-
     /* Reset the calculator.
      @param  inst   (object) the instance settings
      @param  label  (string) the button label */
-    _clear:function (inst, label) {
+    _clear:          function (inst, label) {
       this._reset(inst, 0);
       this._sendButton(inst, label);
       this._updateCalculator(inst);
     },
-
     /* Close the calculator without changing the value.
      @param  inst   (object) the instance settings
      @param  label  (string) the button label */
-    _close:function (inst, label) {
+    _close:          function (inst, label) {
       this._finished(inst, label, inst._input.val());
     },
-
     /* Copy the current value and close the calculator.
      @param  inst   (object) the instance settings
      @param  label  (string) the button label */
-    _use:function (inst, label) {
+    _use:            function (inst, label) {
       if (inst._pendingOp != this._noOp) {
         this._unaryOp(inst, this._equals, label);
       }
       this._finished(inst, label, inst.dispValue);
     },
-
     /* Erase the field and close the calculator.
      @param  inst   (object) the instance settings
      @param  label  (string) the button label */
-    _erase:function (inst, label) {
+    _erase:          function (inst, label) {
       this._reset(inst, 0);
       this._updateCalculator(inst);
       this._finished(inst, label, '');
     },
-
     /* Finish with the calculator.
      @param  inst   (object) the instance settings
      @param  label  (string) the button label
      @param  value  (string) the new field value */
-    _finished:function (inst, label, value) {
+    _finished:       function (inst, label, value) {
       if (inst._inline) {
         this._curInst = inst;
       }
@@ -1298,54 +1114,48 @@
         inst._input.val(value);
       }
       this._sendButton(inst, label);
-      this._hideCalculator(inst._input[0]);
+      this._hidePlugin(inst._input[0]);
     }
   });
-
-  /* jQuery extend now ignores nulls!
-   @param  target  (object) the object to extend
-   @param  props   (object) the new settings
-   @return  (object) the updated target */
-  function extendRemove(target, props) {
-    $.extend(target, props);
-    for (var name in props) {
-      if (props[name] == null || props[name] == undefined) {
-        target[name] = props[name];
-      }
+// The list of commands that return values and don't permit chaining
+  var getters = ['isDisabled'];
+  /* Determine whether a command is a getter and doesn't permit chaining.
+   @param  command    (string, optional) the command to run
+   @param  otherArgs  ([], optional) any other arguments for the command
+   @return  true if the command is a getter, false if not */
+  function isNotChained(command, otherArgs) {
+    if (command == 'option' && (otherArgs.length == 0 || (otherArgs.length == 1 && typeof otherArgs[0] == 'string'))) {
+      return true;
     }
-    return target;
+    return $.inArray(command, getters) > -1;
   }
 
-  /* Invoke the calculator functionality.
-   @param  options  (string) a command, optionally followed by additional parameters or
-   (object) settings for attaching new calculator functionality
-   @return  (object) the jQuery object */
+  /* Attach the calculator functionality to a jQuery selection.
+   @param  options  (object) the new settings to use for these instances (optional) or
+   (string) the command to run (optional)
+   @return  (jQuery) for chaining further calls or
+   (any) getter value */
   $.fn.calculator = function (options) {
     var otherArgs = Array.prototype.slice.call(arguments, 1);
-    if (options == 'isDisabled') {
-      return $.calculator['_' + options + 'Calculator'].
-        apply($.calculator, [this[0]].concat(otherArgs));
+    if (isNotChained(options, otherArgs)) {
+      return plugin['_' + options + 'Plugin'].apply(plugin, [this[0]].concat(otherArgs));
     }
     return this.each(function () {
       if (typeof options == 'string') {
-        if (!$.calculator['_' + options + 'Calculator']) {
-          throw 'Unknown operation: ' + options;
+        if (!plugin['_' + options + 'Plugin']) {
+          throw 'Unknown command: ' + options;
         }
-        $.calculator['_' + options + 'Calculator'].
-          apply($.calculator, [this].concat(otherArgs));
+        plugin['_' + options + 'Plugin'].apply(plugin, [this].concat(otherArgs));
       }
       else {
-        $.calculator._attachCalculator(this, options);
+        plugin._attachPlugin(this, options || {});
       }
     });
   };
-
-  $.calculator = new Calculator(); // singleton instance
-
+  /* Initialise the calculator functionality. */
+  var plugin = $.calculator = new Calculator(); // Singleton instance
 // Add the calculator division and external click check
   $(function () {
-    $(document.body).append($.calculator.mainDiv).
-      mousedown($.calculator._checkExternalClick);
+    $('body').append(plugin.mainDiv).mousedown(plugin._checkExternalClick);
   });
-
 })(jQuery);

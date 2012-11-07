@@ -132,9 +132,9 @@
         'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
 
-    $rep = new $report_type(_('Stock Check Sheets'), "StockCheckSheet", SA_ITEMSVALREP, User::page_size());
+    $rep = new $report_type(_('Stock Check Sheets'), "StockCheckSheet", SA_ITEMSVALREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

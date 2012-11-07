@@ -18,7 +18,7 @@
    */
   function get_invoices($debtor_id, $to) {
     $todate    = Dates::_dateToSql($to);
-    $past_due1 = DB_Company::get_pref('past_due_days');
+    $past_due1 = DB_Company::_get_pref('past_due_days');
     $past_due2 = 2 * $past_due1;
     // Revomed allocated from sql
     $value = "(debtor_trans.ov_amount + debtor_trans.ov_gst + " . "debtor_trans.ov_freight + debtor_trans.ov_freight_tax + " . "debtor_trans.ov_discount)";
@@ -67,7 +67,7 @@
     } else {
       $from = Debtor::get_name($fromcust);
     }
-    $dec = User::price_dec();
+    $dec = User::_price_dec();
     if ($summaryOnly == 1) {
       $summary = _('Summary Only');
     } else {
@@ -84,7 +84,7 @@
     } else {
       $nozeros = _('No');
     }
-    $past_due1     = DB_Company::get_pref('past_due_days');
+    $past_due1     = DB_Company::_get_pref('past_due_days');
     $past_due2     = 2 * $past_due1;
     $txt_now_due   = "1-" . $past_due1 . " " . _('Days');
     $txt_past_due1 = $past_due1 + 1 . "-" . $past_due2 . " " . _('Days');
@@ -102,28 +102,28 @@
     );
     $aligns        = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
     $params        = array(
-      0    => $comments,
-      1    => array(
+      0 => $comments,
+      1 => array(
         'text' => _('End Date'),
         'from' => $to,
         'to'   => ''
       ),
-      2    => array(
+      2 => array(
         'text' => _('Customer'),
         'from' => $from,
         'to'   => ''
       ),
-      3    => array(
+      3 => array(
         'text' => _('Currency'),
         'from' => $currency,
         'to'   => ''
       ),
-      4    => array(
+      4 => array(
         'text' => _('Type'),
         'from' => $summary,
         'to'   => ''
       ),
-      5    => array(
+      5 => array(
         'text' => _('Suppress Zeros'),
         'from' => $nozeros,
         'to'   => ''
@@ -132,8 +132,8 @@
     if ($convert) {
       $headers[2] = _('Currency');
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Aged Customer Analysis'), "AgedCustomerAnalysis", SA_CUSTPAYMREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Aged Customer Analysis'), "AgedCustomerAnalysis", SA_CUSTPAYMREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
@@ -242,7 +242,7 @@
       $pg->skin           = Config::_get('graphs_skin');
       $pg->built_in       = false;
       $pg->fontfile       = ROOT_DOC . "reporting/fonts/Vera.ttf";
-      $pg->latin_notation = (User::prefs()->dec_sep != ".");
+      $pg->latin_notation = (User::_prefs()->dec_sep != ".");
       $filename           = PATH_COMPANY . "images/test.png";
       $pg->display($filename, true);
       $w = $pg->width / 1.5;

@@ -5,7 +5,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -21,9 +20,9 @@
   if (DB::_numRows($result) != 1) {
     Event::error("duplicate payment bank transaction found");
   }
-  $from_trans = DB::_fetch($result);
+  $from_trans       = DB::_fetch($result);
   $company_currency = Bank_Currency::for_company();
-  $show_currencies = false;
+  $show_currencies  = false;
   if ($from_trans['bank_curr_code'] != $company_currency) {
     $show_currencies = true;
   }
@@ -43,7 +42,7 @@
   if ($show_currencies) {
     Cell::labelled(_("Currency"), $from_trans['bank_curr_code']);
   }
-  Cell::labelled(_("Amount"), Num::_format($from_trans['amount'], User::price_dec()));
+  Cell::labelled(_("Amount"), Num::_format($from_trans['amount'], User::_price_dec()));
   echo '</tr>';
   echo '<tr>';
   Cell::labelled(_("Pay To"), Bank::payment_person_name($from_trans['person_type_id'], $from_trans['person_id']));
@@ -56,7 +55,7 @@
   DB_Comments::display_row(ST_BANKPAYMENT, $trans_no);
   Table::end(1);
   $voided = Voiding::is_voided(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
-  $items = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
+  $items  = GL_Trans::get_many(ST_BANKPAYMENT, $trans_no);
   if (DB::_numRows($items) == 0) {
     Event::warning(_("There are no items for this payment."));
   } else {
@@ -66,7 +65,7 @@
     }
     echo "<br>";
     Table::start('padded grid width90');
-    $dim = DB_Company::get_pref('use_dimension');
+    $dim = DB_Company::_get_pref('use_dimension');
     if ($dim == 2) {
       $th = array(
         _("Account Code"),
@@ -95,7 +94,7 @@
       }
     }
     Table::header($th);
-    $k = 0; //row colour counter
+    $k            = 0; //row colour counter
     $total_amount = 0;
     while ($item = DB::_fetch($items)) {
       if ($item["account"] != $from_trans["account_code"]) {
@@ -113,7 +112,7 @@
         $total_amount += $item["amount"];
       }
     }
-    Table::label(_("Total"), Num::_format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class='alignright'", "class='alignright'", 2);
+    Table::label(_("Total"), Num::_format($total_amount, User::_price_dec()), "colspan=" . (2 + $dim) . " class='alignright'", "class='alignright'", 2);
     Table::end(1);
     if (!$voided) {
       GL_Allocation::from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);

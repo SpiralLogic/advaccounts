@@ -197,8 +197,8 @@
         , option = $target.data('modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
       e.preventDefault()
       $target.modal(option).one('hide', function () {
-                                  $this.focus()
-                                })
+        $this.focus()
+      })
     })
   })
 }(window.jQuery);
@@ -322,7 +322,7 @@
    * =================================== */
   $(function () {
     $('html').on('click.dropdown.data-api touchstart.dropdown.data-api', clearMenus)
-    $('body').on('click.dropdown touchstart.dropdown.data-api', '.dropdown', function (e) { e.stopPropagation() }).on('click.dropdown.data-api touchstart.dropdown.data-api', toggle, Dropdown.prototype.toggle).on('keydown.dropdown.data-api touchstart.dropdown.data-api', toggle + ', [role=menu]', Dropdown.prototype.keydown)
+    $('body').on('click.dropdown touchstart.dropdown.data-api', '.dropdown',function (e) { e.stopPropagation() }).on('click.dropdown.data-api touchstart.dropdown.data-api', toggle, Dropdown.prototype.toggle).on('keydown.dropdown.data-api touchstart.dropdown.data-api', toggle + ', [role=menu]', Dropdown.prototype.keydown)
   })
 }(window.jQuery);
 /* ===========================================================

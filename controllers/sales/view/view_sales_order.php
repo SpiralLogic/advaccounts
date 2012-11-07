@@ -185,7 +185,7 @@
   Table::header($th);
   $k = 0; //row colour counter
   foreach ($_SESSION['View']->line_items as $stock_item) {
-    $line_total = Num::_round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), User::price_dec());
+    $line_total = Num::_round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), User::_price_dec());
     Cell::label($stock_item->stock_id);
     Cell::label($stock_item->description);
     $dec = Item::qty_dec($stock_item->stock_id);

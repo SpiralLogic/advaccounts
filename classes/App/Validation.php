@@ -183,6 +183,6 @@
         $result = false;
       }
 
-      return ($result === false || $result === null) ? 0 : User::numeric($result);
+      return ($result === false || $result === null) ? 0 : User::_numeric($result);
     }
   }

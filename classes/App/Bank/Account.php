@@ -10,9 +10,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_Account
-  {
-
+  class Bank_Account {
     static $types
       = array(
         BT_TRANSFER => "Savings Account", //
@@ -131,7 +129,7 @@
         . default account in home currency
         . first defined account in home currency
       */
-      $home_curr = DB_Company::get_pref('curr_default');
+      $home_curr = DB_Company::_get_pref('curr_default');
       if (!$curr) {
         $curr = $home_curr;
       }
@@ -199,9 +197,9 @@
         'id',
         'bank_account_name',
         array(
-          'format'        => 'Forms::addCurrFormat',
-          'select_submit' => $submit_on_change,
-          'async'         => false
+             'format'        => 'Forms::addCurrFormat',
+             'select_submit' => $submit_on_change,
+             'async'         => false
         )
       );
     }
@@ -303,8 +301,7 @@
      * @return string
      */
     protected static function checkBeginDate($begin_date) {
-      return $begin_date ? DB::_quote($begin_date)
-        : "(SELECT max(reconciled) from bank_trans)";
+      return $begin_date ? DB::_quote($begin_date) : "(SELECT max(reconciled) from bank_trans)";
     }
     /**
      * @param $bank_account
@@ -315,8 +312,9 @@
      */
     public static function getStatement($bank_account, $begin_date, $end_date) {
       $begin_date = static::checkBeginDate($begin_date);
-      $sql        = "SELECT date as state_date, amount as state_amount,memo,id as state_id, reconciled_to_id FROM temprec WHERE date > " .
-        $begin_date . " AND date <=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote($bank_account) . " ORDER BY reconciled_to_id DESC, date ,amount";
+      $sql        = "SELECT date as state_date, amount as state_amount,memo,id as state_id, reconciled_to_id FROM temprec WHERE date > " . $begin_date . " AND date <=" . DB::_quote(
+        $end_date
+      ) . " and bank_account_id=" . DB::_quote($bank_account) . " ORDER BY reconciled_to_id DESC, date ,amount";
       DB::_query($sql);
       $statement_trans = DB::_fetchAll() ? : [];
       return $statement_trans;

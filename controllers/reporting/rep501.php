@@ -17,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($from, $to)
-  {
+  function get_transactions($from, $to) {
     $sql
       = "SELECT *
         FROM
@@ -36,8 +35,7 @@
    *
    * @return float
    */
-  function getYTD($dim)
-  {
+  function getYTD($dim) {
     $date = Dates::_today();
     $date = Dates::_beginFiscalYear($date);
     Dates::_dateToSql($date);
@@ -58,8 +56,7 @@
     return $balance;
   }
 
-  function print_dimension_summary()
-  {
+  function print_dimension_summary() {
     $fromdim     = $_POST['PARAM_0'];
     $todim       = $_POST['PARAM_1'];
     $showbal     = $_POST['PARAM_2'];
@@ -76,10 +73,11 @@
     $headers = array(_('Reference'), _('Name'), _('Type'), _('Date'), _('Due Date'), _('Closed'), _('YTD'));
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'left', 'right');
     $params  = array(
-      0 => $comments, 1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim)
+      0 => $comments,
+      1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim)
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Dimension Summary'), "DimensionSummary", SA_DIMENSIONREP,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Dimension Summary'), "DimensionSummary", SA_DIMENSIONREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

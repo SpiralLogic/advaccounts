@@ -1,2 +1,2 @@
 <?php
-  (new \ADV\App\DB\Generator())->getTableDetails('chart_class');
+  var_dump($_GET);

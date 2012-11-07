@@ -14,7 +14,7 @@
 
    */
   class Memcached implements Cachable {
-    /** @var bool **/
+    /** @var bool * */
     protected $connected = false;
     protected $connection = false;
     public function init() {
@@ -104,16 +104,19 @@
       }
     }
     /**
+     * @param                $name
+     * @param \Closure|Array $constants
+     *
      * @return bool
-     * @return bool|Callable
+     * @return \ADV\Core\Cache|bool
      */
-    public function getDefineConstantsFunction() {
-      return false;
-    }
-    /**
-     * @return bool
-     */
-    public function getLoadConstantsFunction() {
-      return false;
+    public function defineConstants($name, $constants) {
+      if (is_callable($constants)) {
+        $constants = (array) call_user_func($constants);
+      }
+      foreach ($constants as $constant => $value) {
+        define($constant, $value);
+      }
+      return true;
     }
   }

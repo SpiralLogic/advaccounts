@@ -17,8 +17,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_transactions($category, $location)
-  {
+  function get_transactions($category, $location) {
     $sql
       = "SELECT stock_master.category_id,
             stock_category.description AS cat_name,
@@ -55,8 +54,7 @@
    *
    * @return \ADV\Core\DB\Query\Result|Array
    */
-  function getPeriods($stockid, $location)
-  {
+  function getPeriods($stockid, $location) {
     $date5 = date('Y-m-d');
     $date4 = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
     $date3 = date('Y-m-d', mktime(0, 0, 0, date('m') - 1, 1, date('Y')));
@@ -79,8 +77,7 @@
     return DB::_fetch($trans_rows);
   }
 
-  function print_inventory_planning()
-  {
+  function print_inventory_planning() {
     $category    = $_POST['PARAM_0'];
     $location    = $_POST['PARAM_1'];
     $comments    = $_POST['PARAM_2'];
@@ -115,20 +112,48 @@
     $per3    = strftime('%b', mktime(0, 0, 0, date('m') - 3, 1, date('Y')));
     $per4    = strftime('%b', mktime(0, 0, 0, date('m') - 4, 1, date('Y')));
     $headers = array(
-      _('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M', _('QOH'), _('Cust Ord'), _('Supp Ord'), _('Sugg Ord')
+      _('Category'),
+      '',
+      $per4,
+      $per3,
+      $per2,
+      $per1,
+      $per0,
+      '3*M',
+      _('QOH'),
+      _('Cust Ord'),
+      _('Supp Ord'),
+      _('Sugg Ord')
     );
     $aligns  = array(
-      'left', 'left', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right'
+      'left',
+      'left',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right',
+      'right'
     );
     $params  = array(
-      0    => $comments, 1 => array(
-        'text' => _('Category'), 'from' => $cat, 'to'   => ''
-      ), 2 => array(
-        'text' => _('Location'), 'from' => $loc, 'to'   => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Category'),
+        'from' => $cat,
+        'to'   => ''
+      ),
+      2 => array(
+        'text' => _('Location'),
+        'from' => $loc,
+        'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Inventory Planning Report'), "InventoryPlanning", SA_ITEMSANALYTIC,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Inventory Planning Report'), "InventoryPlanning", SA_ITEMSANALYTIC, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

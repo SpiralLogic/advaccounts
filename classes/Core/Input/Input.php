@@ -22,18 +22,18 @@
    * @method static _hasPost($vars)
    */
   class Input {
-    use \ADV\Core\Traits\StaticAccess2;
+    use \ADV\Core\Traits\StaticAccess;
 
     const NUMERIC = 1;
     const OBJECT  = 2;
     const STRING  = 3;
     const BOOL    = 4;
     const DATE    = 5;
-    /** @var int **/
+    /** @var int * */
     protected $default_number = 0;
-    /** @var string **/
+    /** @var string * */
     protected $default_string = '';
-    /** @var bool **/
+    /** @var bool * */
     protected $default_bool = false;
     /** @var Base */
     public static $post;

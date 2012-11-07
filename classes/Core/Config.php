@@ -17,7 +17,7 @@
    * @method static Config i()
    */
   class Config {
-    use Traits\StaticAccess2;
+    use Traits\StaticAccess;
 
     /***
      * @var array|null
@@ -149,7 +149,6 @@
     }
     /**
      * @static
-
      */
     public function removeAll() {
       $this->Cache->delete('config');

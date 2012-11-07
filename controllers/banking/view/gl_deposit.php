@@ -40,7 +40,7 @@
   if ($show_currencies) {
     Cell::labelled(_("Currency"), $to_trans['bank_curr_code'], "class='tablerowhead'");
   }
-  Cell::labelled(_("Amount"), Num::_format($to_trans['amount'], User::price_dec()), "class='tablerowhead'", "class='alignright'");
+  Cell::labelled(_("Amount"), Num::_format($to_trans['amount'], User::_price_dec()), "class='tablerowhead'", "class='alignright'");
   Cell::labelled(_("Date"), Dates::_sqlToDate($to_trans['trans_date']), "class='tablerowhead'");
   echo '</tr>';
   echo '<tr>';
@@ -62,7 +62,7 @@
       Display::heading(_("Item Amounts are Shown in :") . " " . $company_currency);
     }
     Table::start('padded grid width90');
-    $dim = DB_Company::get_pref('use_dimension');
+    $dim = DB_Company::_get_pref('use_dimension');
     if ($dim == 2) {
       $th = array(
         _("Account Code"),
@@ -109,7 +109,7 @@
         $total_amount += $item["amount"];
       }
     }
-    Table::label(_("Total"), Num::_format($total_amount, User::price_dec()), "colspan=" . (2 + $dim) . " class='alignright'", "class='alignright'");
+    Table::label(_("Total"), Num::_format($total_amount, User::_price_dec()), "colspan=" . (2 + $dim) . " class='alignright'", "class='alignright'");
     Table::end(1);
     GL_Allocation::from($to_trans['person_type_id'], $to_trans['person_id'], 2, $trans_no, $to_trans['amount']);
   }

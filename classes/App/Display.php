@@ -83,7 +83,7 @@
       str_repeat("<br>", $br2);
     }
     public static function link_button($label, $url, $icon = false) {
-      if (User::graphic_links() && $icon) {
+      if (User::_graphic_links() && $icon) {
         $label = Forms::setIcon($icon, $label);
       }
       $href = '/' . ltrim($url, '/');
@@ -162,7 +162,7 @@
       }
       if ($url) {
         $pars = Display::access_string($label);
-        if (User::graphic_links() && $icon) {
+        if (User::_graphic_links() && $icon) {
           $pars[0] = Forms::setIcon($icon, $pars[0]);
         }
         $preview_str = "<a target='_blank' $class $id href='/" . e(ltrim($url, '/')) . "' $pars[1]>$pars[0]</a>";

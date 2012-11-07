@@ -51,7 +51,7 @@
           continue;
         }
         $rate = Bank_Currency::exchange_rate_from_home($row['bank_curr_code'], $date_);
-        $for_amount += Num::_round($row['for_amount'] * $rate, User::price_dec());
+        $for_amount += Num::_round($row['for_amount'] * $rate, User::_price_dec());
       }
       $amount = GL_Trans::get_from_to("", $date_, $account);
       $diff   = $amount - $for_amount;
@@ -66,7 +66,7 @@
           $person_type_id = PT_MISC;
         }
         GL_Trans::add($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"), -$diff, null, $person_type_id, $person_id);
-        GL_Trans::add($trans_type, $trans_no, $date_, DB_Company::get_pref('exchange_diff_act'), 0, 0, _("Exchange Variance"), $diff, null, $person_type_id, $person_id);
+        GL_Trans::add($trans_type, $trans_no, $date_, DB_Company::_get_pref('exchange_diff_act'), 0, 0, _("Exchange Variance"), $diff, null, $person_type_id, $person_id);
       }
     }
     /**
@@ -99,7 +99,7 @@
       static::add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, $currency, PT_MISC, "");
       if ($charge != 0) {
         /* Now Debit bank charge account with charges */
-        $charge_act = DB_Company::get_pref('bank_charge_act');
+        $charge_act = DB_Company::_get_pref('bank_charge_act');
         $total += GL_Trans::add($trans_type, $trans_no, $date_, $charge_act, 0, 0, "", $charge, $currency);
       }
       // do the destination account postings

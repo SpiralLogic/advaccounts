@@ -310,7 +310,7 @@ was not fully delivered the first time ?? */
       $_POST['ChargeFreightCost'] = Num::_priceFormat(0);
     }
   }
-  $accumulate_shipping = DB_Company::get_pref('accumulate_shipping');
+  $accumulate_shipping = DB_Company::_get_pref('accumulate_shipping');
   if ($is_batch_invoice && $accumulate_shipping) {
     Sales_Invoice::set_delivery_shipping_sum(array_keys($order->src_docs));
   }

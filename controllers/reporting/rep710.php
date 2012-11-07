@@ -22,7 +22,8 @@
   function get_transactions($from, $to, $type, $user) {
     $fromdate = Dates::_dateToSql($from) . " 00:00:00";
     $todate   = Dates::_dateToSql($to) . " 23:59.59";
-    $sql      = "SELECT a.*,
+    $sql
+              = "SELECT a.*,
         SUM(IF(ISNULL(g.amount), null, IF(g.amount > 0, g.amount, 0))) AS amount,
         u.user_id,
         UNIX_TIMESTAMP(a.stamp) as unix_stamp
@@ -36,7 +37,8 @@
     if ($user != -1) {
       $sql .= "AND a.user='$user' ";
     }
-    $sql .= "AND a.stamp >= '$fromdate'
+    $sql
+      .= "AND a.stamp >= '$fromdate'
             AND a.stamp <= '$todate'
         GROUP BY a.trans_no,a.gl_seq,a.stamp
         ORDER BY a.stamp,a.gl_seq";
@@ -56,32 +58,48 @@
     } else {
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    $dec     = User::price_dec();
+    $dec     = User::_price_dec();
     $cols    = array(0, 60, 120, 180, 240, 340, 400, 460, 520);
     $headers = array(
-      _('Date'), _('Time'), _('User'), _('Trans Date'), _('Type'), _('#'), _('Action'), _('Amount')
+      _('Date'),
+      _('Time'),
+      _('User'),
+      _('Trans Date'),
+      _('Type'),
+      _('#'),
+      _('Action'),
+      _('Amount')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'left', 'left', 'right');
     $usr     = Users::get($user);
     $user_id = $usr['user_id'];
     $params  = array(
-      0    => $comments, 1 => array(
-        'text' => _('Period'), 'from' => $from, 'to' => $to
-      ), 2 => array(
-        'text' => _('Type'), 'from' => ($systype != -1 ? SysTypes::$names[$systype] : _('All')), 'to' => ''
-      ), 3 => array(
-        'text' => _('User'), 'from' => ($user != -1 ? $user_id : _('All')), 'to' => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Period'),
+        'from' => $from,
+        'to'   => $to
+      ),
+      2 => array(
+        'text' => _('Type'),
+        'from' => ($systype != -1 ? SysTypes::$names[$systype] : _('All')),
+        'to'   => ''
+      ),
+      3 => array(
+        'text' => _('User'),
+        'from' => ($user != -1 ? $user_id : _('All')),
+        'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Audit Trail'), "AuditTrail", SA_GLANALYTIC,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Audit Trail'), "AuditTrail", SA_GLANALYTIC, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
     $trans = get_transactions($from, $to, $systype, $user);
     while ($myrow = DB::_fetch($trans)) {
       $rep->TextCol(0, 1, Dates::_sqlToDate(date("Y-m-d", $myrow['unix_stamp'])));
-      if (User::date_format() == 0) {
+      if (User::_date_format() == 0) {
         $rep->TextCol(1, 2, date("h:i:s a", $myrow['unix_stamp']));
       } else {
         $rep->TextCol(1, 2, date("H:i:s", $myrow['unix_stamp']));

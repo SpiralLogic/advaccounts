@@ -238,7 +238,7 @@
         $this->itemControls();
       }
       if ($this->order->count_gl_items()) {
-        Table::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::price_dec()), " colspan='2' class='alignright'", "class='alignright'", 3);
+        Table::label(_("Total"), Num::_format(abs($this->order->gl_items_total()), User::_price_dec()), " colspan='2' class='alignright'", "class='alignright'", 3);
       }
       Table::end();
       $this->Ajax->end_div();
@@ -283,9 +283,9 @@
           $acc              = Creditor::get_accounts_name($_POST['person_id']);
           $_POST['code_id'] = $acc['payable_account'];
         } //elseif ($_POST['PayType'] == PT_WORKORDER)
-        //	$_POST['code_id'] = DB_Company::get_pref('default_assembly_act');
+        //	$_POST['code_id'] = DB_Company::_get_pref('default_assembly_act');
         else {
-          $_POST['code_id'] = DB_Company::get_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
+          $_POST['code_id'] = DB_Company::_get_pref($payment ? 'default_cogs_act' : 'default_inv_sales_act');
         }
         echo GL_UI::all('code_id', null, true, true);
       }

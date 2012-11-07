@@ -125,7 +125,7 @@ set from the post to the quantity to be received in this receival*/
   }
   Cell::label(_("Freight"), "colspan=9 class='alignright'");
   Forms::amountCellsSmall(null, 'freight', Num::_priceFormat($order->freight));
-  $display_total = Num::_format($total + $_POST['freight'], User::price_dec());
+  $display_total = Num::_format($total + $_POST['freight'], User::_price_dec());
   Table::label(_("Total value of items received"), $display_total, "colspan=9 class='alignright'", ' class="alignright nowrap"');
   Table::end();
   Ajax::_end_div();

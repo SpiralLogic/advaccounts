@@ -118,7 +118,7 @@
      * @return float
      */
     public static function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2) {
-      $dec = User::price_dec();
+      $dec = User::_price_dec();
       Num::_priceDecimal($amount2, $dec);
       $currency = Bank_Currency::for_creditor($supplier);
       $ex_rate  = Bank_Currency::exchange_rate_to_home($currency, $old_date);
@@ -145,7 +145,7 @@
       $taxes     = $creditor_trans->get_taxes($creditor_trans->tax_group_id);
       ;
       foreach ($taxes as $taxitem) {
-        $taxitem['Value'] = Num::_round($taxitem['Value'], User::price_dec());
+        $taxitem['Value'] = Num::_round($taxitem['Value'], User::_price_dec());
         $tax_total += $taxitem['Value'];
       }
       $invoice_items_total = $creditor_trans->get_total_charged($creditor_trans->tax_group_id);
@@ -611,7 +611,7 @@ the credit is to creditors control act done later for the total invoice value + 
       $creditor_trans->tax_correction     = Input::_post('ChgTax'); /* for starters */
       if (count($creditor_trans->grn_items) > 0) {
         foreach ($creditor_trans->grn_items as $grn) {
-          $creditor_trans->ov_amount += Num::_round(($grn->this_quantity_inv * $grn->chg_price * (1 - $grn->discount / 100)), User::price_dec());
+          $creditor_trans->ov_amount += Num::_round(($grn->this_quantity_inv * $grn->chg_price * (1 - $grn->discount / 100)), User::_price_dec());
         }
       }
       if (count($creditor_trans->gl_codes) > 0) {
@@ -678,7 +678,7 @@ the credit is to creditors control act done later for the total invoice value + 
         $supp                 = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
         Cell::labelled('Supplier', $supp . Forms::hidden('creditor_id', $_POST['creditor_id'], false));
       } else {
-        Creditor::newselect($creditor_trans->supplier_name, array('row'=> false));
+        Creditor::newselect($creditor_trans->supplier_name, array('row' => false));
         JS::_setFocus('creditor_id');
       }
       if ($creditor_trans->creditor_id != $_POST['creditor_id']) {
@@ -720,7 +720,7 @@ the credit is to creditors control act done later for the total invoice value + 
      */
     public static function totals($creditor_trans) {
       Purch_Invoice::copy_to_trans($creditor_trans);
-      $dim     = DB_Company::get_pref('use_dimension');
+      $dim     = DB_Company::_get_pref('use_dimension');
       $colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
       Table::start('standard width90');
       Table::label(_("Sub-total:"), Num::_priceFormat($creditor_trans->ov_amount), "colspan=$colspan class='alignright bold'", "class='alignright'");

@@ -25,27 +25,26 @@
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
-  class JS
-  {
-    use Traits\StaticAccess2;
+  class JS {
+    use Traits\StaticAccess;
 
-    /** @var array **/
+    /** @var array * */
     private $beforeload = [];
-    /** @var array **/
+    /** @var array * */
     private $onload = [];
-    /** @var array **/
+    /** @var array * */
     private $onlive = [];
-    /** @var array **/
+    /** @var array * */
     private $toclean = [];
-    /** @var array **/
+    /** @var array * */
     private $headerFiles = [];
-    /** @var array **/
+    /** @var array * */
     private $footerFiles = [];
-    /** @var bool **/
+    /** @var bool * */
     private $focus = false;
-    /** @var bool **/
+    /** @var bool * */
     public $outputted = false;
-    /** @var bool **/
+    /** @var bool * */
     public $openWindow = false;
     public $apikey;
     /**
@@ -101,7 +100,6 @@
     }
     /**
      * @static
-
      */
     public function resetFocus() {
       unset($_POST['_focus']);
@@ -122,7 +120,6 @@
     }
     /**
      * @static
-
      */
     public function renderHeader() {
       $scripts = [];
@@ -135,7 +132,6 @@
     }
     /**
      * @static
-
      */
     public function render($return = false) {
       if ($return) {

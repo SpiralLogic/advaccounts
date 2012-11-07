@@ -11,15 +11,15 @@
   /**
    */
   trait Singleton {
-    /** @var null **/
+    /** @var null * */
     protected static $i = null;
     /**
      * @param object $class
      *
-     * @return mixed|null
+     * @return mixed|$this
      */
     public static function i($class = null) {
-      /** @var \ADV\Core\DIC $dic  */
+      /** @var \ADV\Core\DIC $dic */
       $dic = \ADV\Core\DIC::i();
       if (!$dic instanceof \ADV\Core\DIC) {
         if (static::$i === null) {
