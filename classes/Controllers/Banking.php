@@ -15,9 +15,7 @@
   /**
 
    */
-  class Banking extends Menu
-  {
-
+  class Banking extends Menu {
     public $name = "Banking";
     public $help_context = "&Banking";
     /**

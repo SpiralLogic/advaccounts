@@ -1538,6 +1538,7 @@
      * @return void
      */
     public function  End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
+
       if (Config::_get('debug.pdf') == 1) {
         $pdfcode = $this->Output('', 'S');
         $pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
@@ -1569,6 +1570,7 @@
         $this->doc_AttachedFile    = '';
         $this->doc_Payment_Link    = '';
         $this->doc_Kindest_regards = '';
+
         if ($email == 1) {
           extract($this->getHeaderArray($doctype, true, false, true));
           $mail = new Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);

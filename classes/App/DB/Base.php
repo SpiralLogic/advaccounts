@@ -22,9 +22,7 @@
   /**
    * @method getStatus()
    */
-  abstract class Base
-  {
-
+  abstract class Base {
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 

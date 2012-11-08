@@ -40,12 +40,12 @@
           $HTML->optgroup(array('label' => $value));
           foreach ($name as $value) {
             $selected = ($selected == $value[1]) ? null : true;
-            $HTML->option(null, $value[0] . ' (' . $value[1] . ')', array('selected'=> $selected, 'value' => $value[1]), false);
+            $HTML->option(null, $value[0] . ' (' . $value[1] . ')', array('selected' => $selected, 'value' => $value[1]), false);
           }
           $HTML->optgroup();
         } else {
           $selected = ($selected === $value) ? null : true;
-          $HTML->option(null, $name, array('value' => $value, 'selected'=> $selected), false);
+          $HTML->option(null, $name, array('value' => $value, 'selected' => $selected), false);
         }
       }
       $select = $HTML->_select();
@@ -76,22 +76,22 @@
     public static function search($id, $options = [], $return = false, JS $js = null) {
       $js   = $js ? : JS::i();
       $o    = array(
-        'url'                 => false, //
-        'nodiv'               => false, //
-        'label'               => false, //
-        'name'                => null, //
-        'set'                 => null, //
-        'class'               => 'width95 ', //
-        'value'               => null, //
-        'focus'               => null, //
-        'idField'             => null, //
-        'data'                => [], //
-        'callback'            => false, //
-        'cells'               => false, //
-        'cell_class'          => null, //
-        'placeholder'         => null, //
-        'input_cell_params'   => [],
-        'label_cell_params'   => ['class' > 'label pointer']
+        'url'               => false, //
+        'nodiv'             => false, //
+        'label'             => false, //
+        'name'              => null, //
+        'set'               => null, //
+        'class'             => 'width95 ', //
+        'value'             => null, //
+        'focus'             => null, //
+        'idField'           => null, //
+        'data'              => [], //
+        'callback'          => false, //
+        'cells'             => false, //
+        'cell_class'        => null, //
+        'placeholder'       => null, //
+        'input_cell_params' => [],
+        'label_cell_params' => ['class' > 'label pointer']
       );
       $o    = array_merge($o, $options);
       $url  = $o['url'] ? : false;
@@ -109,13 +109,13 @@
         $HTML->_td();
       }
       $input_attr = [
-        'class'      => $o['class'], //
-        'name'       => $o['name'], //
-        'data-set'   => $o['set'], //
-        'value'      => htmlentities($o['value']), //
-        'autofocus'  => $o['focus'], //
-        'type'       => 'search', //
-        'placeholder'=> $o['placeholder'] ? : $o['label'],
+        'class'       => $o['class'], //
+        'name'        => $o['name'], //
+        'data-set'    => $o['set'], //
+        'value'       => htmlentities($o['value']), //
+        'autofocus'   => $o['focus'], //
+        'type'        => 'search', //
+        'placeholder' => $o['placeholder'] ? : $o['label'],
       ];
       if ($o['cells']) {
         $HTML->td(null, $o['input_cell_params']);
@@ -165,29 +165,29 @@
      */
     public static function searchLine($id, $url = '#', $options = []) {
       $defaults                      = array(
-        'description'      => false,
-        'disabled'         => false,
-        'editable'         => true,
-        'selected'         => '',
-        'label'            => null,
-        'placeholder'      => 'Item',
-        'cells'            => false,
-        'class'            => 'med',
-        'inactive'         => false,
-        'purchase'         => false,
-        'sale'             => false,
-        'js'               => '',
-        'selectjs'         => '',
-        'submitonselect'   => '',
-        'sales_type'       => 1,
-        'no_sale'          => false,
-        'select'           => false,
-        'type'             => 'local',
-        'kitsonly'         => false,
-        'where'            => '',
-        'size'             => null,
-        'cell_class'       => false,
-        'input_cell_params'=> null
+        'description'       => false,
+        'disabled'          => false,
+        'editable'          => true,
+        'selected'          => '',
+        'label'             => null,
+        'placeholder'       => 'Item',
+        'cells'             => false,
+        'class'             => 'med',
+        'inactive'          => false,
+        'purchase'          => false,
+        'sale'              => false,
+        'js'                => '',
+        'selectjs'          => '',
+        'submitonselect'    => '',
+        'sales_type'        => 1,
+        'no_sale'           => false,
+        'select'            => false,
+        'type'              => 'local',
+        'kitsonly'          => false,
+        'where'             => '',
+        'size'              => null,
+        'cell_class'        => false,
+        'input_cell_params' => null
       );
       $o                             = array_merge($defaults, $options);
       $UniqueID                      = md5(serialize($o));
@@ -195,7 +195,7 @@
       $desc_js                       = $o['js'];
       $HTML                          = new HTML;
       if ($o['cells']) {
-        $HTML->td(null, array('class'=> 'label'));
+        $HTML->td(null, array('class' => 'label'));
       }
       if ($o['label']) {
         $HTML->label(null, $o['label'], array('for' => $id), false);
@@ -203,11 +203,11 @@
       $HTML->input(
         $id,
         array(
-             'value'      => $o['selected'],
-             'placeholder'=> $o['placeholder'],
-             'name'       => $id,
-             'class'      => $o['class'],
-             'size'       => $o['size']
+             'value'       => $o['selected'],
+             'placeholder' => $o['placeholder'],
+             'name'        => $id,
+             'class'       => $o['class'],
+             'size'        => $o['size']
         )
       );
       if ($o['editable']) {
@@ -234,9 +234,9 @@
           'description',
           $o['description'],
           array(
-               'name' => 'description',
-               'rows' => 1,
-               'class'=> 'width90'
+               'name'  => 'description',
+               'rows'  => 1,
+               'class' => 'width90'
           ),
           false
         );
@@ -305,7 +305,7 @@ JS;
                         }
                 ).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)}).on('paste',function() {var \$this=$(this);window.setTimeout(function(){\$this.catcomplete('search', \$this.val())},1)});
 JS;
-      $clean = "    if (\$$id.attr('type')!=='hidden'){\$$id.catcomplete('destroy');}";
+      $clean = "   try { if (Adv.o.stock_id.attr('type')!=='hidden'){Adv.o.stock_id.catcomplete('destroy');}}catch(\$e){}";
       JS::_addLive($js, $clean);
       return $HTML->__toString();
     }

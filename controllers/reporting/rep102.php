@@ -1,4 +1,10 @@
 <?php
+  use ADV\App\Dates;
+  use ADV\App\SysTypes;
+  use ADV\App\User;
+  use ADV\App\Debtor\Debtor;
+  use ADV\Core\DB\DB;
+
   /**********************************************************************
   Copyright (C) Advanced Group PTY LTD
   Released under the terms of the GNU General Public License, GPL,
@@ -65,7 +71,8 @@
     if ($fromcust == ALL_NUMERIC) {
       $from = _('All');
     } else {
-      $from = Debtor::get_name($fromcust);
+      $from
+        = Debtor::get_name($fromcust);
     }
     $dec = User::_price_dec();
     if ($summaryOnly == 1) {
@@ -154,6 +161,9 @@
         $rate = 1.0;
       }
       $custrec = Debtor::get_details($myrow['debtor_id'], $to);
+      if (!$custrec) {
+        continue;
+      }
       foreach ($custrec as $i => $value) {
         $custrec[$i] *= $rate;
       }
