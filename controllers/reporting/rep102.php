@@ -102,28 +102,28 @@
     );
     $aligns        = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
     $params        = array(
-      0    => $comments,
-      1    => array(
+      0 => $comments,
+      1 => array(
         'text' => _('End Date'),
         'from' => $to,
         'to'   => ''
       ),
-      2    => array(
+      2 => array(
         'text' => _('Customer'),
         'from' => $from,
         'to'   => ''
       ),
-      3    => array(
+      3 => array(
         'text' => _('Currency'),
         'from' => $currency,
         'to'   => ''
       ),
-      4    => array(
+      4 => array(
         'text' => _('Type'),
         'from' => $summary,
         'to'   => ''
       ),
-      5    => array(
+      5 => array(
         'text' => _('Suppress Zeros'),
         'from' => $nozeros,
         'to'   => ''
@@ -132,7 +132,7 @@
     if ($convert) {
       $headers[2] = _('Currency');
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
     $rep = new $report_type(_('Aged Customer Analysis'), "AgedCustomerAnalysis", SA_CUSTPAYMREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -154,6 +154,9 @@
         $rate = 1.0;
       }
       $custrec = Debtor::get_details($myrow['debtor_id'], $to);
+      if (!$custrec) {
+        continue;
+      }
       foreach ($custrec as $i => $value) {
         $custrec[$i] *= $rate;
       }
