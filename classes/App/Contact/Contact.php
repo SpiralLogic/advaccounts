@@ -14,7 +14,8 @@
   /**
 
    */
-  class Contact extends Base {
+  class Contact extends Base
+  {
     /**
      * @var int
      */
@@ -83,7 +84,6 @@
           return parent::saveNew();
         }
       }
-
       return false;
     }
     protected function countTransactions() {
@@ -97,7 +97,6 @@
      */
     protected function init() {
       $this->defaults();
-
       return $this->status(true, 'Now working with a new Contact');
     }
   }

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\App;
 
   use ADV\Core\JS;
@@ -28,7 +27,8 @@
   /**
    * @method static \ADV\App\ADVAccounting i()
    */
-  class ADVAccounting {
+  class ADVAccounting
+  {
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -43,7 +43,7 @@
     protected $Config = null;
     /** @var Input $user */
     protected $Input = null;
-    /** @var \ADV\Core\Session $Session*/
+    /** @var \ADV\Core\Session $Session */
     protected $Session = null;
     /** @var User $user */
     protected $User = null;
@@ -176,7 +176,7 @@
           }
           if (isset($_SESSION['pager'][$name])) {
             $pager = $_SESSION['pager'][$name];
-            if ($sql !== null && $pager->sql != $sql && count($coldef) != count($pager)) {
+            if (($sql !== null && $pager->sql != $sql) || (count($coldef) != count($pager))) {
               $pager->refresh($sql);
             } elseif (is_array($sql) && $pager->rec_count != count($sql)) {
               unset($pager);
@@ -189,7 +189,7 @@
           \DB_Pager::$JS    = $c->offsetGet('JS');
           \DB_Pager::$Dates = $c->offsetGet('Dates');
           \DB_Pager::$DB    = $c->offsetGet('DB');
-          /** @var User $user  */
+          /** @var User $user */
           $user                     = $c->offsetGet('User');
           $pager->page_length       = $user->prefs->query_size;
           $_SESSION['pager'][$name] = $pager;
@@ -299,7 +299,7 @@
      */
     protected function runController($controller) {
       $dic = \ADV\Core\DIC::i();
-      /** @var \ADV\App\Controller\Base $controller  */
+      /** @var \ADV\App\Controller\Base $controller */
       $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default'));
       $controller->setPage($dic->offsetGet('Page'));
       $controller->run();
@@ -358,7 +358,7 @@
      * @internal param $cache
      */
     public static function refresh() {
-      /** @var ADVAccounting $instance  */
+      /** @var ADVAccounting $instance */
       $instance               = static::i();
       $instance->applications = [];
       $instance->setupApplications();
@@ -386,7 +386,7 @@
       $company = $this->Input->post('login_company', null, 'default');
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
-        foreach ($modules as $module=> $module_config) {
+        foreach ($modules as $module => $module_config) {
           $this->User->_register_login(
             function () use ($module, $module_config) {
               $module = '\\Modules\\' . $module . '\\' . $module;
@@ -425,7 +425,7 @@
     }
     protected function loadModules() {
       $modules = $this->Config->get('modules.default', []);
-      foreach ($modules as $module=> $module_config) {
+      foreach ($modules as $module => $module_config) {
         $module = '\\Modules\\' . $module . '\\' . $module;
         new $module($module_config);
       }

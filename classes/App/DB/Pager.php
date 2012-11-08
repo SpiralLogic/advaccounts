@@ -23,7 +23,8 @@
   any form.
 
    */
-  class DB_Pager {
+  class DB_Pager
+  {
     const NEXT           = 'next';
     const PREV           = 'prev';
     const LAST           = 'last';
@@ -54,7 +55,7 @@
     const ARR = 2;
     /** @var */
     public $sql;
-    /**@var*/
+    /**@var */
     public $name;
     /** column definitions (head, type, order) */
     public $columns = [];
@@ -127,7 +128,6 @@
       if (Input::_post('_action') == 'showInactive') {
         $pager->showInactive = (Input::_post('_value', Input::NUMERIC) == 1);
       }
-
       return $pager;
     }
     /**
@@ -151,7 +151,6 @@
      * @param      $coldef
      */
     public function __construct($name, $sql, $coldef) {
-
       $this->name = $name;
       $this->setSQL($sql);
       $this->setColumns($coldef);
@@ -204,7 +203,6 @@
               $args[] = ($index[1] == 'desc' ? SORT_DESC : SORT_ASC);
             }
             $args[] =& $this->dataset;
-
             call_user_func_array('array_multisort', $args);
           }
           $this->max_page   = $this->page_length ? ceil($this->rec_count / $this->page_length) : 0;
@@ -266,11 +264,10 @@
      * @param $columns
      */
     protected function setColumns($columns) {
-
       $columns = (array) $columns;
       foreach ($columns as $colindex => $coldef) {
         if (is_string($colindex) && is_string($coldef)) {
-          $c = ['head'=> $colindex, 'type'=> $coldef];
+          $c = ['head' => $colindex, 'type' => $coldef];
         } elseif (is_string($colindex) && is_array($coldef)) {
           $coldef ['head'] = $colindex;
           $c               = $coldef;
@@ -390,11 +387,9 @@
           $page = 1;
           break;
       }
-
       $page = ($page < 1) ? 1 : $page;
       $max  = $this->max_page;
       $page = ($page > $max) ? $max : $page;
-
       $this->curr_page  = $page;
       $this->next_page  = ($page < $max) ? $page + 1 : null;
       $this->prev_page  = ($page > 1) ? ($page - 1) : null;
@@ -424,7 +419,6 @@
         $this->data = static::$DB->_fetchAll();
       } elseif ($this->type == self::ARR) {
         $offset = ($this->curr_page - 1) * $this->page_length;
-
         if ($offset + $this->page_length >= $this->rec_count) {
           $offset = $this->rec_count - $this->page_length;
         }
@@ -482,7 +476,7 @@
           static::$JS->setFocus($this->name . '_page_prev_top');
         }
         if ($page == self::PREV || $page == self::LAST && !$this->last_page) {
-          static::$JS->setFocus(['el'=> $this->name . '_page_next_bottom', 'pos'=> 'bottom']);
+          static::$JS->setFocus(['el' => $this->name . '_page_next_bottom', 'pos' => 'bottom']);
         }
       } elseif ($sort !== null) {
         $this->sortTable($sort);
@@ -498,9 +492,7 @@
 
      */
     protected function changePage($page = null) {
-
       $this->setPage($page);
-
       $this->query();
       return true;
     }
@@ -565,12 +557,11 @@
       if ($group) {
         $sql .= " GROUP BY $group";
       }
-
       $ord = [];
       foreach ($this->rowGroup as $group) {
         $ord[] = $group[0] . ' ' . $group[1];
       }
-      foreach ($this->columns as $key=> $col) {
+      foreach ($this->columns as $key => $col) {
         if (isset($col['ord'])) {
           if ($col['ord'] && $col['ord'] != 'none') {
             $name  = isset($col['name']) ? $col['name'] : $key + 1;
@@ -624,14 +615,13 @@
      */
     protected function navi($id, HTML $html, $name, $value, $enabled = true, $title = null) {
       $attrs = [
-        'disabled'=> (bool) !$enabled,
-        'class'   => 'navibutton',
-        'type'    => 'submit',
-        'name'    => $name,
-        'value'   => $value,
+        'disabled' => (bool) !$enabled,
+        'class'    => 'navibutton',
+        'type'     => 'submit',
+        'name'     => $name,
+        'value'    => $value,
       ];
       $id    = $id ? $name . '_' . $id : $name;
-
       $html->button($id, $attrs)->span(null, $title, false)->_button;
     }
     /**
@@ -646,11 +636,11 @@
         $inact = $this->formatInactiveFooter();
       }
       $html = new HTML();
-      $html->tr(['class'=> 'navibar']);
-      $html->td(['colspan'=> $colspan, 'class'=> 'navibar']);
+      $html->tr(['class' => 'navibar']);
+      $html->td(['colspan' => $colspan, 'class' => 'navibar']);
       if ($this->rec_count) {
         $button_prefix = $this->name . '_page_';
-        $html->span(null, ['class'=> 'floatright']);
+        $html->span(null, ['class' => 'floatright']);
         $this->generateNavigation($id, $button_prefix, $html);
         $html->_span();
         $from = ($this->curr_page - 1) * $this->page_length + 1;

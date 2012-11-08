@@ -96,7 +96,7 @@ input[type="color"]:focus,
 .uneditable-input:focus {
   border-color:       rgba(82, 168, 236, 0.8);
   outline:            0;
-  outline:            thin dotted \9;
+  outline:            thin dotted   \9;
   /* IE6-9 */
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
   -moz-box-shadow:    inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
@@ -329,7 +329,7 @@ input[type="color"]:focus,
 .uneditable-input:focus {
   border-color:       rgba(82, 168, 236, 0.8);
   outline:            0;
-  outline:            thin dotted \9;
+  outline:            thin dotted   \9;
   /* IE6-9 */
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
   -moz-box-shadow:    inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(82, 168, 236, .6);
@@ -736,9 +736,9 @@ input:-ms-input-placeholder {
 
 .search-query {
   padding-right:         14px;
-  padding-right:         4px \9;
+  padding-right:         4px   \9;
   padding-left:          14px;
-  padding-left:          4px \9;
+  padding-left:          4px   \9;
   /* IE7-8 doesn't have border-radius, so don't indent the padding */
   margin-bottom:         0;
   -webkit-border-radius: 14px;
@@ -915,7 +915,7 @@ legend + .control-group {
 
 .btn:active,
 .btn.active {
-  background-color: #cccccc \9;
+  background-color: #cccccc   \9;
 }
 
 .btn:first-child {
@@ -945,7 +945,7 @@ legend + .control-group {
 .btn.active,
 .btn:active {
   background-color:   #e6e6e6;
-  background-color:   #d9d9d9 \9;
+  background-color:   #d9d9d9   \9;
   background-image:   none;
   outline:            0;
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05);
@@ -1052,7 +1052,7 @@ legend + .control-group {
 
 .btn-primary:active,
 .btn-primary.active {
-  background-color: #004099 \9;
+  background-color: #004099   \9;
 }
 
 .btn-warning {
@@ -1083,7 +1083,7 @@ legend + .control-group {
 
 .btn-warning:active,
 .btn-warning.active {
-  background-color: #c67605 \9;
+  background-color: #c67605   \9;
 }
 
 .btn-danger {
@@ -1114,7 +1114,7 @@ legend + .control-group {
 
 .btn-danger:active,
 .btn-danger.active {
-  background-color: #942a25 \9;
+  background-color: #942a25   \9;
 }
 
 .btn-success {
@@ -1145,7 +1145,7 @@ legend + .control-group {
 
 .btn-success:active,
 .btn-success.active {
-  background-color: #408140 \9;
+  background-color: #408140   \9;
 }
 
 .btn-info {
@@ -1176,7 +1176,7 @@ legend + .control-group {
 
 .btn-info:active,
 .btn-info.active {
-  background-color: #24748c \9;
+  background-color: #24748c   \9;
 }
 
 .btn-inverse {
@@ -1207,7 +1207,7 @@ legend + .control-group {
 
 .btn-inverse:active,
 .btn-inverse.active {
-  background-color: #080808 \9;
+  background-color: #080808   \9;
 }
 
 button.btn,
@@ -2675,6 +2675,7 @@ img {
   background:  rgb(43, 48, 48);
   width:       80%;
   z-index:     500;
+  min-width:   930px;
 }
 
 .lite #header {
@@ -2991,12 +2992,13 @@ img {
   opacity: 0;
 }
 
-#tabs ul li ul li a { border-top: 1px solid #939393;
-  padding:                        2px 8px 2px;
-  height:                         21px;
-  font-size:                      12px;
-  line-height:                    15px;
-  text-transform:                 none;
+#tabs ul li ul li a {
+  border-top:     1px solid #939393;
+  padding:        2px 8px 2px;
+  height:         21px;
+  font-size:      12px;
+  line-height:    15px;
+  text-transform: none;
 }
 
 #tabs .active> a, #tabs .hover> a, #tabs >ul> li.hover, #tabs a:focus {
@@ -3368,9 +3370,19 @@ div.warn_msg {
   border:     1px solid #B6B6B6;
 }
 
-.login .formdiv { background: none; display: block; border: none; padding: 0; }
+.login .formdiv {
+  background: none;
+  display:    block;
+  border:     none;
+  padding:    0;
+}
 
-.login .formbox { background: none; display: block; border: none; padding: 0; }
+.login .formbox {
+  background: none;
+  display:    block;
+  border:     none;
+  padding:    0;
+}
 
 .combodiv {
   display: block;
@@ -3868,7 +3880,8 @@ button img {
   line-height:     22px;
   padding:         0;
   color:           #fdfdfd;
-  text-decoration: underline; font-weight: normal;
+  text-decoration: underline;
+  font-weight:     normal;
 }
 
 .naviheader button:hover {

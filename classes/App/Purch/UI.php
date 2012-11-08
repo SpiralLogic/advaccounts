@@ -9,7 +9,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_UI {
+  class Purch_UI
+  {
     // SUPPLIERS
     /**
      * @static

@@ -17,7 +17,8 @@
   /**
 
    */
-  class Auth {
+  class Auth
+  {
     /** @var */
     protected $username;
     /** @var */

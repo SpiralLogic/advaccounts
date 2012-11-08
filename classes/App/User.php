@@ -32,7 +32,8 @@
    * @method static percent_dec()
    *  @method static graphic_links()
    */
-  class User extends \ADV\App\DB\Base {
+  class User extends \ADV\App\DB\Base
+  {
     use \ADV\Core\Traits\Hook;
     use StaticAccess;
 
@@ -296,7 +297,6 @@
     }
     /**
      * @static
-
      */
     public function _add_js_data() {
       $js = "var user = {theme: '/themes/" . $this->prefs->theme . "/'" //
