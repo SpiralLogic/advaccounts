@@ -282,10 +282,10 @@
      */
     public static function getBalances($bank_account, $begin_date, $end_date) {
       $begin_date    = static::checkBeginDate($begin_date);
-      $sql           = "(select (rb - amount) as amount from temprec where date>" . DB::_quote($begin_date) . " and date<=" . DB::_quote(
+      $sql           = "(select (rb - amount) as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote(
         $end_date
       ) . " and bank_account_id=" . DB::_quote($bank_account) . " order by date, id desc limit 0,
-          1) union (select rb as amount from temprec where date>" . DB::_quote($begin_date) . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote(
+          1) union (select rb as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote(
         $bank_account
       ) . " order by date desc, id asc limit 0,1)";
       $result        = DB::_query($sql);

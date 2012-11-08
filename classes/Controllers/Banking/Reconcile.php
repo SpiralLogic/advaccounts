@@ -36,9 +36,7 @@
   /**
    * @property \ADV\Core\Input\Input Input
    */
-  class Reconcile extends \ADV\App\Controller\Action
-  {
-
+  class Reconcile extends \ADV\App\Controller\Action {
     /** @var Num Num */
     protected $Num;
     /** @var Dates Dates */
@@ -77,6 +75,7 @@
         $this->updateData();
       }
       $this->accountHasStatements = Bank_Account::hasStatements($this->bank_account);
+
       if (Forms::isListUpdated('bank_date')) {
         $this->reconcile_date = $this->Dates->sqlToDate($this->bank_date);
         $this->Session->setGlobal('bank_date', $this->bank_date);
@@ -180,7 +179,7 @@
      * @return bool
      */
     protected function statementLayout() {
-      $rec = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
+      $rec             = Bank_Trans::getPeriod($this->bank_account, $this->begin_date, $this->end_date);
       $statement_trans = Bank_Account::getStatement($this->bank_account, $this->begin_date, $this->end_date);
       if (!$statement_trans) {
         return $this->simpleLayout();
@@ -293,6 +292,7 @@
         $_POST["reconciled"]  = $this->Num->priceFormat($end_balance - $beg_balance);
       }
       $result = GL_Account::get_max_reconciled($this->reconcile_date, $this->bank_account);
+
       if ($row = static::$DB->fetch($result)) {
         $_POST["reconciled"] = $this->Num->priceFormat($row["end_balance"] - $row["beg_balance"]);
         if (!isset($_POST["beg_balance"])) {

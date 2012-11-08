@@ -7,6 +7,7 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+
   namespace ADV\App\GL {
     use DB_Company;
     use ADV\Core\DB\DB;
@@ -16,7 +17,7 @@
     /**
 
      */
-    class Account extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable{
+    class Account extends \ADV\App\DB\Base {
       protected $_table = 'chart_master';
       protected $_classname = 'GL Account';
       protected $_id_column = 'account_code';
@@ -33,9 +34,11 @@
           return $this->status(false, 'The account code must be entered.', 'account_code');
         }
         if (strlen($this->account_name) == 0) {
+
           return $this->status(false, 'The account name cannot be empty.', 'account_name');
         }
         if (!Config::_get('accounts.allowcharacters') && !is_numeric($this->account_code)) {
+
           return $this->status(false, 'The account code must be numeric.', 'account_code');
         }
         if (Config::_get('accounts.allowcharacters') == 2) {
@@ -50,6 +53,7 @@
         if (!Validation::is_num($this->account_type, 0)) {
           return $this->status(false, 'Must have account type', 'account_type');
         }
+
         return true;
       }
       /**
@@ -60,7 +64,7 @@
         if ($result > 0) {
           return $this->status(false, "Cannot delete this account because transactions have been created using this account.");
         }
-        $prefs    = DB_Company::_get_prefs();
+        $prefs    = DB_Company::get_prefs();
         $accounts = [
           'debtors_act',
           'pyt_discount_act',
@@ -139,32 +143,19 @@
        * @return array
        */
       public static function getAll($inactive = false) {
-        $q = DB::_select('t.name as type', 'c.account_type', 'c.account_name', 'c.account_code', 'c.account_code2', 'c.inactive')->from('chart_master c', 'chart_types t')->where(
+        $q = DB::_select('t.name as type', 'c.account_name', 'c.account_code', 'c.account_code2', 'c.inactive', 't.id as type_id')->from('chart_master c', 'chart_types t')->where(
           'c.account_type=t.id'
         );
         if (!$inactive) {
           $q->andWhere('c.inactive=', 0);
         }
+
         return $q->fetch()->all();
-      }
-      /**
-       * @return array
-       */
-      public function getPagerColumns() {
-        $cols = [
-          'Type' => ['type' => 'group'],
-          ['type' => 'skip'],
-          'Name' => ['ord' => 'asc'],
-          'Code',
-          'Code2',
-          'Inactive' => ['type' => 'inactive'],
-          ['type' => 'skip'],
-        ];
-        return $cols;
       }
     }
   }
   namespace {
+
     use ADV\Core\DB\DB;
     use ADV\Core\Event;
     use ADV\App\Dates;
@@ -187,6 +178,7 @@
         $sql
           = "INSERT INTO chart_master (account_code, account_code2, account_name, account_type)
         VALUES (" . DB::_escape($account_code) . ", " . DB::_escape($account_code2) . ", " . DB::_escape($account_name) . ", " . DB::_escape($account_type) . ")";
+
         return DB::_query($sql);
       }
       /**
@@ -203,6 +195,7 @@
         $sql = "UPDATE chart_master SET account_name=" . DB::_escape($account_name) . ",account_type=" . DB::_escape($account_type) . ", account_code2=" . DB::_escape(
           $account_code2
         ) . " WHERE account_code = " . DB::_escape($account_code);
+
         return DB::_query($sql);
       }
       /**
@@ -238,6 +231,7 @@
           $sql .= " AND account_type=" . DB::_escape($type);
         }
         $sql .= " ORDER BY account_code";
+
         return DB::_query($sql, "could not get gl accounts");
       }
       /**
@@ -250,6 +244,7 @@
       public static function get($code) {
         $sql    = "SELECT * FROM chart_master WHERE account_code=" . DB::_escape($code);
         $result = DB::_query($sql, "could not get gl account");
+
         return DB::_fetch($result);
       }
       /**
@@ -294,6 +289,7 @@
         SUM(amount) as total
         FROM bank_trans trans
         WHERE undeposited=0 AND bank_act=" . DB::_escape($bank_account) . " AND trans.reconciled IS NOT null";
+
         return DB::_query($sql, "Cannot retrieve reconciliation data");
       }
       /**
@@ -309,6 +305,7 @@
                 = "SELECT ending_reconcile_balance
         FROM bank_accounts WHERE id=" . DB::_escape($bank_account) . " AND last_reconciled_date=" . DB::_escape($bank_date);
         $result = DB::_query($sql, "Cannot retrieve last reconciliation");
+
         return DB::_fetch($result);
       }
       /**
@@ -328,6 +325,7 @@
             LEFT OUTER JOIN bank_trans g ON g.undeposited = bt.id
             WHERE   bt.bank_act = " . DB::_quote($bank_account) . " AND bt.trans_date <= '" . Dates::_dateToSql($date) . "' AND bt.undeposited<2
             AND (bt.reconciled IS null OR bt.reconciled='" . Dates::_dateToSql($date) . "') AND bt.amount!=0 GROUP BY bt.id ORDER BY bt.trans_date ASC";
+
         return $sql;
       }
       /**
@@ -342,6 +340,7 @@
         $sql = "UPDATE	reconciled FROM bank_trans WHERE bank_trans.bank_act = " . DB::_escape($bank_account) . " AND undeposited = 0 AND reconciled = '" . Dates::_dateToSql(
           $date
         ) . "'";
+
         return DB::_query($sql);
       }
       /**
@@ -358,6 +357,7 @@
         AND chart_master.account_code=" . DB::_escape($code);
         $result = DB::_query($sql, "could not retreive the account class for $code");
         $row    = DB::_fetchRow($result);
+
         return $row[0] > 0 && $row[0] < CL_INCOME;
       }
       /**
@@ -372,9 +372,11 @@
         $result = DB::_query($sql, "could not retreive the account name for $code");
         if (DB::_numRows($result) == 1) {
           $row = DB::_fetchRow($result);
+
           return $row[0];
         }
         Event::error("could not retreive the account name for $code", $sql);
+
         return false;
       }
       /**
@@ -391,6 +393,7 @@
         ) . " ORDER BY reconciled DESC LIMIT 1";
         $result = DB::_query($sql);
         $row    = DB::_fetch($result);
+
         return $row['start_date'];
       }
     }
