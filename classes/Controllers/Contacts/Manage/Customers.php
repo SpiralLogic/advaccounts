@@ -31,7 +31,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Customers extends \ADV\App\Controller\Action {
+  class Customers extends \ADV\App\Controller\Action
+  {
+
     /** @var Debtor */
     protected $debtor;
     protected function before() {
@@ -66,7 +68,7 @@
         $this->delete();
       }
       echo $this->generateForm();
-      $this->JS->onload("Company.setValues(" . json_encode(['company'=> $this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
+      $this->JS->onload("Company.setValues(" . json_encode(['company' => $this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
       $this->Page->end_page(true);
     }
     /**
@@ -97,7 +99,7 @@
             },
             $this->debtor->branches
           ),
-          ['class'=> 'med', 'name' => 'branchList'],
+          ['class' => 'med', 'name' => 'branchList'],
           null,
           new HTML
         )
@@ -107,31 +109,31 @@
       $form->text('branch[phone2]')->label("Alt Phone Number:");
       $form->text('branch[fax]')->label("Fax Number:");
       $form->text('branch[email]')->label("Email:");
-      $form->textarea('branch[br_address]', ['cols'=> 37, 'rows'=> 4])->label('Street:');
+      $form->textarea('branch[br_address]', ['cols' => 37, 'rows' => 4])->label('Street:');
       $branch_postcode = new Postcode([
-                                      'city'     => ['branch[city]'], //
-                                      'state'    => ['branch[state]'], //
-                                      'postcode' => ['branch[postcode]']
-                                      ], $js);
+        'city'     => ['branch[city]'], //
+        'state'    => ['branch[state]'], //
+        'postcode' => ['branch[postcode]']
+      ], $js);
       $view->set('branch_postcode', $branch_postcode->getForm());
       $form->group('accounts_details')->text('accounts[contact_name]')->label('Accounts Contact:');
       $form->text('accounts[phone]')->label('Phone Number:');
       $form->text('accounts[phone2]')->label('Alt Phone Number:');
       $form->text('accounts[fax]')->label('Fax Number:');
       $form->text('accounts[email]')->label('Email:');
-      $form->textarea('accounts[br_address]', ['cols'=> 37, 'rows'=> 4])->label('Street:');
+      $form->textarea('accounts[br_address]', ['cols' => 37, 'rows' => 4])->label('Street:');
       $accounts_postcode = new Postcode([
-                                        'city'     => ['accounts[city]'], //
-                                        'state'    => ['accounts[state]'], //
-                                        'postcode' => ['accounts[postcode]'] //
-                                        ], $js);
+        'city'     => ['accounts[city]'], //
+        'state'    => ['accounts[state]'], //
+        'postcode' => ['accounts[postcode]'] //
+      ], $js);
       $view->set('accounts_postcode', $accounts_postcode->getForm());
       $form->hidden('accounts_id');
       $form->group('accounts');
       $has_access = !$this->User->hasAccess(SA_CUSTOMER_CREDIT);
-      $form->percent('discount', ["disabled"=> $has_access])->label("Discount Percent:");
-      $form->percent('payment_discount', ["disabled"=> $has_access])->label("Prompt Payment Discount:");
-      $form->amount('credit_limit', ["disabled"=> $has_access])->label("Credit Limit:");
+      $form->percent('discount', ["disabled" => $has_access])->label("Discount Percent:");
+      $form->percent('payment_discount', ["disabled" => $has_access])->label("Prompt Payment Discount:");
+      $form->amount('credit_limit', ["disabled" => $has_access])->label("Credit Limit:");
       $form->text('tax_id')->label("GSTNo:");
       $form->custom(Sales_Type::select('sales_type'))->label('Sales Type:');
       $form->arraySelect('inactive', ['No', 'Yes'])->label('Inactive:');
@@ -144,7 +146,7 @@
       $form->custom(GL_UI::payment_terms('payment_terms'))->label('Payment Terms:');
       $form->custom(Sales_CreditStatus::select('credit_status'))->label('Credit Status:');
       $form->group();
-      $form->textarea('messageLog', ['style'=> 'height:100px;width:95%;margin:0 auto;', 'cols'=> 100])->setContent(Contact_Log::read($this->debtor->id, CT_CUSTOMER));
+      $form->textarea('messageLog', ['style' => 'height:100px;width:95%;margin:0 auto;', 'cols' => 100])->setContent(Contact_Log::read($this->debtor->id, CT_CUSTOMER));
       /** @noinspection PhpUndefinedMethodInspection */
       $contacts = new View('contacts/contact');
       $view->set('contacts', $contacts->render(true));
@@ -156,12 +158,12 @@
       $form->custom(Sales_UI::shippers('branch[default_ship_via]'))->label('Default Shipper:');
       $form->custom(Tax_Groups::select('branch[tax_group_id]'))->label('Tax Group:');
       $form->arraySelect('branch[disable_trans]', ['Yes', 'No'])->label('Disabled: ');
-      $form->text('webid', ['disabled'=> true])->label("Websale ID");
+      $form->text('webid', ['disabled' => true])->label("Websale ID");
       $form->custom(GL_UI::all('branch[sales_account]', null, true, false, true))->label('Sales Account:');
       $form->custom(GL_UI::all('branch[receivables_account]', null, true, false, false))->label('Receivables Account:');
       $form->custom(GL_UI::all('branch[sales_discount_account]', null, false, false, true))->label('Discount Account:');
       $form->custom(GL_UI::all('branch[payment_discount_account]', null, false, false, true))->label('Prompt Payment Account:');
-      $form->textarea('branch[notes]', ['cols'=> 100, 'rows'=> 10])->label('General Notes:');
+      $form->textarea('branch[notes]', ['cols' => 100, 'rows' => 10])->label('General Notes:');
       $view['debtor_id'] = $this->debtor->id;
       $form->hidden('frame', $this->Input->request('frame'));
       $view->set('form', $form);
@@ -169,7 +171,7 @@
       $contact_form = new Form();
       $view['date'] = date('Y-m-d H:i:s');
       $contact_form->text('contact_name')->label('Contact:');
-      $contact_form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
+      $contact_form->textarea('message', ['cols' => 100, 'rows' => 10])->label('Entry:');
       $view->set('contact_form', $contact_form);
       if (!$this->Input->get('frame')) {
         $shortcuts = [
@@ -177,26 +179,26 @@
             'caption' => 'Create Quote',
             'Create Quote for this customer!',
             'data'    => '/sales/order?type=' . ST_SALESQUOTE . '&add=' . ST_SALESQUOTE . '&debtor_id=',
-            'attrs'   => ['class'=> 'btn']
+            'attrs'   => ['class' => 'btn']
           ],
           [
             'caption' => 'Create Order',
             'Create Order for this customer!',
             'data'    => '/sales/order?type=30&add=' . ST_SALESORDER . '&debtor_id=',
-            'attrs'   => ['class'=> 'btn']
+            'attrs'   => ['class' => 'btn']
           ],
           [
             'caption' => 'Print Statement',
             'Print Statement for this Customer!',
             'data'    => '/reporting/prn_redirect.php?REP_ID=108&PARAM_2=0&PARAM_4=0&PARAM_5=0&PARAM_6=0&PARAM_0=',
-            'attrs'   => ['class'=> 'btn']
+            'attrs'   => ['class' => 'btn']
           ],
           [
             'caption' => 'Email Statement',
             'Email Statement for this Customer!',
-            'attrs'   => ['class'=> 'btn email-button']
+            'attrs'   => ['class' => 'btn email-button']
           ],
-          ['caption'=> 'Customer Payment', 'Make customer payment!', 'data'=> '/sales/payment?debtor_id=', 'attrs'   => ['class'=> 'btn']]
+          ['caption' => 'Customer Payment', 'Make customer payment!', 'data' => '/sales/payment?debtor_id=', 'attrs' => ['class' => 'btn']]
         ];
         $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_CUSTOMER, $js);

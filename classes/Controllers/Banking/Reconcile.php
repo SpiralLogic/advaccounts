@@ -38,6 +38,7 @@
    */
   class Reconcile extends \ADV\App\Controller\Action
   {
+
     /** @var Num Num */
     protected $Num;
     /** @var Dates Dates */
