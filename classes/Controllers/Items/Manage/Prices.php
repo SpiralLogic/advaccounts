@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -20,13 +19,14 @@
    */
   class Prices extends \ADV\App\Controller\InlinePager
   {
+
     protected $stock_id;
     protected $security = SA_SALESPRICE;
     protected $frame = false;
     protected function before() {
-      $this->frame = $this->Input->request('frame');
-      $this->stock_id = $this->Input->getPostGlobal('stock_id');
-      $this->object = new Price();
+      $this->frame            = $this->Input->request('frame');
+      $this->stock_id         = $this->Input->getPostGlobal('stock_id');
+      $this->object           = new Price();
       $this->object->stock_id = $this->stock_id;
     }
     protected function beforeTable() {
@@ -35,12 +35,12 @@
         UI::search(
           'stock_id',
           [
-          'label' => 'Item:',
-          'url' => 'Item',
-          'idField' => 'stock_id',
-          'name' => 'stock_id', //
-          'value' => $this->stock_id,
-          'focus' => true,
+            'label'   => 'Item:',
+            'url'     => 'Item',
+            'idField' => 'stock_id',
+            'name'    => 'stock_id', //
+            'value'   => $this->stock_id,
+            'focus'   => true,
           ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);
@@ -72,7 +72,6 @@
       }
       $this->Ajax->end_div();
     }
-
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));
       Validation::check(Validation::SALES_TYPES, _("There are no sales types in the system. Please set up sales types befor entering pricing."));

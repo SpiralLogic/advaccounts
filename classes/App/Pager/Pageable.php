@@ -13,5 +13,6 @@
    */
   interface Pageable
   {
+
     public function getPagerColumns();
   }

@@ -7,7 +7,9 @@
   /**
 
    */
-  class CSSMin {
+  class CSSMin
+  {
+
     protected $minified = '';
     protected $settings
       = array(

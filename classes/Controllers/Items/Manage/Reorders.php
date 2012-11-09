@@ -11,7 +11,7 @@
   namespace ADV\Controllers\Items\Manage;
 
   /**
-   *@property \ADV\App\Item\Reorder $object
+   * @property \ADV\App\Item\Reorder $object
    */
   class Reorders extends \ADV\App\Controller\InlinePager
   {

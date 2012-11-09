@@ -29,7 +29,9 @@
   /**
 
    */
-  class Item extends Base {
+  class Item extends Base
+  {
+
     public static $types
       = array(
         STOCK_MANUFACTURE => "Manufactured", //
@@ -720,18 +722,18 @@
       $stockbox = new Dialog('Item Edit', 'stockbox', '');
       $stockbox->addButtons(
         array(
-             'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
+          'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
                 item.get().description)} $(this).dialog("close")',
-             'Close' => '$(this).dialog("close");'
+          'Close' => '$(this).dialog("close");'
         )
       );
       $stockbox->setOptions(
         array(
-             'autoopen'   => false,
-             'modal'      => true,
-             'width'      => 940,
-             'height'     => 630,
-             'resizeable' => true
+          'autoopen'   => false,
+          'modal'      => true,
+          'width'      => 940,
+          'height'     => 630,
+          'resizeable' => true
         )
       );
       $stockbox->show();
@@ -987,10 +989,10 @@ JS;
           $name,
           array_merge(
             array(
-                 'submitonselect' => $submit_on_change,
-                 'selected'       => $selected_id,
-                 'purchase'       => true,
-                 'cells'          => true
+              'submitonselect' => $submit_on_change,
+              'selected'       => $selected_id,
+              'purchase'       => true,
+              'cells'          => true
             ),
             $opts
           )
@@ -1008,25 +1010,25 @@ JS;
         's.description',
         array_merge(
           array(
-               'format'        => 'Forms::stockItemsFormat',
-               'spec_option'   => $all_option === true ? _("All Items") : $all_option,
-               'spec_id'       => ALL_TEXT,
-               'search_box'    => false,
-               'search'        => array(
-                 "stock_id",
-                 "c.description",
-                 "s.description"
-               ),
-               'search_submit' => DB_Company::_get_pref('no_item_list') != 0,
-               'size'          => 10,
-               'select_submit' => $submit_on_change,
-               'category'      => 2,
-               'order'         => array(
-                 'c.description',
-                 'stock_id'
-               ),
-               'editable'      => 30,
-               'max'           => 50
+            'format'        => 'Forms::stockItemsFormat',
+            'spec_option'   => $all_option === true ? _("All Items") : $all_option,
+            'spec_id'       => ALL_TEXT,
+            'search_box'    => false,
+            'search'        => array(
+              "stock_id",
+              "c.description",
+              "s.description"
+            ),
+            'search_submit' => DB_Company::_get_pref('no_item_list') != 0,
+            'size'          => 10,
+            'select_submit' => $submit_on_change,
+            'category'      => 2,
+            'order'         => array(
+              'c.description',
+              'stock_id'
+            ),
+            'editable'      => 30,
+            'max'           => 50
           ),
           $opts
         )
@@ -1053,13 +1055,13 @@ JS;
         $all_option,
         $submit_on_change,
         array(
-             'submitonselect' => $submit_on_change,
-             'label'          => $label,
-             'cells'          => true,
-             'size'           => 10,
-             'purchase'       => false,
-             'show_inactive'  => $all,
-             'editable'       => $editkey
+          'submitonselect' => $submit_on_change,
+          'label'          => $label,
+          'cells'          => true,
+          'size'           => 10,
+          'purchase'       => false,
+          'show_inactive'  => $all,
+          'editable'       => $editkey
         ),
         $editkey,
         $legacy

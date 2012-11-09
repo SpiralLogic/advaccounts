@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,6 +9,7 @@
    **/
   class Item_GL
   {
+
     /** @var */
     public $code_id;
     /** @var */
@@ -37,11 +37,11 @@
       } else {
         $this->description = $description;
       }
-      $this->code_id = $code_id;
-      $this->dimension_id = $dimension_id;
+      $this->code_id       = $code_id;
+      $this->dimension_id  = $dimension_id;
       $this->dimension2_id = $dimension2_id;
-      $this->amount = $amount;
-      $this->reference = $reference;
+      $this->amount        = $amount;
+      $this->reference     = $reference;
     }
   }
 

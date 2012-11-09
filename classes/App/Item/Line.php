@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Item_Line {
+  class Item_Line
+  {
+
     /** @var */
     public $stock_id;
     /**
