@@ -27,7 +27,9 @@
   /**
    * @method static \ADV\App\ADVAccounting i()
    */
-  class ADVAccounting {
+  class ADVAccounting
+  {
+
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -349,7 +351,7 @@
         $this->showLogin();
       }
       if ($this->User->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
-        header('Location: http://dev.advanced.advancedgroup.com.au:8090');
+        ini_set('html_errors', 'Off');
       } else {
         ini_set('html_errors', 'On');
       }
