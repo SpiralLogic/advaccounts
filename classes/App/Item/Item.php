@@ -728,7 +728,7 @@
       );
       $stockbox->show();
       $action = <<<JS
-            $('#stockbox').html("<iframe src='/items/manage/item?frame=1&stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' style='width:100%' height='500'  style='border:none' frameborder='0'></iframe>").dialog('open');
+            $('#stockbox').html("<iframe src='/items/manage/items?frame=1&stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' style='width:100%' height='500'  style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
       JS::_addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
       JS::_addLiveEvent('label.stock', 'click', $action, "wrapper", true);
