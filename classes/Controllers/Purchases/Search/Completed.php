@@ -153,7 +153,7 @@
       if ($location == 1) {
         $cols[_("Invoice #")] = 'skip';
       }
-      $table = \ADV\App\Pager\Pager::newPager('orders_tbl', $cols);
+      $table = \ADV\App\Pager\Pager::newPager('purch_comp_tbl', $cols);
       $table->setData($sql);
       $table->width = ($this->Input->request('frame')) ? '100' : "90";
       $table->display($table);

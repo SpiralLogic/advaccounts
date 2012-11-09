@@ -290,7 +290,7 @@
       if (REQUEST_GET) {
         Pager::kill('orders_tbl');
       }
-      $table = \ADV\App\Pager\Pager::newPager('orders_tbl', $cols);
+      $table = \ADV\App\Pager\Pager::newPager('sales_order_tbl', $cols);
       $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "90%";

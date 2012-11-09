@@ -152,7 +152,7 @@
         }
         unset($_SESSION['Batch']);
       }
-      $table = \ADV\App\Pager\Pager::newPager('deliveries_tbl', $cols);
+      $table = \ADV\App\Pager\Pager::newPager('sales_del_tbl', $cols);
       $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);

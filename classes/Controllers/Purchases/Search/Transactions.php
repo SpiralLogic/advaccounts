@@ -153,7 +153,7 @@
         $cols[_("Currency")] = 'skip';
       }
       /*show a table of the transactions returned by the sql */
-      $table = \ADV\App\Pager\Pager::newPager('trans_tbl', $cols);
+      $table = \ADV\App\Pager\Pager::newPager('purch_trans_tbl', $cols);
       $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);

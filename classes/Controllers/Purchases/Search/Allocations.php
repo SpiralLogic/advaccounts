@@ -140,7 +140,7 @@
         $cols[_("Supplier")]    = 'skip';
         $cols[_("Currency")]    = 'skip';
       }
-      $table = \ADV\App\Pager\Pager::newPager('doc_tbl', $cols);
+      $table = \ADV\App\Pager\Pager::newPager('purch_alloc_tbl', $cols);
       $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);

@@ -136,7 +136,7 @@
       if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
-      $table = \ADV\App\Pager\Pager::newPager('trans_tbl', $cols);
+      $table = \ADV\App\Pager\Pager::newPager('sales_trans_tbl', $cols);
       $table->setData($sql);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "85%";
