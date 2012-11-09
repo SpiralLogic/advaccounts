@@ -26,7 +26,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Deliveries extends \ADV\App\Controller\Action {
+  class Deliveries extends \ADV\App\Controller\Action
+  {
+
     public $debtor_id;
     public $stock_id;
     protected function before() {
@@ -66,7 +68,7 @@
       Forms::start(false, $_SERVER['DOCUMENT_URI'] . "?OutstandingOnly=" . $_POST['OutstandingOnly']);
       Table::start('noborder');
       echo '<tr>';
-      Debtor::newselect(null, ['label'=> false, 'row'=> false]);
+      Debtor::newselect(null, ['label' => false, 'row' => false]);
       Forms::refCellsSearch(_("#:"), 'DeliveryNumber', '', null, '', true);
       Forms::dateCells(_("from:"), 'DeliveryAfterDate', '', null, -30);
       Forms::dateCells(_("to:"), 'DeliveryToDate', '', null, 1);
@@ -127,21 +129,21 @@
         $sql .= " GROUP BY trans.trans_no ";
       } //end no delivery number selected
       $cols = array(
-        _("Delivery #")                                                                                                   => array('fun' => [$this, 'formatTrans']), //
+        _("Delivery #")                                                               => array('fun' => [$this, 'formatTrans']), //
         _("Customer"), //
-        _("branch_id")                                                                                                    => 'skip', //
+        _("branch_id")                                                                => 'skip', //
         _("Contact"), //
         _("Address"), //
         _("Reference"), //
         _("Cust Ref"), //
-        _("Delivery Date")                                                                                                => array('type' => 'date', 'ord' => ''), //
-        _("Due By")                                                                                                       => array('type' => 'date'),
-        _("Delivery Total")                                                                                               => array('type' => 'amount', 'ord' => ''), //
-        _("Currency")                                                                                                     => array('align' => 'center'),
-        Forms::submit(Orders::BATCH_INVOICE, _("Batch"), false, _("Batch Invoicing"))                                     => array(
-          'insert'   => true,
-          'fun'      => [$this, 'formatBatch'],
-          'align'    => 'center'
+        _("Delivery Date")                                                            => array('type' => 'date', 'ord' => ''), //
+        _("Due By")                                                                   => array('type' => 'date'),
+        _("Delivery Total")                                                           => array('type' => 'amount', 'ord' => ''), //
+        _("Currency")                                                                 => array('align' => 'center'),
+        Forms::submit(Orders::BATCH_INVOICE, _("Batch"), false, _("Batch Invoicing")) => array(
+          'insert' => true,
+          'fun'    => [$this, 'formatBatch'],
+          'align'  => 'center'
         ), //
         array('insert' => true, 'fun' => [$this, 'formatDropDown'])
       );
@@ -151,10 +153,9 @@
         }
         unset($_SESSION['Batch']);
       }
-      $table              = DB_Pager::newPager('deliveries_tbl', $sql, $cols);
+      $table              = DB_Pager::newPager('sales_del_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
-
       $table->display($table);
     }
     /**
@@ -228,10 +229,10 @@
         $dd->addItem('Invoice', '/sales/customer_invoice.php?DeliveryNumber=' . $row['trans_no']);
       }
       $href = Reporting::print_doc_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT, '', '', 0, 0, true);
-      $dd->addItem('Print', $href, [], ['class'=> 'printlink']);
+      $dd->addItem('Print', $href, [], ['class' => 'printlink']);
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . ST_CUSTDELIVERY . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
+        $dd->addItem('Void Trans', $href, [], ['target' => '_blank']);
       }
       return $dd->setAuto(true)->setSplit(true)->render(true);
     }

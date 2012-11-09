@@ -28,7 +28,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Action {
+  class Transactions extends \ADV\App\Controller\Action
+  {
+
     public $isQuickSearch;
     public $filterType;
     public $debtor_id;
@@ -58,11 +60,10 @@
     }
     protected function index() {
       $this->Page->init(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, $this->frame);
-
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
-      Debtor::newselect(null, ['label'=> false, 'row'=> false]);
+      Debtor::newselect(null, ['label' => false, 'row' => false]);
       Forms::refCellsSearch(_("#"), 'reference', '', null, '', true);
       Forms::dateCells(_("From:"), 'TransAfterDate', '', null, -30);
       Forms::dateCells(_("To:"), 'TransToDate', '', null, 1);
@@ -137,7 +138,7 @@
       if (!$this->filterType || !$this->isQuickSearch) {
         $cols[_("RB")] = 'skip';
       }
-      $table              = DB_Pager::newPager('trans_tbl', $sql, $cols);
+      $table              = DB_Pager::newPager('sales_trans_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "85%";
       Event::warning(_("Marked items are overdue."), false);
@@ -355,8 +356,8 @@
         false,
         'Email',
         array(
-             'class'        => 'button email-button',
-             'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+          'class'        => 'button email-button',
+          'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
         )
       )->__toString();
     }
@@ -394,17 +395,17 @@
         $title = $caption = _("Receipt");
       }
       $href = Reporting::print_doc_link($row['trans_no'], $caption, true, $row['type'], ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $dd->addItem($caption, $href, [], ['class'=> 'printlink']);
+      $dd->addItem($caption, $href, [], ['class' => 'printlink']);
       if ($row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0) {
         $dd->addItem('Credit Invoice', "/sales/customer_credit_invoice.php?InvoiceNumber=" . $row['trans_no']);
       }
       if ($row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0) {
         $dd->addItem('Make Payment', "/sales/payment?debtor_id=" . $row['debtor_id']);
       }
-      $dd->addItem('Email', "#", ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']], ['class'=> 'email-button']);
+      $dd->addItem('Email', "#", ['emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']], ['class' => 'email-button']);
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
+        $dd->addItem('Void Trans', $href, [], ['target' => '_blank']);
       }
       return $dd->setAuto(true)->setSplit(true)->render(true);
     }

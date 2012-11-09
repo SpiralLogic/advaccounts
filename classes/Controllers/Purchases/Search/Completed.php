@@ -24,7 +24,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Completed extends \ADV\App\Controller\Action {
+  class Completed extends \ADV\App\Controller\Action
+  {
+
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -50,7 +52,7 @@
       if (!$this->Input->request('frame')) {
         Table::start('noborder');
         echo '<tr>';
-        Creditor::newselect(null, ['row'=> false, 'cell_class'=> 'med']);
+        Creditor::newselect(null, ['row' => false, 'cell_class' => 'med']);
         Forms::refCells(_("#:"), 'order_number');
         Forms::dateCells(_("From:"), 'OrdersAfterDate', '', null, -30);
         Forms::dateCells(_("To:"), 'OrdersToDate');
@@ -153,7 +155,7 @@
       if ($location == 1) {
         $cols[_("Invoice #")] = 'skip';
       }
-      $table        = DB_Pager::newPager('purch_orders_tbl', $sql, $cols);
+      $table        = DB_Pager::newPager('purch_comp_tbl', $sql, $cols);
       $table->width = ($this->Input->request('frame')) ? '100' : "90";
       $table->display($table);
     }
@@ -213,14 +215,14 @@
       $edit_attr = [];
       if ((Input::_request('frame'))) {
         $edit_attr = [
-          'target' => "_parent",
-          'onclick'=> 'javascript:window.parent.location.href=this.href; return false;'
+          'target'  => "_parent",
+          'onclick' => 'javascript:window.parent.location.href=this.href; return false;'
         ];
       }
       $dd->addItem('Edit', $edit_url, [], $edit_attr)->setTitle('Edit');
       $href = Reporting::print_doc_link($row['order_no'], _("Print"), true, ST_PURCHORDER, ICON_PRINT, 'button printlink', '', 0, 0, true);
-      $dd->addItem('Print', $href, [], ['class'=> 'printlink']);
-      $dd->addItem('Email', '#', ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']], ['class'=> 'email-button']);
+      $dd->addItem('Print', $href, [], ['class' => 'printlink']);
+      $dd->addItem('Email', '#', ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']], ['class' => 'email-button']);
       if ($row['Received'] > 0) {
         $href = "/purchases/po_receive_items.php?PONumber=" . $row["order_no"];
       } elseif ($row['Invoiced'] > 0) {
@@ -229,7 +231,7 @@
       $dd->addItem('Receive', $href);
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . ST_PURCHORDER . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
-        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
+        $dd->addItem('Void Trans', $href, [], ['target' => '_blank']);
       }
       return $dd->setAuto(true)->setSplit(true)->render(true);
     }

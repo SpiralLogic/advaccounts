@@ -22,6 +22,7 @@
    */
   class Orders extends \ADV\App\Controller\Action
   {
+
     protected $security;
     protected $trans_type;
     protected $debtor_id;
@@ -138,12 +139,12 @@
         true,
         false,
         array(
-             'submitonselect' => false,
-             'cells'          => true,
-             'size'           => 10,
-             'purchase'       => false,
-             'show_inactive'  => true,
-             'placeholder'    => 'Item',
+          'submitonselect' => false,
+          'cells'          => true,
+          'size'           => 10,
+          'purchase'       => false,
+          'show_inactive'  => true,
+          'placeholder'    => 'Item',
         )
       );
       if ($this->trans_type == ST_SALESQUOTE) {
@@ -293,7 +294,7 @@
       if (REQUEST_GET) {
         DB_Pager::kill('orders_tbl');
       }
-      $table              = DB_Pager::newPager('orders_tbl', $sql, $cols);
+      $table              = DB_Pager::newPager('sales_order_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       $table->width       = "90%";
       Event::warning(_("Marked items are overdue."), false);

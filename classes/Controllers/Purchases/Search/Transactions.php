@@ -30,7 +30,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Action {
+  class Transactions extends \ADV\App\Controller\Action
+  {
+
     public $creditor_id;
     protected function before() {
       JS::_openWindow(950, 500);
@@ -153,10 +155,9 @@
         $cols[_("Currency")] = 'skip';
       }
       /*show a table of the transactions returned by the sql */
-      $table              = DB_Pager::newPager('trans_tbl', $sql, $cols);
+      $table              = DB_Pager::newPager('purch_trans_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
-
       $table->width = "90";
       $table->display($table);
     }
@@ -223,14 +224,14 @@
       }
       if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) {
         $href = Reporting::print_doc_link($row['trans_no'] . "-" . $row['type'], _("Remittance"), true, ST_SUPPAYMENT, ICON_PRINT, 'printlink', '', 0, 0, true);
-        $dd->addItem('Print Remittance', $href, [], ['class'=> 'printlink']);
+        $dd->addItem('Print Remittance', $href, [], ['class' => 'printlink']);
       }
       if (empty($items)) {
         return '';
       }
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . $row['type'] . '&trans_no=' . $row['trans_no'] . '&memo=Deleted%20during%20order%20search';
-        $dd->addItem('Void Trans', $href, [], ['target'=> '_blank']);
+        $dd->addItem('Void Trans', $href, [], ['target' => '_blank']);
       }
       return $dd->setTitle('Menu')->render(true);
     }

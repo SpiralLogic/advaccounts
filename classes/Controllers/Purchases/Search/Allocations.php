@@ -22,7 +22,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Allocations extends \ADV\App\Controller\Action {
+  class Allocations extends \ADV\App\Controller\Action
+  {
+
     protected function before() {
       $this->JS->openWindow(950, 500);
       if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
@@ -57,7 +59,6 @@
       }
     }
     protected function index() {
-
       $this->Page->init(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
       Forms::start(false, '', 'invoiceForm');
       Table::start('noborder');
@@ -124,26 +125,25 @@
         _("#")           => ['fun' => [$this, 'formatViewLink'], 'ord' => ''],
         _("Reference"),
         _("Supplier")    => ['ord' => '', 'type' => 'id'],
-        _("Supplier ID") => ['type'=> 'skip'],
+        _("Supplier ID") => ['type' => 'skip'],
         _("Supp Reference"),
         _("Date")        => ['name' => 'tran_date', 'type' => 'date', 'ord' => 'desc'],
         _("Due Date")    => ['fun' => [$this, 'formatDueDate'], 'type' => 'date'],
         _("Currency")    => ['align' => 'center'],
         _("Debit")       => ['align' => 'right', 'fun' => [$this, 'formatDebit']],
-        _("Credit")      => ['align'  => 'right', 'insert' => true, 'fun'    => [$this, 'formatCredit']],
-        _("Allocated")   => ['type'=> 'amount'],
-        _("Balance")     => ['type' => 'amount', 'fun'  => [$this, 'formatBalance']],
-        ['insert' => true, 'fun'    => [$this, 'formatAllocLink']]
+        _("Credit")      => ['align' => 'right', 'insert' => true, 'fun' => [$this, 'formatCredit']],
+        _("Allocated")   => ['type' => 'amount'],
+        _("Balance")     => ['type' => 'amount', 'fun' => [$this, 'formatBalance']],
+        ['insert' => true, 'fun' => [$this, 'formatAllocLink']]
       ];
       if ($_POST['creditor_id'] != ALL_TEXT) {
         $cols[_("Supplier ID")] = 'skip';
         $cols[_("Supplier")]    = 'skip';
         $cols[_("Currency")]    = 'skip';
       }
-      $table              = DB_Pager::newPager('doc_tbl', $sql, $cols);
+      $table              = DB_Pager::newPager('purch_alloc_tbl', $sql, $cols);
       $table->rowFunction = [$this, 'formatMarker'];
       Event::warning(_("Marked items are overdue."), false);
-
       $table->width = "90";
       $table->display($table);
     }
