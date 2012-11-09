@@ -57,13 +57,13 @@
       /**
        * @return array
        */
-      protected function getPagerColumns() {
+      public function getPagerColumns() {
         $cols = [
           ['type' => 'skip'],
           'Class Name', //
           'Class Type', //
           'Sign Convert' => ['type' => Edit::TYPE_BOOL], //
-          'Inactive' => ['type' => 'inactive'],
+          'Inactive'     => ['type' => 'inactive'],
         ];
         return $cols;
       }

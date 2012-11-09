@@ -14,27 +14,28 @@
   /**
 
    */
-  class Contact extends Base {
-    /** @var int **/
+  class Contact extends Base
+  {
+    /** @var int * */
     public $id = 0;
     public $contact_id = 0;
-    /** @var int **/
+    /** @var int * */
     public $parent_id = 0;
-    /** @var int **/
+    /** @var int * */
     public $parent_type;
-    /** @var string **/
+    /** @var string * */
     public $name = "New Contact";
-    /** @var string **/
+    /** @var string * */
     public $phone1 = '';
-    /** @var string **/
+    /** @var string * */
     public $phone2 = '';
-    /** @var string **/
+    /** @var string * */
     public $email = '';
-    /** @var string **/
+    /** @var string * */
     public $department = '';
-    /** @var string **/
+    /** @var string * */
     protected $_table = 'contacts';
-    /** @var string **/
+    /** @var string * */
     protected $_id_column = 'contact_id';
     /**
      * @param int       $type
@@ -44,8 +45,11 @@
       $this->parent_type = (int) $type;
       parent::__construct($id, array('parent_type' => $type));
     }
+    /**
+     * @return \ADV\Core\Traits\Status|bool
+     */
     public function delete() {
-      // TODO: Implement delete() method.
+      return $this->status(false, 'wawa');
     }
     /**
      * @return bool

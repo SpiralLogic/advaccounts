@@ -1,4 +1,13 @@
 <?php
+
+  /**
+   * PHP version 5.4
+   * @category  PHP
+   * @package   adv.accounts.app
+   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
+   * @copyright 2010 - 2012
+   * @link      http://www.advancedgroup.com.au
+   **/
   namespace ADV\App\DB;
 
   use ADV\Core\DB\DBDuplicateException;
@@ -12,17 +21,10 @@
   use ADV\Core\DB\DB;
 
   /**
-   * PHP version 5.4
-   * @category  PHP
-   * @package   adv.accounts.app
-   * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
-   * @copyright 2010 - 2012
-   * @link      http://www.advancedgroup.com.au
-   **/
-  /**
    * @method getStatus()
    */
-  abstract class Base {
+  abstract class Base
+  {
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
@@ -33,12 +35,6 @@
     protected $_table;
     protected $_id_column;
     protected $_classname;
-    /**
-     * @return array
-     */
-    public static function getAll() {
-      return [];
-    }
     abstract protected function canProcess();
     /**
      * @param int             $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
@@ -50,9 +46,9 @@
       static::$DB = DIC::get('DB');
       $this->load($id, $extra);
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
-      $_id_column       = $this->_id_column;
-      if ($_id_column && $_id_column != 'id') {
-        $this->id = & $this->$_id_column;
+      if ($this->_id_column != 'id') {
+        $_id_column = $this->_id_column;
+        $this->id   = & $this->$_id_column;
       }
     }
     /**
@@ -82,6 +78,7 @@
       return $this->init();
     }
     /**
+     * @param null       $changes
      * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
      *
      * @return array|bool|int|null
@@ -137,10 +134,11 @@
     public function getIDColumn() {
       return $this->_id_column;
     }
-    protected function defaults() {
-      $values = get_class_vars(get_called_class());
-      unset($values['DB'], $values['_id_column'], $values['_table'], $values['_classname']);
-      $this->setFromArray($values);
+    /**
+     * @return array
+     */
+    public static function getAll() {
+      return [];
     }
     /**
      * @return bool
@@ -149,6 +147,14 @@
     protected function init() {
       $this->defaults();
       return $this->status(Status::INFO, 'Now working with new ' . $this->_classname);
+    }
+    /**
+     * Set class properties to their default values
+     */
+    protected function defaults() {
+      $values = get_class_vars(get_called_class());
+      unset($values['DB'], $values['_id_column'], $values['_table'], $values['_classname']);
+      $this->setFromArray($values);
     }
     /***
      * @param int   $id    Id of row to read from database
@@ -175,14 +181,6 @@
       return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
     }
     /**
-     * @param \ADV\Core\DB\Query\Select $query
-     *
-     * @return \ADV\Core\DB\Query\Select
-     */
-    protected function getSelectModifiers(\ADV\Core\DB\Query\Select $query) {
-      return $query;
-    }
-    /**
      * @return int|bool Id assigned to new database row or false if entry failed
      */
     protected function saveNew() {
@@ -199,5 +197,15 @@
       }
       return $this->status(Status::SUCCESS, 'Added ' . $this->_classname . ' to database');
     }
+    /**
+     * @param \ADV\Core\DB\Query\Select $query
+     *
+     * @return \ADV\Core\DB\Query\Select
+     */
+    protected function getSelectModifiers(\ADV\Core\DB\Query\Select $query) {
+      return $query;
+    }
+    public function getTable() {
+      return $this->_table;
+    }
   }
-

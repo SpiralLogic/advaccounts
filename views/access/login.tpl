@@ -6,7 +6,7 @@
     <link href='/themes/{{$theme}}/default.css' rel='stylesheet'>
 </head>
 <body class='loginscreen'>
-<div class="center">
+<div id="login">
     <div class='login'>
         <a target='_blank' href='{{POWERED_URL}}'><img width=440 height=64 src='/themes/{{$theme}}/images/logo-advaccounts.png' alt='ADVAccounts'/></a>
     {{#if $timeout && $idletime}}

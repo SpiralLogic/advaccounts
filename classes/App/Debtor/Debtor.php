@@ -10,6 +10,7 @@
   namespace ADV\App\Debtor;
 
   use Debtor_Branch;
+  use ADV\App\DB\Collection;
   use ADV\Core\Status;
   use ADV\App\Display;
   use ADV\App\Forms;
@@ -32,7 +33,8 @@
   /**
 
    */
-  class Debtor extends \Contact_Company {
+  class Debtor extends \Contact_Company
+  {
     /** @var int * */
     public $id = 0;
     /** @var string * */
@@ -355,11 +357,8 @@
       }
     }
     protected function _getBranches() {
-      static::$staticDB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->where('branch_ref !=', 'accounts');
-      $branches = static::$staticDB->_fetch()->asClassLate('Debtor_Branch');
-      foreach ($branches as $branch) {
-        $this->branches[$branch->branch_id] = $branch;
-      }
+      $this->branches = new Collection(new Debtor_Branch(), ['debtor_id']);
+      $this->branches->getAll(['debtor_id' => $this->id]);
       $this->defaultBranch = reset($this->branches)->id;
     }
     /**
