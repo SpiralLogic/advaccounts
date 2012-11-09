@@ -9,12 +9,15 @@
    **/
   namespace ADV\App\GL {
     use ADV\Core\DB\DB;
+    use ADV\App\Pager\Pager;
     use ADV\App\Validation;
 
     /**
 
      */
-    class QuickEntry extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable{
+    class QuickEntry extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
+
       protected $_table = 'quick_entries';
       protected $_classname = 'Quick Entry';
       protected $_id_column = 'id';
@@ -72,26 +75,28 @@
           SELECT qel.id, qid, action, name, dest_id, amount FROM quick_entry_lines qel,tax_types WHERE tax_types.id=dest_id  AND qid=' . DB::_quote($this->id)
         );
         return DB::_fetchAll();
-      }    /**
-           * @return array
-           */
+      }
+      /**
+       * @return array
+       */
       public function getPagerColumns() {
-            $cols = [
-              ['type' => 'skip'],
-              'Type' => ['fun' => [$this, 'formatType']],
-              'Description',
-              'Base Amount' => ['type' => Pager::TYPE_AMOUNT],
-              'Description',
-            ];
-            return $cols;
-          }    /**
-               * @param $row
-               *
-               * @return mixed
-               */
-              public function formatType($row) {
-                return GL_QuickEntry::$types[$row['type']];
-              }
+        $cols = [
+          ['type' => 'skip'],
+          'Type'        => ['fun' => [$this, 'formatType']],
+          'Description',
+          'Base Amount' => ['type' => Pager::TYPE_AMOUNT],
+          'Description',
+        ];
+        return $cols;
+      }
+      /**
+       * @param $row
+       *
+       * @return mixed
+       */
+      public function formatType($row) {
+        return GL_QuickEntry::$types[$row['type']];
+      }
     }
   }
   namespace {
@@ -106,7 +111,9 @@
     /**
 
      */
-    class GL_QuickEntry {
+    class GL_QuickEntry
+    {
+
       public static $actions
         = array(
           '='  => 'Remainder', // post current base amount to GL account
@@ -458,10 +465,10 @@
           'id',
           'description',
           array(
-               'spec_id'       => '',
-               'order'         => 'description',
-               'select_submit' => $submit_on_change,
-               'async'         => false
+            'spec_id'       => '',
+            'order'         => 'description',
+            'select_submit' => $submit_on_change,
+            'async'         => false
           )
         );
       }
