@@ -9,6 +9,7 @@
    **/
   namespace ADV\App\GL {
     use ADV\Core\DB\DB;
+    use GL_QuickEntry;
     use ADV\App\Pager\Pager;
     use ADV\App\Validation;
 
