@@ -22,7 +22,9 @@
   /**
 
    */
-  class Tax {
+  class Tax
+  {
+
     /***
      * @static
      *

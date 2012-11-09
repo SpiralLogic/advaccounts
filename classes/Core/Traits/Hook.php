@@ -14,7 +14,9 @@
   /**
 
    */
-  trait Hook {
+  trait Hook
+  {
+
     /** @var \ADV\Core\Hook $hooks */
     protected static $hooks = null;
     /**

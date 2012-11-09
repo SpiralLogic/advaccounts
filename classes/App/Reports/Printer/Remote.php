@@ -4,7 +4,9 @@
   /**
 
    */
-  class Reports_Printer_Remote {
+  class Reports_Printer_Remote
+  {
+
     /**
      * @var string
      */

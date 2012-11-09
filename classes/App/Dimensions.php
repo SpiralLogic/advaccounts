@@ -16,7 +16,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Dimensions {
+  class Dimensions
+  {
+
     /**
      * @static
      *
@@ -242,11 +244,11 @@
     public static function select($name, $selected_id = null, $no_option = false, $showname = ' ', $submit_on_change = false, $showclosed = false, $showtype = 1) {
       $sql     = "SELECT id, CONCAT(reference,' ',name) as ref FROM dimensions";
       $options = array(
-        'order'            => 'reference',
-        'spec_option'      => $no_option ? $showname : false,
-        'spec_id'          => 0,
-        'select_submit'    => $submit_on_change,
-        'async'            => false
+        'order'         => 'reference',
+        'spec_option'   => $no_option ? $showname : false,
+        'spec_id'       => 0,
+        'select_submit' => $submit_on_change,
+        'async'         => false
       );
       if (!$showclosed) {
         $options['where'][] = "closed=0";

@@ -50,7 +50,6 @@
       $_POST["amount_min"] = $_GET["amount_min"];
     }
   }
-
   Forms::start();
   Ajax::_start_div('trans_tbl');
   $dim = DB_Company::get_pref('use_dimension');
@@ -76,13 +75,11 @@
   Table::end();
   echo '<hr>';
   Forms::end();
-
   Ajax::_end_div();
   //if (Input::_post('Show') || Input::_post('account')) {
   show_results();
   //}
   Page::end();
-
   function show_results() {
     if (!isset($_POST["account"])) {
       $_POST["account"] = null;
@@ -106,17 +103,16 @@
     }
     // Only show balances if an account is specified AND we're not filtering by amounts
     $cols = [ //
-      _("Type")       => ['ord'=> '', 'fun'=> 'formatType'], //
-      _("#")          => ['fun'=> 'formatView'], //
-      _("Date")       => ['ord'=> '', 'type'=> 'date'],
-      _("Account")    => ['ord'=> '', 'fun'=> 'formatAccount'],
-      _("Person/Item")=> ['fun'=> 'formatPerson'], //
-      _("Debit")      => ['fun'=> 'formatDebit'], //
-      _("Credit")     => ['insert'=> true, 'fun'=> 'formatCredit'], //
-      _("Balance")    => ['insert'=> true, 'fun'=> 'formatBalance'],
+      _("Type")        => ['ord' => '', 'fun' => 'formatType'], //
+      _("#")           => ['fun' => 'formatView'], //
+      _("Date")        => ['ord' => '', 'type' => 'date'],
+      _("Account")     => ['ord' => '', 'fun' => 'formatAccount'],
+      _("Person/Item") => ['fun' => 'formatPerson'], //
+      _("Debit")       => ['fun' => 'formatDebit'], //
+      _("Credit")      => ['insert' => true, 'fun' => 'formatCredit'], //
+      _("Balance")     => ['insert' => true, 'fun' => 'formatBalance'],
       _("Memo"),
       //
-
     ];
     /*    if ($_POST["account"] != null) {
     unset($cols[_("Account")]);

@@ -12,7 +12,9 @@
 
   /**
    */
-  class Language {
+  class Language
+  {
+
     use Traits\Singleton;
 
     public $name;

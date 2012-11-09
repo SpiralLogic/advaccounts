@@ -10,7 +10,6 @@
        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
        See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       * ********************************************************************* */
-
   print_outstanding_GRN();
   /**
    * @param $fromsupp
@@ -62,14 +61,22 @@
     $dec     = User::price_dec();
     $cols    = array(0, 40, 80, 190, 250, 320, 385, 450, 515);
     $headers = array(
-      _('GRN'), _('Order'), _('Item') . '/' . _('Description'), _('Qty Recd'), _('qty Inv'), _('Balance'), _('Std Cost'), _('Value')
+      _('GRN'),
+      _('Order'),
+      _('Item') . '/' . _('Description'),
+      _('Qty Recd'),
+      _('qty Inv'),
+      _('Balance'),
+      _('Std Cost'),
+      _('Value')
     );
     $aligns  = array('left', 'left', 'left', 'right', 'right', 'right', 'right', 'right');
     $params  = array(
-      0 => $comments, 1 => array('text' => _('Supplier'), 'from' => $from, 'to' => '')
+      0 => $comments,
+      1 => array('text' => _('Supplier'), 'from' => $from, 'to' => '')
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Outstanding GRNs Report'), "OutstandingGRN", SA_SUPPLIERANALYTIC,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Outstanding GRNs Report'), "OutstandingGRN", SA_SUPPLIERANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

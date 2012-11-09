@@ -9,6 +9,7 @@
    **/
   class GL_Type
   {
+
     /**
      * @static
      *
@@ -19,12 +20,10 @@
      *
      * @return null|PDOStatement
      */
-    public static function add($id, $name, $class_id, $parent)
-    {
+    public static function add($id, $name, $class_id, $parent) {
       $sql
         = "INSERT INTO chart_types (id, name, class_id, parent)
         VALUES ($id, " . DB::_escape($name) . ", " . DB::_escape($class_id) . ", " . DB::_escape($parent) . ")";
-
       return DB::_query($sql);
     }
     /**
@@ -37,11 +36,9 @@
      *
      * @return null|PDOStatement
      */
-    public static function update($id, $name, $class_id, $parent)
-    {
+    public static function update($id, $name, $class_id, $parent) {
       $sql = "UPDATE chart_types SET name=" . DB::_escape($name) . ",
         class_id=" . DB::_escape($class_id) . ", parent=" . DB::_escape($parent) . " WHERE id = " . DB::_escape($id);
-
       return DB::_query($sql, "could not update account type");
     }
     /**
@@ -53,8 +50,7 @@
      *
      * @return null|PDOStatement
      */
-    public static function getAll($all = false, $class_id = false, $parent = false)
-    {
+    public static function getAll($all = false, $class_id = false, $parent = false) {
       $sql = "SELECT * FROM chart_types";
       if (!$all) {
         $sql .= " WHERE !inactive";
@@ -68,7 +64,6 @@
         $sql .= " AND parent=" . DB::_escape($parent);
       }
       $sql .= " ORDER BY class_id, id";
-
       return DB::_query($sql, "could not get account types");
     }
     /**
@@ -78,11 +73,9 @@
      *
      * @return \ADV\Core\DB\Query\Result|Array
      */
-    public static function get($id)
-    {
+    public static function get($id) {
       $sql    = "SELECT * FROM chart_types WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get account type");
-
       return DB::_fetch($result);
     }
     /**
@@ -92,12 +85,10 @@
      *
      * @return mixed
      */
-    public static function get_name($id)
-    {
+    public static function get_name($id) {
       $sql    = "SELECT name FROM chart_types WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get account type");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     /**
@@ -105,8 +96,7 @@
      *
      * @param $id
      */
-    public static function delete($id)
-    {
+    public static function delete($id) {
       $sql = "DELETE FROM chart_types WHERE id = " . DB::_escape($id);
       DB::_query($sql, "could not delete account type");
     }
@@ -120,15 +110,20 @@
      *
      * @return string
      */
-    public static function  select($name, $selected_id = null, $all_option = false, $all_option_numeric = true)
-    {
+    public static function  select($name, $selected_id = null, $all_option = false, $all_option_numeric = true) {
       $sql = "SELECT id, name FROM chart_types";
-
-      return Forms::selectBox($name, $selected_id, $sql, 'id', 'name', array(
-                                                                            'order'       => 'id',
-                                                                            'spec_option' => $all_option,
-                                                                            'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT
-                                                                       ));
+      return Forms::selectBox(
+        $name,
+        $selected_id,
+        $sql,
+        'id',
+        'name',
+        array(
+          'order'       => 'id',
+          'spec_option' => $all_option,
+          'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT
+        )
+      );
     }
     /**
      * @static
@@ -139,8 +134,7 @@
      * @param bool $all_option
      * @param bool $all_option_numeric
      */
-    public static function  cells($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false)
-    {
+    public static function  cells($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
       if ($label != null) {
         echo "<td>$label</td>\n";
       }
@@ -157,8 +151,7 @@
      * @param bool $all_option
      * @param bool $all_option_numeric
      */
-    public static function  row($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false)
-    {
+    public static function  row($label, $name, $selected_id = null, $all_option = false, $all_option_numeric = false) {
       echo "<tr><td class='label'>$label</td>";
       GL_Type::cells(null, $name, $selected_id, $all_option, $all_option_numeric);
       echo "</tr>\n";

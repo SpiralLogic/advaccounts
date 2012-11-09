@@ -29,7 +29,9 @@
   /**
 
    */
-  class Item extends Base {
+  class Item extends Base
+  {
+
     public static $types = array(
       STOCK_MANUFACTURE => "Manufactured", //
       STOCK_PURCHASED   => "Purchased", //
@@ -40,7 +42,7 @@
      * @var int
      */
     public $id = 0;
-/** @var */
+    /** @var */
     public $stock_id;
     /**
      * @var int
@@ -114,15 +116,15 @@
      * @var string
      */
     public $tax_type_name = 'GST';
-/** @var */
+    /** @var */
     public $name;
     /**
      * @var int
      */
     public $category_id = 6;
-/** @var */
+    /** @var */
     public $description;
-/** @var */
+    /** @var */
     public $long_description;
     /**
      * @var string
@@ -140,7 +142,7 @@
      * @var array
      */
     protected $stockLevels = [];
-/** @var */
+    /** @var */
     public static $qoh_stock;
     protected $_table = 'stock_master';
     protected $_id_column = 'id';
@@ -150,8 +152,8 @@
      */
     public function __construct($id = 0) {
       parent::__construct($id);
-      $this->uom  = &$this->units;
-      $this->name = &$this->description;
+      $this->uom  = & $this->units;
+      $this->name = & $this->description;
     }
     /**
      * @param int|null $id
@@ -710,18 +712,18 @@
       $stockbox = new Dialog('Item Edit', 'stockbox', '');
       $stockbox->addButtons(
         array(
-             'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
+          'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
                 item.get().description)} $(this).dialog("close")',
-             'Close' => '$(this).dialog("close");'
+          'Close' => '$(this).dialog("close");'
         )
       );
       $stockbox->setOptions(
         array(
-             'autoopen'   => false,
-             'modal'      => true,
-             'width'      => 940,
-             'height'     => 630,
-             'resizeable' => true
+          'autoopen'   => false,
+          'modal'      => true,
+          'width'      => 940,
+          'height'     => 630,
+          'resizeable' => true
         )
       );
       $stockbox->show();
@@ -973,10 +975,10 @@ JS;
           $name,
           array_merge(
             array(
-                 'submitonselect' => $submit_on_change,
-                 'selected'       => $selected_id,
-                 'purchase'       => true,
-                 'cells'          => true
+              'submitonselect' => $submit_on_change,
+              'selected'       => $selected_id,
+              'purchase'       => true,
+              'cells'          => true
             ),
             $opts
           )
@@ -993,25 +995,25 @@ JS;
         's.description',
         array_merge(
           array(
-               'format'        => 'Forms::stockItemsFormat',
-               'spec_option'   => $all_option === true ? _("All Items") : $all_option,
-               'spec_id'       => ALL_TEXT,
-               'search_box'    => false,
-               'search'        => array(
-                 "stock_id",
-                 "c.description",
-                 "s.description"
-               ),
-               'search_submit' => DB_Company::get_pref('no_item_list') != 0,
-               'size'          => 10,
-               'select_submit' => $submit_on_change,
-               'category'      => 2,
-               'order'         => array(
-                 'c.description',
-                 'stock_id'
-               ),
-               'editable'      => 30,
-               'max'           => 50
+            'format'        => 'Forms::stockItemsFormat',
+            'spec_option'   => $all_option === true ? _("All Items") : $all_option,
+            'spec_id'       => ALL_TEXT,
+            'search_box'    => false,
+            'search'        => array(
+              "stock_id",
+              "c.description",
+              "s.description"
+            ),
+            'search_submit' => DB_Company::get_pref('no_item_list') != 0,
+            'size'          => 10,
+            'select_submit' => $submit_on_change,
+            'category'      => 2,
+            'order'         => array(
+              'c.description',
+              'stock_id'
+            ),
+            'editable'      => 30,
+            'max'           => 50
           ),
           $opts
         )
@@ -1038,13 +1040,13 @@ JS;
         $all_option,
         $submit_on_change,
         array(
-             'submitonselect' => $submit_on_change,
-             'label'          => $label,
-             'cells'          => true,
-             'size'           => 10,
-             'purchase'       => false,
-             'show_inactive'  => $all,
-             'editable'       => $editkey
+          'submitonselect' => $submit_on_change,
+          'label'          => $label,
+          'cells'          => true,
+          'size'           => 10,
+          'purchase'       => false,
+          'show_inactive'  => $all,
+          'editable'       => $editkey
         ),
         $editkey,
         $legacy

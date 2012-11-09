@@ -190,18 +190,18 @@
     $aligns  = array('left', 'left', 'right', 'right', 'right');
     if ($dim == 2) {
       $params = array(
-        0    => $comments,
-        1    => array(
+        0 => $comments,
+        1 => array(
           'text' => _('Period'),
           'from' => $from,
           'to'   => $to
         ),
-        2    => array(
+        2 => array(
           'text' => _('Dimension') . " 1",
           'from' => Dimensions::get_string($dimension),
           'to'   => ''
         ),
-        3    => array(
+        3 => array(
           'text' => _('Dimension') . " 2",
           'from' => Dimensions::get_string($dimension2),
           'to'   => ''
@@ -210,13 +210,13 @@
     } else {
       if ($dim == 1) {
         $params = array(
-          0    => $comments,
-          1    => array(
+          0 => $comments,
+          1 => array(
             'text' => _('Period'),
             'from' => $from,
             'to'   => $to
           ),
-          2    => array(
+          2 => array(
             'text' => _('Dimension'),
             'from' => Dimensions::get_string($dimension),
             'to'   => ''
@@ -246,7 +246,7 @@
       $end        = Dates::_addMonths($to, -12);
       $headers[3] = _('Period Y-1');
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
     $rep = new $report_type(_('Profit and Loss Statement'), "ProfitAndLoss", SA_GLANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

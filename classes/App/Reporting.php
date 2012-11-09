@@ -21,7 +21,9 @@
   /**
 
    */
-  class Reporting {
+  class Reporting
+  {
+
     static $debug = null;
     /** @var User */
     static $User = null;
@@ -243,8 +245,8 @@
         'EmailButton' . $type_no,
         $link_text,
         array(
-             'style'    => 'margin:20px',
-             'data-url' => $url,
+          'style'    => 'margin:20px',
+          'data-url' => $url,
         ),
         false
       )->p;
@@ -326,8 +328,8 @@ JS;
         false,
         $text,
         array(
-             'class'        => 'button email-button',
-             'data-emailid' => $id . '-' . $type . '-' . $type_no
+          'class'        => 'button email-button',
+          'data-emailid' => $id . '-' . $type . '-' . $type_no
         ),
         false
       )->__toString();

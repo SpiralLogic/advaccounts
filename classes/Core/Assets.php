@@ -15,7 +15,9 @@
   /**
 
    */
-  class Assets {
+  class Assets
+  {
+
     protected $baseDir = ROOT_WEB;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -177,10 +179,10 @@
             $minifier_class                   = $minify_type_settings['minifier'];
             $minify_type_settings['settings'] = $minify_type_settings['settings'] ? : [];
             $minifier                         = new $minifier_class($content, array(
-                                                                                   'fileDir'             => $this->fileDir,
-                                                                                   'minify_type_settings'=> $minify_type_settings['settings'],
-                                                                                   'mimeTypes'           => $this->mimeTypes
-                                                                              ));
+              'fileDir'              => $this->fileDir,
+              'minify_type_settings' => $minify_type_settings['settings'],
+              'mimeTypes'            => $this->mimeTypes
+            ));
             $content                          = $minifier->minify();
           }
         }

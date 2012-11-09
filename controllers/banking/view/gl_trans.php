@@ -22,7 +22,6 @@
     $_GET['trans_no']
   ) . " ORDER BY counter";
   var_dump($sql);
-
   $result = DB::_query($sql, "could not get transactions");
   //alert("sql = ".$sql);
   if (DB::_numRows($result) == 0) {
@@ -72,7 +71,6 @@
       continue;
     }
     $total += $myrow['amount'];
-
     if (!$heading_shown) {
       display_gl_heading($myrow);
       Table::start('padded grid width95');

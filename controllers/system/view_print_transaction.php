@@ -110,15 +110,15 @@
       $cols       = array(
         _("#"),
         _("Reference"),
-        _("View")                      => array(
+        _("View")  => array(
           'insert' => true,
           'fun'    => 'view_link'
         ),
-        _("Print")                     => array(
+        _("Print") => array(
           'insert' => true,
           'fun'    => 'printLink'
         ),
-        _("GL")                        => array(
+        _("GL")    => array(
           'insert' => true,
           'fun'    => 'viewGl'
         )

@@ -16,7 +16,9 @@
     /**
 
      */
-    class Category extends \ADV\App\DB\Base {
+    class Category extends \ADV\App\DB\Base
+    {
+
       protected $_table = 'stock_category';
       protected $_classname = 'Stock Category';
       protected $_id_column = 'category_id';
@@ -74,7 +76,6 @@
         if (!Validation::is_num($this->dflt_assembly_act, 0)) {
           return $this->status(false, 'Dflt_assembly_act must be a number', 'dflt_assembly_act');
         }
-
         return true;
       }
       public function defaults() {
@@ -98,13 +99,14 @@
           $sql .= " AND !c.inactive";
         }
         //DB::_query($sql);
-
         return $sql;
       }
     }
   }
   namespace {
-    class Item_Category {
+    class Item_Category
+    {
+
       /**
        * @static
        *
@@ -209,7 +211,6 @@
       public static function get($id) {
         $sql    = "SELECT * FROM stock_category WHERE category_id=" . DB::_escape($id);
         $result = DB::_query($sql, "an item category could not be retrieved");
-
         return DB::_fetch($result);
       }
       /**
@@ -223,7 +224,6 @@
         $sql    = "SELECT description FROM stock_category WHERE category_id=" . DB::_escape($id);
         $result = DB::_query($sql, "could not get sales type");
         $row    = DB::_fetchRow($result);
-
         return $row[0];
       }
       /**
@@ -238,7 +238,6 @@
        */
       public static function select($name, $selected_id = null, $spec_opt = false, $submit_on_change = false) {
         $sql = "SELECT category_id, description, inactive FROM stock_category";
-
         return Forms::selectBox(
           $name,
           $selected_id,
@@ -246,11 +245,11 @@
           'category_id',
           'description',
           array(
-               'order'         => 'category_id',
-               'spec_option'   => $spec_opt,
-               'spec_id'       => -1,
-               'select_submit' => $submit_on_change,
-               'async'         => true
+            'order'         => 'category_id',
+            'spec_option'   => $spec_opt,
+            'spec_id'       => -1,
+            'select_submit' => $submit_on_change,
+            'async'         => true
           )
         );
       }

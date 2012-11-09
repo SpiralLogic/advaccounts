@@ -20,7 +20,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Items extends \ADV\App\Controller\Action {
+  class Items extends \ADV\App\Controller\Action
+  {
+
     protected $itemData;
     protected function before() {
       if (REQUEST_AJAX) {
@@ -66,7 +68,7 @@
       $form->hidden('id');
       $form->text('stock_id')->label('Item Code:');
       $form->text('name')->label('Item Name:');
-      $form->textarea('long_description', ['rows'=> 4])->label('Description:');
+      $form->textarea('long_description', ['rows' => 4])->label('Description:');
       $form->custom(Item_Category::select('category_id'))->label('Category:');
       $form->custom(Item_Unit::select('uom'))->label('Units:');
       $form->custom(Tax_ItemType::select('tax_type_id'))->label('Tax Type:');
@@ -83,11 +85,11 @@
         $searchBox = UI::search(
           'itemSearchId',
           [
-          'url'              => 'Item',
-          'idField'          => 'stock_id',
-          'name'             => 'itemSearchId', //
-          'focus'            => true,
-          'callback'         => 'Items.fetch'
+            'url'      => 'Item',
+            'idField'  => 'stock_id',
+            'name'     => 'itemSearchId', //
+            'focus'    => true,
+            'callback' => 'Items.fetch'
           ],
           true
         );

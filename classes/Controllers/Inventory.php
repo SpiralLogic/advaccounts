@@ -15,7 +15,9 @@
   /**
 
    */
-  class Inventory extends Menu {
+  class Inventory extends Menu
+  {
+
     public $name = "Inventory";
     public $help_context = "&Inventory";
     /**

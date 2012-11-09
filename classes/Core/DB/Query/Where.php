@@ -12,7 +12,9 @@
   /**
 
    */
-  abstract class Where {
+  abstract class Where
+  {
+
     /**
      * @var array
      */
@@ -49,7 +51,6 @@
             $this->_where($condition);
           }
         }
-
         return $this;
       }
       if ($uservar !== null) {
@@ -59,7 +60,6 @@
         $conditions             = $conditions . ' ' . $name;
       }
       $this->where[] = (empty($this->where)) ? $conditions : $type . ' ' . $conditions;
-
       return $this;
     }
     /**
@@ -135,7 +135,6 @@
       if (empty($this->where)) {
         $condition = '(' . $condition;
       }
-
       return $this->_where($condition, ' AND ', $uservar);
     }
     /**
@@ -143,7 +142,6 @@
      */
     public function close() {
       array_push($this->where, array_pop($this->where) . ') ');
-
       return $this;
     }
     /**
@@ -155,7 +153,6 @@
         $sql .= ' WHERE ' . implode(' ', $this->where);
       }
       $this->data = $this->data + $this->wheredata;
-
       return $sql;
     }
   }

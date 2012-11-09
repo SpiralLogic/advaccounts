@@ -5,18 +5,14 @@
    * @license   http://www.opensource.org/licenses/mit-license.html MIT License
    * @copyright 2012 The Authors
    */
-
   if (version_compare(PHP_VERSION, '5.3.7', '<')) {
     trigger_error("The Password Compatibility Library requires PHP >= 5.3.7", E_USER_WARNING);
     // Prevent defining the functions
     return;
   }
-
   if (!defined('PASSWORD_BCRYPT')) {
-
     define('PASSWORD_BCRYPT', 1);
     define('PASSWORD_DEFAULT', PASSWORD_BCRYPT);
-
     /**
      * Hash the password using the specified algorithm
      *
@@ -126,15 +122,11 @@
         $salt = str_replace('+', '.', base64_encode($buffer));
       }
       $salt = substr($salt, 0, $required_salt_len);
-
       $hash = $hash_format . $salt;
-
       $ret = crypt($password, $hash);
-
       if (!is_string($ret) || strlen($ret) <= 13) {
         return false;
       }
-
       return $ret;
     }
 
@@ -211,12 +203,10 @@
       if (!is_string($ret) || strlen($ret) != strlen($hash) || strlen($ret) <= 13) {
         return false;
       }
-
       $status = 0;
       for ($i = 0; $i < strlen($ret); $i++) {
         $status |= (ord($ret[$i]) ^ ord($hash[$i]));
       }
-
       return $status === 0;
     }
   }

@@ -42,7 +42,9 @@
   /**
 
    */
-  class Sales_Order {
+  class Sales_Order
+  {
+
     /**
      * @var int
      */
@@ -205,7 +207,7 @@
           $this->get($trans_no[0], $type);
           if ($this->view_only) { // prepare for DN/IV entry
             for ($line_no = 0; $line_no < count($this->line_items); $line_no++) {
-              $line                 = &$this->line_items[$line_no];
+              $line                 = & $this->line_items[$line_no];
               $line->src_id         = $line->id; // save src line ids for update
               $line->qty_dispatched = $line->quantity - $line->qty_done;
             }
@@ -234,14 +236,14 @@
             // calculate & save: qtys on other docs and free qtys on src doc
             for ($line_no = 0; $srcline = DB::_fetch($srcdetails); $line_no++) {
               $sign          = 1; // $type==13 ? 1 : -1; // this is strange debtor_trans atavism
-              $line          = &$this->line_items[$line_no];
+              $line          = & $this->line_items[$line_no];
               $line->src_id  = $srcline['id']; // save src line ids for update
               $line->qty_old = $line->qty_dispatched = $line->quantity;
               $line->quantity += $sign * ($srcline['quantity'] - $srcline['qty_done']); // add free qty on src doc
             }
           } else { // prepare qtys for derivative document entry (not used in display)
             for ($line_no = 0; $line_no < count($this->line_items); $line_no++) {
-              $line                 = &$this->line_items[$line_no];
+              $line                 = & $this->line_items[$line_no];
               $line->src_id         = $line->id; // save src line ids for update
               $line->qty_dispatched = $line->quantity - $line->qty_done;
             }
@@ -1167,10 +1169,10 @@
       echo '<tr>';
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
       Forms::amountCellsSmall(null, 'totalDiscount', $total_discount, null, ['$']);
-      echo  (new HTML)->td(null, array('colspan'=> 2, 'class'=> 'center'))->button(
+      echo  (new HTML)->td(null, array('colspan' => 2, 'class' => 'center'))->button(
         'discountAll',
         'Discount All',
-        array('name' => '_action', 'value'=> 'discountAll'),
+        array('name' => '_action', 'value' => 'discountAll'),
         false
       );
       Forms::hidden('_discountAll', '0', true);
@@ -1634,7 +1636,6 @@
      * @param $debtor_id
      *
      * @return \ADV\Core\DB\Query\Result
-
      */
     public static function get_customer($debtor_id) {
       // Now check to ensure this account is not on hold */

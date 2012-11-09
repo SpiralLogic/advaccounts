@@ -10,12 +10,10 @@
        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
        See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
       * ********************************************************************* */
-
   print_sales_orders();
   $print_as_quote = 0;
   function print_sales_orders() {
     global $print_as_quote;
-
     $report_type    = '\\ADV\\App\\Reports\\PDF';
     $from           = $_POST['PARAM_0'];
     $to             = $_POST['PARAM_1'];
@@ -37,10 +35,10 @@
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
       if ($print_as_quote == 0) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("PROFORMA INVOICE"), "SalesOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       } else {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("QUOTE"), "QuoteBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
       }
       $rep->currency = $cur;
@@ -53,8 +51,7 @@
       $params['bankaccount'] = $baccount['id'];
       $branch                = Sales_Branch::get($myrow["branch_id"]);
       if ($email == 1) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP, User::page_size());
         $rep->currency = $cur;
         $rep->Font();
@@ -77,7 +74,6 @@
         $Net = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
         $SubTotal += $Net;
         # __ADVANCEDEDIT__ BEGIN #
-
         $TaxType = Tax_ItemType::get_for_item($myrow2['stk_code']);
         $TaxTotal += Tax::for_item($myrow2['stk_code'], $Net, $TaxType);
         # __ADVANCEDEDIT__ END #
@@ -113,7 +109,6 @@
       if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) {
         $rep->Header2($myrow, $branch, $myrow, $baccount, ST_PROFORMA);
       }
-
       $display_freight = Num::_format($myrow["freight_cost"], $dec);
       $SubTotal += $myrow["freight_cost"];
       $TaxTotal += $myrow['freight_cost'] * .1;

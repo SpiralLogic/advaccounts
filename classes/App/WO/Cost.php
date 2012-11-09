@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Cost {
+  class WO_Cost
+  {
+
     public static $types = array(
       WO_LABOUR   => "Labour Cost", //
       WO_OVERHEAD => "Overhead Cost", ////

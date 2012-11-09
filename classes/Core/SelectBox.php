@@ -15,7 +15,9 @@
   /**
 
    */
-  class SelectBox {
+  class SelectBox
+  {
+
     /**
      * @var array
      */

@@ -15,7 +15,9 @@
     /**
 
      */
-    class Type extends \ADV\App\DB\Base {
+    class Type extends \ADV\App\DB\Base
+    {
+
       protected $_table = 'tax_types';
       protected $_classname = 'Tax Type';
       protected $_id_column = 'id';
@@ -91,7 +93,9 @@
     /**
 
      */
-    class Tax_Type {
+    class Tax_Type
+    {
+
       /**
        * @static
        *
@@ -202,7 +206,6 @@
         $sql = "DELETE FROM item_tax_type_exemptions WHERE tax_type_id=$type_id";
         DB::_query($sql, "could not delete item tax type exemptions");
         DB::_commit();
-
         return Event::notice(_('Selected tax type has been deleted'));
       }
       /**
@@ -244,10 +247,10 @@
           'id',
           'name',
           array(
-               'spec_option'   => $none_option,
-               'spec_id'       => ALL_NUMERIC,
-               'select_submit' => $submit_on_change,
-               'async'         => false,
+            'spec_option'   => $none_option,
+            'spec_id'       => ALL_NUMERIC,
+            'select_submit' => $submit_on_change,
+            'async'         => false,
           )
         );
       }

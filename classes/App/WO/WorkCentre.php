@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_WorkCentre {
+  class WO_WorkCentre
+  {
+
     /**
      * @static
      *

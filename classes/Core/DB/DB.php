@@ -34,7 +34,9 @@
    * @method static _errorNo()
    * @method  static _quote($value, $type = null)
    */
-  class DB implements \Serializable {
+  class DB implements \Serializable
+  {
+
     use \ADV\Core\Traits\StaticAccess2;
 
     const SELECT = 0;
@@ -187,7 +189,7 @@
         throw new DBException('No database connection!!');
       }
       try {
-        /** @var \PDOStatement $prepared  */
+        /** @var \PDOStatement $prepared */
         $prepared = $this->conn->prepare($sql);
         $params   = substr_count($sql, '?');
         if ($data && $params > count($data)) {
@@ -414,7 +416,6 @@
     }
     /**
      * @static
-
      */
     public function begin() {
       /** @noinspection PhpUndefinedMethodInspection */
@@ -429,7 +430,6 @@
     }
     /**
      * @static
-
      */
     public function commit() {
       /** @noinspection PhpUndefinedMethodInspection */
@@ -444,7 +444,6 @@
     }
     /**
      * @static
-
      */
     public function cancel() {
       /** @noinspection PhpUndefinedMethodInspection */
@@ -541,7 +540,7 @@
           case DB::INSERT:
             $count = preg_match('/Column \'(.+)\'(.*)/', $error['message'], $matches);
             if ($count) {
-              $this->lastError = [E_ERROR, 'message'=> str_replace(['cannot be null', '_'], ['cannot be empty', ' '], $matches[1] . $matches[2]), 'var'=> $matches[1]];
+              $this->lastError = [E_ERROR, 'message' => str_replace(['cannot be null', '_'], ['cannot be empty', ' '], $matches[1] . $matches[2]), 'var' => $matches[1]];
             }
             throw new DBInsertException('Could not insert into database.');
             break;
@@ -620,7 +619,6 @@
       if ($silent) {
         return $error;
       }
-
       if (class_exists('\\ADV\\Core\\Errors')) {
         \ADV\Core\Errors::databaseError($error, $this->errorSql, $data);
       } else {
@@ -661,35 +659,47 @@
   /**
 
    */
-  class DBException extends \Exception {
+  class DBException extends \Exception
+  {
+
   }
 
   /**
 
    */
-  class DBInsertException extends DBException {
+  class DBInsertException extends DBException
+  {
+
   }
 
   /**
 
    */
-  class DBDeleteException extends DBException {
+  class DBDeleteException extends DBException
+  {
+
   }
 
   /**
 
    */
-  class DBSelectException extends DBException {
+  class DBSelectException extends DBException
+  {
+
   }
 
   /**
 
    */
-  class DBUpdateException extends DBException {
+  class DBUpdateException extends DBException
+  {
+
   }
 
   /**
 
    */
-  class DBDuplicateException extends DBException {
+  class DBDuplicateException extends DBException
+  {
+
   }

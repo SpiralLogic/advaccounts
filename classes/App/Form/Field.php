@@ -12,7 +12,9 @@
   /**
 
    */
-  class Field implements \ArrayAccess {
+  class Field implements \ArrayAccess
+  {
+
     use \ADV\Core\Traits\HTML;
 
     public $id;
@@ -57,7 +59,6 @@
       if (!isset($this->attr['placeholder'])) {
         $this['placeholder'] = rtrim(trim($label), ':');
       }
-
       return $this;
     }
     /**
@@ -76,7 +77,6 @@
      */
     public function setContent($content) {
       $this->content = $content;
-
       return $this;
     }
     /**
@@ -86,7 +86,6 @@
      */
     public function mergeAttr($attr) {
       $this->attr = array_merge($this->attr, (array) $attr);
-
       return $this;
     }
     /**
@@ -98,7 +97,6 @@
      */
     public function value($value) {
       $this->value = $value;
-
       return $this;
     }
     /**
@@ -120,7 +118,6 @@
      */
     public function append($text) {
       $this->append = $text;
-
       return $this;
     }
     /**
@@ -130,7 +127,6 @@
      */
     public function prepend($text) {
       $this->prepend = $text;
-
       return $this;
     }
     /**
@@ -141,7 +137,6 @@
      */
     public function setValidator($validator) {
       $this->validator = $validator;
-
       return $this;
     }
     /**
@@ -169,7 +164,6 @@
       if ($this->append) {
         $return .= "<span class='add-on' >" . $this->append . "</span>";
       }
-
       return $return . "</span>";
     }
     /**
@@ -185,7 +179,6 @@
       if ($this->label) {
         $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
       }
-
       return $control;
     }
     /**
@@ -220,7 +213,6 @@
       if (isset($this->attr[$offset])) {
         return $this->attr[$offset];
       }
-
       return null;
     }
     /**
@@ -240,7 +232,6 @@
     public function offsetSet($offset, $value) {
       if ($offset == 'value') {
         $this->value($value);
-
         return;
       }
       $this->attr[$offset] = $value;

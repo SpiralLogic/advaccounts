@@ -10,7 +10,9 @@
    **/
   namespace ADV\App\Form;
 
-  class Checkbox extends Field {
+  class Checkbox extends Field
+  {
+
     public function __construct($name) {
       parent::__construct('checkbox', $name);
       $this->attr['type'] = 'checkbox';
@@ -27,7 +29,6 @@
       if ($this->label) {
         $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
       }
-
       return $control;
     }
   }

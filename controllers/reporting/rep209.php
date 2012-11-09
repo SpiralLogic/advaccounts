@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   include_once(__DIR__ . DS . 'includes/lang/en_AU/report.php'); //TODO  change to language from config
   use \Reports\Report as Report;
 
@@ -69,7 +68,7 @@
     $params = array('comments' => $comments);
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
-      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
       $rep           = new $report_type(_('PURCHASE ORDER'), "PurchaseOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SUPPTRANSVIEW : SA_SUPPBULKREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();

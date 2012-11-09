@@ -28,6 +28,7 @@
    */
   class Creditor extends \Contact_Company
   {
+
     /**
      * @static
      *
@@ -297,11 +298,11 @@
       $customerBox->addBeforeClose('$("#creditor_id").trigger("change")');
       $customerBox->setOptions(
         array(
-             'autoOpen'   => false,
-             'modal'      => true,
-             'width'      => '850',
-             'height'     => '715',
-             'resizeable' => true
+          'autoOpen'   => false,
+          'modal'      => true,
+          'width'      => '850',
+          'height'     => '715',
+          'resizeable' => true
         )
       );
       $customerBox->show();
@@ -490,15 +491,15 @@ JS;
       UI::search(
         'creditor',
         array(
-             'cells'             => true, //
-             'url'               => 'Creditor', ///
-             'label_cell_params' => ['rowspan' => $o['rowspan'], 'class' => 'nowrap label ' . $o['cell_class']], //
-             'idField'           => 'creditor_id',
-             'label'             => $o['label'], //
-             'name'              => 'creditor', //
-             'input_cell_params' => $o['cell_params'], //
-             'focus'             => $focus, //
-             'value'             => $value ? : null,
+          'cells'             => true, //
+          'url'               => 'Creditor', ///
+          'label_cell_params' => ['rowspan' => $o['rowspan'], 'class' => 'nowrap label ' . $o['cell_class']], //
+          'idField'           => 'creditor_id',
+          'label'             => $o['label'], //
+          'name'              => 'creditor', //
+          'input_cell_params' => $o['cell_params'], //
+          'focus'             => $focus, //
+          'value'             => $value ? : null,
         )
       );
       if ($o['row']) {
@@ -535,16 +536,16 @@ JS;
         'creditor_id',
         'name',
         array(
-             'format'        => 'Forms::addCurrFormat',
-             'order'         => array('supp_ref'),
-             'search_box'    => $mode != 0,
-             'type'          => 1,
-             'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
-             'spec_id'       => ALL_TEXT,
-             'select_submit' => $submit_on_change,
-             'async'         => false,
-             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
-             'show_inactive' => $all
+          'format'        => 'Forms::addCurrFormat',
+          'order'         => array('supp_ref'),
+          'search_box'    => $mode != 0,
+          'type'          => 1,
+          'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
+          'spec_id'       => ALL_TEXT,
+          'select_submit' => $submit_on_change,
+          'async'         => false,
+          'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
+          'show_inactive' => $all
         )
       );
     }

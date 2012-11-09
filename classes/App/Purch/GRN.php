@@ -25,7 +25,9 @@
   /**
 
    */
-  class Purch_GRN {
+  class Purch_GRN
+  {
+
     /**
      * @param      $supplier
      * @param      $stock_id

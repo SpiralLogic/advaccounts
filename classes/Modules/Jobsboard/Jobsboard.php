@@ -19,7 +19,9 @@
   /**
    * Jobsboard
    */
-  class Jobsboard extends Module\Base {
+  class Jobsboard extends Module\Base
+  {
+
     /** @var */
     protected $currentJob;
     /** @var */
@@ -35,7 +37,6 @@
       }
     }
     public function init() {
-
       $this->tasks();
     }
     /**
@@ -61,7 +62,6 @@
       } else {
         Event::error('There is no current Order to remove from jobsboard');
       }
-
       return false;
     }
     /**
@@ -137,7 +137,6 @@
       $data['Updates']              = $update;
       $this->lines                  = $lines;
       ($exists) ? $this->updateJob($data) : $this->insertJob($data);
-
       return;
     }
     /***
@@ -150,7 +149,6 @@
       if ($this->currentJob) {
         $this->getLines();
       }
-
       return $this->currentJob;
     }
     /***
@@ -161,7 +159,6 @@
       if (empty($this->currentJob)) {
         return false;
       }
-
       return (isset($this->currentJob['Advanced_Job_No']));
     }
     /**
@@ -221,7 +218,6 @@
       foreach ($lines as $line) {
         $result[$line['line_id']] = $line;
       }
-
       return $result;
     }
     /***
@@ -230,12 +226,10 @@
      */
     protected function getOrderLines() {
       $lines = DB::_select()->from('sales_order_details')->where('order_no=', $this->order_no)->fetch()->all();
-
       return $lines;
     }
     /**
      * @static
-
      */
     public function tasks() {
       $result = false;

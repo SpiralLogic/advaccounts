@@ -20,7 +20,9 @@
   /**
 
    */
-  class Purchasing extends Manage {
+  class Purchasing extends Manage
+  {
+
     protected $stock_id;
     protected $security = SA_PURCHASEPRICING;
     protected $frame = false;
@@ -37,12 +39,12 @@
         UI::search(
           'stock_id',
           [
-          'label'            => 'Item:',
-          'url'              => 'Item',
-          'idField'          => 'stock_id',
-          'name'             => 'stock_id', //
-          'value'            => $this->stock_id,
-          'focus'            => true,
+            'label'   => 'Item:',
+            'url'     => 'Item',
+            'idField' => 'stock_id',
+            'name'    => 'stock_id', //
+            'value'   => $this->stock_id,
+            'focus'   => true,
           ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);
@@ -58,13 +60,12 @@
      * @return mixed
      */
     protected function formContents(Form $form, View $view) {
-
       $view['title'] = 'Item Purchase Prices';
       $form->hidden('id');
       $form->hidden('stockid');
       $form->hidden('stock_id');
       $form->hidden('creditor_id');
-      $form->text('supplier', ['class'=> 'nosubmit'])->label('Supplier:');
+      $form->text('supplier', ['class' => 'nosubmit'])->label('Supplier:');
       $this->JS->autocomplete('supplier', '"creditor_id"', 'Creditor');
       $form->amount('price')->label(_("Price:"));
       $form->custom(Item_Unit::select('suppliers_uom'))->label('Supplier\'s UOM:')->initial('ea');
@@ -86,17 +87,17 @@
      */
     protected function generateTableCols() {
       return [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         _("Supplier"),
         _("Code"),
-        ['type'=> 'skip'],
-        _("Price")            => ['type'=> 'amount'],
+        ['type' => 'skip'],
+        _("Price")             => ['type' => 'amount'],
         _("Supplier's UOM"),
-        _("Conversion Factor")=> ['type'=> 'rate'],
+        _("Conversion Factor") => ['type' => 'rate'],
         _("Supplier's Code"),
-        _("Updated")          => ['type'=> 'date'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        _("Updated")           => ['type' => 'date'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
     }
     /**

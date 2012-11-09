@@ -14,7 +14,9 @@
   /**
 
    */
-  class Advanced extends Application {
+  class Advanced extends Application
+  {
+
     public $name = 'Advanced';
     public $help_context = "&Advanced";
     public function buildMenu() {

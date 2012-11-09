@@ -11,6 +11,7 @@
    **/
   class Contact_Log
   {
+
     /**
      * @var string
      */
@@ -31,7 +32,6 @@
  message) VALUES (" . DB::_escape($parent_id) . "," . DB::_escape($contact_name) . "," . DB::_escape($type) . ",
  " . DB::_escape($message) . ")";
       DB::_query($sql, "Couldn't insert contact log");
-
       return DB::_insertId();
     }
     /**
@@ -44,14 +44,12 @@
      * @return array|bool
      */
     public static function read($parent_id, $type) {
-
       $sql     = "SELECT * FROM " . self::$_table . " WHERE parent_id=" . $parent_id . " AND parent_type=" . DB::_escape($type) . " ORDER BY date DESC";
       $result  = DB::_query($sql, "Couldn't get contact log entries");
       $results = [];
       while ($row = DB::_fetchAssoc($result)) {
         $results[] = $row;
       }
-
       return $results;
     }
   }

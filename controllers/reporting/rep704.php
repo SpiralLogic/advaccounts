@@ -9,14 +9,8 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
-
-
   print_GL_transactions();
-
-  function print_GL_transactions()
-  {
-
+  function print_GL_transactions() {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
@@ -39,21 +33,18 @@
       }
     }
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('GL Account Transactions'), "GLAccountTransactions",SA_GLREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('GL Account Transactions'), "GLAccountTransactions", SA_GLREP, User::page_size());
     $dec = User::price_dec();
     //$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);
     $cols = array(0, 65, 105, 125, 175, 230, 290, 345, 405, 465, 525);
     //------------0--1---2---3----4----5----6----7----8----9----10-------
     //-----------------------dim1-dim2-----------------------------------
     //-----------------------dim1----------------------------------------
-
     $aligns = array('left', 'left', 'left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     if ($dim == 2) {
       $headers = array(
@@ -70,42 +61,87 @@
       );
     } elseif ($dim == 1) {
       $headers = array(
-        _('Type'), _('Ref'), _('#'), _('Date'), _('Dimension'), "", _('Person/Item'), _('Debit'), _('Credit'), _('Balance')
+        _('Type'),
+        _('Ref'),
+        _('#'),
+        _('Date'),
+        _('Dimension'),
+        "",
+        _('Person/Item'),
+        _('Debit'),
+        _('Credit'),
+        _('Balance')
       );
     } else {
       $headers = array(
-        _('Type'), _('Ref'), _('#'), _('Date'), "", "", _('Person/Item'), _('Debit'), _('Credit'), _('Balance')
+        _('Type'),
+        _('Ref'),
+        _('#'),
+        _('Date'),
+        "",
+        "",
+        _('Person/Item'),
+        _('Debit'),
+        _('Credit'),
+        _('Balance')
       );
     }
     if ($dim == 2) {
       $params = array(
-        0    => $comments, 1 => array(
-          'text' => _('Period'), 'from' => $from, 'to' => $to
-        ), 2 => array(
-          'text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc
-        ), 3 => array(
-          'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''
-        ), 4 => array(
-          'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
+        0 => $comments,
+        1 => array(
+          'text' => _('Period'),
+          'from' => $from,
+          'to'   => $to
+        ),
+        2 => array(
+          'text' => _('Accounts'),
+          'from' => $fromacc,
+          'to'   => $toacc
+        ),
+        3 => array(
+          'text' => _('Dimension') . " 1",
+          'from' => Dimensions::get_string($dimension),
+          'to'   => ''
+        ),
+        4 => array(
+          'text' => _('Dimension') . " 2",
+          'from' => Dimensions::get_string($dimension2),
+          'to'   => ''
         )
       );
     } else {
       if ($dim == 1) {
         $params = array(
-          0    => $comments, 1 => array(
-            'text' => _('Period'), 'from' => $from, 'to' => $to
-          ), 2 => array(
-            'text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc
-          ), 3 => array(
-            'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
+          0 => $comments,
+          1 => array(
+            'text' => _('Period'),
+            'from' => $from,
+            'to'   => $to
+          ),
+          2 => array(
+            'text' => _('Accounts'),
+            'from' => $fromacc,
+            'to'   => $toacc
+          ),
+          3 => array(
+            'text' => _('Dimension'),
+            'from' => Dimensions::get_string($dimension),
+            'to'   => ''
           )
         );
       } else {
         $params = array(
-          0    => $comments, 1 => array(
-            'text' => _('Period'), 'from' => $from, 'to' => $to
-          ), 2 => array(
-            'text' => _('Accounts'), 'from' => $fromacc, 'to' => $toacc
+          0 => $comments,
+          1 => array(
+            'text' => _('Period'),
+            'from' => $from,
+            'to'   => $to
+          ),
+          2 => array(
+            'text' => _('Accounts'),
+            'from' => $fromacc,
+            'to'   => $toacc
           )
         );
       }
@@ -125,7 +161,7 @@
         $begin = Dates::_addDays($begin, -1);
       }
       $prev_balance = GL_Trans::get_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
-      $trans        = GL_Trans::get($from, $to, -1, $account['account_code'], $dimension, $dimension2,null,0);
+      $trans        = GL_Trans::get($from, $to, -1, $account['account_code'], $dimension, $dimension2, null, 0);
       $rows         = DB::_numRows($trans);
       if ($prev_balance == 0.0 && $rows == 0) {
         continue;

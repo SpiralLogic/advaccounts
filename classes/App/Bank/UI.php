@@ -23,7 +23,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_UI {
+  class Bank_UI
+  {
+
     /**
      * @static
      *
@@ -46,11 +48,11 @@
         'id',
         'reconciled',
         array(
-             'spec_option'   => $special_option,
-             'format'        => 'Forms::dateFormat',
-             'spec_id'       => '',
-             'select_submit' => $submit_on_change,
-             'order'         => 'reconciled DESC'
+          'spec_option'   => $special_option,
+          'format'        => 'Forms::dateFormat',
+          'spec_id'       => '',
+          'select_submit' => $submit_on_change,
+          'order'         => 'reconciled DESC'
         )
       );
     }
@@ -116,9 +118,9 @@
         'id',
         'bank_account_name',
         array(
-             'format'        => 'Forms::addCurrFormat',
-             'select_submit' => $submit_on_change,
-             'async'         => true
+          'format'        => 'Forms::addCurrFormat',
+          'select_submit' => $submit_on_change,
+          'async'         => true
         )
       );
       if ($raw) {

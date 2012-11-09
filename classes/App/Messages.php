@@ -17,6 +17,7 @@
    */
   class Messages
   {
+
     /**
      * @var string
      */
@@ -57,7 +58,6 @@
         $sql2   = "UPDATE user_messages SET unread={$unread} WHERE id={$id} AND user=" . $userid;
         DB::_query($sql2, 'Could not mark messages as unread');
       }
-
       return static::$count;
     }
     /**
@@ -74,7 +74,6 @@
         $message
       ) . ", 1, " . DB::_escape(User::i()->user) . ")";
       $result = DB::_query($sql, "Couldn't add message for $userid");
-
       return $result;
     }
     /**
@@ -94,7 +93,6 @@
       if (static::$count > 0) {
         static::makeDialog();
       }
-
       return ob_get_clean();
     }
     public static function makeDialog() {
@@ -102,10 +100,10 @@
       $dialog->addButtons(array('Close' => '$(this).dialog("close");'));
       $dialog->setOptions(
         array(
-             'autoOpen'   => true,
-             'modal'      => true,
-             'width'      => '500',
-             'resizeable' => false
+          'autoOpen'   => true,
+          'modal'      => true,
+          'width'      => '500',
+          'resizeable' => false
         )
       );
       $dialog->show();

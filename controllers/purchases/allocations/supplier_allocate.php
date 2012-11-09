@@ -7,11 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   JS::_footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Supplier Payment or Credit Note"), SA_SUPPLIERALLOC);
-
   if (isset($_POST['Process'])) {
     if (GL_Allocation::check()) {
       $_SESSION['alloc']->write();
@@ -47,7 +45,6 @@
    * @param $trans_no
    */
   function edit_allocations_for_transaction($type, $trans_no) {
-
     Forms::start();
     if (isset($_POST['inquiry']) || stristr($_SERVER['HTTP_REFERER'], 'supplier_allocation_inquiry.php')) {
       Forms::hidden('inquiry', true);

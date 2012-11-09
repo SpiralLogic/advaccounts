@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_bank_transactions();
   /**
    * @param $to
@@ -17,15 +16,13 @@
    *
    * @return mixed
    */
-  function get_bank_balance_to($to, $account)
-  {
+  function get_bank_balance_to($to, $account) {
     $to = Dates::_dateToSql($to);
     $sql
             = "SELECT SUM(amount) FROM bank_trans WHERE bank_act='$account'
     AND trans_date < '$to'";
     $result = DB::_query($sql, "The starting balance on hand could not be calculated");
     $row    = DB::_fetchRow($result);
-
     return $row[0];
   }
 
@@ -36,8 +33,7 @@
    *
    * @return null|PDOStatement
    */
-  function get_bank_transactions($from, $to, $account)
-  {
+  function get_bank_transactions($from, $to, $account) {
     $from = Dates::_dateToSql($from);
     $to   = Dates::_dateToSql($to);
     $sql
@@ -46,40 +42,48 @@
         AND trans_date >= '$from'
         AND trans_date <= '$to'
         ORDER BY trans_date,bank_trans.id";
-
     return DB::_query($sql, "The transactions for '$account' could not be retrieved");
   }
 
-  function print_bank_transactions()
-  {
-
+  function print_bank_transactions() {
     $acc         = $_POST['PARAM_0'];
     $from        = $_POST['PARAM_1'];
     $to          = $_POST['PARAM_2'];
     $comments    = $_POST['PARAM_3'];
     $destination = $_POST['PARAM_4'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Bank Statement'), "BankStatement",SA_BANKREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep     = new $report_type(_('Bank Statement'), "BankStatement", SA_BANKREP, User::page_size());
     $dec     = User::price_dec();
     $cols    = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     $headers = array(
-      _('Type'), _('#'), _('Reference'), _('Date'), _('Person/Item'), _('Debit'), _('Credit'), _('Balance')
+      _('Type'),
+      _('#'),
+      _('Reference'),
+      _('Date'),
+      _('Person/Item'),
+      _('Debit'),
+      _('Credit'),
+      _('Balance')
     );
     $account = Bank_Account::get($acc);
     $act     = $account['bank_account_name'] . " - " . $account['bank_curr_code'] . " - " . $account['bank_account_number'];
     $params  = array(
-      0    => $comments, 1 => array(
-        'text' => _('Period'), 'from' => $from, 'to'   => $to
-      ), 2 => array(
-        'text' => _('Bank Account'), 'from' => $act, 'to'   => ''
+      0 => $comments,
+      1 => array(
+        'text' => _('Period'),
+        'from' => $from,
+        'to'   => $to
+      ),
+      2 => array(
+        'text' => _('Bank Account'),
+        'from' => $act,
+        'to'   => ''
       )
     );
     $rep->Font();

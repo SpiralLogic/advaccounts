@@ -14,13 +14,17 @@
   /**
 
    */
-  class Load_Exception extends \Exception {
+  class Load_Exception extends \Exception
+  {
+
   }
 
   /**
 
    */
-  class Loader {
+  class Loader
+  {
+
     /**
      * @var int
      */
@@ -107,7 +111,6 @@
           return $this->includeFile($path, $required_class, $classname, $global);
         }
       }
-
       return false;
     }
     /**
@@ -129,7 +132,6 @@
         $fullclass = $this->global_classes[$classname] . '\\' . $classname;
         class_alias($fullclass, $classname);
       }
-
       return true;
     }
     /**
@@ -159,7 +161,6 @@
       }
       $paths  = [$dir . $class_file . '.php', $dir . $class_file . DS . $class_file . '.php'];
       $result = $this->trypath($paths, $requested_class, $classname, $global);
-
       return $result;
     }
   }

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Controllers\Purchases;
 
   use ADV\App\Creditor\Creditor;
@@ -32,7 +31,9 @@
   /**
 
    */
-  class Payment extends \ADV\App\Controller\Action {
+  class Payment extends \ADV\App\Controller\Action
+  {
+
     protected $supplier_currency;
     protected $bank_currency;
     protected $company_currency;
@@ -49,13 +50,13 @@
           $_POST['date_']        = $this->Input->get('date');
         }
       }
-      $this->creditor_id = &$this->Input->postGetGlobal('creditor_id', null, -1);
+      $this->creditor_id = & $this->Input->postGetGlobal('creditor_id', null, -1);
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (!$this->bank_account) // first page call
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
-      $this->bank_account = &$this->Input->postGetGlobal('bank_account', null, -1);
+      $this->bank_account = & $this->Input->postGetGlobal('bank_account', null, -1);
       if (!isset($_POST['date_'])) {
         $_POST['date_'] = Dates::_newDocDate();
         if (!Dates::_isDateInFiscalYear($_POST['date_'])) {

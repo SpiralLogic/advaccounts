@@ -7,7 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Sales_Invoice {
+  class Sales_Invoice
+  {
+
     /**
      * @static
      *
@@ -337,7 +339,7 @@
       $doc->reference     = Ref::get_next($doc->trans_type);
       //$doc->Comments='';
       foreach ($doc->line_items as $line_no => $item) {
-        $line        = &$doc->line_items[$line_no];
+        $line        = & $doc->line_items[$line_no];
         $line->price = Item_Price::get_calculated_price($line->stock_id, $doc->customer_currency, $doc->sales_type, $doc->price_factor, $doc->document_date);
       }
       $order             = $doc;

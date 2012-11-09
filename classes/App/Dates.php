@@ -15,14 +15,15 @@
   /**
 
    */
-  class Dates extends \ADV\Core\Dates {
+  class Dates extends \ADV\Core\Dates
+  {
+
     public $sticky_doc_date = false;
     public $use_fiscal_year = false;
     protected $Company = null;
     public $docDate;
     /**
      * @param \DB_Company                        $company
-
      */
     public function __construct(DB_Company $company) {
       $this->Company = $company;

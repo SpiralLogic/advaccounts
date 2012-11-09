@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Dates;
+
   /**
    * PHP version 5.4
    * @category  PHP

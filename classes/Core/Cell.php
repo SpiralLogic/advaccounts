@@ -13,7 +13,9 @@
   /**
 
    */
-  class Cell {
+  class Cell
+  {
+
     /**
      * @param        $amount
      * @param string $attrs
@@ -64,7 +66,6 @@
      * @param string $label_attrs
      * @param string $value_attrs
      * @param null   $id
-
      */
     public static function labelled($label, $value, $label_attrs = '', $value_attrs = "", $id = null) {
       if ($label) {

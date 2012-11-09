@@ -13,7 +13,9 @@
   /**
 
    */
-  class Custom extends Field {
+  class Custom extends Field
+  {
+
     protected $control;
     /**
      * @param $control
@@ -42,7 +44,6 @@
       if ($this->label) {
         $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
       }
-
       return $control;
     }
   }

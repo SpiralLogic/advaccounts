@@ -10,12 +10,10 @@
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
      See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * ********************************************************************* */
-
   print_sales_orders();
   $print_as_quote = 0;
   function print_sales_orders() {
     global $print_as_quote;
-
     $report_type    = '\\ADV\\App\\Reports\\PDF';
     $from           = $_POST['PARAM_0'];
     $to             = $_POST['PARAM_1'];
@@ -38,16 +36,16 @@
     $security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_SALESTRANSVIEW : SA_SALESBULKREP;
     if ($email == 0) {
       if ($print_as_quote == 0) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("ORDER"), "SalesOrderBulk", $security, User::page_size());
       } elseif ($print_as_quote == 2) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security, User::page_size());
       } elseif ($print_as_quote == 3) {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("PROFORMA INVOICE"), "QuoteBulk", $security, User::page_size());
       } else {
-        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+        /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
         $rep = new $report_type(_("QUOTE"), "QuoteBulk", $security, User::page_size());
       }
       $rep->currency = $cur;

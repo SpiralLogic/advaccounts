@@ -105,22 +105,22 @@
   }
   $sql .= " GROUP BY gl.type, gl.type_no";
   $cols = array(
-    _("#")                => array(
+    _("#")       => array(
       'fun'   => 'journal_pos',
       'align' => 'center'
     ),
-    _("Date")             => array(
+    _("Date")    => array(
       'name' => 'tran_date',
       'type' => 'date',
       'ord'  => 'desc'
     ),
-    _("Type")             => array('fun' => 'sysTypeName'),
-    _("Trans #")          => array('fun' => 'view_link'),
+    _("Type")    => array('fun' => 'sysTypeName'),
+    _("Trans #") => array('fun' => 'view_link'),
     _("Reference"),
-    _("Amount")           => array('type' => 'amount'),
+    _("Amount")  => array('type' => 'amount'),
     _("Memo"),
     _("User"),
-    _("View")             => array(
+    _("View")    => array(
       'insert' => true,
       'fun'    => 'gl_link'
     ),

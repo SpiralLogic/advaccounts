@@ -12,6 +12,7 @@
 
   class Validators
   {
+
     public function exists($name) {
       Input::_post($name);
     }

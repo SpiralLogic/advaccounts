@@ -14,7 +14,9 @@
   /**
 
    */
-  class Select extends Query {
+  class Select extends Query
+  {
+
     /**
      * @var array
      */
@@ -62,7 +64,6 @@
     public function select() {
       $columns      = func_get_args();
       $this->select = array_merge($this->select, $columns);
-
       return $this;
     }
     /***
@@ -76,7 +77,6 @@
       }
       $tables     = func_get_args();
       $this->from = array_merge($this->from, $tables);
-
       return $this;
     }
     /**
@@ -90,7 +90,6 @@
       }
       $by            = func_get_args();
       $this->orderby = array_merge($this->orderby, $by);
-
       return $this;
     }
     /**
@@ -104,7 +103,6 @@
       }
       $by            = func_get_args();
       $this->groupby = array_merge($this->groupby, $by);
-
       return $this;
     }
     /**
@@ -115,7 +113,6 @@
      */
     public function limit($start = 0, $quantity = null) {
       $this->limit = ($quantity == null) ? $start : "$start, $quantity";
-
       return $this;
     }
     /**
@@ -126,7 +123,6 @@
       $this->select  = $this->from = $this->orderby = $this->groupby = [];
       $this->limit   = '';
       $this->resetWhere();
-
       return $this;
     }
     /**
@@ -145,7 +141,6 @@
       if ($this->union) {
         return implode(' UNION ', $this->union);
       }
-
       return $this->buildQuery();
     }
     /**
@@ -172,7 +167,6 @@
       if (!empty($this->limit)) {
         $sql .= ' LIMIT ' . $this->limit;
       }
-
       return $sql;
     }
   }

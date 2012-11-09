@@ -12,7 +12,9 @@
   /**
 
    */
-  class Dialog {
+  class Dialog
+  {
+
     /**
      * @var array
      */

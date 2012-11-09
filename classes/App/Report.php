@@ -12,7 +12,9 @@
   /**
 
    */
-  class Report {
+  class Report
+  {
+
     /** @var */
     public $id;
     /** @var */
@@ -78,7 +80,6 @@
       return $this->controls;
     }
     public function add_custom_reports() {
-
       $file = PATH_COMPANY . "reporting/reports_custom.php";
       if (file_exists($file)) {
         /** @noinspection PhpIncludeInspection */

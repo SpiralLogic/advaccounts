@@ -13,7 +13,9 @@
   /**
 
    */
-  trait HTML {
+  trait HTML
+  {
+
     /**
      * @param      $tag
      * @param      $attributes
@@ -29,11 +31,9 @@
       } elseif ($content === null) {
         $content = '';
       }
-
       if ($close) {
         $content .= '</' . $tag . '>';
       }
-
       return '<' . $tag . ' ' . static::expandAttributes($attributes) . '>' . $content;
     }
     /**
@@ -57,7 +57,6 @@
         }
         $attrs .= ' ' . $key . '="' . $value . '"';
       }
-
       return $attrs;
     }
   }

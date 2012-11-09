@@ -24,6 +24,7 @@
    */
   class Form implements \ArrayAccess, \RecursiveIterator, \JsonSerializable
   {
+
     const NO_VALUES = 1;
     /** @var Field[] */
     protected $fields = [];
@@ -118,9 +119,9 @@
       $this->start     = (new HTML)->form($name, $attr)->input(
         null,
         [
-        'type'  => 'hidden',
-        'value' => $this->uniqueid,
-        'name'  => '_form_id'
+          'type'  => 'hidden',
+          'value' => $this->uniqueid,
+          'name'  => '_form_id'
         ]
       );
       return $this->start;

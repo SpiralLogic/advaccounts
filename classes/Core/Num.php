@@ -19,7 +19,9 @@
    * @method static Num i()
 
    */
-  class Num {
+  class Num
+  {
+
     use Traits\StaticAccess2;
 
     /**

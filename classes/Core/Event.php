@@ -14,18 +14,20 @@
   /**
 
    */
-  class Event {
+  class Event
+  {
+
     use \ADV\Core\Traits\Hook;
 
     /** @var \ADV\Core\Cache */
     protected static $Cache;
-    /** @var array all objects with methods to be run on shutdown*/
+    /** @var array all objects with methods to be run on shutdown */
     protected static $shutdown_objects = [];
-    /**@var bool Whether the request from the browser has finsihed*/
+    /**@var bool Whether the request from the browser has finsihed */
     protected static $request_finsihed = false;
-    /**@var array Events which occur after browser dissconnect which will be shown on next request*/
+    /**@var array Events which occur after browser dissconnect which will be shown on next request */
     protected static $shutdown_events = [];
-    /**@var string id for cache handler to store shutdown events*/
+    /**@var string id for cache handler to store shutdown events */
     protected static $shutdown_events_id;
     /**
      * @param Cache  $cache

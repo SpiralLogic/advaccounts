@@ -9,13 +9,8 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
-
-
   print_trial_balance();
-
-  function print_trial_balance()
-  {
+  function print_trial_balance() {
     $dim       = DB_Company::get_pref('use_dimension');
     $dimension = $dimension2 = 0;
     $from      = $_POST['PARAM_0'];
@@ -38,10 +33,8 @@
       }
     }
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec = User::price_dec();
@@ -54,32 +47,51 @@
     $cols = array(0, 50, 150, 210, 270, 330, 390, 450, 510, 570);
     //------------0--1---2----3----4----5----6----7----8----9--
     $headers = array(
-      _('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'), _('Credit'), _('Debit'), _('Credit')
+      _('Account'),
+      _('Account Name'),
+      _('Debit'),
+      _('Credit'),
+      _('Debit'),
+      _('Credit'),
+      _('Debit'),
+      _('Credit')
     );
     $aligns  = array('left', 'left', 'right', 'right', 'right', 'right', 'right', 'right');
     if ($dim == 2) {
       $params = array(
-        0    => $comments, 1 => array('text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
-          'text' => _('Dimension') . " 1", 'from' => Dimensions::get_string($dimension), 'to' => ''
-        ), 3 => array(
-          'text' => _('Dimension') . " 2", 'from' => Dimensions::get_string($dimension2), 'to' => ''
+        0 => $comments,
+        1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
+        2 => array(
+          'text' => _('Dimension') . " 1",
+          'from' => Dimensions::get_string($dimension),
+          'to'   => ''
+        ),
+        3 => array(
+          'text' => _('Dimension') . " 2",
+          'from' => Dimensions::get_string($dimension2),
+          'to'   => ''
         )
       );
     } else {
       if ($dim == 1) {
         $params = array(
-          0 => $comments, 1 => array('text' => _('Period'), 'from' => $from, 'to' => $to), 2 => array(
-            'text' => _('Dimension'), 'from' => Dimensions::get_string($dimension), 'to' => ''
+          0 => $comments,
+          1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
+          2 => array(
+            'text' => _('Dimension'),
+            'from' => Dimensions::get_string($dimension),
+            'to'   => ''
           )
         );
       } else {
         $params = array(
-          0 => $comments, 1 => array('text' => _('Period'), 'from' => $from, 'to' => $to)
+          0 => $comments,
+          1 => array('text' => _('Period'), 'from' => $from, 'to' => $to)
         );
       }
     }
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Trial Balance'), "TrialBalance",SA_GLANALYTIC, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Trial Balance'), "TrialBalance", SA_GLANALYTIC, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
     $rep->Header();

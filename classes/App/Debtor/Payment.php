@@ -20,7 +20,9 @@
   /**
 
    */
-  class Debtor_Payment {
+  class Debtor_Payment
+  {
+
     /**
      * @static
      *
@@ -191,7 +193,7 @@
         '5'      => _("Delivery Notes"),
         '6'      => _("Invoices Only")
       );
-      echo Forms::arraySelect($name, $selected, $allocs, ['class'=> 'med']);
+      echo Forms::arraySelect($name, $selected, $allocs, ['class' => 'med']);
       echo "</td>\n";
     }
     /**

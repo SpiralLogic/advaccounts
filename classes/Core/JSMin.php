@@ -12,7 +12,9 @@
   /**
 
    */
-  class JSMin {
+  class JSMin
+  {
+
     protected $minified = '';
     protected $source;
     /**

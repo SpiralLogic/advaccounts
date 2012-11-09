@@ -8,7 +8,9 @@
    * Time: 4:57 PM
    * To change this template use File | Settings | File Templates.
    */
-  class Base implements \ArrayAccess {
+  class Base implements \ArrayAccess
+  {
+
     const NUMERIC = 1;
     const OBJECT  = 2;
     const STRING  = 3;
@@ -32,7 +34,7 @@
      * @param $container
      */
     public function __construct(&$container) {
-      $this->container = &$container;
+      $this->container = & $container;
     }
     /***
      * @param mixed     $var     $_POST variable to return
@@ -44,10 +46,10 @@
     public function &get($var, $type = null, $default = null) {
       $result = $this->hasSet($var, $type, $default);
       if (is_array($var) && count($var) > 1) {
-        $array = &$this->container;
+        $array = & $this->container;
         while (count($var) > 1) {
           $key   = array_shift($var);
-          $array = &$array[$key];
+          $array = & $array[$key];
         }
         $array[$key] = $result;
         return $array[$key];
@@ -102,12 +104,9 @@
         }
       }
       $value = (is_string($var) && isset($array[$var])) ? $array[$var] : $default; //chnage back to null if fuckoutz happen
-
       if (!is_int($type) && is_callable($type)) {
-
         return call_user_func($type, $value) ? $value : $default;
       }
-
       switch ($type) {
         case self::NUMERIC:
           $value = str_replace([',', ' '], '', $value);

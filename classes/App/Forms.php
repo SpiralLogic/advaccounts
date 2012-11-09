@@ -25,7 +25,9 @@
    * @param string $action
    * @param string $name
    */
-  class Forms {
+  class Forms
+  {
+
     /** @var \ADV\Core\DB\DB */
     static $DB;
     static $Ajax;
@@ -823,8 +825,8 @@
         $selected_id,
         $items,
         array(
-             'select_submit' => $submit_on_change,
-             'async'         => false
+          'select_submit' => $submit_on_change,
+          'async'         => false
         )
       );
     }
@@ -867,8 +869,8 @@
         $selected,
         $items,
         array(
-             'spec_option' => $no_option,
-             'spec_id'     => ALL_NUMERIC
+          'spec_option' => $no_option,
+          'spec_id'     => ALL_NUMERIC
         )
       );
     }
@@ -1337,7 +1339,7 @@
       $input_attr['maxlength'] = $max ? : $size;
       $input_attr['id']        = $id ? : $name;
       $input_attr['type']      = 'text';
-      foreach ($input_attr as $k=> $v) {
+      foreach ($input_attr as $k => $v) {
         if ($v === null) {
           continue;
         }

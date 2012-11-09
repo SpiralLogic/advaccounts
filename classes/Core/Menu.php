@@ -8,11 +8,13 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   /**
 
    */
   class menu_item
   {
+
     /** @var */
     public $label;
     /** @var */
@@ -32,6 +34,7 @@
    */
   class Menu
   {
+
     /** @var */
     public $title;
     /**
@@ -54,7 +57,6 @@
     public function addItem($label, $link) {
       $item = new menu_item($label, $link);
       array_push($this->items, $item);
-
       return $item;
     }
   }

@@ -13,7 +13,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Locations extends \ADV\App\Controller\Manage {
+  class Locations extends \ADV\App\Controller\Manage
+  {
+
     protected $tableWidth = '90';
     protected function before() {
       $this->object = new Location();
@@ -37,7 +39,7 @@
       $form->hidden('id');
       $form->text('loc_code')->label('Location Code:');
       $form->text('location_name')->label('Location Name:');
-      $form->arraySelect('type', [Location::BOTH=> 'Both', Location::INWARD=> 'Inward', Location::OUTWARD=> 'Outward'])->label('Type:');
+      $form->arraySelect('type', [Location::BOTH => 'Both', Location::INWARD => 'Inward', Location::OUTWARD => 'Outward'])->label('Type:');
       $form->textarea('delivery_address')->label('Location Address:');
       $form->text('phone')->label('Phone:');
       $form->text('phone2')->label('Phone2:');
@@ -50,19 +52,19 @@
      */
     protected function generateTableCols() {
       $cols = [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         _("Location Code"), //
         _("Location Name"), //
         _("Address"), //
         _("Phone"), //
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         _("Fax"),
         _("Email"),
-        ['type'=> 'skip'],
-        _("Inactive")=> ['type'=> 'inactive'],
+        ['type' => 'skip'],
+        _("Inactive") => ['type' => 'inactive'],
         _("type"),
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
       return $cols;
     }

@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_price_listing();
   /**
    * @param int $category
@@ -31,7 +30,6 @@
     $sql
       .= " ORDER BY stock_master.category_id,
                 stock_master.stock_id";
-
     return DB::_query($sql, "No transactions were returned");
   }
 
@@ -53,7 +51,6 @@
       $sql .= " AND c.category_id = " . DB::_escape($category);
     }
     $sql .= " GROUP BY i.item_code";
-
     return DB::_query($sql, "No kits were returned");
   }
 
@@ -66,10 +63,8 @@
     $comments    = $_POST['PARAM_5'];
     $destination = $_POST['PARAM_6'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec       = User::price_dec();
@@ -104,29 +99,29 @@
     $headers = array(_('Category/Items'), _('Description'), _('Price'), _('GP %'));
     $aligns  = array('left', 'left', 'right', 'right');
     $params  = array(
-      0    => $comments,
-      1    => array(
+      0 => $comments,
+      1 => array(
         'text' => _('Currency'),
         'from' => $curr_sel,
         'to'   => ''
       ),
-      2    => array(
+      2 => array(
         'text' => _('Category'),
         'from' => $cat,
         'to'   => ''
       ),
-      3    => array(
+      3 => array(
         'text' => _('Sales Type'),
         'from' => $stype,
         'to'   => ''
       ),
-      4    => array(
+      4 => array(
         'text' => _('Show GP %'),
         'from' => $GP,
         'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
     $rep = new $report_type(_('Price Listing'), "PriceListing", SA_PRICEREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Controllers\Tax\Manage;
 
   use ADV\App\Form\Form;
@@ -18,7 +17,9 @@
   /**
 
    */
-  class Itemtypes extends \ADV\App\Controller\Manage {
+  class Itemtypes extends \ADV\App\Controller\Manage
+  {
+
     protected $security = SA_ITEMTAXTYPE;
     protected function before() {
       $this->object = new ItemType();
@@ -49,7 +50,6 @@
       foreach ($tax_types as $type) {
         $exemptions->arraySelect($type['id'], ['No', 'Yes'])->label($type['name']);
       }
-
       $form->nest('exemptions', $exemptions);
     }
     /**
@@ -57,12 +57,12 @@
      */
     protected function generateTableCols() {
       $cols = [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         'Item Tax Type',
-        'Fully Exempt'=> ['type'=> 'bool'],
-        'Inactive'    => ['type'=> 'inactive'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        'Fully Exempt' => ['type' => 'bool'],
+        'Inactive'     => ['type' => 'inactive'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
       return $cols;
     }

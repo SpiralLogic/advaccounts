@@ -15,7 +15,9 @@
   /**
 
    */
-  class Email {
+  class Email
+  {
+
     /**
      * @var array
      */

@@ -29,7 +29,9 @@
    * if ($writeoff_acc==0) return goods into $order->location
    * if src_docs!=0 => credit invoice else credit note
    */
-  class Sales_Credit {
+  class Sales_Credit
+  {
+
     /**
      * @static
      *
@@ -656,8 +658,8 @@ debit freight re-charged and debit sales */
         $name,
         $selected,
         array(
-             'Return'   => _("Items Returned to Inventory Location"),
-             'WriteOff' => _("Items Written Off")
+          'Return'   => _("Items Returned to Inventory Location"),
+          'WriteOff' => _("Items Written Off")
         ),
         array('select_submit' => $submit_on_change)
       );

@@ -19,7 +19,7 @@
     $_POST['debtor_id'] = Session::_getGlobal('debtor_id');
   }
   echo "<div class='center'>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-  Debtor::newselect(null, ['label'=> false, 'row'=> false]);
+  Debtor::newselect(null, ['label' => false, 'row' => false]);
   echo "<br>";
   $settled = (Input::_hasPost('ShowSettled'));
   Forms::check(_("Show Settled Items:"), 'ShowSettled', null, true);

@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   if (!REQUEST_AJAX) {
     header("Location: /");
     exit();

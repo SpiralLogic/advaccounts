@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   define('E_SUCCESS', E_ALL << 1);
   define('DS', DIRECTORY_SEPARATOR);
   define('ROOT_DOC', __DIR__ . DS);
@@ -18,7 +17,6 @@
   define('REQUEST_JSON', (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false));
   define('ROOT_URL', str_ireplace(realpath(__DIR__), '', ROOT_DOC));
   define('CRLF', chr(13) . chr(10));
-
   require PATH_CORE . 'Loader.php';
   if (!function_exists('e')) {
     /**
@@ -47,7 +45,6 @@
       return (Ajax::_inAjax()) ? Errors::format() : Errors::$before_box . Errors::format() . $text;
     }
   }
-
   /**
 
    */

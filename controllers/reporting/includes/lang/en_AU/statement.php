@@ -1,9 +1,10 @@
 <?php
-	namespace Reports;
+  namespace Reports;
 
   /**
 
    */
-  class Statement {
+  class Statement
+  {
 
-	}
+  }

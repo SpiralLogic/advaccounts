@@ -21,7 +21,7 @@
       unset ($_SESSION['issue_items']);
     }
     Session_register("issue_items");
-    $_SESSION['issue_items'] = new Item_Order(28);
+    $_SESSION['issue_items']           = new Item_Order(28);
     $_SESSION['issue_items']->order_id = $_GET['trans_no'];
   }
 
@@ -32,18 +32,15 @@
     if (!Dates::_isDate($_POST['date_'])) {
       Event::error(_("The entered date for the issue is invalid."));
       JS::_setFocus('date_');
-
       return false;
     } elseif (!Dates::_isDateInFiscalYear($_POST['date_'])) {
       Event::error(_("The entered date is not in fiscal year."));
       JS::_setFocus('date_');
-
       return false;
     }
     if (!Ref::is_valid($_POST['ref'])) {
       Event::error(_("You must enter a reference."));
       JS::_setFocus('ref');
-
       return false;
     }
     if (!Ref::is_new($_POST['ref'], ST_MANUISSUE)) {
@@ -54,10 +51,8 @@
       Event::error(
         _("The issue cannot be processed because an entered item would cause a negative inventory balance :") . " " . $failed_item->stock_id . " - " . $failed_item->description
       );
-
       return false;
     }
-
     return true;
   }
 
@@ -90,16 +85,13 @@
     if (!Validation::post_num('qty', 0)) {
       Event::error(_("The quantity entered is negative or invalid."));
       JS::_setFocus('qty');
-
       return false;
     }
     if (!Validation::post_num('std_cost', 0)) {
       Event::error(_("The entered standard cost is negative or invalid."));
       JS::_setFocus('std_cost');
-
       return false;
     }
-
     return true;
   }
 

@@ -25,12 +25,12 @@ Adv.extend({ Help:(function () {
             $.post(url, {title:title, text:text, element:element, page:page, save:true}, makePopover, 'json');
             $help_modal.modal('hide');
           }).on('shown',function () {
-                  editTextarea[0].focus();
-                  editTextarea[0].select();
-                }).on('hidden', function () {
-                        $current[0].focus();
-                        $current[0].select();
-                      });
+              editTextarea[0].focus();
+              editTextarea[0].select();
+            }).on('hidden', function () {
+              $current[0].focus();
+              $current[0].select();
+            });
           editTextarea.empty().text(content);
           editTitle.empty().val(helpTitle);
         }//
@@ -53,12 +53,16 @@ Adv.extend({ Help:(function () {
     } //
     , showIndicator = function () {
       var $this = $(this);
-      if ($this == $current || !$this.attr('id') || $this.is('.navibutton')) {return;}
+      if ($this == $current || !$this.attr('id') || $this.is('.navibutton')) {
+        return;
+      }
       $current = $(this);
       $(':input').popover('destroy');
       $current.on('mouseleave.indicator blur.indicator', startHide);
       $(document).on('keydown.indicator', function (event) {
-        if (event.keyCode === 112 && indicator.is(':visible')) {showHelp();}
+        if (event.keyCode === 112 && indicator.is(':visible')) {
+          showHelp();
+        }
         if (event.keyCode === 27) {
           $current.popover('hide');
           indicator.show();

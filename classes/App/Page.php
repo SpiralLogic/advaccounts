@@ -23,7 +23,9 @@
   /**
 
    */
-  class Page {
+  class Page
+  {
+
     /** @var */
     public $encoding;
     /** @var */
@@ -64,7 +66,7 @@
      * @var string
      */
     protected $title = '';
-    /** @var Page  */
+    /** @var Page */
     public static $i = null;
     protected $JS = null;
     /** @var Dates */
@@ -198,7 +200,7 @@
       $menu['name']        = $this->User->name;
       /** @var ADVAccounting $application */
       $menuitems = [];
-      foreach ($this->App->applications as $app=> $config) {
+      foreach ($this->App->applications as $app => $config) {
         $item = [];
         if (!$config['enabled']) {
           continue;
@@ -207,7 +209,7 @@
         $item['href'] = '/' . strtolower($app);
         $app          = '\\ADV\\Controllers\\' . $app;
         if (class_exists($app)) {
-          /** @var \ADV\App\Controller\Menu $app  */
+          /** @var \ADV\App\Controller\Menu $app */
           $app           = new $app($this->Session, $this->User);
           $item['extra'] = $app->getModules();
         }
@@ -243,7 +245,7 @@
       $footer   = $this->menu_footer();
       $footer->set('beforescripts', "_focus = '" . Input::_post('_focus') . "';_validate = " . $this->Ajax->php2js($validate) . ";");
       $this->User->_add_js_data();
-      $footer->set('sidemenu', ($this->header && $this->menu ? ['bank'=> $this->User->hasAccess(SS_GL)] : false));
+      $footer->set('sidemenu', ($this->header && $this->menu ? ['bank' => $this->User->hasAccess(SS_GL)] : false));
       $footer->set('JS', $this->JS);
       $footer->set('messages', (!REQUEST_AJAX ? Messages::show() : ''));
       $footer->set('page_body', Ajax::_end_div(true));

@@ -17,6 +17,7 @@
    */
   class Dimensions extends Application
   {
+
     public $name = "Dimensions";
     public $help_context = "&Dimensions";
     public $enabled = false;

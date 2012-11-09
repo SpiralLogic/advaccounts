@@ -7,7 +7,9 @@
   /**
    * Class for getting Customers from Volusion and putting them in to the intermediate database.
    */
-  class Customers {
+  class Customers
+  {
+
     protected $config;
     /**
      * @var \ADV\Core\Status
@@ -43,7 +45,6 @@
       if (!$this->customers) {
         return $this->status->set(false, 'XMLtoArray', "No new custoemrs!");
       }
-
       return $this->status->set(true, 'get', "Customers retrieved");
     }
     /**
@@ -58,7 +59,6 @@
       foreach ($customers as $customer) {
         $this->insertCustomerToDB($customer);
       }
-
       return $this->status->set(true, 'addedToDB', "Finished adding Customers to DB!");
     }
     /**
@@ -94,7 +94,6 @@
       if (!$result = file_get_contents($url)) {
         Event::warning('Could not retrieve web customers');
       }
-
       return $result;
     }
     /**
@@ -152,7 +151,6 @@
         DB::_update('WebCustomers')->value('extid', $c->id)->where('CustomerID=', $row['CustomerID'])->exec();
       }
       Event::notice("Added $added Customers. Updated $updated Customers.");
-
       return $this->status->set(true, 'adding', "Added $added Customers. Updated $updated Customers.");
     }
   }

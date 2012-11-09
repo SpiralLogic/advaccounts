@@ -24,7 +24,9 @@
   /**
 
    */
-  class PDF extends \Cpdf {
+  class PDF extends \Cpdf
+  {
+
     /**
      * @var array
      */

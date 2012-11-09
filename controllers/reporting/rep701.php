@@ -9,8 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
-
   /**
    * @param $type
    * @param $typename
@@ -18,8 +16,7 @@
    * @param $rep
    * @param $showbalance
    */
-  function display_type($type, $typename, &$dec, &$rep, $showbalance)
-  {
+  function display_type($type, $typename, &$dec, &$rep, $showbalance) {
     $printtitle = 0; //Flag for printing type name
     //Get Accounts directly under this group/type
     $result = GL_Account::getAll(null, null, $type);
@@ -67,16 +64,13 @@
   }
 
   print_Chart_of_Accounts();
-  function print_Chart_of_Accounts()
-  {
+  function print_Chart_of_Accounts() {
     $showbalance = $_POST['PARAM_0'];
     $comments    = $_POST['PARAM_1'];
     $destination = $_POST['PARAM_2'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec     = 0;
@@ -84,8 +78,8 @@
     $headers = array(_('Account'), _('Account Name'), _('Account Code'), _('Balance'));
     $aligns  = array('left', 'left', 'left', 'right');
     $params  = array(0 => $comments);
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Chart of Accounts'), "ChartOfAccounts",SA_GLREP, User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Chart of Accounts'), "ChartOfAccounts", SA_GLREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

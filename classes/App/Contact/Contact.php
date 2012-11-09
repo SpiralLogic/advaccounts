@@ -16,6 +16,7 @@
    */
   class Contact extends Base
   {
+
     /**
      * @var int
      */

@@ -7,6 +7,7 @@
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
   class Aes
   {
+
     /**
      * AES Cipher function: encrypt 'input' with Rijndael algorithm
      *
@@ -17,8 +18,8 @@
      * @return      ciphertext as byte-array (16 bytes)
      */
     public static function cipher($input, $w) { // main cipher function [§5.1]
-      $Nb = 4; // block size (in words): no of columns in state (fixed at 4 for AES)
-      $Nr = count($w) / $Nb - 1; // no of rounds: 10/12/14 for 128/192/256-bit keys
+      $Nb    = 4; // block size (in words): no of columns in state (fixed at 4 for AES)
+      $Nr    = count($w) / $Nb - 1; // no of rounds: 10/12/14 for 128/192/256-bit keys
       $state = array(); // initialise 4xNb byte-array 'state' with input [§3.4]
       for ($i = 0; $i < 4 * $Nb; $i++) {
         $state[$i % 4][floor($i / 4)] = $input[$i];
@@ -30,9 +31,9 @@
         $state = self::mixColumns($state, $Nb);
         $state = self::addRoundKey($state, $w, $round, $Nb);
       }
-      $state = self::subBytes($state, $Nb);
-      $state = self::shiftRows($state, $Nb);
-      $state = self::addRoundKey($state, $w, $Nr, $Nb);
+      $state  = self::subBytes($state, $Nb);
+      $state  = self::shiftRows($state, $Nb);
+      $state  = self::addRoundKey($state, $w, $Nr, $Nb);
       $output = array(4 * $Nb); // convert state to 1-d array before returning [§3.4]
       for ($i = 0; $i < 4 * $Nb; $i++) {
         $output[$i] = $state[$i % 4][floor($i / 4)];
@@ -92,9 +93,9 @@
      * @return    key schedule as 2D byte-array (Nr+1 x Nb bytes)
      */
     public static function keyExpansion($key) { // generate Key Schedule from Cipher Key [§5.2]
-      $Nb = 4; // block size (in words): no of columns in state (fixed at 4 for AES)
-      $Nk = count($key) / 4; // key length (in words): 4/6/8 for 128/192/256-bit keys
-      $Nr = $Nk + 6; // no of rounds: 10/12/14 for 128/192/256-bit keys
+      $Nb   = 4; // block size (in words): no of columns in state (fixed at 4 for AES)
+      $Nk   = count($key) / 4; // key length (in words): 4/6/8 for 128/192/256-bit keys
+      $Nr   = $Nk + 6; // no of rounds: 10/12/14 for 128/192/256-bit keys
       $w    = array();
       $temp = array();
       for ($i = 0; $i < $Nk; $i++) {
@@ -423,6 +424,7 @@
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
   class AesCtr extends Aes
   {
+
     /**
      * Encrypt a text using AES encryption in Counter mode of operation
      *  - see http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf
@@ -547,7 +549,7 @@
         for ($c = 0; $c < 4; $c++) {
           $counterBlock[15 - $c - 4] = self::urs(($b + 1) / 0x100000000 - 1, $c * 8) & 0xff;
         }
-        $cipherCntr = Aes::cipher($counterBlock, $keySchedule); // encrypt counter block
+        $cipherCntr   = Aes::cipher($counterBlock, $keySchedule); // encrypt counter block
         $plaintxtByte = array();
         for ($i = 0; $i < strlen($ciphertext[$b]); $i++) {
           // -- xor plaintext with ciphered counter byte-by-byte --

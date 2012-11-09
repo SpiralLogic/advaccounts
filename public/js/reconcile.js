@@ -10,11 +10,11 @@
  ***********************************************************************/
 
 Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
-  groupSelect:               function (e, ui) {
+  groupSelect:function (e, ui) {
     var target = $(this.obj_old).closest('tr'), source = $(this.target_cell).closest('tr'), data = {_action:'deposit', trans1:source.data('id'), trans2:target.data('id')};
     return Adv.Reconcile.sendAction(data);
   },
-  changeDate:                function (el) {
+  changeDate:function (el) {
     var data = {_action:'changeDate', trans_id:Adv.Reconcile.toChange.data('id')};
     $(el).find('[name="date"]').each(function () {
       data['date'] = $(this).val();
@@ -22,12 +22,12 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     Adv.Reconcile.sendAction(data);
     $dateChanger.dialog('close');
   },
-  changeBank:                function () {
+  changeBank:function () {
     var data = {_action:'changeBank', newbank:$('#changeBank').val(), type:Adv.Reconcile.toChange.data('type'), trans_no:Adv.Reconcile.toChange.data('transno')};
     Adv.Reconcile.sendAction(data);
     $(this).dialog('close')
   },
-  createLink:                function () {
+  createLink:function () {
     var self = $(this), fee = '', url = self.attr('href'), $row = $(this).closest('tr'), date = $row.data('date'), amount = $row.data('amount'), memo = $row.find('.state_memo').text();
     if (self.data('fee')) {
       fee = '&fee=' + self.data('fee');
@@ -37,7 +37,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     Adv.Reconcile.openLink(url);
     return false;
   },
-  openLink:                  function (url) {
+  openLink:function (url) {
     if (Adv.Reconcile.voidtrans && Adv.Reconcile.voidtrans.location) {
       Adv.Reconcile.voidtrans.location.href = url;
       Adv.Reconcile.voidtrans.focus();
@@ -46,10 +46,10 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
       Adv.Reconcile.voidtrans = window.open(url, '_blank');
     }
   },
-  unGroup:                   function () {
+  unGroup:function () {
     return Adv.Reconcile.sendAction({_action:'unGroup', groupid:$(this).closest('tr').data('id')});
   },
-  sendAction:                function (data) {
+  sendAction:function (data) {
     var overlay = $("<div id='loading' </div>").modal('show');
     $.post('#', data, function (data) {
       if (data.grid) {
@@ -60,11 +60,11 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
     }, 'json');
     return false;
   },
-  changeFlag:                function () {
+  changeFlag:function () {
     Adv.Scroll.set(this);
     JsHttpRequest.request('_' + $(this).attr('name') + '_update', this.form);
   },
-  setUpGrid:                 function () {
+  setUpGrid:function () {
     // reference to the REDIPS.drag library and message line
     var rd = REDIPS.drag;
     // initialization

@@ -9,15 +9,16 @@
    **/
   class Item_GL
   {
-/** @var */
+
+    /** @var */
     public $code_id;
-/** @var */
+    /** @var */
     public $dimension_id;
-/** @var */
+    /** @var */
     public $dimension2_id;
-/** @var */
+    /** @var */
     public $amount;
-/** @var */
+    /** @var */
     public $reference;
     /**
      * @var mixed|null

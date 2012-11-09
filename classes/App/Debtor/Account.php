@@ -9,6 +9,7 @@
    **/
   class Debtor_Account extends Debtor_Branch
   {
+
     /**
      * @var int
      */
@@ -25,8 +26,8 @@
      * @param int|null $id
      */
     public function __construct($id = null) {
-      $this->accounts_id = &$this->branch_id;
-      $this->id          = &$this->accounts_id;
+      $this->accounts_id = & $this->branch_id;
+      $this->id          = & $this->accounts_id;
       parent::__construct($id);
     }
     protected function defaults() {

@@ -22,7 +22,9 @@
   /**
 
    */
-  class Orders implements \Iterator, \Countable {
+  class Orders implements \Iterator, \Countable
+  {
+
     protected $config;
     /** @var */
     protected $data = array();
@@ -86,7 +88,6 @@
      */
     public function __construct($config = []) {
       $this->config = $config;
-
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       //echo 'Getting from Volusion<br>';
       $this->get();
@@ -103,7 +104,6 @@
       $url .= '&EncryptedPassword=' . $apikey;
       $url .= '&EDI_Name=Generic\Orders';
       $url .= '&SELECT_Columns=*';
-
       if (!$result = file_get_contents($url)) {
         Event::warning('Could not retrieve web orders');
       }
@@ -249,7 +249,9 @@
   /**
 
    */
-  class OrderDetails extends Orders implements \Iterator, \Countable {
+  class OrderDetails extends Orders implements \Iterator, \Countable
+  {
+
     /**
      * @var OrderOptions
      */
@@ -308,7 +310,9 @@
   /**
 
    */
-  class OrderOptions extends OrderDetails implements \Iterator, \Countable {
+  class OrderOptions extends OrderDetails implements \Iterator, \Countable
+  {
+
     /**
      * @var string
      */

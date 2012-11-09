@@ -36,6 +36,7 @@
    */
   class Purch_Order
   {
+
     /** @var */
     public $creditor_id;
     /** @var */
@@ -562,10 +563,10 @@
         Creditor::newselect(
           null,
           [
-          'cell_params' => ['colspan' => ($show_currencies + 1), 'rowspan' => $show_currencies],
-          'rowspan'     => $show_currencies,
-          'row'         => false,
-          'cell_class'  => 'label'
+            'cell_params' => ['colspan' => ($show_currencies + 1), 'rowspan' => $show_currencies],
+            'rowspan'     => $show_currencies,
+            'row'         => false,
+            'cell_class'  => 'label'
           ]
         );
         if (Input::_post('_control') == 'customer') {

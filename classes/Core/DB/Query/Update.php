@@ -14,7 +14,9 @@
   /**
    * @method \ADV\Core\DB\Query\Select values($values)
    */
-  class Update extends Insert {
+  class Update extends Insert
+  {
+
     /**
      * @param bool $table
      * @param      $db
@@ -33,7 +35,6 @@
       }
       $sql .= implode(', ', $this->fields);
       $sql .= $this->buildWhere();
-
       return $sql;
     }
   }

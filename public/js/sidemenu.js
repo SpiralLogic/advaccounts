@@ -13,30 +13,30 @@
     , Adv = window.Adv//
     , sidemenu = {}//
     , activestate = true//
-    , searchInput = $('<input/>').attr({'id': 'searchInput', type: 'text', class: 'small'}).data({'id': '', url: ''})//
+    , searchInput = $('<input/>').attr({'id':'searchInput', type:'text', class:'small'}).data({'id':'', url:''})//
     , $search = $("#search")//
     , $quickCustomer = $('#quickCustomer')//
     , $quickSupplier = $('#quickSupplier');
   (function () {
     var $this = this, $wrapper = $("#wrapper"), previous;
-    this.menu = $("#sidemenu").accordion({ heightStyle: "content", active: false, event: "mouseenter"}).draggable().show();
+    this.menu = $("#sidemenu").accordion({ heightStyle:"content", active:false, event:"mouseenter"}).draggable().show();
     this.sidemenuHide = function () {
-      $this.menu.clearQueue().animate({right: ' -10em', opacity: '.75'}, 500).accordion('option', {collapsible: true});
+      $this.menu.clearQueue().animate({right:' -10em', opacity:'.75'}, 500).accordion('option', {collapsible:true});
     };
     this.sidemenuActive = function () {
       activestate = true;
-      $this.menu.stop().animate({right: '-10em', opacity: '.75'}, 300).accordion("enable").mouseenter(function () {
+      $this.menu.stop().animate({right:'-10em', opacity:'.75'}, 300).accordion("enable").mouseenter(function () {
         window.clearTimeout(menuTimeout);
-        $(this).stop().animate({right: '1em', opacity: '1'}, 500).accordion('option', {collapsible: false});
+        $(this).stop().animate({right:'1em', opacity:'1'}, 500).accordion('option', {collapsible:false});
       }).mouseleave(function () {
-                      window.clearTimeout(menuTimeout);
-                      menuTimeout = window.setTimeout($this.sidemenuActive, 1000);
-                    });
+          window.clearTimeout(menuTimeout);
+          menuTimeout = window.setTimeout($this.sidemenuActive, 1000);
+        });
     };
     this.sidemenuActive();
     this.sidemenuInactive = function () {
       activestate = false;
-      $this.menu.unbind('mouseenter').accordion('option', {collapsible: false, active: true}).accordion("disable");
+      $this.menu.unbind('mouseenter').accordion('option', {collapsible:false, active:true}).accordion("disable");
       $this.menu.find("h3").one("click", function () {
         $this.hideSearch();
         $this.sidemenuActive();
@@ -44,7 +44,7 @@
     };
     this.doSearch = function () {
       var term = searchInput.val();
-      Adv.lastXhr = $.post(searchInput.data("url"), { 'q': term, limit: true }, $this.showSearch);
+      Adv.lastXhr = $.post(searchInput.data("url"), { 'q':term, limit:true }, $this.showSearch);
     };
     this.showSearch = function (data) {
       Adv.Forms.setFocus(false);
@@ -52,7 +52,7 @@
       $this.sidemenuHide();
       history.pushState({}, 'Search Results', searchInput.data("url") + 'q=' + searchInput.val());
       $wrapper.html(data);
-      Adv.Status.show({html: $('.msgbox').detach().html()});
+      Adv.Status.show({html:$('.msgbox').detach().html()});
     };
     this.hideSearch = function () {
       if ($current) {
@@ -64,7 +64,7 @@
       $this.hideSearch();
       $current = $(this).hide();
       $this.sidemenuInactive();
-      searchInput.data({'id': $current.data('href'), url: $current.data('href')}).insertBefore($current).focus();
+      searchInput.data({'id':$current.data('href'), url:$current.data('href')}).insertBefore($current).focus();
       return false;
     });
     $search.delegate('input', "change blur keyup paste", function (event) {
@@ -91,31 +91,31 @@
     $quickCustomer.focus(function () { $this.sidemenuInactive()}).blur(function () {
       searchInput.trigger('blur');
     }).autocomplete({
-                      source:    function (request, response) {
-                        Adv.lastXhr = $.getJSON('/contacts/manage/customers', request, function (data, status, xhr) {
-                          if (xhr === Adv.lastXhr) {
-                            response(data);
-                          }
-                        })
-                      },
-                      minLength: 2,
-                      select:    function (event, ui) {
-                        window.location.href = '/contacts/manage/customers?id=' + ui.item.id;
-                      }
-                    });
+        source:function (request, response) {
+          Adv.lastXhr = $.getJSON('/contacts/manage/customers', request, function (data, status, xhr) {
+            if (xhr === Adv.lastXhr) {
+              response(data);
+            }
+          })
+        },
+        minLength:2,
+        select:function (event, ui) {
+          window.location.href = '/contacts/manage/customers?id=' + ui.item.id;
+        }
+      });
     $quickSupplier.focus(function () { $this.sidemenuInactive()}).blur(function () {searchInput.trigger('blur')}).autocomplete({
-                                                                                                                                 source:    function (request, response) {
-                                                                                                                                   Adv.lastXhr = $.getJSON('/contacts/manage/suppliers', request, function (data, status, xhr) {
-                                                                                                                                     if (xhr === Adv.lastXhr) {
-                                                                                                                                       response(data);
-                                                                                                                                     }
-                                                                                                                                   })
-                                                                                                                                 },
-                                                                                                                                 minLength: 2,
-                                                                                                                                 select:    function (event, ui) {
-                                                                                                                                   window.location.href = '/contacts/manage/suppliers?id=' + ui.item.id;
-                                                                                                                                 }
-                                                                                                                               });
+      source:function (request, response) {
+        Adv.lastXhr = $.getJSON('/contacts/manage/suppliers', request, function (data, status, xhr) {
+          if (xhr === Adv.lastXhr) {
+            response(data);
+          }
+        })
+      },
+      minLength:2,
+      select:function (event, ui) {
+        window.location.href = '/contacts/manage/suppliers?id=' + ui.item.id;
+      }
+    });
   }).apply(sidemenu);
   Adv.sidemenu = sidemenu;
 })(window, jQuery);

@@ -10,7 +10,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Sales_Line extends \Sales_Order {
+  class Sales_Line extends \Sales_Order
+  {
+
     /**
      * @var int
      */

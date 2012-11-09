@@ -36,7 +36,9 @@
   /**
 
    */
-  class WO {
+  class WO
+  {
+
     public static $types = array(
       WO_ASSEMBLY   => "Assemble", //
       WO_UNASSEMBLY => "Unassemble", //

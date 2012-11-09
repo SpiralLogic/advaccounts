@@ -15,7 +15,9 @@
   /**
 
    */
-  class Validation {
+  class Validation
+  {
+
     const CUSTOMERS         = "debtors";
     const CURRENCIES        = "currencies";
     const SALES_TYPES       = "sales_types";
@@ -77,14 +79,12 @@
       } else {
         $extra = '';
       }
-
       $result = DB::_query('SELECT COUNT(*) FROM ' . $validate . ' ' . $extra, 'Could not do check empty query');
       $myrow  = DB::_fetchRow($result);
       if (!($myrow[0] > 0)) {
         throw new \Exception($msg);
       } else {
         Cache::_set($cachekey, true);
-
         return $myrow[0];
       }
     }
@@ -113,7 +113,6 @@
         $options['max_range'] = $max;
       }
       $result = filter_var($_POST[$postname], FILTER_VALIDATE_INT, $options);
-
       return ($result === false || $result === null) ? false : 1;
     }
     //
@@ -135,7 +134,6 @@
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
-
       return Validation::is_num($_POST[$postname], $min, $max, $default);
     }
     /**
@@ -156,7 +154,6 @@
       if ($max !== null && $result > $max) {
         $result = false;
       }
-
       return !($result === false || $result === null);
     }
     /**
@@ -175,14 +172,12 @@
         $_POST[$postname] = $default;
       }
       $result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
-
       if ($min !== null && $result < $min) {
         $result = false;
       }
       if ($max !== null && $result > $max) {
         $result = false;
       }
-
       return ($result === false || $result === null) ? 0 : User::numeric($result);
     }
   }

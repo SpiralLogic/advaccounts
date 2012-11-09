@@ -19,7 +19,9 @@
   /**
 
    */
-  class Person extends \ADV\App\DB\Base {
+  class Person extends \ADV\App\DB\Base
+  {
+
     protected $_id_column = 'salesman_code';
     protected $_table = 'salesman';
     protected $_classname = 'Sales Person';

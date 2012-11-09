@@ -11,6 +11,7 @@
    **/
   class Printer
   {
+
     /**
      * @static
      *
@@ -34,7 +35,6 @@
           $queue
         ) . "," . DB::_escape($host) . "," . DB::_escape($port) . "," . DB::_escape($timeout) . ")";
       }
-
       return DB::_query($sql, "could not write printer definition");
     }
     /**
@@ -43,7 +43,6 @@
      */
     public static function getAll() {
       $sql = "SELECT * FROM printers";
-
       return DB::_query($sql, "could not get printer definitions");
     }
     /**
@@ -56,7 +55,6 @@
     public static function get($id) {
       $sql    = "SELECT * FROM printers WHERE id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not get printer definition");
-
       return DB::_fetch($result);
     }
     //============================================================================
@@ -82,7 +80,6 @@
           return false;
         }
       }
-
       return true;
     }
     //
@@ -113,7 +110,6 @@
           return false;
         }
       }
-
       return static::get($ret['printer']);
     }
     /**
@@ -125,7 +121,6 @@
      */
     public static function delete_profile($name) {
       $sql = "DELETE FROM print_profiles WHERE profile=" . DB::_escape($name);
-
       return DB::_query($sql, "could not delete printing profile");
     }
     //
@@ -140,7 +135,6 @@
      */
     public static function get_profile($name) {
       $sql = "SELECT	* FROM print_profiles WHERE profile=" . DB::_escape($name);
-
       return DB::_query($sql, "could not get printing profile");
     }
   }

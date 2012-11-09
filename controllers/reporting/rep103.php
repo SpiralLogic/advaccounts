@@ -122,7 +122,10 @@
     $less    = (double) $less;
     $cols    = array(0, 150, 300, 400, 550);
     $headers = array(
-      _('Customer Postal Address'), _('Price/Turnover'), _('Branch Contact Information'), _('Branch Delivery Address')
+      _('Customer Postal Address'),
+      _('Price/Turnover'),
+      _('Branch Contact Information'),
+      _('Branch Delivery Address')
     );
     $aligns  = array('left', 'left', 'left', 'left');
     $params  = array(
@@ -132,8 +135,8 @@
       3 => array('text' => _('Sales Folk'), 'from' => $salesfolk, 'to' => ''),
       4 => array('text' => _('Activity'), 'from' => $morestr, 'to' => $lessstr)
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep     = new $report_type(_('Customer Details Listing'), "CustomerDetailsListing", SA_CUSTBULKREP,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Customer Details Listing'), "CustomerDetailsListing", SA_CUSTBULKREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();

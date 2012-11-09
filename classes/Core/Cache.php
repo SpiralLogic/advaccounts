@@ -18,7 +18,9 @@
    * @method static _delete($key)
    * @method static Cache i()
    */
-  class Cache {
+  class Cache
+  {
+
     use \ADV\Core\Traits\StaticAccess2;
 
     /**

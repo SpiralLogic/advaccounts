@@ -9,7 +9,9 @@
    **/
   // insert/update sales delivery
   //
-  class Sales_Delivery {
+  class Sales_Delivery
+  {
+
     /**
      * @static
      *

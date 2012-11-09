@@ -20,6 +20,7 @@
 
   class Security extends \ADV\Core\Security implements ArrayAccess
   {
+
     public $areas;
     protected $sections;
     protected $Config;
@@ -38,7 +39,6 @@
      * @return bool
      */
     public function hasAccess(User $user, $page_level) {
-
       if ($page_level === SA_OPEN) {
         return true;
       }
@@ -52,7 +52,6 @@
       } elseif ($user->hasSectionAccess($page_level)) {
         $access = $user->hasSectionAccess($page_level);
       }
-
       // only first registered company has site admin privileges
       return $access && ($user->company == 'default' || (isset($code) && ($code & ~0xff) != SS_SADMIN));
     }
@@ -71,7 +70,6 @@
         $row['areas']    = explode(';', $row['areas']);
         $row['sections'] = explode(';', $row['sections']);
       }
-
       return $row;
     }
     /**
@@ -128,7 +126,6 @@
       $sql = "SELECT count(*) FROM users WHERE role_id=$id";
       $ret = DB::_query($sql, 'cannot check role usage');
       $row = DB::_fetch($ret);
-
       return $row[0];
     }
     /**
@@ -144,7 +141,6 @@
      */
     public static function roles($name, $selected_id = null, $new_item = false, $submit_on_change = false, $show_inactive = false) {
       $sql = "SELECT id, role, inactive FROM security_roles";
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -152,10 +148,10 @@
         'id',
         'description',
         array(
-             'spec_option'                               => $new_item ? _("New role") : false,
-             'spec_id'                                   => '',
-             'select_submit'                             => $submit_on_change,
-             'show_inactive'                             => $show_inactive
+          'spec_option'   => $new_item ? _("New role") : false,
+          'spec_id'       => '',
+          'select_submit' => $submit_on_change,
+          'show_inactive' => $show_inactive
         )
       );
     }

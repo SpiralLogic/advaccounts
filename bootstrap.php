@@ -63,7 +63,7 @@
   define('REQUEST_PUT', REQUEST_METHOD === 'PUT' ? 'PUT' : false);
   define('REQUEST_DELETE', REQUEST_METHOD === 'DELETE' ? 'DELETE' : false);
   define('CRLF', chr(13) . chr(10));
-  /** @var $loader  */
+  /** @var $loader */
   $loader = require PATH_CORE . 'Loader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();

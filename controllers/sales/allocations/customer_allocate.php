@@ -7,11 +7,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   JS::_openWindow(950, 500);
   JS::_footerFile('/js/allocate.js');
   Page::start(_($help_context = "Allocate Customer Payment or Credit Note"), SA_SALESALLOC);
-
   if (isset($_POST['Process'])) {
     if (GL_Allocation::check()) {
       $_SESSION['alloc']->write();
@@ -19,7 +17,6 @@
       $_POST['Cancel'] = 1;
     }
   }
-
   if (isset($_POST['Cancel'])) {
     Sales_Allocation::clear_allocations();
     $forward = (isset($_POST['inquiry'])) ? "/sales/inquiry/customer_allocation_inquiry.php" : "/sales/allocations/customer_allocation_main.php";

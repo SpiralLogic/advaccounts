@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_workorders();
   function print_workorders() {
     $report_type = '\\ADV\\App\\Reports\\PDF';
@@ -32,8 +31,8 @@
     $params = array('comments' => $comments);
     $cur    = DB_Company::get_pref('curr_default');
     if ($email == 0) {
-      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-      $rep           = new $report_type(_('WORK ORDER'), "WorkOrderBulk",$_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP, User::page_size());
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+      $rep           = new $report_type(_('WORK ORDER'), "WorkOrderBulk", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP, User::page_size());
       $rep->currency = $cur;
       $rep->Font();
       $rep->Info($params, $cols, null, $aligns);
@@ -45,7 +44,7 @@
       }
       $date_ = Dates::_sqlToDate($myrow["date_"]);
       if ($email == 1) {
-        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP,User::page_size());
+        $rep           = new $report_type("", "", $_POST['PARAM_0'] == $_POST['PARAM_1'] ? SA_MANUFTRANSVIEW : SA_MANUFBULKREP, User::page_size());
         $rep->currency = $cur;
         $rep->Font();
         $rep->title    = _('WORK ORDER');

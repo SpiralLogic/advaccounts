@@ -14,7 +14,9 @@
   /**
 
    */
-  class System extends Menu {
+  class System extends Menu
+  {
+
     public $name = "System";
     public $help_context = "&System";
     protected function before() {

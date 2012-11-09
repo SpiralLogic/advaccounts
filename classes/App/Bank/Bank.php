@@ -38,7 +38,9 @@
   /**
 
    */
-  class Bank {
+  class Bank
+  {
+
     public static $payment_person_types = array(
       "Miscellaneous", //
       "Work Order", //

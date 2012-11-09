@@ -17,7 +17,9 @@
   /**
 
    */
-  class Insert extends Query {
+  class Insert extends Query
+  {
+
     /** @var */
     protected $table;
     /**

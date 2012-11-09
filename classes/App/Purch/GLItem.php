@@ -19,7 +19,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_GLItem {
+  class Purch_GLItem
+  {
+
     /* Contains relavent information from the purch_order_details as well to provide in cached form,
 all the info to do the necessary entries without looking up ie additional queries of the database again */
     /** @var */

@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_stock_check();
   /**
    * @param $category
@@ -44,7 +43,6 @@
         stock_master.description
         ORDER BY stock_master.category_id,
         stock_master.stock_id";
-
     return DB::_query($sql, "No transactions were returned");
   }
 
@@ -58,10 +56,8 @@
     $comments    = $_POST['PARAM_6'];
     $destination = $_POST['PARAM_7'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($category == ALL_NUMERIC) {
@@ -132,8 +128,7 @@
         'to'   => ''
       )
     );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
     $rep = new $report_type(_('Stock Check Sheets'), "StockCheckSheet", SA_ITEMSVALREP, User::page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

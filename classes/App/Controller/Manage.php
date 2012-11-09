@@ -19,7 +19,9 @@
   /**
 
    */
-  abstract class Manage extends Action {
+  abstract class Manage extends Action
+  {
+
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;

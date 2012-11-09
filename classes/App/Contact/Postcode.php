@@ -14,7 +14,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Postcode {
+  class Postcode
+  {
+
     use \ADV\Core\Traits\SetFromArray;
 
     /**
@@ -49,15 +51,15 @@
         UI::search(
           $this->city[0],
           array(
-               'placeholder'        => 'City',
-               'url'                => 'Postcode',
-               'data'               => ['type'=> 'Locality'],
-               'nodiv'              => true,
-               'set'                => static::$count,
-               'name'               => $this->city[0],
-               'size'               => 35,
-               'max'                => 40,
-               'callback'           => 'Adv.postcode.fetch'
+            'placeholder' => 'City',
+            'url'         => 'Postcode',
+            'data'        => ['type' => 'Locality'],
+            'nodiv'       => true,
+            'set'         => static::$count,
+            'name'        => $this->city[0],
+            'size'        => 35,
+            'max'         => 40,
+            'callback'    => 'Adv.postcode.fetch'
           ),
           true,
           $this->JS
@@ -66,26 +68,26 @@
       $form->text(
         $this->state[0],
         [
-        'placeholder'       => 'State',
-        'maxlength'         => 35,
-        'data-set'          => static::$count,
-        'size'              => 35,
-        'name'              => $this->state[0]
+          'placeholder' => 'State',
+          'maxlength'   => 35,
+          'data-set'    => static::$count,
+          'size'        => 35,
+          'name'        => $this->state[0]
         ]
       )->label('State: ')->initial($this->state[1]);
       $form->custom(
         UI::search(
           $this->postcode[0],
           [
-          'url'                => 'Postcode',
-          'placeholder'        => 'Postcode',
-          'data'               => ['type'=> 'Pcode'],
-          'nodiv'              => true,
-          'set'                => static::$count,
-          'name'               => $this->postcode[0],
-          'size'               => 35,
-          'max'                => 40,
-          'callback'           => 'Adv.postcode.fetch'
+            'url'         => 'Postcode',
+            'placeholder' => 'Postcode',
+            'data'        => ['type' => 'Pcode'],
+            'nodiv'       => true,
+            'set'         => static::$count,
+            'name'        => $this->postcode[0],
+            'size'        => 35,
+            'max'         => 40,
+            'callback'    => 'Adv.postcode.fetch'
           ],
           true,
           $this->JS
@@ -138,7 +140,7 @@
      * @internal param string $type
      * @return mixed
      */
-    public static function search($term, $data = ['type'=> 'Locality']) {
+    public static function search($term, $data = ['type' => 'Locality']) {
       $result = DB::_select('id', "CONCAT(Locality,', ',State,', ',Pcode) as label", "CONCAT(Locality,'|',State,'|',Pcode) as value")->from('postcodes')->where(
         $data['type'] . ' LIKE',
         $term . '%'

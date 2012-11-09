@@ -13,7 +13,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Points extends \ADV\App\Controller\Manage {
+  class Points extends \ADV\App\Controller\Manage
+  {
+
     protected function before() {
       $this->object = new Point();
       $this->runPost();
@@ -45,15 +47,15 @@
      */
     protected function generateTableCols() {
       $cols = [
-        ['type'=> 'skip'],
+        ['type' => 'skip'],
         'Name',
-        'Cash Sale'  => ['type'=> 'bool'],
-        'Credit Sale'=> ['type'=> 'bool'],
+        'Cash Sale'   => ['type' => 'bool'],
+        'Credit Sale' => ['type' => 'bool'],
         'Location',
         'Account',
-        'Inactive'   => ['type', 'inactive'],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatEditBtn']],
-        ['type'=> 'insert', "align"=> "center", 'fun'=> [$this, 'formatDeleteBtn']],
+        'Inactive'    => ['type', 'inactive'],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+        ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
       ];
       return $cols;
     }

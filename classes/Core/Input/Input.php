@@ -21,7 +21,9 @@
    * @method static _request($var, $type = null, $default = null)
    * @method static _hasPost($vars)
    */
-  class Input {
+  class Input
+  {
+
     use \ADV\Core\Traits\StaticAccess2;
 
     const NUMERIC = 1;
@@ -122,7 +124,6 @@
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }
-
       return $this->returnPost($var, $result);
     }
     /**
@@ -139,7 +140,6 @@
       if ($result === false) {
         $result = $this->getGlobal($var, $type, $default);
       }
-
       return $this->returnPost($var, $result);
     }
     /**
@@ -170,7 +170,6 @@
      */
     public function &postGet($var, $type = null, $default = null) {
       $result = $this->firstThenSecond(static::$post, static::$get, $var, $type, $default);
-
       return $this->returnPost($var, $result);
     }
     /***
@@ -182,11 +181,9 @@
      * @return bool|int|string
      */
     public function session($var, $default = null) {
-
       if (!array_key_exists($var, $_SESSION)) {
         return $default;
       }
-
       return $_SESSION[$var];
     }
     /***
@@ -202,7 +199,6 @@
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
-
       return static::$post->has($vars);
     }
     /***
@@ -218,7 +214,6 @@
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
-
       return static::$get->has($vars);
     }
     /***
@@ -234,7 +229,6 @@
       } elseif (!is_array($vars)) {
         $vars = func_get_args();
       }
-
       return static::$request->has($vars);
     }
     /***
@@ -279,7 +273,6 @@
      */
     protected function &firstThenSecond(Base $first, Base $second, $var, $type = null, $default = null) {
       $container = ($first->has($var)) ? $first : $second;
-
       return $container->get($var, $type, $default);
     }
     /**
@@ -316,7 +309,6 @@
      */
     protected function &returnPost($var, $value) {
       $_POST[$var] = $value;
-
       return $_POST[$var];
     }
   }

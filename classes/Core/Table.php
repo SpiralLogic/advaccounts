@@ -11,7 +11,9 @@
   /**
 
    */
-  class Table {
+  class Table
+  {
+
     /**
      * @param string $class
      */

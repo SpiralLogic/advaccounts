@@ -24,7 +24,7 @@
   Table::start('noborder');
   echo '<tr>';
   if (!Input::_get('frame')) {
-    Debtor::newselect(null, ['label'=> 'Customer:', 'row'=> false]);
+    Debtor::newselect(null, ['label' => 'Customer:', 'row' => false]);
   }
   Session::_setGlobal('debtor_id', $_POST['debtor_id']);
   if (!isset($_POST['TransAfterDate']) && Session::_getGlobal('TransAfterDate')) {
@@ -92,42 +92,42 @@
     $sql .= " AND (round(abs(trans.ov_amount + trans.ov_gst + " . "trans.ov_freight + trans.ov_freight_tax + " . "trans.ov_discount) - trans.alloc,2) > 0) ";
   }
   $cols = array(
-    "<button id='emailInvoices'>Email</button> "                                       => array(
-      'fun'      => function ($row) {
+    "<button id='emailInvoices'>Email</button> " => array(
+      'fun'   => function ($row) {
         return ($row['type'] == ST_SALESINVOICE) ? Forms::checkbox(null, 'emailChk') : '';
       },
-      'align'    => 'center'
+      'align' => 'center'
     ),
-    _("Type")                                                                          => array(
+    _("Type")                                    => array(
       'fun' => function ($dummy, $type) {
         return SysTypes::$names[$type];
       }
     ),
-    _("#")                                                                             => array(
+    _("#")                                       => array(
       'fun' => function ($trans) {
         return GL_UI::viewTrans($trans["type"], $trans["trans_no"]);
       }
     ),
     _("Reference"),
-    _("Order")                                                                         => array(
+    _("Order")                                   => array(
       'fun' => function ($row) {
         return $row['order_'] > 0 ? Debtor::viewTrans(ST_SALESORDER, $row['order_']) : "";
       }
     ),
-    _("Date")                                                                          => array(
+    _("Date")                                    => array(
       'name' => 'tran_date',
       'type' => 'date',
       'ord'  => 'asc'
     ),
-    _("Due Date")                                                                      => array(
+    _("Due Date")                                => array(
       'type' => 'date',
       'fun'  => function ($row) {
         return $row["type"] == 10 ? $row["due_date"] : '';
       }
     ),
-    _("Customer")                                                                      => [],
-    _("Currency")                                                                      => array('align' => 'center'),
-    _("Debit")                                                                         => array(
+    _("Customer")                                => [],
+    _("Currency")                                => array('align' => 'center'),
+    _("Debit")                                   => array(
       'align' => 'right',
       'fun'   => function ($row) {
         $value = $row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT ? -$row["TotalAmount"] :
@@ -135,7 +135,7 @@
         return $value >= 0 ? Num::_priceFormat($value) : '';
       }
     ),
-    _("Credit")                                                                        => array(
+    _("Credit")                                  => array(
       'align' => 'right',
       'fun'   => function ($row) {
         $value = !($row['type'] == ST_CUSTCREDIT || $row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_CUSTREFUND || $row['type'] == ST_BANKDEPOSIT) ? -$row["TotalAmount"] :
@@ -143,9 +143,9 @@
         return $value > 0 ? Num::_priceFormat($value) : '';
       }
     ),
-    _("Allocated")                                                                     => 'amount',
-    _("overdue")                                                                       => array('type' => 'skip'),
-    _("Balance")                                                                       => array(
+    _("Allocated")                               => 'amount',
+    _("overdue")                                 => array('type' => 'skip'),
+    _("Balance")                                 => array(
       'type'   => 'amount',
       'insert' => true,
       'fun'    => function ($row) {

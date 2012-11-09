@@ -9,7 +9,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
-
   print_tax_report();
   /**
    * @param $from
@@ -17,8 +16,7 @@
    *
    * @return null|PDOStatement
    */
-  function getTaxTransactions($from, $to)
-  {
+  function getTaxTransactions($from, $to) {
     $fromdate = Dates::_dateToSql($from);
     $todate   = Dates::_dateToSql($to);
     $sql
@@ -46,10 +44,8 @@
   /**
    * @return null|PDOStatement
    */
-  function getTaxTypes()
-  {
+  function getTaxTypes() {
     $sql = "SELECT * FROM tax_types ORDER BY id";
-
     return DB::_query($sql, "No transactions were returned");
   }
 
@@ -58,16 +54,13 @@
    *
    * @return \ADV\Core\DB\Query\Result|Array
    */
-  function getTaxInfo($id)
-  {
+  function getTaxInfo($id) {
     $sql    = "SELECT * FROM tax_types WHERE id=$id";
     $result = DB::_query($sql, "No transactions were returned");
-
     return DB::_fetch($result);
   }
 
-  function print_tax_report()
-  {
+  function print_tax_report() {
     global $trans_dir, $Hooks;
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
@@ -75,15 +68,13 @@
     $comments    = $_POST['PARAM_3'];
     $destination = $_POST['PARAM_4'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec = User::price_dec();
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep  */
-    $rep = new $report_type(_('Tax Report'), "TaxReport", SA_TAXREP,User::page_size());
+    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+    $rep = new $report_type(_('Tax Report'), "TaxReport", SA_TAXREP, User::page_size());
     if ($summaryOnly == 1) {
       $summary = _('Summary Only');
     } else {
@@ -101,7 +92,14 @@
     );
     $cols    = array(0, 100, 130, 180, 290, 370, 420, 470, 520);
     $headers = array(
-      _('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'), _('Net'), _('Rate'), _('Tax')
+      _('Trans Type'),
+      _('Ref'),
+      _('Date'),
+      _('Name'),
+      _('Branch Name'),
+      _('Net'),
+      _('Rate'),
+      _('Tax')
     );
     $aligns  = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
     $rep->Font();

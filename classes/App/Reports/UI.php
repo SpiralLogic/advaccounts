@@ -10,7 +10,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Reports_UI {
+  class Reports_UI
+  {
+
     /**
      * @static
      *
@@ -49,9 +51,9 @@
         $selected_id,
         $profiles,
         array(
-             'select_submit' => $submit_on_change,
-             'spec_option'   => $spec_opt,
-             'spec_id'       => ''
+          'select_submit' => $submit_on_change,
+          'spec_option'   => $spec_opt,
+          'spec_id'       => ''
         )
       );
     }
@@ -80,9 +82,9 @@
         $selected_id,
         $printers,
         array(
-             'select_submit' => $submit_on_change,
-             'spec_option'   => $spec_opt,
-             'spec_id'       => ''
+          'select_submit' => $submit_on_change,
+          'spec_option'   => $spec_opt,
+          'spec_id'       => ''
         )
       );
     }

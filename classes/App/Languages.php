@@ -16,6 +16,7 @@
    */
   class Languages
   {
+
     /**
      * @static
      *
@@ -30,7 +31,6 @@
       foreach ($langs as $language) {
         $items[$language['code']] = $language['name'];
       }
-
       return Forms::arraySelect($name, $selected_id, $items);
     }
     /**

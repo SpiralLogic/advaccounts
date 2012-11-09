@@ -4,7 +4,6 @@
   $file = ROOT_DOC . 'tmp/test.csv';
   Page::start(_($help_context = "Reconcile TO Bank Statement Compare"), SA_RECONCILE);
   if (!count($_POST)) {
-
     if (Session::_getGlobal('bank_account')) {
       $_POST['bank_account'] = Session::_getGlobal('bank_account');
     }
@@ -12,7 +11,6 @@
   if (Forms::isListUpdated('bank_account')) {
     Session::_setGlobal('bank_account', $_POST['bank_account']);
   }
-
   Ajax::_activate('trans');
   Ajax::_start_div('trans');
   Forms::start(true);
@@ -45,11 +43,10 @@
           var_dump(\ADV\Core\DB\DB::i()->queryString);
         }
         if ($result['count'] == 0) {
-          DB::_insert('temprec')->values(['date'=> $date, 'amount'=> $amount, 'memo'=> $memo, 'rb'=> $rb, 'bank_account_id'=> $_POST['bank_account']])->exec();
+          DB::_insert('temprec')->values(['date' => $date, 'amount' => $amount, 'memo' => $memo, 'rb' => $rb, 'bank_account_id' => $_POST['bank_account']])->exec();
         }
       }
     }
   }
-
   Ajax::_end_div();
   Page::end();

@@ -15,7 +15,9 @@
   /**
 
    */
-  class UserPrefs {
+  class UserPrefs
+  {
+
     use \ADV\Core\Traits\SetFromArray;
 
     /**

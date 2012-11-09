@@ -21,7 +21,9 @@
    **/
   /**
    */
-  abstract class Base {
+  abstract class Base
+  {
+
     use \ADV\Core\Traits\SetFromArray;
     use \ADV\Core\Traits\Status;
 
@@ -47,7 +49,7 @@
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
       $_id_column       = $this->_id_column;
       if ($_id_column && $_id_column != 'id') {
-        $this->id = &$this->$_id_column;
+        $this->id = & $this->$_id_column;
       }
     }
     /**

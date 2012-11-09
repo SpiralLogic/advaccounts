@@ -11,7 +11,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtor_Branch extends \ADV\App\DB\Base {
+  class Debtor_Branch extends \ADV\App\DB\Base
+  {
+
     /**
      * @var string
      */
@@ -44,9 +46,9 @@
      * @var int
      */
     public $area = DEFAULT_AREA;
-/** @var */
+    /** @var */
     public $br_post_address;
-/** @var */
+    /** @var */
     public $debtor_id;
     /**
      * @var string
@@ -56,7 +58,7 @@
      * @var string
      */
     public $contact_name = "";
-/** @var */
+    /** @var */
     public $default_location;
     /**
      * @var int
@@ -98,17 +100,17 @@
      * @var int
      */
     public $group_no = 1;
-/** @var */
+    /** @var */
     public $payment_discount_account;
-/** @var */
+    /** @var */
     public $receivables_account;
     /**
      * @var string
      */
     public $sales_account = "";
-/** @var */
+    /** @var */
     public $sales_discount_account;
-/** @var */
+    /** @var */
     public $salesman;
     /**
      * @var int
@@ -126,11 +128,11 @@
      * @param int|null $id
      */
     public function __construct($id = null) {
-      $this->id = &$this->branch_id;
+      $this->id = & $this->branch_id;
       parent::__construct($id);
-      $this->name         = &$this->br_name;
-      $this->address      = &$this->br_address;
-      $this->post_address = &$this->br_post_address;
+      $this->name         = & $this->br_name;
+      $this->address      = & $this->br_address;
+      $this->post_address = & $this->br_post_address;
     }
     /**
      * @return string
@@ -146,7 +148,6 @@
       if ($this->postcode) {
         $address .= ", " . $this->postcode;
       }
-
       return $address;
     }
     /**
@@ -156,7 +157,6 @@
       if (strlen($this->br_name) < 1) {
         return $this->status(false, 'Branch name can not be empty');
       }
-
       return true;
     }
     /**
@@ -181,7 +181,6 @@
      */
     protected function init() {
       $this->defaults();
-
       return $this->status(true, 'Now working with a new Branch');
     }
     /**
@@ -215,17 +214,16 @@
       }
       $sql = DB::_select('b.*', 'a.description', 's.salesman_name', 't.name AS tax_group_name')->from('branches b, debtors c, areas a, salesman s, tax_groups t')->where(
         array(
-             'b.debtor_id=c.debtor_id',
-             'b.tax_group_id=t.id',
-             'b.area=a.area_code',
-             'b.salesman=s.salesman_code'
+          'b.debtor_id=c.debtor_id',
+          'b.tax_group_id=t.id',
+          'b.area=a.area_code',
+          'b.salesman=s.salesman_code'
         )
       );
       foreach ($id as $key => $value) {
         $sql->where("b.$key=", $value);
       }
       DB::_fetch()->intoClass($this);
-
       return $this->status(true, 'Read Branch from Database');
     }
     /**
@@ -246,7 +244,6 @@
              = "SELECT branch_id, branch_ref FROM branches
             WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : [];
-
       return Forms::selectBox(
         $name,
         $selected_id,
@@ -254,12 +251,12 @@
         'branch_id',
         'br_name',
         array(
-             'where'         => $where,
-             'order'         => array('branch_ref'),
-             'spec_option'   => $spec_option === true ? _('All branches') : $spec_option,
-             'spec_id'       => ALL_TEXT,
-             'select_submit' => $submit_on_change,
-             'sel_hint'      => _('Select customer branch')
+          'where'         => $where,
+          'order'         => array('branch_ref'),
+          'spec_option'   => $spec_option === true ? _('All branches') : $spec_option,
+          'spec_id'       => ALL_TEXT,
+          'select_submit' => $submit_on_change,
+          'sel_hint'      => _('Select customer branch')
         )
       );
     }

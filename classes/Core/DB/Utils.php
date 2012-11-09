@@ -16,7 +16,9 @@
   /**
 
    */
-  class Utils extends DB {
+  class Utils extends DB
+  {
+
     /**
      * @static
      *

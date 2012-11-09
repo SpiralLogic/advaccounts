@@ -32,7 +32,9 @@
   /**
 
    */
-  class GL_Allocation {
+  class GL_Allocation
+  {
+
     /** @var */
     public $trans_no;
     /** @var */
@@ -439,7 +441,9 @@ above logic will be overwritten with the prev alloc detail below */
   /**
 
    */
-  class allocation_item {
+  class allocation_item
+  {
+
     /** @var */
     public $type;
     /** @var */

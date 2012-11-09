@@ -15,7 +15,9 @@
   /**
 
    */
-  class Manufacturing extends Menu {
+  class Manufacturing extends Menu
+  {
+
     public $name = "Manufacturing";
     public $help_context = "&Manufacturing";
     /**

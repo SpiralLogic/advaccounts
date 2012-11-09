@@ -12,7 +12,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class UndepositedFunds extends \ADV\App\Controller\Action {
+  class UndepositedFunds extends \ADV\App\Controller\Action
+  {
+
     /** @var Dates */
     protected $Dates;
     public $updateData;
@@ -125,15 +127,15 @@
             WHERE undeposited=1 AND trans_date <= '" . $this->Dates->dateToSql($date) . "' AND reconciled IS null AND amount<>0
             ORDER BY trans_date DESC,bank_trans.id ";
       $cols         = array(
-        _("Type")                    => ['fun' => [$this, 'sysTypeName'], 'ord' => ''], //
-        _("#")                       => ['fun' => [$this, 'viewTrans'], 'ord' => '', 'align'=> 'center'], //
+        _("Type")        => ['fun' => [$this, 'sysTypeName'], 'ord' => ''], //
+        _("#")           => ['fun' => [$this, 'viewTrans'], 'ord' => '', 'align' => 'center'], //
         _("Reference"), //
-        _("Date")                    => ['type'=> 'date', 'ord' => 'desc'], //
-        _("Debit")                   => ['align' => 'right', 'fun' => [$this, 'formatDebit']], //
-        _("Credit")                  => ['align' => 'right', 'insert' => true, 'fun' => [$this, 'formatCredit']], //
-        _("Person/Item")             => ['fun' => [$this, 'formatPerson']], //
+        _("Date")        => ['type' => 'date', 'ord' => 'desc'], //
+        _("Debit")       => ['align' => 'right', 'fun' => [$this, 'formatDebit']], //
+        _("Credit")      => ['align' => 'right', 'insert' => true, 'fun' => [$this, 'formatCredit']], //
+        _("Person/Item") => ['fun' => [$this, 'formatPerson']], //
         ['insert' => true, 'fun' => [$this, 'viewGl']], //
-        "X"                          => ['insert' => true, 'fun' => [$this, 'depositCheckbox']]
+        "X"              => ['insert' => true, 'fun' => [$this, 'depositCheckbox']]
       );
       $table        = DB_Pager::newPager('trans_tbl', $sql, $cols);
       $table->width = "80%";

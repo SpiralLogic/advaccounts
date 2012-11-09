@@ -17,7 +17,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Reports_Box extends Report {
+  class Reports_Box extends Report
+  {
+
     /** @var */
     public $ar_classes;
     /**
@@ -190,9 +192,9 @@
             'curr_abrev',
             'name',
             array(
-                 'spec_option' => _("No Currency Filter"),
-                 'spec_id'     => ALL_TEXT,
-                 'order'       => false
+              'spec_option' => _("No Currency Filter"),
+              'spec_id'     => ALL_TEXT,
+              'order'       => false
             )
           );
         case 'DATEMONTH':
@@ -289,8 +291,8 @@
               'debtor_id',
               'name',
               array(
-                   'spec_option' => _("No Customer Filter"),
-                   'spec_id'     => ALL_NUMERIC
+                'spec_option' => _("No Customer Filter"),
+                'spec_id'     => ALL_NUMERIC
               )
             );
           } else {
@@ -305,8 +307,8 @@
             'debtor_id',
             'name',
             array(
-                 'spec_option' => _("No Customer Filter"),
-                 'spec_id'     => ALL_NUMERIC
+              'spec_option' => _("No Customer Filter"),
+              'spec_id'     => ALL_NUMERIC
             )
           );
         case 'SUPPLIERS_NO_FILTER':
@@ -320,8 +322,8 @@
               'creditor_id',
               'name',
               array(
-                   'spec_option' => _("No Supplier Filter"),
-                   'spec_id'     => ALL_NUMERIC
+                'spec_option' => _("No Supplier Filter"),
+                'spec_id'     => ALL_NUMERIC
               )
             );
           } // FIX allitems numeric!
@@ -422,8 +424,8 @@
             'id',
             'user_id',
             array(
-                 'spec_option' => _("No Users Filter"),
-                 'spec_id'     => ALL_NUMERIC
+              'spec_option' => _("No Users Filter"),
+              'spec_id'     => ALL_NUMERIC
             )
           );
         case 'ACCOUNTTAGS':
@@ -463,9 +465,9 @@
         $value,
         $types,
         array(
-             'spec_option' => $spec_opt,
-             'spec_id'     => ALL_NUMERIC,
-             'async'       => false,
+          'spec_option' => $spec_opt,
+          'spec_id'     => ALL_NUMERIC,
+          'async'       => false,
         )
       );
     }

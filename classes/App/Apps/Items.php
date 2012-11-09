@@ -14,7 +14,9 @@
   /**
 
    */
-  class Items extends Application {
+  class Items extends Application
+  {
+
     public $name = "Items";
     public $help_context = "&Items";
     public function buildMenu() {

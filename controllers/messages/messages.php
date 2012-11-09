@@ -7,7 +7,6 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   if (REQUEST_AJAX && isset($_POST['user_id'])) {
     Messages::set($_POST['user_id'], $_POST['subject'], $_POST['message']);
     Event::success("Message sent!");
@@ -19,21 +18,21 @@
   Users::row(_("User:"), 'user_id');
   echo HTML::br(false)->label(
     array(
-         'content' => "Subject: ",
-         'for'     => 'subject'
+      'content' => "Subject: ",
+      'for'     => 'subject'
     )
   )->br->input('subject', array('size' => 50))->label;
   echo HTML::br(false)->label(
     array(
-         'content' => "Message: ",
-         'for'     => 'message'
+      'content' => "Message: ",
+      'for'     => 'message'
     )
   )->br->textarea(
     'message',
     array(
-         'cols'  => 35,
-         'rows'  => 5,
-         'title' => 'Message to send:'
+      'cols'  => 35,
+      'rows'  => 5,
+      'title' => 'Message to send:'
     )
   )->textarea->label->br;
   echo HTML::button('btnSend', 'Send Message');

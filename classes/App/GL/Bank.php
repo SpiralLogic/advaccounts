@@ -14,7 +14,9 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class GL_Bank {
+  class GL_Bank
+  {
+
     /**
      * @static
      *
