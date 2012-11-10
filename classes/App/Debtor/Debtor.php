@@ -33,8 +33,7 @@
   /**
 
    */
-  class Debtor extends \Contact_Company
-  {
+  class Debtor extends \Contact_Company {
     /** @var int * */
     public $id = 0;
     /** @var string * */
@@ -358,7 +357,7 @@
     }
     protected function _getBranches() {
       $this->branches = new Collection(new Debtor_Branch(), ['debtor_id']);
-      $this->branches->getAll(['debtor_id' => $this->id]);
+      $this->branches->getAll(['debtor_id ' => $this->id]);
       $this->defaultBranch = reset($this->branches)->id;
     }
     /**
