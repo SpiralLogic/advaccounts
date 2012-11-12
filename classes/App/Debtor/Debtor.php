@@ -33,7 +33,8 @@
   /**
 
    */
-  class Debtor extends \Contact_Company {
+  class Debtor extends \Contact_Company
+  {
     /** @var int * */
     public $id = 0;
     /** @var string * */
@@ -51,9 +52,9 @@
     public $defaultBranch = 0;
     /** @var int * */
     public $defaultContact = 0;
-    /** @var \Debtor_Branch[] * */
+    /** @var \ADV\App\DB\Collection[\Debtor_Branches] * */
     public $branches = [];
-    /** @var \ADV\App\Contact\Contact[] * */
+    /** @var \ADV\App\DB\Collection[\ADV\App\Contact\Contact] * */
     public $contacts = [];
     /** @var \Debtor_Account * */
     public $accounts;
@@ -90,25 +91,9 @@
      * @return array|string
      */
     public function getStatus($string = false) {
-      foreach ($this->branches as $branch) {
-        /** @var \Debtor_Branch $branch */
-        $status = $branch->getStatus();
-        if ($status != false) {
-          $this->status->append($status);
-        }
-      }
-      foreach ($this->contacts as $contact) {
-        $status = $contact->getStatus();
-        /** @var \ADV\App\Contact\Contact $contact */
-        if ($status != false) {
-          $this->status->append($status);
-        }
-      }
-      $status = $this->accounts->getStatus();
-      /** @var \ADV\App\Contact\Contact $contact */
-      if ($status != false) {
-        $this->status->append($status);
-      }
+      $this->status->append($this->branches->getStatus());
+      $this->status->append($this->contacts->getStatus());
+      $this->status->append($this->accounts->getStatus());
       return parent::getStatus();
     }
     /**
@@ -158,10 +143,10 @@
       if (count($this->branches) == 1) {
         return $this->status(false, "The customer must have at least one branch");
       }
-      if (!$this->branches[$branch_id]->delete()) {
+      unset($this->branches[$branch_id]);
+      if (isset($this->branches[$branch_id])) {
         return $this->status(false, "The customer branch could not be deleted");
       }
-      unset($this->branches[$branch_id]);
       return $this->status(true, "The customer branch has been deleted");
     }
     /**
@@ -357,8 +342,8 @@
     }
     protected function _getBranches() {
       $this->branches = new Collection(new Debtor_Branch(), ['debtor_id']);
-      $this->branches->getAll(['debtor_id ' => $this->id]);
-      $this->defaultBranch = reset($this->branches)->id;
+      $this->branches->getAll(['debtor_id' => $this->id]);
+      $this->defaultBranch = $this->branches->first()->id;
     }
     /**
      * @return void
@@ -407,7 +392,6 @@
      * @return void
      */
     protected function setDefaults() {
-      $this->defaultBranch  = reset($this->branches)->branch_id;
       $this->defaultContact = count($this->contacts) ? reset($this->contacts)->id : 0;
       $this->contacts[]     = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));
     }

@@ -12,10 +12,11 @@
   /**
 
    */
-  class Status {
-    /** @var array **/
+  class Status
+  {
+    /** @var array * */
     protected $status = [];
-    /** @var array **/
+    /** @var array * */
     protected $errors = [];
     const SUCCESS = E_SUCCESS;
     const INFO    = E_USER_NOTICE;
@@ -85,16 +86,24 @@
       return $this->status;
     }
     /**
-     * @param array $status
+     * @param array $statuses
      * @param bool  $error_only
      *
      * @return mixed
      */
-    public function append(array $status, $error_only = true) {
-      if ($error_only && $status['status'] != self::ERROR) {
-        return true;
+    public function append(Array $statuses, $error_only = true) {
+      if (!$statuses) {
+        return false;
       }
-      $this->status[] = $status;
+      if (!isset($statuses['status'])) {
+        $statuses = [$statuses];
+      }
+      foreach ($statuses as $status) {
+        if ($error_only && $status['status'] !== self::ERROR) {
+          continue;
+        }
+        $this->status[] = $status;
+      }
       return false;
     }
     /**

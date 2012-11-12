@@ -51,8 +51,12 @@
      * @throws \InvalidArgumentException
      */
     public function getAll($ids) {
-      $ids = (array) $ids;
-      $q   = static::$staticDB->_select()->from($this->table);
+      if (!is_array($ids) && count($this->idColumns) == 1) {
+        $ids = [key($this->idColumns) => $ids];
+      } else {
+        $ids = (array) $ids;
+      }
+      $q = static::$staticDB->_select()->from($this->table);
       foreach ($this->idColumns as $idColumn) {
         if (!array_key_exists($idColumn, $ids)) {
           throw new InvalidArgumentException('Must provide all id column references! Missing ' . $idColumn);
@@ -61,39 +65,59 @@
       }
       /** @var Base[] $collection */
       $collection = $q->fetch()->asClassLate($this->class);
-
       foreach ($collection as $object) {
         $this->collection[$object->id] = $object;
       }
-      return $this;
+      return $this->collection;
     }
     /**
      * @param array $values
      */
     public function load(Array $values) {
-      foreach ($values as $id => $props) {
-        if (!isset($this->collection[$id])) {
-          $this->collection[(int) $id] = new $this->class;
+      foreach ($values as $k => $v) {
+        if (!is_numeric($k) && property_exists($this->class, $k)) {
+          foreach ($this->collection as $object) {
+            $object->$k = $v;
+          }
+          continue;
         }
-        $this->collection[$id]->load($props);
+        if (!isset($this->collection[$k])) {
+          $this->collection[(int) $k] = new $this->class;
+        }
+        $this->collection[$k]->load($v);
       }
     }
     /**
      * @param array $values
      */
     public function save(Array $values) {
-      foreach ($values as $id => $props) {
-        $id = (int) $id;
-        if (!isset($this->collection[$id])) {
-          $this->collection[$id] = new $this->class;
+      foreach ($values as $k => $v) {
+        if (!isset($this->collection[$k])) {
+          $this->collection[$k] = new $this->class;
         }
-        $this->collection[$id]->save($props);
-        if ($this->collection[$id]->id != $id) {
-          $object                        = $this->collection[$id];
+        $this->collection[$k]->save($v);
+        if ($this->collection[$k]->id != $k) {
+          $object                        = $this->collection[$k];
           $this->collection[$object->id] = $object;
-          unset ($this->collection[$id]);
+          unset ($this->collection[$k]);
         }
       }
+    }
+    /**
+     * @return array
+     */
+    public function getStatus() {
+      $statuses = [];
+      foreach ($this->collection as $object) {
+        $status = $object->getStatus();
+        if ($status) {
+          $statuses[] = $status;
+        }
+      }
+      return $statuses;
+    }
+    public function first() {
+      return reset($this->collection);
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -102,9 +126,7 @@
      * @return \ADV\App\DB\Base mixed Can return any type.
      */
     public function current() {
-      if ($this->collection) {
-        return $this->collection[$this->current];
-      }
+      return $this->collection[$this->current];
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
