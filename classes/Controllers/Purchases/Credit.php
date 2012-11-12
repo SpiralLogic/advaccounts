@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -21,17 +22,14 @@
   use Purch_GLItem;
   use Purch_GRN;
   use Purch_Invoice;
-  use ADV\App\Page;
   use ADV\App\Forms;
   use Creditor_Trans;
   use ADV\App\Validation;
   use ADV\Core\DB\DB;
-  use ADV\Core\Ajax;
 
-  /**
-
-   */
-  class Credit extends \ADV\App\Controller\Action {
+  /** **/
+  class Credit extends \ADV\App\Controller\Action
+  {
     /** @var \Creditor_trans */
     protected $trans;
     protected $creditor_id;
@@ -56,7 +54,6 @@
       //	GL postings are often entered in the same form to two accounts
       // so fileds are cleared only on user demand.
       //
-
       $id = Forms::findPostPrefix('grn_item_id');
       if ($id != -1) {
         $this->commitItemData($id);
@@ -181,7 +178,7 @@ JS;
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, "qty_recd") === 0) {
           $id = substr($postkey, strlen("qty_recd"));
-          $id = (int) $id;
+          $id = (int)$id;
           $this->commitItemData($id);
         }
       }

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,19 +13,18 @@
 
   use PDO, PDOStatement;
 
-  /**
-
-   */
-  class Result implements \Countable, \Iterator {
-    /** @var \PDO|\PDOStatement **/
+  /** **/
+  class Result implements \Countable, \Iterator
+  {
+    /** @var \PDO|\PDOStatement * */
     public $prepared;
     /** @var */
     protected $current;
     /** @var */
     protected $count;
-    /** @var int **/
+    /** @var int * */
     protected $cursor = -1;
-    /** @var null **/
+    /** @var null * */
     protected $data;
     /** @var */
     protected $valid;
@@ -120,6 +120,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the current element
+     *
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
@@ -129,6 +130,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Move forward to next element
+     *
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
@@ -139,6 +141,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the key of the current element
+     *
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar scalar on success, integer
      * 0 on failure.
@@ -158,6 +161,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Rewind the Iterator to the first element
+     *
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
@@ -171,6 +175,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
+     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>

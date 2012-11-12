@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -23,10 +24,9 @@
   use Bank_Trans;
   use GL_Journal;
 
-  /**
-
-   */
-  class Voiding {
+  /** **/
+  class Voiding
+  {
     /**
      * @static
      *
@@ -68,7 +68,6 @@
           if ($type == ST_CUSTDELIVERY) {
             $delivery = Debtor_Trans::get($type_no, $type);
             if (!$delivery['trans_link']) {
-
               if (static::get(ST_SALESINVOICE, $delivery['trans_link']) !== false) {
                 return false;
               }
@@ -129,7 +128,6 @@
       // only add an entry if it's actually been voided
       DB_AuditTrail::add($type, $type_no, $date_, _("Voided.") . "\n" . $memo_);
       static::add($type, $type_no, $date_, $memo_);
-
       return true;
     }
     /**
@@ -143,7 +141,6 @@
     public static function get($type, $type_no) {
       $sql    = "SELECT * FROM voided WHERE type=" . DB::_escape($type) . " AND id=" . DB::_escape($type_no);
       $result = DB::_query($sql, "could not query voided transaction table");
-
       return DB::_fetch($result);
     }
     /**
@@ -157,7 +154,6 @@
     public static function has($type, $type_no) {
       $sql    = "SELECT * FROM voided WHERE type=" . DB::_escape($type) . " AND id=" . DB::_escape($type_no);
       $result = DB::_query($sql, "could not query voided transaction table");
-
       return DB::_numRows($result);
     }
     /**

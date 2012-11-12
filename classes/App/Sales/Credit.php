@@ -1,5 +1,7 @@
 <?php
   use ADV\App\Forms;
+  use ADV\Core\Num;
+  use ADV\Core\Session;
   use ADV\App\Orders;
   use ADV\Core\JS;
   use ADV\App\Validation;
@@ -19,6 +21,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -29,7 +32,8 @@
    * if ($writeoff_acc==0) return goods into $order->location
    * if src_docs!=0 => credit invoice else credit note
    */
-  class Sales_Credit {
+  class Sales_Credit
+  {
     /**
      * @static
      *

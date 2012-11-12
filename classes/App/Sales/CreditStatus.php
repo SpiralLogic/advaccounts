@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,12 +11,12 @@
    **/
   namespace ADV\App\Sales {
     use ADV\Core\DB\DB;
-    use ADV\App\Validation;
 
     /**
 
      */
-    class CreditStatus extends \ADV\App\DB\Base   implements \ADV\App\Pager\Pageable {
+    class CreditStatus extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
       protected $_table = 'credit_status';
       protected $_classname = 'Credit Status';
       protected $_id_column = 'id';
@@ -64,7 +65,7 @@
           ['type' => 'skip'],
           'Description',
           'Dissallow Invoices' => ['type' => 'bool'],
-          'Inactive' => ['type' => 'inactive'],
+          'Inactive'           => ['type' => 'inactive'],
         ];
         return $cols;
       }
@@ -74,7 +75,8 @@
     /**
 
      */
-    class Sales_CreditStatus {
+    class Sales_CreditStatus
+    {
       /**
        * @static
        *

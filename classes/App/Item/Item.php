@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -26,12 +27,9 @@
   use ADV\Core\Input\Input;
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
+  /** **/
   class Item extends Base
   {
-
     public static $types
       = array(
         STOCK_MANUFACTURE => "Manufactured", //
@@ -165,7 +163,7 @@
     protected function read($id = null, $extra = []) {
       $id = $id ? : 0;
       if (!is_numeric($id)) {
-        $stockid = static::getStockID((string) $id);
+        $stockid = static::getStockID((string)$id);
         if ($stockid) {
           $id = $stockid;
         }
@@ -215,7 +213,7 @@
      */
     protected function saveNew() {
       DB::_begin();
-      $data = (array) $this;
+      $data = (array)$this;
       unset($data['id']);
       if (!parent::saveNew()) {
         DB::_cancel();
@@ -639,22 +637,23 @@
      * @return array|bool
      */
     public static function searchOrder($term, $UniqueID) {
-      $url      = false;
-      $nodiv    = false;
-      $label    = false;
-      $size     = 30;
-      $name     = false;
-      $set      = false;
-      $sale     = false;
-      $purchase = false;
-      $inactive = false;
-      $no_sale  = false;
-      $kitsonly = false;
-      $select   = false;
-      $type     = false;
-      $value    = false;
-      $focus    = false;
-      $callback = false;
+      $url        = false;
+      $nodiv      = false;
+      $label      = false;
+      $size       = 30;
+      $name       = false;
+      $set        = false;
+      $sale       = false;
+      $purchase   = false;
+      $inactive   = false;
+      $no_sale    = false;
+      $kitsonly   = false;
+      $select     = false;
+      $type       = false;
+      $sales_type = '';
+      $value      = false;
+      $focus      = false;
+      $callback   = false;
       if (isset($_SESSION['search'])) {
         extract($_SESSION['search'][$UniqueID], EXTR_IF_EXISTS);
       }
@@ -675,8 +674,8 @@
       }
       $stock_code = " s.item_code as stock_id,";
       $constraints2 .= ' AND i.id = s.stockid ';
-      $sales_type = $prices = '';
-      $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
+      $prices = '';
+      $weight = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
       if ($purchase) {
         array_unshift($terms, $item_code);
         $weight = 'IF(s.item_code LIKE ?, 0,20) + IF(p.supplier_description LIKE ?, 0,15) + IF(s.item_code LIKE ?,0,5) as weight';
@@ -689,11 +688,11 @@
         $prices     = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
       } elseif ($sale) {
         $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
-        $stock_code = " s.item_code as stock_id, p.price,";
+        $stock_code = " s.item_code as stock_id, MIN(p.price) as price,";
         $prices     = ", prices p";
         $constraints .= " AND s.id = p.item_code_id ";
         if ($sales_type) {
-          $sales_type = ' AND p.sales_type_id =' . $sales_type;
+          $sales_type = ' AND (p.sales_type_id = ' . $sales_type . ' OR p.sales_type_id = 1 )';
         }
       } elseif ($kitsonly) {
         $constraints .= " AND s.stock_id!=i.stock_id ";
@@ -701,7 +700,7 @@
       $select = ($select) ? $select : ' ';
       $sql
               = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
-                            $weight FROM stock_category c, item_codes s, stock_master i  $prices
+                            $weight, p.sales_type_id FROM stock_category c, item_codes s, stock_master i  $prices
                             WHERE (s.item_code LIKE ? $termswhere) $constraints
                             AND s.category_id = c.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
@@ -722,18 +721,18 @@
       $stockbox = new Dialog('Item Edit', 'stockbox', '');
       $stockbox->addButtons(
         array(
-          'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
+             'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
                 item.get().description)} $(this).dialog("close")',
-          'Close' => '$(this).dialog("close");'
+             'Close' => '$(this).dialog("close");'
         )
       );
       $stockbox->setOptions(
         array(
-          'autoopen'   => false,
-          'modal'      => true,
-          'width'      => 940,
-          'height'     => 630,
-          'resizeable' => true
+             'autoopen'   => false,
+             'modal'      => true,
+             'width'      => 940,
+             'height'     => 630,
+             'resizeable' => true
         )
       );
       $stockbox->show();
@@ -989,10 +988,10 @@ JS;
           $name,
           array_merge(
             array(
-              'submitonselect' => $submit_on_change,
-              'selected'       => $selected_id,
-              'purchase'       => true,
-              'cells'          => true
+                 'submitonselect' => $submit_on_change,
+                 'selected'       => $selected_id,
+                 'purchase'       => true,
+                 'cells'          => true
             ),
             $opts
           )
@@ -1010,25 +1009,25 @@ JS;
         's.description',
         array_merge(
           array(
-            'format'        => 'Forms::stockItemsFormat',
-            'spec_option'   => $all_option === true ? _("All Items") : $all_option,
-            'spec_id'       => ALL_TEXT,
-            'search_box'    => false,
-            'search'        => array(
-              "stock_id",
-              "c.description",
-              "s.description"
-            ),
-            'search_submit' => DB_Company::_get_pref('no_item_list') != 0,
-            'size'          => 10,
-            'select_submit' => $submit_on_change,
-            'category'      => 2,
-            'order'         => array(
-              'c.description',
-              'stock_id'
-            ),
-            'editable'      => 30,
-            'max'           => 50
+               'format'        => 'Forms::stockItemsFormat',
+               'spec_option'   => $all_option === true ? _("All Items") : $all_option,
+               'spec_id'       => ALL_TEXT,
+               'search_box'    => false,
+               'search'        => array(
+                 "stock_id",
+                 "c.description",
+                 "s.description"
+               ),
+               'search_submit' => DB_Company::_get_pref('no_item_list') != 0,
+               'size'          => 10,
+               'select_submit' => $submit_on_change,
+               'category'      => 2,
+               'order'         => array(
+                 'c.description',
+                 'stock_id'
+               ),
+               'editable'      => 30,
+               'max'           => 50
           ),
           $opts
         )
@@ -1055,13 +1054,13 @@ JS;
         $all_option,
         $submit_on_change,
         array(
-          'submitonselect' => $submit_on_change,
-          'label'          => $label,
-          'cells'          => true,
-          'size'           => 10,
-          'purchase'       => false,
-          'show_inactive'  => $all,
-          'editable'       => $editkey
+             'submitonselect' => $submit_on_change,
+             'label'          => $label,
+             'cells'          => true,
+             'size'           => 10,
+             'purchase'       => false,
+             'show_inactive'  => $all,
+             'editable'       => $editkey
         ),
         $editkey,
         $legacy

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,15 +10,12 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
+  /** **/
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class Auth {
+  /** **/
+  class Auth
+  {
     /** @var */
     protected $username;
     /** @var */
@@ -74,7 +72,7 @@
         }
         unset($result['password']);
       }
-      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => Auth::get_ip(), 'success' => (bool) $result))->exec();
+      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => Auth::get_ip(), 'success' => (bool)$result))->exec();
       return $result;
     }
     /**

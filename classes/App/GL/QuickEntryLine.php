@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,12 +14,9 @@
   use ADV\Core\DB\DB;
   use ADV\App\Validation;
 
-  /**
-
-   */
+  /** **/
   class QuickEntryLine extends \ADV\App\DB\Base
   {
-
     protected $_table = 'quick_entry_lines';
     protected $_classname = 'Quick Entry Line';
     protected $_id_column = 'id';

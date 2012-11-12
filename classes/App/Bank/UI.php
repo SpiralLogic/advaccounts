@@ -1,29 +1,22 @@
 <?php
-  use ADV\App\Creditor\Creditor;
-  use ADV\App\Dates;
-  use ADV\Core\DB\DB;
-  use ADV\Core\JS;
-  use ADV\App\User;
-  use ADV\App\Dimensions;
-  use ADV\Core\Cell;
-  use ADV\App\Ref;
-  use ADV\App\Validation;
-  use ADV\Core\Ajax;
-  use ADV\App\Forms;
-  use ADV\Core\Table;
-  use ADV\App\Display;
-  use ADV\Core\Input\Input;
-  use ADV\App\Debtor\Debtor;
-
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_UI {
+  use ADV\App\Dates;
+  use ADV\Core\Num;
+  use ADV\Core\DB\DB;
+  use ADV\App\Forms;
+  use ADV\Core\Table;
+  use ADV\App\Display;
+
+  class Bank_UI
+  {
     /**
      * @static
      *
@@ -36,7 +29,8 @@
      * @return string
      */
     public static function reconcile($account, $name, $selected_id = null, $submit_on_change = false, $special_option = false) {
-      $sql = "SELECT reconciled FROM bank_trans
+      $sql
+        = "SELECT reconciled FROM bank_trans
  WHERE bank_act=" . DB::_escape($account) . " AND reconciled IS NOT null AND amount!=0
  GROUP BY reconciled";
       return Forms::selectBox(
@@ -83,9 +77,10 @@
       $bal = Bank_Account::getBalances($bank_acc, null, $to);
       Table::label(
         _("Bank Balance:"),
-        "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' : '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" . Num::_priceFormat(
-          $bal
-        ) . "</a>",
+        "<a target='_blank' " . ($bal < 0 ? 'class="redfg openWindow"' : '') . "href='/gl/inquiry/bank.php?bank_account=" . $bank_acc . "'" . " >&nbsp;" .
+          Num::_priceFormat(
+            $bal
+          ) . "</a>",
         $parms
       );
     }
@@ -98,7 +93,8 @@
      * @param bool $submit_on_change
      */
     public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false, $raw = false) {
-      $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
+      $sql
+        = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive
  FROM bank_accounts
  WHERE bank_accounts.account_type=3";
       if ($label != null) {

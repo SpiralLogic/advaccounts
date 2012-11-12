@@ -1,13 +1,24 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Cost {
+  use ADV\App\WO\WO;
+  use ADV\App\Item\Item;
+  use ADV\Core\Num;
+  use ADV\App\User;
+  use ADV\Core\DB\DB;
+
+  /**
+   *
+   */
+  class WO_Cost
+  {
     public static $types
       = array(
         WO_LABOUR   => "Labour Cost", //

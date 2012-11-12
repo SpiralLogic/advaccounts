@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,10 +11,9 @@
    **/
   namespace ADV\Core\Cache;
 
-  /**
-
-   */
-  class Memcached implements Cachable {
+  /** **/
+  class Memcached implements Cachable
+  {
     /** @var bool * */
     protected $connected = false;
     protected $connection = false;
@@ -112,7 +112,7 @@
      */
     public function defineConstants($name, $constants) {
       if (is_callable($constants)) {
-        $constants = (array) call_user_func($constants);
+        $constants = (array)call_user_func($constants);
       }
       foreach ($constants as $constant => $value) {
         define($constant, $value);

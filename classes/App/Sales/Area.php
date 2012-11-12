@@ -3,10 +3,9 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class Area extends \ADV\App\DB\Base   implements \ADV\App\Pager\Pageable {
+  /** **/
+  class Area extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+  {
     protected $_table = 'areas';
     protected $_classname = 'Area';
     protected $_id_column = 'area_code';
@@ -38,13 +37,13 @@
       return $q->fetch()->all();
     }
     /**
-      * @return array
-      */
+     * @return array
+     */
     public function getPagerColumns() {
-       $cols = [
-         ['type' => 'skip'],
-         'Area Name',
-       ];
-       return $cols;
-     }
+      $cols = [
+        ['type' => 'skip'],
+        'Area Name',
+      ];
+      return $cols;
+    }
   }

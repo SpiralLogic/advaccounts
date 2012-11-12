@@ -1,10 +1,9 @@
 <?php
   namespace Reports;
 
-  /**
-
-   */
-  class Report {
+  /** **/
+  class Report
+  {
     const CUST_NO            = "Cust no";
     const DATE               = "Date";
     const STATEMENT_NOTE     = "IMPORTANT PLEASE PASS THIS ON TO YOUR ACCOUNTS DEPARTMENT ASAP";
@@ -38,23 +37,24 @@
     const TOTAL_BALANCE      = "Total Balance";
     const TOTAL_PO_EX_TAX    = "Total Ex GST";
     const SUBTOTAL           = "Subtotal";
-    const STATEMENT = "Statement";
-    const AS_OF     = "as of";
-    const DAYS      = "Days";
-    const OVER      = "Over";
-    /** @var array **/
+    const STATEMENT          = "Statement";
+    const AS_OF              = "as of";
+    const DAYS               = "Days";
+    const OVER               = "Over";
+    /** @var array * */
     public $headers = array('Trans Type', 'Invoice#', 'Date', 'Due Date', 'Charges', 'Credits', 'Allocated', 'Outstanding');
-    /** @var array **/
-    public $doctypes = array(
-      ST_CUSTDELIVERY => "Delivery Note No.",
-      ST_CUSTPAYMENT  => "Receipt No.",
-      ST_CUSTREFUND   => "Refund No.",
-      ST_SUPPAYMENT   => "Remittance No.",
-      ST_PURCHORDER   => "Purchase Order No.",
-      ST_SALESORDER   => "Order No.",
-      ST_SALESINVOICE => "Invoice No.",
-      ST_SALESQUOTE   => "Quotation No.",
-      ST_WORKORDER    => "Work Order No.",
-      ST_CUSTCREDIT   => "Credit No."
-    );
+    /** @var array * */
+    public $doctypes
+      = array(
+        ST_CUSTDELIVERY => "Delivery Note No.",
+        ST_CUSTPAYMENT  => "Receipt No.",
+        ST_CUSTREFUND   => "Refund No.",
+        ST_SUPPAYMENT   => "Remittance No.",
+        ST_PURCHORDER   => "Purchase Order No.",
+        ST_SALESORDER   => "Order No.",
+        ST_SALESINVOICE => "Invoice No.",
+        ST_SALESQUOTE   => "Quotation No.",
+        ST_WORKORDER    => "Work Order No.",
+        ST_CUSTCREDIT   => "Credit No."
+      );
   }

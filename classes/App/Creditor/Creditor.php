@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -23,10 +24,9 @@
   use ADV\Core\JS;
   use ADV\App\Contact\Contact;
 
-  /**
-
-   */
-  class Creditor extends \Contact_Company {
+  /** **/
+  class Creditor extends \Contact_Company
+  {
     /**
      * @static
      *
@@ -219,7 +219,7 @@
       // TODO: Implement countTransactions() method.
     }
     /**
-     * @return bool|\Status
+     * @return bool|\ADV\Core\Status
      */
     protected function defaults() {
       parent::defaults();
@@ -231,12 +231,12 @@
       $this->payment_discount_account = $company_record['pyt_discount_act'];
     }
     /**
-     * @return bool|\Status
+     * @return bool|\ADV\Core\Status
      */
     protected function init() {
       parent::init();
       $this->setDefaults();
-      $this->id = (int) $this->id;
+      $this->id = (int)$this->id;
     }
     /**
      * @return void

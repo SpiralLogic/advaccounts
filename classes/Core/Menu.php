@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,10 +10,9 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
-  class menu_item {
+  /** **/
+  class menu_item
+  {
     /** @var */
     public $label;
     /** @var */
@@ -26,13 +26,13 @@
       $this->link  = $link;
     }
   }
-  /**
 
-   */
-  class Menu {
+  /** **/
+  class Menu
+  {
     /** @var */
     public $title;
-    /** @var array **/
+    /** @var array * */
     public $items = [];
     /**
      * @param $title

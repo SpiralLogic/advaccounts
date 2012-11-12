@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,12 +16,9 @@
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
-  /**
-
-   */
+  /** **/
   abstract class FormPager extends \ADV\App\Controller\Pager
   {
-
     /** @var \ADV\App\DB\Base */
     protected $object;
     protected $defaultFocus;
@@ -33,7 +31,6 @@
      * @return mixed
      */
     abstract protected function formContents(Form $form, View $view);
-
     protected function index() {
       $this->Page->init($this->title, $this->security);
       $this->beforeTable();
@@ -71,7 +68,7 @@
     protected function generateTable() {
       $cols       = $this->getPagerColumns();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-     // Pager::kill($pager_name);
+      // Pager::kill($pager_name);
       $table = Pager::newPager($pager_name, $cols);
       $table->setData($this->getTableRows($pager_name));
       $table->width = $this->tableWidth;
@@ -80,10 +77,10 @@
     /**
      * @return array
      */
-    protected function getPagerColumns(){
-      $columns = parent::getPagerColumns();
-      $columns[]=['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']];
-      $columns[]=['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']];
+    protected function getPagerColumns() {
+      $columns   = parent::getPagerColumns();
+      $columns[] = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']];
+      $columns[] = ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']];
       return $columns;
     }
   }

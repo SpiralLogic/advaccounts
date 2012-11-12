@@ -15,9 +15,7 @@
   use ADV\Core\View;
   use ADV\App\Form\Form;
 
-  /**
-
-   */
+  /** **/
   class Units extends \ADV\App\Controller\FormPager
   {
     protected $stock_id;
@@ -41,7 +39,6 @@
       $form->number('decimals', 0)->label('Decimals:');
       $form->checkbox('use_pref')->label('Use user preference:');
     }
-
     protected function runValidation() {
       Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));

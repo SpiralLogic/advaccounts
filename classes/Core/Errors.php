@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,10 +10,9 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
-  class Errors {
+  /** **/
+  class Errors
+  {
     const DB_DUPLICATE_ERROR_CODE = 1062;
     /** @var array Container for the system messages */
     public static $messages = [];
@@ -92,7 +92,7 @@
         static::$current_severity = $type;
       }
       if (in_array($type, static::$user_errors)) {
-        list($message, $file, $line, $log) = explode('||', $message) + [1 => 'No File Given', 2 => 'No Line Given', 3=> true];
+        list($message, $file, $line, $log) = explode('||', $message) + [1 => 'No File Given', 2 => 'No Line Given', 3 => true];
       }
       $error = array(
         'type'    => $type,
@@ -351,7 +351,6 @@
         $source = array_shift($backtrace);
       }
       self::writeLog('DATABASE', static::dumpVar($error['debug'], true), $source['file'], $source['line']);
-
       Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
     }
     /**

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,10 +13,9 @@
 
   use \ADV\App\Controller\Menu;
 
-  /**
-
-   */
-  class Manufacturing extends Menu {
+  /** **/
+  class Manufacturing extends Menu
+  {
     public $name = "Manufacturing";
     public $help_context = "&Manufacturing";
     /**

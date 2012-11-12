@@ -19,6 +19,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -29,10 +30,9 @@
     Class for supplier/customer payment/credit allocations edition
     and related helpers.
   */
-  /**
-
-   */
-  class GL_Allocation {
+  /** **/
+  class GL_Allocation
+  {
     /** @var */
     public $trans_no;
     /** @var */
@@ -428,10 +428,9 @@ above logic will be overwritten with the prev alloc detail below */
     }
   }
 
-  /**
-
-   */
-  class allocation_item {
+  /** **/
+  class allocation_item
+  {
     /** @var */
     public $type;
     /** @var */

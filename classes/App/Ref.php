@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,9 +12,7 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
+  /** **/
   class Ref
   {
     /**
@@ -43,7 +42,6 @@
     public static function find($type, $reference) {
       $sql    = "SELECT id FROM refs WHERE type=" . DB::_escape($type) . " AND reference=" . DB::_escape($reference);
       $result = DB::_query($sql, "could not query reference table");
-
       return (DB::_numRows($result) > 0);
     }
     /**
@@ -89,7 +87,6 @@
         $oldref = $ref;
         $ref    = static::increment($ref);
       }
-
       return $ref;
     }
     /**
@@ -104,7 +101,6 @@
       $sql    = "SELECT * FROM refs WHERE type=" . DB::_escape($type) . " AND id=" . DB::_escape($id);
       $result = DB::_query($sql, "could not query reference table");
       $row    = DB::_fetch($result);
-
       return $row['reference'];
     }
     /**
@@ -113,11 +109,10 @@
      * @param $type
      * @param $id
      *
-     * @return null|PDOStatement
+     * @return null|\PDOStatement
      */
     public static function delete($type, $id) {
       $sql = "DELETE FROM refs WHERE type=$type AND id=" . DB::_escape($id);
-
       return DB::_query($sql, "could not delete from reference table");
     }
     /**
@@ -207,10 +202,8 @@
           $sql .= " AND $db_type=$type";
         }
         $result = DB::_query($sql, "could not test for unique reference");
-
         return (DB::_numRows($result) == 0);
       }
-
       // it's a type that doesn't use references - shouldn't be calling here, but say yes anyways
       return true;
     }

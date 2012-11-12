@@ -1,12 +1,18 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\Config;
+  use ADV\Core\Files;
+  use ADV\App\Display;
+  use ADV\App\Page;
+
   Page::start(_($help_context = "Install/Update Languages"), SA_CREATELANGUAGE);
   if (isset($_GET['selected_id'])) {
     $selected_id = $_GET['selected_id'];
@@ -55,7 +61,7 @@
     $installed_languages[$id]['code']     = $_POST['code'];
     $installed_languages[$id]['name']     = $_POST['name'];
     $installed_languages[$id]['encoding'] = $_POST['encoding'];
-    $installed_languages[$id]['rtl']      = (bool) $_POST['rtl'];
+    $installed_languages[$id]['rtl']      = (bool)$_POST['rtl'];
     $language                             = Config::_get('languages.installed');
     $language                             = $language[$id]['code'];
     $filename                             = PATH_LANG . '$language' . DS . 'LC_MESSAGES';

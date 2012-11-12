@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,10 +12,9 @@
 
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
-  class Display {
+  /** **/
+  class Display
+  {
     /**
      * @static
      *
@@ -39,7 +39,6 @@
         },
         $string
       );
-
       return $clean ? $string : array($string, $access);
     }
     /**
@@ -150,7 +149,6 @@
      * @return string
      */
     public static function viewer_link($label, $url = '', $class = '', $id = '', $icon = null) {
-
       if ($url) {
         $class .= " openWindow";
       }

@@ -15,9 +15,7 @@
   use ADV\App\Tax\ItemType;
   use ADV\Core\View;
 
-  /**
-
-   */
+  /** **/
   class Itemtypes extends \ADV\App\Controller\FormPager
   {
     protected $security = SA_ITEMTAXTYPE;
@@ -38,7 +36,7 @@
       $form->text('name')->label('Name:')->focus($this->action == EDIT);
       $form->text('exempt')->label('Fully Exempt:');
       $form->checkbox('inactive')->label('Inactive:');
-      $tax_types = Type::getAll();
+      $tax_types  = Type::getAll();
       $exemptions = new Form();
       $form->heading('Exemptions');
       foreach ($tax_types as $type) {
@@ -46,7 +44,6 @@
       }
       $form->nest('exemptions', $exemptions);
     }
-
   }
 
 /*

@@ -1,13 +1,32 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class WO_Issue {
+  use ADV\Core\Num;
+  use ADV\Core\JS;
+  use ADV\App\Item\Item;
+  use ADV\App\Forms;
+  use ADV\Core\Ajax;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+  use ADV\App\Display;
+  use ADV\App\Ref;
+  use ADV\App\Dates;
+  use ADV\Core\Event;
+  use ADV\App\WO\WO;
+  use ADV\Core\DB\DB;
+
+  /**
+   *
+   */
+  class WO_Issue
+  {
     /**
      * @static
      *
@@ -247,7 +266,7 @@
       $id = Forms::findPostPrefix(MODE_EDIT);
       if ($line_no != -1 && $line_no == $id) {
         $_POST['stock_id'] = $order->line_items[$id]->stock_id;
-        $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id, $dec);
+        $_POST['qty']      = Item::qty_format($order->line_items[$id]->quantity, $order->line_items[$id]->stock_id);
         $_POST['std_cost'] = Num::_priceFormat($order->line_items[$id]->standard_cost);
         $_POST['units']    = $order->line_items[$id]->units;
         Forms::hidden('stock_id', $_POST['stock_id']);
@@ -268,7 +287,7 @@
         $_POST['std_cost'] = Num::_priceFormat($item_info["standard_cost"]);
         $_POST['units']    = $item_info["units"];
       }
-      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
+      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null);
       Cell::label($_POST['units'], '', 'units');
       Forms::amountCells(null, 'std_cost', $_POST['std_cost']);
       if ($id != -1) {

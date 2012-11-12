@@ -1,12 +1,19 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\App\Page;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use ADV\App\Validation;
+  use ADV\Core\JS;
+
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Item Adjustments Note"), SA_INVENTORYADJUSTMENT);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
@@ -119,7 +126,7 @@
    * @return bool
    */
   function can_process() {
-    $adj = &$_SESSION['adj_items'];
+    $adj = & $_SESSION['adj_items'];
     if (count($adj->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
       JS::_setFocus('stock_id');

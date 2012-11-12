@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,17 +13,15 @@
 
   use \ADV\App\Controller\Menu;
 
-  /**
-
-   */
-  class Purchases extends Menu {
+  /** **/
+  class Purchases extends Menu
+  {
     public $name = "Purchases";
     public $help_context = "&Purchases";
     /**
 
      */
     protected function before() {
-
       $module = $this->add_module(_("Purchases"));
       $module->addLeftFunction(_("New Purchase &Order"), "/purchases/order?NewOrder=Yes", SA_PURCHASEORDER);
       $module->addLeftFunction(_("New &Invoice"), "/purchases/invoice?New=1", SA_SUPPLIERINVOICE);

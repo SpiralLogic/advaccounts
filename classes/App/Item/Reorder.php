@@ -10,12 +10,9 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
+  /** **/
   class Reorder extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
   {
-
     protected $_table = 'stock_location';
     protected $_classname = 'Stock Location';
     protected $_id_column = 'loc_code';

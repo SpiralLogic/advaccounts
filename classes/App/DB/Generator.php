@@ -1,13 +1,11 @@
 <?php
   namespace ADV\App\DB;
 
-  use ADV\Core\DB\DB;
   use ADV\Core\DIC;
 
-  /**
-
-   */
-  class Generator {
+  /** **/
+  class Generator
+  {
     protected $vars = [];
     protected $valids = [];
     protected $name;

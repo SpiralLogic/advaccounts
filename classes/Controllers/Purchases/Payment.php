@@ -1,13 +1,13 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\Controllers\Purchases;
 
   use ADV\App\Creditor\Creditor;
@@ -20,19 +20,16 @@
   use GL_ExchangeRate;
   use ADV\App\Ref;
   use Bank_Account;
-  use ADV\App\Page;
   use Bank_Currency;
   use ADV\App\Forms;
   use ADV\App\Dates;
   use GL_Allocation;
   use ADV\Core\Table;
-  use ADV\Core\Ajax;
   use ADV\Core\JS;
 
-  /**
-
-   */
-  class Payment extends \ADV\App\Controller\Action {
+  /** **/
+  class Payment extends \ADV\App\Controller\Action
+  {
     protected $supplier_currency;
     protected $bank_currency;
     protected $company_currency;
@@ -49,13 +46,13 @@
           $_POST['date_']        = $this->Input->get('date');
         }
       }
-      $this->creditor_id = &$this->Input->postGetGlobal('creditor_id', null, -1);
+      $this->creditor_id = & $this->Input->postGetGlobal('creditor_id', null, -1);
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (!$this->bank_account) // first page call
       {
         $_SESSION['alloc'] = new GL_Allocation(ST_SUPPAYMENT, 0);
       }
-      $this->bank_account = &$this->Input->postGetGlobal('bank_account', null, -1);
+      $this->bank_account = & $this->Input->postGetGlobal('bank_account', null, -1);
       if (!isset($_POST['date_'])) {
         $_POST['date_'] = Dates::_newDocDate();
         if (!Dates::_isDateInFiscalYear($_POST['date_'])) {

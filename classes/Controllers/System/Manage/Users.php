@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -17,10 +18,9 @@
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
-  /**
-
-   */
-  class Users extends \ADV\App\Controller\FormPager implements \ADV\App\Pager\Pageable {
+  /** **/
+  class Users extends \ADV\App\Controller\FormPager implements \ADV\App\Pager\Pageable
+  {
     protected $tableWidth = '80';
     protected $security = SA_SALESMAN;
     protected function before() {
@@ -48,7 +48,6 @@
       $form->checkbox('rep_popup')->label('Use popup window for reports:');
       $form->checkbox('change_password')->label('Must change password next logon:');
     }
-
   }
 
 /*

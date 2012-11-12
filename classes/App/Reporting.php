@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -18,10 +19,9 @@
   use ADV\Core\Config;
   use ADV\App\UI;
 
-  /**
-
-   */
-  class Reporting {
+  /** **/
+  class Reporting
+  {
     static $debug = null;
     /** @var User */
     static $User = null;
@@ -267,6 +267,7 @@ JS;
     }
     /**
      * Universal link to any kind of report.
+     *
      * @static
      *
      * @param        $link_text

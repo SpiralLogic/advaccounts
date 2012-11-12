@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,9 +10,7 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
+  /** **/
   class Status
   {
     /** @var array * */

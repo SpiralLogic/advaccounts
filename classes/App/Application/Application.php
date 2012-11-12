@@ -1,32 +1,30 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  /**
-
-   */
+  /** **/
   namespace ADV\App\Application;
 
-  /**
-
-   */
-  abstract class Application {
+  /** **/
+  abstract class Application
+  {
     /** @var */
     public $id;
     /** @var */
     public $name;
-    /** @var bool **/
+    /** @var bool * */
     public $direct = false;
     /** @var */
     public $help_context;
-    /** @var array **/
+    /** @var array * */
     public $modules;
-    /** @var bool **/
+    /** @var bool * */
     public $enabled = true;
     /**
      * @internal param $id

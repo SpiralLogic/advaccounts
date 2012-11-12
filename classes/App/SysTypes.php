@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,10 +16,9 @@
   use ADV\Core\Event;
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class SysTypes {
+  /** **/
+  class SysTypes
+  {
     public static $names
       = array(
         ST_SALESQUOTE   => "Sales Quotation",
@@ -88,7 +88,6 @@
       if (!($st && $st[0] && $st[2])) {
         // this is in fact internal error condition.
         Event::error('Internal error: invalid type passed to SysTypes::get_next_trans_no()');
-
         return 0;
       }
       $sql = "SELECT MAX(`$st[2]`) FROM $st[0]";
@@ -105,7 +104,6 @@
         $result = DB::_query($sql);
         $unique = (DB::_numRows($result) > 0) ? false : true;
       }
-
       return $ref;
     }
     /**
@@ -177,7 +175,6 @@
     public static function get() {
       $sql    = "SELECT type_id,type_no,CONCAT(prefix,next_reference)as next_reference FROM sys_types";
       $result = DB::_query($sql, "could not query systypes table");
-
       return $result;
     }
     /**
@@ -201,7 +198,6 @@
      * @return string
      */
     public static function select($name, $value = null, $spec_opt = false, $submit_on_change = false) {
-
       return Forms::arraySelect(
         $name,
         $value,

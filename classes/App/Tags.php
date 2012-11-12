@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,10 +12,9 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class Tags {
+  /** **/
+  class Tags
+  {
     public static $types
       = array(
         TAG_ACCOUNT   => "Account", //
@@ -33,7 +33,6 @@
       $sql
         = "INSERT INTO tags (type, name, description)
          VALUES (" . DB::_escape($type) . ", " . DB::_escape($name) . ", " . DB::_escape($description) . ")";
-
       return DB::_query($sql);
     }
     /**
@@ -52,7 +51,6 @@
         $sql .= ", type=" . DB::_escape($type);
       }
       $sql .= " WHERE id = " . DB::_escape($id);
-
       return DB::_query($sql);
     }
     /**
@@ -69,7 +67,6 @@
         $sql .= " AND !inactive";
       }
       $sql .= " ORDER BY name";
-
       return DB::_query($sql, "could not get tags");
     }
     /**
@@ -82,7 +79,6 @@
     public static function get($id) {
       $sql    = "SELECT * FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag");
-
       return DB::_fetch($result);
     }
     /**
@@ -96,7 +92,6 @@
       $sql    = "SELECT type FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag type");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     /**
@@ -110,7 +105,6 @@
       $sql    = "SELECT name FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag name");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     /**
@@ -124,7 +118,6 @@
       $sql    = "SELECT description FROM tags WHERE id = " . DB::_escape($id);
       $result = DB::_query($sql, "could not get tag description");
       $row    = DB::_fetchRow($result);
-
       return $row[0];
     }
     /**
@@ -224,7 +217,6 @@
          INNER JOIN tag_associations AS ta ON ta.record_id = $table.$key
          INNER JOIN tags AS tags ON ta.tag_id = tags.id
       WHERE tags.id = " . DB::_escape($id);
-
       return DB::_query($sql, "could not get tag associations for tag");
     }
     /**
@@ -240,7 +232,6 @@
         = "SELECT tags.* FROM tag_associations AS ta
                  INNER JOIN tags AS tags ON tags.id = ta.tag_id
                  WHERE tags.type = $type	AND ta.record_id = " . DB::_escape($recordid);
-
       return DB::_query($sql, "could not get tags associations for record");
     }
     /**
@@ -265,7 +256,6 @@
         $tags[''] = $all ? _("No tags defined.") : _("No active tags defined.");
         $spec_opt = false;
       }
-
       return Forms::arraySelect(
         $name,
         null,

@@ -15,9 +15,7 @@
   use InvalidArgumentException;
   use ADV\App\Pager\Edit;
 
-  /**
-
-   */
+  /** **/
   abstract class InlinePager extends \ADV\App\Controller\Pager
   {
     public $editing;
@@ -34,7 +32,7 @@
      * @return \ADV\App\Pager\Pager
      */
     protected function generateTable() {
-      $cols = $this->getPagerColumns();
+      $cols       = $this->getPagerColumns();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
       Edit::kill($pager_name);
       $table = Edit::newPager($pager_name, $cols);

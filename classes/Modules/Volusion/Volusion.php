@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,10 +17,9 @@
   use \ADV\Core\DB\DBDuplicateException;
   use \ADV\Core\Event;
 
-  /**
-
-   */
-  class Volusion extends Module\Base {
+  /** **/
+  class Volusion extends Module\Base
+  {
     /** @var DB */
     protected $jobsboardDB;
     public static $DB;
@@ -29,7 +29,6 @@
       }
     }
     public function doWebsales() {
-
       if (!$this->jobsboardDB) {
         $this->jobsboardDB = DIC::get('DB', 'jobsboard');
       }
@@ -69,7 +68,6 @@
       if ($success) {
         Event::success('Added/Update ' . $success . ' websales');
       }
-
       return $orders;
     }
     /**
@@ -77,7 +75,6 @@
      */
     function getNotOnJobsboard() {
       $results = static::$DB->select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
-
       return $results;
     }
     /**
@@ -85,7 +82,6 @@
      */
     function notOnJobsboard() {
       $neworders = $this->getNotOnJobsboard();
-
       if (!$neworders) {
         //		Event::notice('No jobs in database from website but not on jobsboard');
         return false;
@@ -98,7 +94,6 @@
         }
         $success++;
       }
-
       return $neworders;
     }
     /**
@@ -110,7 +105,6 @@
       $order = static::$DB->select()->from('WebOrders')->where('OrderID=', $id)->fetch()->one();
       if (!$order) {
         Event::error('Could not find job ' . $id . ' in database');
-
         return false;
       }
       $orderdetails = static::$DB->select()->from('WebOrderDetails')->where('OrderID=', $id)->fetch()->all();
@@ -144,7 +138,6 @@
         $this->jobsboardDB->update('Job_List')->values($newJob)->where('Advanced_Job_No=', $jobsboard_no)->exec();
         static::$DB->update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $id)->exec();
         $this->insertJobsboardlines($lineitems, $jobsboard_no);
-
         return $jobsboard_no;
       }
       $newJob = array(
@@ -197,7 +190,6 @@
       $this->insertJobsboardlines($lineitems, $jobsboard_no);
       static::$DB->update('WebOrders')->value('ison_jobsboard', $jobsboard_no)->where('OrderID=', $order['OrderID'])->exec();
       $result = $jobsboard_no;
-
       return $result;
     }
     /**
@@ -228,7 +220,6 @@
      */
     protected function getJobsboardLines($jobid) {
       $result = $this->jobsboardDB->select()->from('JobListItems')->where('job_id=', $jobid)->fetch()->all();
-
       return $result;
     }
   }

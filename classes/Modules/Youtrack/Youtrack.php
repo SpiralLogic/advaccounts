@@ -10,13 +10,11 @@
 
   use ADV\App\User;
   use ADV\Core\JS;
-  use ADV\Core\Config;
   use ADV\Core\Module;
 
-  /**
-
-   */
-  class Youtrack extends Module\Base {
+  /** **/
+  class Youtrack extends Module\Base
+  {
     public function init() {
       $this->_login();
     }

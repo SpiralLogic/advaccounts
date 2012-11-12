@@ -4,7 +4,6 @@
   use ADV\Core\Ajax;
   use ADV\App\Forms;
   use ADV\Core\Cell;
-  use ADV\App\Display;
   use ADV\Core\Table;
   use ADV\App\Tax\Tax;
   use ADV\Core\Input\Input;
@@ -17,13 +16,15 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Purch_Invoice {
+  class Purch_Invoice
+  {
     /**
      * @static
      *
@@ -507,7 +508,7 @@ the credit is to creditors control act done later for the total invoice value + 
       if (DB::_numRows($result) > 0) {
         $date_ = Dates::_today();
         while ($details_row = DB::_fetch($result)) {
-          if ((int) $details_row["grn_item_id"] > 0) // it can be empty for GL items
+          if ((int)$details_row["grn_item_id"] > 0) // it can be empty for GL items
           {
             // Changed 2008-10-17 by Joe Hunt to get the avg. material cost updated
             $old = static::update_supplier_received(

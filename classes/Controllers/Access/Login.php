@@ -13,9 +13,7 @@
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
-  /**
-
-   */
+  /** **/
   class Login extends \ADV\App\Controller\Action
   {
     public $view;
@@ -25,7 +23,7 @@
     protected $Dates;
     public function run() {
       $this->Config = \ADV\Core\DIC::get('Config');
-      $this->Dates = \ADV\Core\DIC::get('Dates');
+      $this->Dates  = \ADV\Core\DIC::get('Dates');
       parent::run();
     }
     protected function before() {
@@ -39,14 +37,14 @@
       } else {
         $view['login_text'] = _("Please login here");
       }
-      $view['theme'] = "default";
-      $view['timeout'] = $timeout = $this->User->last_action;
-      $view['encoding'] = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
-      $view['rtl'] = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
-      $view['idletime'] = $this->User->last_action + $this->User->timeout - time();
+      $view['theme']         = "default";
+      $view['timeout']       = $timeout = $this->User->last_action;
+      $view['encoding']      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
+      $view['rtl']           = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
+      $view['idletime']      = $this->User->last_action + $this->User->timeout - time();
       $view['usernamevalue'] = $this->User->last_action ? $this->User->loginname :
         ($this->Config->get('demo_mode') ? "demouser" : "");
-      $view['company'] = $this->User->company;
+      $view['company']       = $this->User->company;
       if (!headers_sent()) {
         header("Content-type: text/html; charset=UTF-8");
       }
@@ -60,7 +58,7 @@
         $form->hidden('login_company')->value($this->User->company);
       } else {
         $companies = $this->Config->getAll('db');
-        $logins = [];
+        $logins    = [];
         foreach ($companies as $k => $v) {
           if ($v['company']) {
             $logins[$k] = $v['company'];

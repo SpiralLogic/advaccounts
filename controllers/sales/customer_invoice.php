@@ -8,10 +8,7 @@
   use ADV\App\Item\Item;
   use ADV\Core\JS;
   use ADV\App\Orders;
-  use ADV\Core\Input\Input;
-  use ADV\App\User;
   use ADV\App\Dates;
-  use ADV\Core\DB\DB;
   use ADV\App\Forms;
   use ADV\Core\Cell;
   use ADV\App\Display;
@@ -19,6 +16,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>

@@ -8,10 +8,9 @@
    */
   namespace ADV\Core;
 
-  /**
-
-   */
-  class Table {
+  /** **/
+  class Table
+  {
     /**
      * @param string $class
      */
@@ -55,7 +54,7 @@
      */
     public static function header($labels, $params = '', $extra = '') {
       $header = '<thead>' . $extra . '<tr>';
-      $labels = (array) $labels;
+      $labels = (array)$labels;
       foreach ($labels as $label) {
         $header .= "<th $params>$label</th>";
       }
@@ -81,7 +80,7 @@
         $value_attrs .= " id='$id'";
         Ajax::_addUpdate($id, $id, $value);
       }
-      $rightfill = ((int) $rightfill) ? "<td colspan=" . (int) $rightfill . "></td>" : '';
+      $rightfill = ((int)$rightfill) ? "<td colspan=" . (int)$rightfill . "></td>" : '';
       echo "<tr><td $label_attrs>$label</td><td $value_attrs>$value</td>" . $rightfill . "</tr>";
     }
     /**

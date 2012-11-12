@@ -1,12 +1,12 @@
 <?php
   use ADV\Core\DB\DB;
-  use ADV\Core\Ajax;
   use ADV\App\Dates;
   use ADV\App\Tax\Tax;
   use ADV\App\User;
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -17,7 +17,8 @@
   // $date_ is display date (non-sql)
   // $amount is in $currency currency
   // if $currency is not set, then defaults to no conversion
-  class GL_Trans {
+  class GL_Trans
+  {
     /**
      * @static
      *

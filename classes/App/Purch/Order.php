@@ -23,6 +23,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -31,10 +32,9 @@
    **/
   /* Definition of the purch_order class to hold all the information for a purchase order and delivery
   */
-  /**
-
-   */
-  class Purch_Order {
+  /** **/
+  class Purch_Order
+  {
     /** @var */
     public $creditor_id;
     /** @var */

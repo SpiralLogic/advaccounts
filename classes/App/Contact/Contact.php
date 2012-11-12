@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,9 +12,7 @@
 
   use \ADV\App\DB\Base;
 
-  /**
-
-   */
+  /** **/
   class Contact extends Base
   {
     /** @var int * */
@@ -42,7 +41,7 @@
      * @param array|int $id
      */
     public function __construct($type, $id = 0) {
-      $this->parent_type = (int) $type;
+      $this->parent_type = (int)$type;
       parent::__construct($id, array('parent_type' => $type));
     }
     /**
@@ -73,10 +72,10 @@
       // TODO: Implement countTransactions() method.
     }
     protected function defaults() {
-      $this->id = (int) $this->id;
+      $this->id = (int)$this->id;
     }
     /**
-     * @return bool|\Status
+     * @return bool|\ADV\Core\Status
      */
     protected function init() {
       $this->defaults();

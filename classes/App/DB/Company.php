@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,9 +9,11 @@
    * @link      http://www.advancedgroup.com.au
    **/
   use ADV\Core\Traits\StaticAccess;
+  use ADV\Core\Config;
+  use ADV\App\Dates;
+  use ADV\Core\Cache;
   use ADV\App\User;
   use ADV\Core\Input\Input;
-  use ADV\Core\DB\DB;
 
   /**
    * @method static DB_Company i()
@@ -20,7 +23,8 @@
    * @method static _key_in_foreign_table($id, $tables, $stdkey, $escaped = false)
    * @method static _get_base_sales_type()
    */
-  class DB_Company extends \ADV\App\DB\Base {
+  class DB_Company extends \ADV\App\DB\Base
+  {
     use StaticAccess;
 
     /** @var int * */
@@ -93,14 +97,14 @@
         $name    = $name ? : User::_i()->company;
         $company = Config::_get('db.' . Input::_post('login_company', null, $name));
         parent::__construct($company);
-        Cache::_set('Company.' . $name, array_keys((array) $this));
+        Cache::_set('Company.' . $name, array_keys((array)$this));
       }
       $this->id = & $this->coy_code;
     }
     /**
      * @param array|null $changes
      *
-     * @return array|bool|int|null|Status
+     * @return array|bool|int|null|\ADV\Core\Status
      */
     public function save($changes = null) {
       if (is_array($changes)) {
@@ -113,7 +117,7 @@
         $this->saveNew();
       }
       DB::_begin();
-      DB::_update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
+      DB::_update('company')->values((array)$this)->where('coy_code=', $this->id)->exec();
       DB::_commit();
       $_SESSION['config']['company'] = $this;
       return $this->status(true, "Company has been updated.");
@@ -262,7 +266,7 @@
      * @return mixed
      */
     public function get_pref($pref_name) {
-      $prefs = (array) $this;
+      $prefs = (array)$this;
       return $prefs[$pref_name];
     }
     /**
@@ -270,7 +274,7 @@
      * @return array
      */
     public function get_prefs() {
-      return (array) $this;
+      return (array)$this;
     }
     /**
      * @static
@@ -330,6 +334,7 @@
      * $tables - array of table names (without prefix); when table name is used as a key, then
      * value is name of foreign key field. For numeric keys $stdkey field name is used.
      * $stdkey - standard name of foreign key.
+     *
      * @static
      *
      * @param      $id
@@ -395,4 +400,8 @@
       }
       $this->save($data);
     }
+    /**
+     * @param $_POST
+     */
+    public static function _update_gl_setup($_POST) { }
   }

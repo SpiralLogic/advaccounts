@@ -1,15 +1,10 @@
 <?php
-  /**
-
-   */
+  /** **/
   namespace ADV\Core;
 
-  /**
-
-   */
+  /** **/
   class CSSMin
   {
-
     protected $minified = '';
     protected $settings
       = array(
@@ -36,11 +31,11 @@
         $this->filedir = $options['filedir'];
       }
       if (isset($options['minify_type_settings'])) {
-        $this->settings = array_merge($this->settings, (array) $options['minify_type_settings']);
+        $this->settings = array_merge($this->settings, (array)$options['minify_type_settings']);
       }
       $this->embed = $this->settings['embed'] && (!preg_match('/msie/i', $_SERVER['HTTP_USER_AGENT']) || preg_match('/msie 8|opera/i', $_SERVER['HTTP_USER_AGENT']));
       if (isset($options['mimeTypes'])) {
-        $this->mimeTypes = array_merge($this->mimeTypes, (array) $options['mimeTypes']);
+        $this->mimeTypes = array_merge($this->mimeTypes, (array)$options['mimeTypes']);
       }
       $this->source = $source;
     }
@@ -67,7 +62,7 @@
       }
       if (!$this->settings['embed'] || !file_exists($this->filedir . $url) || ($this->settings['embedMaxSize'] > 0 && filesize(
         $this->filedir . $url
-      ) > $this->settings['embedMaxSize']) || !$fileType || in_array($fileType, (array) $this->settings['embedExceptions']) || !$mimeType || $count > 1
+      ) > $this->settings['embedMaxSize']) || !$fileType || in_array($fileType, (array)$this->settings['embedExceptions']) || !$mimeType || $count > 1
       ) {
         if (strpos($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'] . '?') === 0 || strpos($_SERVER['REQUEST_URI'], rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/') . '/?') === 0
         ) {

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -35,10 +36,9 @@
   use Creditor_Trans;
   use ADV\App\Dates;
 
-  /**
-
-   */
-  class Bank {
+  /** **/
+  class Bank
+  {
     public static $payment_person_types
       = array(
         "Miscellaneous", //

@@ -10,9 +10,7 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
+  /** **/
   class MenuUI extends Menu
   {
     /** @var JS */
@@ -63,7 +61,7 @@
      * @return MenuUI
      */
     public function addLink($title, $tooltip = '', $link, $param_element, $target = null) {
-      $this->items[] = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
+      $this->items[]             = new MenuUI_item($title, $tooltip, $link, $param_element, $target);
       $this->options['hasLinks'] = true;
       return $this;
     }
@@ -76,9 +74,9 @@
      * @return MenuUI
      */
     public function addJSLink($title, $tooltip = '', $name, $onselect) {
-      $this->items[] = new MenuUI_item($title, $tooltip, '#' . $name);
+      $this->items[]             = new MenuUI_item($title, $tooltip, '#' . $name);
       $this->options['hasLinks'] = true;
-      $this->jslinks[] = $onselect;
+      $this->jslinks[]           = $onselect;
       return $this;
     }
     /**
@@ -95,8 +93,8 @@
       if ($state == null) {
         $state = $this->defaultState;
       }
-      $this->items[] = new MenuUI_item($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count, null, null, $state);
-      $this->current_tab['attrs']['id'] = 'tabs' . MenuUI::$menuCount . '-' . $count;
+      $this->items[]                       = new MenuUI_item($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count, null, null, $state);
+      $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
       $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content';
       $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count) ? ' display:none;' : '';
       ob_start();
@@ -107,15 +105,15 @@
      */
     public function endTab() {
       $this->current_tab['contents'] = ob_get_clean();
-      $this->tabs[] = $this->current_tab;
-      $this->current_tab = [];
+      $this->tabs[]                  = $this->current_tab;
+      $this->current_tab             = [];
       return $this;
     }
     /**
      * @return void
      */
     public function render() {
-      $menu = new View('ui/menu');
+      $menu              = new View('ui/menu');
       $menu['menuCount'] = MenuUI::$menuCount;
       $menu->set('items', $this->items);
       $menu->set('tabs', $this->tabs);
@@ -128,9 +126,7 @@
     }
   }
 
-  /**
-
-   */
+  /** **/
   class MenuUI_item extends menu_item
   {
     /** @var string * */
@@ -148,15 +144,15 @@
      * @param string $state
      */
     public function __construct($label, $tooltip = '', $link = '#', $param_element = null, $target = null, $state = 'default') {
-      $this->label = $label;
+      $this->label   = $label;
       $this->liattrs = [
         'class' => 'ui-state-default ui-corner-top ui-state-' . $state,
       ];
-      $this->attrs = [
-        'href' => e($link),
-        'title' => $label,
+      $this->attrs   = [
+        'href'         => e($link),
+        'title'        => $label,
         'data-paramel' => $param_element,
-        'target' => $target
+        'target'       => $target
       ];
     }
   }

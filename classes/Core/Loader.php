@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,31 +12,30 @@
 
   use ADV\Core\Cache;
 
-  /**
-
-   */
-  class Load_Exception extends \Exception {
+  /** **/
+  class Load_Exception extends \Exception
+  {
   }
-  /**
 
-   */
-  class Loader {
-    /** @var int **/
+  /** **/
+  class Loader
+  {
+    /** @var int * */
     protected $time = 0;
-    /** @var array **/
+    /** @var array * */
     protected $classes = [];
-    /** @var array **/
+    /** @var array * */
     protected $global_classes = [];
     /** @var Cache */
     protected $Cache = null;
-    /** @var array **/
+    /** @var array * */
     public $loaded = [];
     /**
 
      */
     public function __construct() {
       $core = include(ROOT_DOC . 'config' . DS . 'core.php');
-      $this->importNamespaces((array) $core);
+      $this->importNamespaces((array)$core);
       spl_autoload_register([$this, 'load'], true);
     }
     /**
@@ -49,7 +49,7 @@
         $this->loaded  = $cachedClasses['paths'];
       } else {
         $vendor = include(ROOT_DOC . 'config' . DS . 'vendor.php');
-        $this->addClasses((array) $vendor, PATH_VENDOR);
+        $this->addClasses((array)$vendor, PATH_VENDOR);
       }
     }
     /**
@@ -92,7 +92,7 @@
      * @return string
      */
     protected function tryPath($paths, $required_class, $classname, $global = false) {
-      $paths = (array) $paths;
+      $paths = (array)$paths;
       while ($path = array_shift($paths)) {
         if (is_readable($path)) {
           return $this->includeFile($path, $required_class, $classname, $global);

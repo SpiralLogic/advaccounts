@@ -13,9 +13,7 @@
 
   use ADV\Core\HTML;
 
-  /**
-
-   */
+  /** **/
   class Select extends Field
   {
     use \ADV\Core\Traits\SetFromArray;
@@ -44,22 +42,22 @@
         $this->default = key($this->items);
       }
       $selector = '';
-      $HTML = new HTML;
+      $HTML     = new HTML;
       foreach ($this->items as $value => $label) {
         $selector .= $HTML->option(null, $label, ['value' => $value], false);
       }
       $this['multiple'] = $this->multi;
       $this['disabled'] = $this->disabled;
-      $this['class'] = $this['class'] . ' combo';
-      $this['title'] = $this->sel_hint;
-      $selector = $HTML->span("_" . $this->name . "_sel", ['class' => 'combodiv'])->select($this->id, $selector, $this->attr, false)->_span()->__toString();
+      $this['class']    = $this['class'] . ' combo';
+      $this['title']    = $this->sel_hint;
+      $selector         = $HTML->span("_" . $this->name . "_sel", ['class' => 'combodiv'])->select($this->id, $selector, $this->attr, false)->_span()->__toString();
       return $selector;
     }
     public function __toString() {
-      $value = (isset($this->value)) ? $this->value : $this->default;
+      $value            = (isset($this->value)) ? $this->value : $this->default;
       $this->attr['id'] = $this->id;
-      $values = (array)$value;
-      $control = $this->generate();
+      $values           = (array)$value;
+      $control          = $this->generate();
       foreach ($values as $v) {
         $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);
       }

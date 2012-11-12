@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -36,10 +37,9 @@
   use ADV\Core\Event;
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
-  class Order extends Action {
+  /** **/
+  class Order extends Action
+  {
     protected $addTitles
       = array(
         ST_SALESQUOTE   => "New Sales Quotation Entry", //

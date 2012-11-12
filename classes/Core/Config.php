@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,7 +17,8 @@
    * @method static _removeAll()
    * @method static Config i()
    */
-  class Config {
+  class Config
+  {
     use Traits\StaticAccess;
 
     /***
@@ -65,7 +67,6 @@
       /** @noinspection PhpIncludeInspection */
       $this->_vars[$group_name] = include($file);
       Event::registerShutdown([$this, '_shutdown']);
-
       return true;
     }
     /**
@@ -85,7 +86,6 @@
       $var                       = array_pop($group_array);
       $group                     = implode('.', $group_array);
       $this->_vars[$group][$var] = $value;
-
       return $value;
     }
     /***
@@ -108,7 +108,6 @@
       if (!isset($this->_vars[$group][$var])) {
         return $default;
       }
-
       return $this->_vars[$group][$var];
     }
     /**
@@ -125,7 +124,6 @@
       if (!isset($this->_vars[$group]) && $this->load($group) === false) {
         return $default;
       }
-
       return $this->_vars[$group];
     }
     /**
@@ -163,4 +161,8 @@
       }
       return $this->Cache->set('config', $this->_vars);
     }
+    /**
+     * @param $string1
+     */
+    public static function _getAll($string1) { }
   }

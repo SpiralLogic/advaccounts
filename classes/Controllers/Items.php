@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,10 +12,9 @@
 
   use \ADV\App\Controller\Menu;
 
-  /**
-
-   */
-  class Items extends Menu {
+  /** **/
+  class Items extends Menu
+  {
     public $name = "Items";
     public $help_context = "&Items";
     protected function before() {

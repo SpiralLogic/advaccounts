@@ -1,5 +1,6 @@
 <?php
   use ADV\Core\DB\DB;
+  use ADV\Core\Event;
   use ADV\App\Dates;
   use ADV\App\User;
 
@@ -10,7 +11,8 @@
    * Time: 5:25 PM
    * To change this template use File | Settings | File Templates.
    */
-  class Bank_Undeposited {
+  class Bank_Undeposited
+  {
     /** @var \ADV\Core\DB\DB */
     static $DB;
     /** @var \ADV\App\Dates */
@@ -49,7 +51,6 @@
         static::$DB->_quote(User::_i()->user) . ",0)";
       $query      = static::$DB->_query($sql, "Undeposited Cannot be Added");
       $deposit_id = static::$DB->_insertId($query);
-
       return $deposit_id;
     }
     /**
@@ -75,7 +76,6 @@
       $group2  = $result2['undeposited'];
       if ($group1 > 1 && $group2 > 1) {
         Event::error('Transactions are already grouped!');
-
         return false;
       }
       if ($type1 == ST_GROUPDEPOSIT && $type2 == ST_GROUPDEPOSIT) {
@@ -97,7 +97,6 @@
       $sql .= "; UPDATE bank_trans SET amount=$amount WHERE id = " . static::$DB->_quote($group) . " AND type= " . ST_GROUPDEPOSIT . " AND bank_act = " . static::$DB->_quote(
         $account
       );
-
       return static::$DB->_query($sql, "Can't change undeposited status");
     }
     /**
@@ -115,12 +114,10 @@
       $current = $trans['undeposited'];
       if ($current != $fromgroup) {
         Event::error('Transaction is not in this group!');
-
         return false;
       }
       $sql = "UPDATE bank_trans SET undeposited=0 WHERE id=" . static::$DB->_quote($trans_id) . " AND bank_act = " . static::$DB->_quote($account);
       $sql .= "; UPDATE bank_trans SET amount=amount - $amount WHERE id = " . static::$DB->_quote($fromgroup);
-
       return static::$DB->_query($sql, "Can't change undeposited status");
     }
   }

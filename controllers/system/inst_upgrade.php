@@ -1,12 +1,27 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\Input\Input;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\Core\Ajax;
+  use ADV\App\UserPrefs;
+  use ADV\App\User;
+  use ADV\App\Users;
+  use ADV\Core\DB\Utils;
+  use ADV\Core\Event;
+  use ADV\Core\Config;
+  use ADV\App\Page;
+
   Page::start(_($help_context = "Software Upgrade"), SA_SOFTWAREUPGRADE);
   //
   //	Checks $field existence in $table with given field $properties

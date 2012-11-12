@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,10 +16,9 @@
   use ADV\App\Application\Func;
   use ADV\Core\View;
 
-  /**
-
-   */
-  abstract class Menu extends Base {
+  /** **/
+  abstract class Menu extends Base
+  {
     protected $modules = [];
     /** @var */
     public $id;
@@ -26,7 +26,7 @@
     public $name;
     /** @var */
     public $help_context;
-    /** @var bool **/
+    /** @var bool * */
     public $enabled = true;
     /**
      * @internal param $id
@@ -124,10 +124,10 @@
       $this->rightAppFunctions[] = $appfunction;
       return $appfunction;
     }
-    /** @var null **/
+    /** @var null * */
     public $icon;
-    /** @var array **/
+    /** @var array * */
     public $leftAppFunctions = [];
-    /** @var array **/
+    /** @var array * */
     public $rightAppFunctions = [];
   }

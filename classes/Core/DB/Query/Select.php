@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,23 +12,22 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class Select extends Query {
-    /** @var array **/
+  /** **/
+  class Select extends Query
+  {
+    /** @var array * */
     protected $select = [];
-    /** @var array **/
+    /** @var array * */
     protected $from = [];
-    /** @var array **/
+    /** @var array * */
     protected $limit = [];
-    /** @var array **/
+    /** @var array * */
     protected $orderby = [];
-    /** @var array **/
+    /** @var array * */
     protected $groupby = [];
-    /** @var array **/
+    /** @var array * */
     protected $union = [];
-    /** @var array **/
+    /** @var array * */
     protected $union_or = [];
     /***
      * @param string $columns,... Database columns to select

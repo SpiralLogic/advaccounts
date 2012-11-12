@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,9 +13,7 @@
 
   use ADV\Core\JS;
 
-  /**
-
-   */
+  /** **/
   class Button implements \ArrayAccess
   {
     use \ADV\Core\Traits\HTML;
@@ -30,7 +29,6 @@
      * @param $name
      * @param $value
      * @param $caption
-
      */
     public function __construct($name, $value, $caption) {
       $this->name = $this->attr['name'] = $name;
@@ -106,7 +104,7 @@
      * @return Button
      */
     public function mergeAttr($attr) {
-      $this->attr = array_merge($this->attr, (array) $attr);
+      $this->attr = array_merge($this->attr, (array)$attr);
       return $this;
     }
     /**
@@ -136,6 +134,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -153,6 +152,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -167,6 +167,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -184,6 +185,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>

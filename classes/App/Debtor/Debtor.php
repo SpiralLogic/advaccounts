@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -30,9 +31,7 @@
   use ADV\App\Contact\Contact;
   use Debtor_Account;
 
-  /**
-
-   */
+  /** **/
   class Debtor extends \Contact_Company
   {
     /** @var int * */
@@ -221,7 +220,7 @@
       $contacts       = $this->contacts;
       $this->contacts = [];
       foreach ($contacts as $contact) {
-        $wasnew = $contact->save(array('parent_id' => (int) $this->id));
+        $wasnew = $contact->save(array('parent_id' => (int)$this->id));
         if ($wasnew) {
           $this->contacts[] = $contact;
         }
@@ -320,7 +319,7 @@
      */
     protected function countTransactions() {
       static::$staticDB->_select('COUNT(*)')->from('debtor_trans')->where('debtor_id=', $this->id);
-      return (int) static::$staticDB->_numRows();
+      return (int)static::$staticDB->_numRows();
     }
     /**
      * @return void

@@ -22,10 +22,9 @@
   use ADV\App\Item\Item;
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class Purch_GRN {
+  /** **/
+  class Purch_GRN
+  {
     /**
      * @param      $supplier
      * @param      $stock_id

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,10 +12,9 @@
 
   use \ADV\App\Controller\Menu;
 
-  /**
-
-   */
-  class System extends Menu {
+  /** **/
+  class System extends Menu
+  {
     public $name = "System";
     public $help_context = "&System";
     protected function before() {
@@ -42,7 +42,6 @@
       $module->addRightFunction(_('Sales &Areas'), '/sales/manage/areas?', SA_SALESAREA);
       $module = $this->add_module(_("Miscellaneous"));
       $module->addLeftFunction(_('Credit &Statuses'), '/sales/manage/creditstatuses?', SA_CRSTATUS);
-
       $module->addRightFunction(_("&Printers"), "/system/printers?", SA_PRINTERS);
       $module->addRightFunction(_("&Print Profiles"), "/system/print_profiles?", SA_PRINTPROFILE);
       $module->addLeftFunction(_("System &Diagnostics"), "/system/system_diagnostics?", SA_OPEN);

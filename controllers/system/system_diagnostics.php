@@ -1,12 +1,19 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\Table;
+  use ADV\Core\Config;
+  use ADV\Core\DB\DB;
+  use ADV\App\Page;
+  use ADV\Core\Cell;
+
   Page::start(_($help_context = "System Diagnostics"), SA_SETUPCOMPANY);
   // Type of requirement for positive test result
   $test_level   = array(
@@ -42,9 +49,9 @@
     }
     Cell::label($result['descr']);
     Cell::label($test_level[$result['type']]);
-    $res = isset($result['test']) ? implode('<br>', (array) $result['test']) : $result['test'];
+    $res = isset($result['test']) ? implode('<br>', (array)$result['test']) : $result['test'];
     Cell::label($res);
-    $comm  = isset($result['comments']) ? implode('<br>', (array) $result['comments']) : '';
+    $comm  = isset($result['comments']) ? implode('<br>', (array)$result['comments']) : '';
     $color = ($result['result'] ? 'green' : ($result['type'] == 3 ? 'red' : ($result['type'] == 2 ? 'orange' : 'green')));
     Cell::label(
       "<span style='color:$color'>" . ($result['result'] ? _('Ok') : '<span class="bold">' . $comm . '</span>') . '</span>'

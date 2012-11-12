@@ -4,14 +4,12 @@
   use ADV\Core\Input\Input;
   use ADV\App\Form\DropDown;
   use ADV\App\Reporting;
-  use ADV\Core\View;
   use ADV\App\Display;
   use ADV\Core\Event;
   use ADV\App\Pager\Pager;
   use ADV\App\Dates;
   use Inv_Location;
   use ADV\App\Forms;
-  use ADV\App\Page;
   use ADV\Core\DB\DB;
   use ADV\App\Item\Item;
   use ADV\App\Debtor\Debtor;
@@ -20,6 +18,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -28,7 +27,6 @@
    **/
   class Deliveries extends \ADV\App\Controller\Action
   {
-
     public $debtor_id;
     public $stock_id;
     protected function before() {
@@ -83,7 +81,8 @@
       $this->Page->end_page();
     }
     protected function displayTable() {
-      $sql = "SELECT trans.trans_no,
+      $sql
+        = "SELECT trans.trans_no,
   		debtor.name,
   		branch.branch_id,
   		sorder.contact_name,

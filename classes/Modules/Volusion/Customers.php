@@ -1,17 +1,19 @@
 <?php
   namespace Modules\Volusion;
 
-  use \ADV\Core\DB\DBDuplicateException, \ADV\Core\DB\DB, \Event, \ADV\Core\XMLParser;
+  use \ADV\Core\DB\DBDuplicateException, \ADV\Core\DB\DB, \ADV\Core\XMLParser;
+  use ADV\Core\Event;
   use ADV\App\Debtor\Debtor;
 
   /**
    * Class for getting Customers from Volusion and putting them in to the intermediate database.
    */
-  class Customers {
+  class Customers
+  {
     protected $config;
-    /** @var \ADV\Core\Status **/
+    /** @var \ADV\Core\Status * */
     public $status;
-    /** @var array **/
+    /** @var array * */
     public $customers = array();
     /**
 
@@ -28,6 +30,7 @@
     }
     /**
      * Gets XML from website containing customer information and stores in in $this->customers
+     *
      * @return bool returns false if nothing was retrieved or true otherwise.
      */
     public function get() {

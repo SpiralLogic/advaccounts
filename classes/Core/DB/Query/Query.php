@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,17 +12,16 @@
 
   use Serializable;
 
-  /**
-
-   */
-  abstract class Query extends Where implements Serializable {
-    /** @var \ADV\Core\DB\Query\Query **/
+  /** **/
+  abstract class Query extends Where implements Serializable
+  {
+    /** @var \ADV\Core\DB\Query\Query * */
     protected static $query = null;
-    /** @var bool **/
+    /** @var bool * */
     protected $compiled_query = false;
     /** @var */
     protected $type;
-    /** @var \ADV\Core\DB\DB **/
+    /** @var \ADV\Core\DB\DB * */
     protected $conn;
     /**
      * @abstract
@@ -72,6 +72,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * String representation of object
+     *
      * @link http://php.net/manual/en/serializable.serialize.php
      */
     public function serialize() {
@@ -82,6 +83,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Constructs the object
+     *
      * @link http://php.net/manual/en/serializable.unserialize.php
      *
      * @param string $serialized <p>

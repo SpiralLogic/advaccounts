@@ -8,11 +8,10 @@
    */
   namespace ADV\Core\Module;
 
-  /**
-
-   */
-  abstract class Base implements Loadable {
-    /** @var array **/
+  /** **/
+  abstract class Base implements Loadable
+  {
+    /** @var array * */
     protected $enabled;
     protected $config;
     /**

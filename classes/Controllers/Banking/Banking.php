@@ -13,7 +13,6 @@
   use GL_QuickEntry;
   use Debtor_Branch;
   use Bank_Account;
-  use ADV\App\Page;
   use Item_Line;
   use Sales_Branch;
   use ADV\App\User;
@@ -28,18 +27,19 @@
   use ADV\App\Forms;
   use ADV\App\Display;
   use ADV\App\Form\Button;
-  use ADV\App\Form\Form;
   use ADV\Core\Table;
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Banking extends \ADV\App\Controller\Action {
+  class Banking extends \ADV\App\Controller\Action
+  {
     /** @var Item_Order */
     protected $order;
     protected $security;
@@ -417,7 +417,6 @@
       if (!$this->checkItemData()) {
         return;
       }
-
       $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
       $this->order->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
       Item_Line::start_focus('_code_id_edit');

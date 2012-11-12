@@ -1,10 +1,9 @@
 <?php
   use ADV\App\User;
 
-  /**
-
-   */
-  class Reports_Printer_Remote {
+  /** **/
+  class Reports_Printer_Remote
+  {
     /** @var string * */
     public $host;
     /** @var int * */

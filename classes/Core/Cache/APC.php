@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,10 +11,9 @@
    **/
   namespace ADV\Core\Cache;
 
-  /**
-
-   */
-  class APC implements Cachable {
+  /** **/
+  class APC implements Cachable
+  {
     public $defineFunction;
     public $loadFunction;
     public function init() {
@@ -90,7 +90,7 @@
         return true;
       }
       if (is_callable($constants)) {
-        $constants = (array) call_user_func($constants);
+        $constants = (array)call_user_func($constants);
       }
       $definer = $this->defineFunction;
       if (is_callable($definer)) {

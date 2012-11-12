@@ -1,20 +1,20 @@
 <?php
   use ADV\App\Bank\Bank;
-  use ADV\App\User;
-  use ADV\App\Apps\GL;
-  use ADV\Core\Input\Input;
-  use ADV\Core\DB\DB;
   use ADV\App\Dates;
+  use ADV\App\User;
+  use ADV\Core\DB\DB;
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_Trans {
+  class Bank_Trans
+  {
     public static $types
       = array(
         BT_TRANSFER => "Transfer", //
@@ -79,7 +79,6 @@
     public static function exists($type, $type_no) {
       $sql    = "SELECT trans_no FROM bank_trans WHERE type=" . static::$DB->_escape($type) . " AND trans_no=" . static::$DB->_escape($type_no);
       $result = static::$DB->_query($sql, "Cannot retreive a bank transaction");
-
       return (static::$DB->_numRows($result) > 0);
     }
     /**
@@ -107,7 +106,6 @@
         $sql .= " AND bank_trans.person_id = " . static::$DB->_escape($person_id);
       }
       $sql .= " ORDER BY trans_date, bank_trans.id";
-
       return static::$DB->_query($sql, "query for bank transaction");
     }
     /**
@@ -134,7 +132,6 @@
       }
       $sql .= ") AND bt.amount!=0 GROUP BY bt.id ORDER BY IF(bt.trans_date>'" . $from . "' AND bt.trans_date<='" . $to . "',1,0) , bt.reconciled DESC ,bt.trans_date , amount ";
       static::$DB->_query($sql);
-
       return static::$DB->_fetchAll();
     }
     /**
@@ -188,7 +185,6 @@
       ) . ") WHERE id=" . DB::_quote($trans_no) . " AND type=" . DB::_quote($type);
       DB::_query($sql);
       static::$DB->_commit();
-
       return true;
     }
     /**
@@ -238,13 +234,11 @@
         )->username . "') WHERE id=" . DB::_quote($row["trans_no"]) . " AND type=" . DB::_quote($row['type']);
         DB::_query($sql);
         static::$DB->_commit();
-
         return true;
       } catch (\ADV\Core\DB\DBException $e) {
         static::$DB->_cancel();
         $status->set(\ADV\Core\Status::ERROR, 'change date', 'Database error: ' . $e->getMessage());
       }
-
       return false;
     }
     /**
@@ -260,7 +254,6 @@
      			WHERE bank_trans.bank_act=" . static::$DB->_quote(
         $bank_account
       ) . " AND bank_trans.type != " . ST_GROUPDEPOSIT . " AND bank_trans.undeposited>0 AND (undeposited = " . static::$DB->_quote($groupid) . ")";
-
       return static::$DB->_query($sql, 'Couldn\'t get deposit references');
     }
     /**
@@ -272,7 +265,6 @@
     public static function getInfo($trans_no, $type) {
       $sql
         = "SELECT memo_ from gl_trans WHERE type = " . static::$DB->_quote($type) . " AND type_no = " . static::$DB->_quote($trans_no);
-
       return static::$DB->_query($sql, 'Couldn\'t get deposit references');
     }
   }

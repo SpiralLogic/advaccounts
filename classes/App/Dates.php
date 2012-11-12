@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,17 +13,15 @@
 
   use DB_Company;
 
-  /**
-
-   */
-  class Dates extends \ADV\Core\Dates {
+  /** **/
+  class Dates extends \ADV\Core\Dates
+  {
     public $sticky_doc_date = false;
     public $use_fiscal_year = false;
     protected $Company = null;
     public $docDate;
     /**
      * @param \DB_Company                        $company
-
      */
     public function __construct(DB_Company $company) {
       $this->Company = $company;
@@ -40,7 +39,7 @@
       } else {
         $date = $this->docDate;
       }
-      if (!$date || !(bool) $this->sticky_doc_date) {
+      if (!$date || !(bool)$this->sticky_doc_date) {
         $date = $this->docDate = $this->today();
       }
       return $date;
@@ -54,7 +53,7 @@
      * @return bool
      */
     public function isDateInFiscalYear($date, $convert = false) {
-      if (!(bool) $this->use_fiscal_year) {
+      if (!(bool)$this->use_fiscal_year) {
         return true;
       }
       $myrow = $this->Company->get_current_fiscalyear();

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,71 +13,70 @@
   use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
-  class SelectBox {
-    /** @var array **/
+  /** **/
+  class SelectBox
+  {
+    /** @var array * */
     protected $where = []; // additional constraints
     /** @var */
     protected $order; // list sort order
     // special option parameters
-    /** @var bool **/
+    /** @var bool * */
     protected $spec_option = false; // option text or false
-    /** @var int **/
+    /** @var int * */
     protected $spec_id = 0; // option id
-    /** @var bool **/
+    /** @var bool * */
     protected $cache = false; // option id
     // submit on select parameters
-    /** @var string **/
+    /** @var string * */
     protected $default = ''; // default value when $_POST is not set
-    /** @var bool **/
+    /** @var bool * */
     protected $multi = false; // multiple select
-    /** @var bool **/
+    /** @var bool * */
     protected $select_submit = false; //submit on select: true/false
-    /** @var bool **/
+    /** @var bool * */
     protected $async = true; // select update via ajax (true) vs _page_body reload
     protected $class = ''; // select update via ajax (true) vs _page_body reload
     // search box parameters
-    /** @var null **/
+    /** @var null * */
     protected $sel_hint = null;
-    /** @var bool **/
+    /** @var bool * */
     protected $search_box = false; // name or true/false
-    /** @var int **/
+    /** @var int * */
     protected $type = 0; // type of extended selector:
     // 0 - with (optional) visible search box, search by id
     // 1 - with hidden search box, search by option text
     // 2 - TODO reverse: box with hidden selector available via enter; this
     // would be convenient for optional ad hoc adding of new item
-    /** @var bool **/
+    /** @var bool * */
     protected $search_submit = true; //search submit button: true/false
-    /** @var int **/
+    /** @var int * */
     protected $size = 8; // size and max of box tag
-    /** @var int **/
+    /** @var int * */
     protected $max = 50;
-    /** @var bool **/
+    /** @var bool * */
     protected $height = false; // number of lines in select box
-    /** @var bool **/
+    /** @var bool * */
     protected $cells = false; // combo displayed as 2 <td></td> cells
-    /** @var array **/
+    /** @var array * */
     protected $search = []; // sql field names to search
-    /** @var Callable **/
+    /** @var Callable * */
     protected $format; // format functions for regular options
-    /** @var bool **/
+    /** @var bool * */
     protected $disabled = false;
-    /** @var null **/
+    /** @var null * */
     protected $box_hint = null; // box/selectors hints; null = std see below
-    /** @var bool **/
+    /** @var bool * */
     protected $category = false; // category column name or false
-    /** @var bool **/
+    /** @var bool * */
     protected $show_inactive = false; // show inactive records.
-    /** @var bool **/
+    /** @var bool * */
     protected $editable = false; // false, or length of editable entry field
-    /** @var string **/
+    /** @var string * */
     protected $rel = ''; // false, or length of editable entry field
     /** @var */
     protected $name;
-    /** @var array **/
+    /** @var array * */
     protected $selected_id;
     /** @var */
     protected $sql;
@@ -111,7 +111,7 @@
       $this->Input       = Input::i();
       $this->JS          = JS::i();
       $this->Ajax        = Ajax::i();
-      $options           = (array) $options;
+      $options           = (array)$options;
       foreach ($options as $option => $value) {
         if (property_exists($this, $option)) {
           $this->$option = $value;
@@ -143,13 +143,14 @@
         $this->sel_hint = $by_id || $search_box == false ? '' : _('Press Space tab for search pattern entry');
       }
       if ($this->box_hint === null) {
-        $this->box_hint = $search_box && $search_submit != false ? ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) : '';
+        $this->box_hint = $search_box && $search_submit != false ?
+          ($by_id ? _('Enter code fragment to search or * for all') : _('Enter description fragment to search or * for all')) : '';
       }
       if ($this->selected_id == null) {
-        $this->selected_id = $this->Input->post($this->name, null, (string) $this->default);
+        $this->selected_id = $this->Input->post($this->name, null, (string)$this->default);
       }
       if (!is_array($this->selected_id)) {
-        $this->selected_id = array((string) $this->selected_id);
+        $this->selected_id = array((string)$this->selected_id);
       } // code is generalized for multiple selection support
       $txt = $this->Input->post($search_box);
       if (isset($_POST['_' . $this->name . '_update'])) { // select list or search box change
@@ -185,7 +186,7 @@
           if ($search_button_in_post && ($txt == $value)) {
             $this->selected_id[] = $value;
           }
-          if (in_array((string) $value, $this->selected_id, true)) {
+          if (in_array((string)$value, $this->selected_id, true)) {
             $sel   = 'selected';
             $found = $value;
             $edit  = $this->editable && $row['editable'] && ($this->Input->post($search_box) == $value) ? $row[1] : false; // get non-formatted description
@@ -235,7 +236,8 @@
         ['[', ']'],
         ['-', ''],
         $this->name
-      ) . "' " . ($multi ? "multiple" : '') . ($this->height !== false ? ' size="' . $this->height . '"' : '') . "$disabled name='$this->name" . ($multi ? '[]' : '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
+      ) . "' " . ($multi ? "multiple" : '') . ($this->height !== false ? ' size="' . $this->height . '"' : '') . "$disabled name='$this->name" . ($multi ? '[]' :
+        '') . "' class='$class' title='" . $this->sel_hint . "' " . $this->rel . ">" . $selector . "</select>\n";
       if ($by_id && ($search_box != false || $this->editable)) {
         // on first display show selector list
         if (isset($_POST[$search_box]) && $this->editable && $edit) {
@@ -272,7 +274,8 @@
       // ------ make combo ----------
       $edit_entry = '';
       if ($search_box) {
-        $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!$by_id ? " style=display:none;" : '') . ">\n";
+        $edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='" . $this->size . "' maxlength='" . $this->max . "' value='$txt' class='$class' rel='$this->name' autocomplete='off' title='" . $this->box_hint . "'" . (!$by_id ?
+          " style=display:none;" : '') . ">\n";
         if ($search_submit != false || $this->editable) {
           $edit_entry .= "<input $disabled type='submit' class='combo_submit' style='display:none;' name='" . ($search_submit ? $search_submit : "_{$this->name}_button") . "'
           value=' ' title='" . _("Set filter") . "'> ";

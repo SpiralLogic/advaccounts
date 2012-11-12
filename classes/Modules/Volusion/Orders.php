@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,55 +12,56 @@
   namespace Modules\Volusion;
 
   use ADV\Core\XMLParser;
+  use ADV\Core\DB\DBUpdateException;
+  use ADV\Core\DB\DBInsertException;
   use ADV\Core\Event;
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
+  /** **/
   use ADV\Core\DB\DBDuplicateException;
 
-  /**
-
-   */
-  class Orders implements \Iterator, \Countable {
+  /** **/
+  class Orders implements \Iterator, \Countable
+  {
     protected $config;
     /** @var */
     protected $data = array();
-    /** @var int **/
+    /** @var int * */
     protected $current = -1;
-    /** @var string **/
+    /** @var string * */
     protected $table = 'WebOrders';
-    /** @var string **/
+    /** @var string * */
     protected $idcolumn = 'OrderID';
-    /** @var mixed **/
+    /** @var mixed * */
     protected $_classname;
-    /** @var array **/
-    public static $shipping_types = array(
-      502  => "Pickup", //
-      28   => "Declined!", //
-      902  => "To be calculated", //
-      903  => "Use own courier", //
-      998  => "Installation", //
-      1006 => "Medium Courier (VIC Metro)", //
-      1009 => "Small Parcel (0.5m,5kg)", //
-      1010 => "Medium Courier (1m,25kg)", //
-      1011 => "Medium Courier Rural (1.8m,25kg)"
-    );
-    /** @var array **/
-    public static $payment_types = array(
-      1  => "Account", //
-      2  => "Cheque/Money Order", //
-      5  => "Visa/Mastercard", //
-      7  => "American Express", //
-      18 => "PayPal", //
-      23 => "Direct Deposit", //
-      24 => "Wait for Freight Quotation", //
-      26 => "Credit Card", //
-      28 => "Visa", //
-      31 => "Mastercard" //
-    );
-    /** @var OrderDetails **/
+    /** @var array * */
+    public static $shipping_types
+      = array(
+        502  => "Pickup", //
+        28   => "Declined!", //
+        902  => "To be calculated", //
+        903  => "Use own courier", //
+        998  => "Installation", //
+        1006 => "Medium Courier (VIC Metro)", //
+        1009 => "Small Parcel (0.5m,5kg)", //
+        1010 => "Medium Courier (1m,25kg)", //
+        1011 => "Medium Courier Rural (1.8m,25kg)"
+      );
+    /** @var array * */
+    public static $payment_types
+      = array(
+        1  => "Account", //
+        2  => "Cheque/Money Order", //
+        5  => "Visa/Mastercard", //
+        7  => "American Express", //
+        18 => "PayPal", //
+        23 => "Direct Deposit", //
+        24 => "Wait for Freight Quotation", //
+        26 => "Credit Card", //
+        28 => "Visa", //
+        31 => "Mastercard" //
+      );
+    /** @var OrderDetails * */
     public $details;
     /** @var */
     public $status;
@@ -69,7 +71,7 @@
 
      */
     public function __construct($config = []) {
-      $this->config = $config;
+      $this->config     = $config;
       $this->_classname = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
       //echo 'Getting from Volusion<br>';
       $this->get();
@@ -116,10 +118,12 @@
       }
       $this->save();
       /** @var OrderDetails $detail */
+      /** @noinspection PhpUnusedLocalVariableInspection */
       foreach ($this->details as $detail) {
         $this->details->save();
         /** @var \Modules\Volusion\OrderOptions $option */
         if ($this->details->options) {
+          /** @noinspection PhpUnusedLocalVariableInspection */
           foreach ($this->details->options as $option) {
             $this->details->options->save();
           }
@@ -139,7 +143,7 @@
           $current['ison_jobsboard'] = null;
           DB::_update($this->table)->values($current)->where($this->idcolumn . '=', $current[$this->idcolumn])->exec();
           return 'Updated ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        } catch (\DBUpdateException $e) {
+        } catch (DBUpdateException $e) {
           return 'Could not update ' . $this->_classname . ' ' . $current[$this->idcolumn];
         } catch (DBDuplicateException $e) {
           $this->status = 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
@@ -149,7 +153,7 @@
         try {
           DB::_insert($this->table)->values($current)->exec();
           return 'Inserted ' . $this->_classname . ' ' . $current[$this->idcolumn];
-        } catch (\DBInsertException $e) {
+        } catch (DBInsertException $e) {
           return 'Could not insert ' . $this->_classname;
         } catch (DBDuplicateException $e) {
           return 'Could not insert ' . $this->_classname . ' ' . $current[$this->idcolumn] . ' it already exists!';
@@ -175,6 +179,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the current element
+     *
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
@@ -187,6 +192,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Return the key of the current element
+     *
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar on success, integer
      */
@@ -196,6 +202,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Checks if current position is valid
+     *
      * @link http://php.net/manual/en/iterator.valid.php
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
@@ -206,6 +213,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Rewind the Iterator to the first element
+     *
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
@@ -216,6 +224,7 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
+     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>
@@ -227,15 +236,15 @@
       return count($this->data);
     }
   }
-  /**
 
-   */
-  class OrderDetails extends Orders implements \Iterator, \Countable {
-    /** @var OrderOptions **/
+  /** **/
+  class OrderDetails extends Orders implements \Iterator, \Countable
+  {
+    /** @var OrderOptions * */
     protected $table = 'WebOrderDetails';
-    /** @var string **/
+    /** @var string * */
     protected $idcolumn = 'OrderDetailID';
-    /** @var OrderOptions **/
+    /** @var OrderOptions * */
     public $options;
     /**
      * @param $data
@@ -279,13 +288,13 @@
       return $this->data[$this->current]['OrderDetailID'];
     }
   }
-  /**
 
-   */
-  class OrderOptions extends OrderDetails implements \Iterator, \Countable {
-    /** @var string **/
+  /** **/
+  class OrderOptions extends OrderDetails implements \Iterator, \Countable
+  {
+    /** @var string * */
     protected $table = 'WebOrderDetails_Options';
-    /** @var string **/
+    /** @var string * */
     protected $idcolumn = 'OptionID';
     /**
      * @param $data

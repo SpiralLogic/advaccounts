@@ -6,7 +6,8 @@
     /**
 
      */
-    class Unit extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable {
+    class Unit extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
       protected $_table = 'item_units';
       protected $_classname = 'Units of Measure';
       protected $_id_column = 'id';
@@ -26,7 +27,7 @@
         if (strlen($this->name) > 40) {
           return $this->status(false, 'Name must be not be longer than 40 characters!', 'name');
         }
-        if ((bool) $this->use_pref) {
+        if ((bool)$this->use_pref) {
           $this->decimals = -1;
         } elseif (!Validation::is_num($this->decimals, 0, 8)) {
           return $this->status(false, 'Deciamls must be a number between 0 and 8', 'decimals');
@@ -102,16 +103,19 @@
   }
   namespace {
     use ADV\App\Forms;
+    use ADV\Core\DB\DB;
 
     /**
      * PHP version 5.4
+     *
      * @category  PHP
      * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
      * @copyright 2010 - 2012
      * @link      http://www.advancedgroup.com.au
      **/
-    class Item_Unit {
+    class Item_Unit
+    {
       /**
        * @static
        *
@@ -122,13 +126,15 @@
        */
       public static function write($selected, $abbr, $description, $decimals) {
         if ($selected != '') {
-          $sql = "UPDATE item_units SET
+          $sql
+            = "UPDATE item_units SET
          abbr = " . DB::_escape($abbr) . ",
          name = " . DB::_escape($description) . ",
          decimals = " . DB::_escape($decimals) . "
      WHERE abbr = " . DB::_escape($selected);
         } else {
-          $sql = "INSERT INTO item_units
+          $sql
+            = "INSERT INTO item_units
             (abbr, name, decimals) VALUES( " . DB::_escape($abbr) . ",
              " . DB::_escape($description) . ", " . DB::_escape($decimals) . ")";
         }
@@ -204,7 +210,8 @@
        * @return mixed
        */
       public static function get_decimal($stock_id) {
-        $sql    = "SELECT decimals FROM item_units,	stock_master
+        $sql
+                = "SELECT decimals FROM item_units,	stock_master
         WHERE abbr=units AND stock_id=" . DB::_escape($stock_id) . " LIMIT 1";
         $result = DB::_query($sql, "could not get unit decimals");
         $row    = DB::_fetchRow($result);

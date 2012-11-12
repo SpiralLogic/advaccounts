@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,9 +11,7 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
+  /** **/
   class Security
   {
     /**
@@ -50,9 +49,8 @@
             $value
           ) . '" could not be converted to string or ' . 'sanitized as ArrayAcces. Whitelist it in security.whitelisted_classes in app/config/config.php ' . 'to allow it to be passed unchecked.');
         }
-        $value = static::htmlentities((string) $value);
+        $value = static::htmlentities((string)$value);
       }
-
       return $value;
     }
   }

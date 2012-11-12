@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,10 +10,9 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
-  class Files {
+  /** **/
+  class Files
+  {
     /**
      * @static
      *
@@ -30,7 +30,6 @@
         if ($zp) {
           gzwrite($zp, $fileData);
           gzclose($zp);
-
           return true;
         } else {
           return false;
@@ -86,7 +85,6 @@
         if ($zp = fopen(PATH_BACKUP . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
-
           return true;
         } else {
           return false;
@@ -97,7 +95,6 @@
         if ($zp = fopen(PATH_BACKUP . $backupfile, "a")) {
           fwrite($zp, $fileData);
           fclose($zp);
-
           return true;
         } else {
           return false;
@@ -113,8 +110,7 @@
      */
     public static function convertSize($size) {
       $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
-      $i    = (int) floor(log($size, 1024));
-
+      $i    = (int)floor(log($size, 1024));
       return round($size / pow(1024, $i), 2) . ' ' . $unit[$i];
     }
     /**

@@ -3,10 +3,9 @@
 
   use InvalidArgumentException;
 
-  /**
-
-   */
-  class DIC implements \ArrayAccess {
+  /** **/
+  class DIC implements \ArrayAccess
+  {
     protected $_objects = [];
     protected $_callbacks = [];
     /** @var DIC */
@@ -99,7 +98,6 @@
      * @throws \InvalidArgumentException if the identifier is not defined
      */
     public function offsetGet($name) {
-
       $name = $name ? : $this->_last;
       if (isset($this->_objects[$name])) {
         $args = func_get_args();

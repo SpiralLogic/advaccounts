@@ -8,6 +8,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -17,10 +18,9 @@
   /*
     Write/update customer payment.
   */
-  /**
-
-   */
-  class Debtor_Payment {
+  /** **/
+  class Debtor_Payment
+  {
     /**
      * @static
      *

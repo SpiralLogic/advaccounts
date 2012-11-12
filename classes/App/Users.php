@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,10 +16,9 @@
   use ADV\Core\Config;
   use ADV\Core\Auth;
 
-  /**
-
-   */
-  class Users {
+  /** **/
+  class Users
+  {
     /**
      * @static
      *
@@ -209,10 +209,9 @@
      */
     public static function tabs_row($label, $name, $selected_id = null, $all = false) {
       $tabs = [];
-      foreach (ADVAccounting::i()->applications as $app=> $config) {
+      foreach (ADVAccounting::i()->applications as $app => $config) {
         $tabs[$app] = Display::access_string($app, true);
       }
-
       echo "<tr>\n";
       echo "<td class='label'>$label</td><td>\n";
       echo Forms::arraySelect($name, $selected_id, $tabs);
@@ -236,10 +235,10 @@
         'id',
         'real_name',
         array(
-             'order'        => array('real_name'),
-             'spec_option'  => $spec_opt,
-             'spec_id'      => ALL_NUMERIC,
-             'show_inactive'=> $inactive,
+             'order'         => array('real_name'),
+             'spec_option'   => $spec_opt,
+             'spec_id'       => ALL_NUMERIC,
+             'show_inactive' => $inactive,
         )
       );
     }

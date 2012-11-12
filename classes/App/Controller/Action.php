@@ -15,9 +15,7 @@
   use ADV\Core\JS;
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
+  /** **/
   abstract class Action extends Base
   {
     use \ADV\Core\Traits\Action;

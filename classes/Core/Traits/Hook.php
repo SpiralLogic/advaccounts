@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.traits
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,10 +12,9 @@
 
   use ADV\Core\Event;
 
-  /**
-
-   */
-  trait Hook {
+  /** **/
+  trait Hook
+  {
     /** @var \ADV\Core\Hook $hooks */
     protected static $hooks = null;
     /**

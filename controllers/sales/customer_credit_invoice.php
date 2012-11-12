@@ -1,5 +1,8 @@
 <?php
   use ADV\Core\Input\Input;
+  use ADV\Core\Num;
+  use ADV\App\Page;
+  use ADV\Core\Event;
   use ADV\App\Dates;
   use ADV\App\Reporting;
   use ADV\App\Tax\Tax;
@@ -17,6 +20,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>

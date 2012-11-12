@@ -11,9 +11,7 @@
    **/
   namespace ADV\App\Form;
 
-  /**
-
-   */
+  /** **/
   class Custom extends Field
   {
     protected $control;
@@ -33,10 +31,10 @@
      * @return string
      */
     public function __toString() {
-      $value = (isset($this->value)) ? $this->value : $this->default;
+      $value            = (isset($this->value)) ? $this->value : $this->default;
       $this->attr['id'] = $this->id;
-      $values = (array)$value;
-      $control = $this->control;
+      $values           = (array)$value;
+      $control          = $this->control;
       foreach ($values as $v) {
         $control = preg_replace('/<option ([^>]*)selected([^>]*)\>/', '<option \1 \2>', $control);
         $control = preg_replace('/value=([\'"]?)' . preg_quote($v) . '\1/', 'selected \0', $control);

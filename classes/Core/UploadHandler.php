@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,10 +13,9 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class UploadHandler {
+  /** **/
+  class UploadHandler
+  {
     /**
      */
     private $options;
@@ -230,7 +230,6 @@
         }
         $file->delete_url  = $this->options['script_url'] . '?file=' . rawurlencode($file->name);
         $file->delete_type = 'DELETE';
-
         return $file;
       }
       /*$sql = "SELECT * FROM upload WHERE id = {$upload_id} LIMIT 1";
@@ -243,7 +242,6 @@
 
                return $file;
                */
-
       return null;
     }
     /**
@@ -301,7 +299,6 @@
       // Free up memory (imagedestroy does not delete files):
       @imagedestroy($src_img);
       @imagedestroy($new_img);
-
       return $success;
     }
     /**
@@ -335,7 +332,6 @@
       ) {
         return 'maxNumberOfFiles';
       }
-
       return $error;
     }
     /**
@@ -396,7 +392,6 @@
                DB::_query($sql, 'Could not insert file into database');
                $upload_id = DB::_insertId();
                $file->id = $this->upload_id = $upload_id;*/
-
       return $file;
     }
   }

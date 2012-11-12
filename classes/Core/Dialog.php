@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,24 +10,22 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
+  /** **/
   class Dialog
   {
-    /** @var array **/
+    /** @var array * */
     protected $buttons = [];
-    /** @var bool **/
+    /** @var bool * */
     protected $name;
-    /** @var string **/
+    /** @var string * */
     protected $contents = '';
-    /** @var array **/
+    /** @var array * */
     protected $events = [];
-    /** @var bool **/
+    /** @var bool * */
     protected $data = false;
-    /** @var array **/
+    /** @var array * */
     protected $options = [];
-    /** @var bool **/
+    /** @var bool * */
     protected $template = false;
     /** @var JS */
     protected $JS;

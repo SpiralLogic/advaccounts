@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,10 +12,9 @@
 
   use ADV\App\Application\Application;
 
-  /**
-
-   */
-  class Inventory extends Application {
+  /** **/
+  class Inventory extends Application
+  {
     public $name = "Inventory";
     public $help_context = "&Inventory";
     function buildMenu() {

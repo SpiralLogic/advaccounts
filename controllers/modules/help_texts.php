@@ -8,7 +8,6 @@
    */
   use ADV\Core\DB\DB;
   use ADV\Core\JS;
-  use ADV\App\Form\Form;
 
   if (REQUEST_POST) {
     if ($_POST['save']) {

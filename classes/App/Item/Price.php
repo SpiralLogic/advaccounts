@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,7 +12,6 @@
     use Bank_Currency;
     use ADV\App\Sales\Type;
     use GL_Currency;
-    use Sales_Type;
     use ADV\App\Form\Form;
     use ADV\App\Item\Item;
     use ADV\App\Validation;
@@ -19,7 +19,8 @@
     /**
 
      */
-    class Price extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable {
+    class Price extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
       const PURCHASE    = 1;
       const SALE        = 2;
       const SORT_UPDATE = 'last_update';
@@ -108,7 +109,8 @@
     /**
 
      */
-    class Item_Price {
+    class Item_Price
+    {
       const PURCHASE    = 1;
       const SALE        = 2;
       const SORT_UPDATE = 'last_update';

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,17 +10,16 @@
    **/
   namespace ADV\Core\DB\Query;
 
-  /**
-
-   */
-  abstract class Where {
-    /** @var array **/
+  /** **/
+  abstract class Where
+  {
+    /** @var array * */
     public $data = [];
-    /** @var array **/
+    /** @var array * */
     protected $where = [];
-    /** @var array **/
+    /** @var array * */
     private $wheredata = [];
-    /** @var int **/
+    /** @var int * */
     protected $count = 0;
     protected function resetWhere() {
       $this->wheredata = $this->where = [];

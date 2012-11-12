@@ -7,19 +7,16 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\Core\Traits;
-  /**
 
-   */
+  /** **/
   trait SetFromArray
   {
-
     /**
      * @param null $changes
      *
      * @return array|null
      */
-    protected function setFromArray($changes = null)
-    {
+    protected function setFromArray($changes = null) {
       if (!$changes || !is_array($changes)) {
         return;
       }

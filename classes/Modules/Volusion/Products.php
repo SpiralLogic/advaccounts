@@ -4,12 +4,11 @@
   use ADV\Core\XMLParser;
   use ADV\Core\Event;
 
-  /**
-
-   */
-  class Products {
+  /** **/
+  class Products
+  {
     protected $config;
-    /** @var array **/
+    /** @var array * */
     public $products = array();
     /**
 

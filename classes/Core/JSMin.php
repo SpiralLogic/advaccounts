@@ -9,10 +9,9 @@
    */
   namespace ADV\Core;
 
-  /**
-
-   */
-  class JSMin {
+  /** **/
+  class JSMin
+  {
     protected $minified = '';
     protected $source;
     /**
@@ -105,13 +104,19 @@
         }
         // detect unnecessary white spaces
         if ($current_char == " ") {
-          if (strlen($res) && (preg_match('/^[^(){}[\]=+\-*\/%&|!><?:~^,;"\']{2}$/', $res[strlen($res) - 1] . $str[$i + 1]) || preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // for example i+ ++j;
+          if (strlen($res) && (preg_match('/^[^(){}[\]=+\-*\/%&|!><?:~^,;"\']{2}$/', $res[strlen($res) - 1] . $str[$i + 1]) || preg_match(
+            '/^(\+\+)|(--)$/',
+            $res[strlen($res) - 1] . $str[$i + 1]
+          ) // for example i+ ++j;
           )
           ) {
             $res .= $current_char;
           }
         } elseif ($current_char == "\n") {
-          if (strlen($res) && (preg_match('/^[^({[=+\-*%&|!><?:~^,;\/][^)}\]=+\-*%&|><?:,;\/]$/', $res[strlen($res) - 1] . $str[$i + 1]) || (strlen($res) > 1 && preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 2] . $res[strlen($res) - 1])) || (strlen($str) > $i + 2 && preg_match(
+          if (strlen($res) && (preg_match('/^[^({[=+\-*%&|!><?:~^,;\/][^)}\]=+\-*%&|><?:,;\/]$/', $res[strlen($res) - 1] . $str[$i + 1]) || (strlen($res) > 1 && preg_match(
+            '/^(\+\+)|(--)$/',
+            $res[strlen($res) - 2] . $res[strlen($res) - 1]
+          )) || (strlen($str) > $i + 2 && preg_match(
             '/^(\+\+)|(--)$/',
             $str[$i + 1] . $str[$i + 2]
           )) || preg_match('/^(\+\+)|(--)$/', $res[strlen($res) - 1] . $str[$i + 1]) // || // for example i+ ++j;

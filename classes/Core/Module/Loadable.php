@@ -8,9 +8,7 @@
    */
   namespace ADV\Core\Module;
 
-  /**
-
-   */
+  /** **/
   interface Loadable
   {
     public function init();

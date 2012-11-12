@@ -1,12 +1,22 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\App\Page;
+  use ADV\Core\Input\Input;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\Core\Cell;
+  use ADV\Core\JS;
+  use ADV\Core\Event;
+
   Page::start(_($help_context = "Inventory Movement Types"), SA_INVENTORYMOVETYPE);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -34,7 +44,8 @@
    * @return bool
    */
   function can_delete($selected_id) {
-    $sql    = "SELECT COUNT(*) FROM stock_moves
+    $sql
+            = "SELECT COUNT(*) FROM stock_moves
 		WHERE type=" . ST_INVADJUST . " AND person_id=" . DB::_escape($selected_id);
     $result = DB::_query($sql, "could not query stock moves");
     $myrow  = DB::_fetchRow($result);

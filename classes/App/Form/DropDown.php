@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,10 +13,9 @@
 
   use ADV\Core\View;
 
-  /**
-
-   */
-  class DropDown {
+  /** **/
+  class DropDown
+  {
     protected $items = [];
     public $split = false;
     protected $auto = '';
@@ -29,12 +29,11 @@
      * @return DropDown
      */
     public function addItem($label, $href = '#', $data = [], $attr = []) {
-
-      foreach ($data as $k=> $v) {
+      foreach ($data as $k => $v) {
         $attr['data-' . $k] = $v;
       }
       $attr['href']  = $href;
-      $this->items[] = ['label'=> $label, 'attr'=> $attr];
+      $this->items[] = ['label' => $label, 'attr' => $attr];
       return $this;
     }
     /**
@@ -52,7 +51,7 @@
      * @return \ADV\App\Form\DropDown
      */
     public function setSplit($on = true) {
-      $this->split = (bool) $on;
+      $this->split = (bool)$on;
       return $this;
     }
     /**
@@ -61,7 +60,7 @@
      * @return \ADV\App\Form\DropDown
      */
     public function setTitle($title) {
-      $this->title = (string) $title;
+      $this->title = (string)$title;
       return $this;
     }
     /**

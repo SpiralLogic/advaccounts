@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,9 +14,7 @@
   use Purch_UI;
   use ADV\Core\Num;
   use Sales_Order;
-  use GL_UI;
   use ADV\Core\View;
-  use ADV\App\Page;
   use Purch_Order;
   use ADV\Core\Event;
   use Item_Line;
@@ -30,14 +29,12 @@
   use ADV\App\Creditor\Creditor;
   use ADV\App\UI;
   use ADV\Core\Table;
-  use ADV\Core\JS;
   use ADV\Core\DB\DB;
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
-  class Order extends \ADV\App\Controller\Action {
+  /** **/
+  class Order extends \ADV\App\Controller\Action
+  {
     protected $iframe = '';
     /** @var \Purch_Order */
     protected $order = null;
@@ -112,7 +109,6 @@
       unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
     }
     protected function cancelOrder() {
-
       //need to check that not already dispatched or invoiced by the supplier
       if (($this->order->order_no != 0) && $this->order->any_already_received() == 1) {
         Event::error(
@@ -253,12 +249,12 @@
       $view       = new View('orders/complete');
       $view->set('viewtrans', Purch_UI::viewTrans($trans_type, $order_no, _("View this order"), false, 'button'));
       $href       = Reporting::print_doc_link($order_no, '', true, $trans_type, false, '', '', 0, 0, true);
-      $buttons[]  = ['target'=> '_new', 'label'=> _("Print This Order"), 'href'=> $href];
+      $buttons[]  = ['target' => '_new', 'label' => _("Print This Order"), 'href' => $href];
       $edit_trans = ROOT_URL . "purchases/order?ModifyOrder=$order_no";
-      $buttons[]  = ['label'=> _("Edit This Order"), 'href'=> $edit_trans];
+      $buttons[]  = ['label' => _("Edit This Order"), 'href' => $edit_trans];
       $view->set('emailtrans', Reporting::emailDialogue($this->creditor_id, ST_PURCHORDER, $order_no));
-      $buttons[] = ['label'=> 'Receive this purchase order', 'accesskey'=> 'R', 'href'=> "/purchases/po_receive_items.php?PONumber=$order_no"];
-      $buttons[] = ['label'=> 'New purchase order', 'accesskey'=> 'N', 'href'=> $new_trans];
+      $buttons[] = ['label' => 'Receive this purchase order', 'accesskey' => 'R', 'href' => "/purchases/po_receive_items.php?PONumber=$order_no"];
+      $buttons[] = ['label' => 'New purchase order', 'accesskey' => 'N', 'href' => $new_trans];
       $view->set('buttons', $buttons);
       $view->render();
       $this->Ajax->activate('_page_body', $new_trans, $edit_trans, $help_context);

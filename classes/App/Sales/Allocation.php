@@ -1,13 +1,28 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Sales_Allocation {
+  use ADV\Core\DB\DB;
+  use ADV\Core\Event;
+  use ADV\Core\Ajax;
+  use ADV\App\Forms;
+  use ADV\Core\Num;
+  use ADV\App\SysTypes;
+  use ADV\App\Display;
+  use ADV\App\Bank\Bank;
+  use ADV\Core\Config;
+
+  /**
+   *
+   */
+  class Sales_Allocation
+  {
     /**
      * @static
      *

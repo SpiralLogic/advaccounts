@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -27,10 +28,9 @@
   use ADV\Core\Event;
   use ADV\App\Debtor\Debtor;
 
-  /**
-
-   */
-  class PDF extends \Cpdf {
+  /** **/
+  class PDF extends \Cpdf
+  {
     use Doctext;
 
     /** @var array * */
@@ -1098,9 +1098,9 @@
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
       if ($date != '') {
         $date  = Dates::_dateToSql($date);
-        $year  = (int) (substr($date, 0, 4));
-        $month = (int) (substr($date, 5, 2));
-        $day   = (int) (substr($date, 8, 2));
+        $year  = (int)(substr($date, 0, 4));
+        $month = (int)(substr($date, 5, 2));
+        $day   = (int)(substr($date, 8, 2));
         if ($output_format == 0) {
           return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
         } elseif ($output_format == 1) {
@@ -1138,10 +1138,10 @@
       // Test last value: G == grayscale, single number; RG == RGB, 3 numbers
       if ($colorFields[count($colorFields) - 1] == 'G') // Convert a grayscale string value to the equivalent RGB value
       {
-        $drawColor = array((float) $colorFields[0], (float) $colorFields[0], (float) $colorFields[0]);
+        $drawColor = array((float)$colorFields[0], (float)$colorFields[0], (float)$colorFields[0]);
       } else // Convert RGB string values to the a numeric array
       {
-        $drawColor = array((float) $colorFields[0], (float) $colorFields[1], (float) $colorFields[2]);
+        $drawColor = array((float)$colorFields[0], (float)$colorFields[1], (float)$colorFields[2]);
       }
       return $drawColor;
     }
@@ -1167,6 +1167,7 @@
     }
     /**
      * Set the fill color for table cells.
+     *
      * @see reporting/includes/TCPDF#SetFillColor($col1, $col2, $col3, $col4)
      *
      * @param int $r
@@ -1538,7 +1539,6 @@
      * @return void
      */
     public function  End($email = 0, $subject = null, $myrow = null, $doctype = 0) {
-
       if (Config::_get('debug.pdf') == 1) {
         $pdfcode = $this->Output('', 'S');
         $pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
@@ -1570,7 +1570,6 @@
         $this->doc_AttachedFile    = '';
         $this->doc_Payment_Link    = '';
         $this->doc_Kindest_regards = '';
-
         if ($email == 1) {
           extract($this->getHeaderArray($doctype, true, false, true));
           $mail = new Email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);

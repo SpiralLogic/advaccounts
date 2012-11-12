@@ -10,10 +10,9 @@
 
   use ADV\Core\Cache;
 
-  /**
-
-   */
-  class View implements \ArrayAccess {
+  /** **/
+  class View implements \ArrayAccess
+  {
     use \ADV\Core\Traits\HTML;
 
     protected $_viewdata = [];
@@ -52,7 +51,6 @@
      */
     public function runContext($contents) {
       $contents = preg_replace('/\$([^\.{][a-zA-Z_0-9]+?)/', '\$' . $this->context . '.$1', $contents);
-
       return $contents;
     }
     /**
@@ -81,7 +79,6 @@
       $__contents = $this->compileEchos($__contents, $context);
       $__contents = $this->compileDotNotation($__contents);
       static::$Cache->set('template.' . $this->_template, [$__contents, filemtime($this->_template), $this->_js]);
-
       return $__contents;
     }
     /**
@@ -103,7 +100,6 @@
      */
     protected function compileNothings($value) {
       $pattern = '/\{\{(\$.+?)\?\}\}(.+?)\{\{\/\1\?\}\}/s';
-
       return preg_replace($pattern, '<?php if(isset($1) && $1): ?>$2<?php endif; ?>', $value);
     }
     /**
@@ -114,9 +110,7 @@
      * @return string
      */
     protected function compileStructureOpenings($value) {
-
       $pattern = '/\{\{#(if|elseif|foreach|for|while)(.*?)\}\}/';
-
       return preg_replace($pattern, '<?php $1($2): ?>', $value);
     }
     /**
@@ -137,9 +131,7 @@
      * @return string
      */
     protected function compileStructureClosings($value) {
-
       $pattern = '/\{\{\/(if|foreach|for|while)\}\}/';
-
       return preg_replace($pattern, '<?php end$1; ?>', $value);
     }
     /**
@@ -163,13 +155,11 @@
           $contents = str_replace(['{{!}}', '{{.}}'], ['{{$_' . $tempvar . '_name}}', '{{$_' . $tempvar . '_val}}'], $contents);
           $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
           $return .= '<?php endforeach; endif; ?>';
-
           //        }
           return $return;
         },
         $value
       );
-
       return $return;
     }
     /**
@@ -186,7 +176,6 @@
           $view = new View($input[1]);
           $view->addContext($input[1]);
           $this->_js = array_unique(array_merge($this->_js, $view->_js));
-
           return '<?php if ($' . $view->context . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
         },
         $value
@@ -210,7 +199,6 @@
      * @return mixed
      */
     protected function compileEchos($value) {
-
       $value = preg_replace(
         '/\{\{(\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\}\}/',
         '<?php if (isset($1)) echo $1; ?>',
@@ -249,14 +237,12 @@
         // buffer so that no partially rendered views get thrown out
         // to the client and confuse the user with junk.
         ob_get_clean();
-
         throw $e;
       }
       if ($return) {
         return ob_get_clean();
       }
       echo ob_get_clean();
-
       return true;
     }
     /**
@@ -282,14 +268,12 @@
         }
         $__contents = $this->compile($__contents);
         JS::_footerFile($this->_js);
-
         return $__contents;
       } else {
         Event::registerShutdown([$this, 'checkCache'], [$this->_template, $__contents[1]]);
         //     $this->checkCache($this->_template, $__contents[1]);
         JS::_footerFile($__contents[2]);
         $__contents = $__contents[0];
-
         return $__contents;
       }
     }
@@ -304,7 +288,6 @@
       $value                    = $escape ? e($value) : $value;
       $offset                   = preg_replace('/[^a-zA-Z0-9_\x7f-\xff]/', '_', $offset);
       $this->_viewdata[$offset] = $value;
-
       return $this;
     }
     /**
@@ -316,6 +299,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -333,6 +317,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -345,12 +330,12 @@
       if (!array_key_exists($offset, $this->_viewdata)) {
         return null;
       }
-
       return $this->_viewdata[$offset];
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -368,6 +353,7 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
+     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>

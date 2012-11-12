@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,10 +10,9 @@
    **/
   namespace ADV\Core;
 
-  /**
-
-   */
-  class XMLParser {
+  /** **/
+  class XMLParser
+  {
     /**
      * @public null
      */
@@ -83,7 +83,6 @@
       $this->index  = 0;
       $this->parsed = $this->parseRecurse();
       $this->status = 'parsing complete';
-
       return $this->parsed;
     }
     /**
@@ -121,7 +120,7 @@
             }
             if (isset($tag['value'])) {
               if (isset($tagRef[$this->cdataKey])) {
-                $tagRef[$this->cdataKey] = (array) $tagRef[$this->cdataKey];
+                $tagRef[$this->cdataKey] = (array)$tagRef[$this->cdataKey];
                 array_unshift($tagRef[$this->cdataKey], $tag['value']);
               } else {
                 $tagRef[$this->cdataKey] = $tag['value'];
@@ -139,7 +138,6 @@
             break;
         }
       }
-
       return $found;
     }
     /**
@@ -150,12 +148,11 @@
       $parser       = $this->parser;
       xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
       xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-      if (!$res = (bool) xml_parse_into_struct($parser, $this->rawXML, $this->valueArray, $this->keyArray)) {
+      if (!$res = (bool)xml_parse_into_struct($parser, $this->rawXML, $this->valueArray, $this->keyArray)) {
         $this->isError = true;
         $this->error   = 'error: ' . xml_error_string(xml_get_error_code($parser)) . ' at line ' . xml_get_current_line_number($parser);
       }
       xml_parser_free($parser);
-
       return $res;
     }
     /**

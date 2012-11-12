@@ -1,17 +1,30 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\DB\DB;
+  use ADV\Core\JS;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\Core\Input\Input;
+  use ADV\Core\Event;
+  use ADV\App\Page;
+
   Page::start(_($help_context = "Shipping Company"), SA_SHIPPING);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM && can_process()) {
-    $sql = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
-        VALUES (" . DB::_escape($_POST['shipper_name']) . ", " . DB::_escape($_POST['contact']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape($_POST['phone2']) . ", " . DB::_escape($_POST['address']) . ")";
+    $sql
+      = "INSERT INTO shippers (shipper_name, contact, phone, phone2, address)
+        VALUES (" . DB::_escape($_POST['shipper_name']) . ", " . DB::_escape($_POST['contact']) . ", " . DB::_escape($_POST['phone']) . ", " . DB::_escape(
+      $_POST['phone2']
+    ) . ", " . DB::_escape($_POST['address']) . ")";
     DB::_query($sql, "The Shipping Company could not be added");
     Event::success(_('New shipping company has been added'));
     $Mode = MODE_RESET;

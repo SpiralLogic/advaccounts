@@ -17,9 +17,7 @@
   use ADV\Core\View;
   use ADV\App\Form\Form;
 
-  /**
-
-   */
+  /** **/
   class Quickentries extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '70';
@@ -28,7 +26,7 @@
     public $line;
     protected function before() {
       $this->object = new \ADV\App\GL\QuickEntry();
-      $this->line = new \ADV\App\GL\QuickEntryLine();
+      $this->line   = new \ADV\App\GL\QuickEntryLine();
       $this->runPost();
       if (!$this->object->id) {
         $this->object->load($this->Input->post('qid'));
@@ -46,13 +44,13 @@
       $this->Page->end_page(true);
     }
     protected function generateLineTable() {
-      $cols = [
+      $cols       = [
         ['type' => 'hidden'],
         ['type' => 'hidden'],
-        'Action' => ['fun' => [$this, 'formatActionLine'], 'edit' => [$this, 'formatActionLineEdit']],
+        'Action'           => ['fun' => [$this, 'formatActionLine'], 'edit' => [$this, 'formatActionLineEdit']],
         'Account/Tax Type' => ['edit' => 'hidden'],
         ['type' => 'hidden', 'edit' => [$this, 'formatAccountLineEdit']],
-        'Amount' => ['type' => 'amount', 'edit' => [$this, 'formatAmountLineEdit']],
+        'Amount'           => ['type' => 'amount', 'edit' => [$this, 'formatAmountLineEdit']],
         ['type' => 'hidden'],
         ['type' => 'hidden'],
       ];
@@ -81,7 +79,6 @@
       $form->amount('base_amount')->label('Base Amount');
       $form->text('base_desc')->label('Base Description');
     }
-
     /**
      * @param $id
      */
@@ -89,7 +86,6 @@
       $this->linesid = $id;
       parent::onEdit($id);
     }
-
     /**
      * @param $form
      */

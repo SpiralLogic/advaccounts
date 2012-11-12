@@ -25,6 +25,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -39,10 +40,9 @@
   iii) a credit note
   iv) a delivery note
   */
-  /**
-
-   */
-  class Sales_Order {
+  /** **/
+  class Sales_Order
+  {
     /** @var int * */
     public $trans_type; // invoice, order, quotation, delivery note ...
     /** @var array * */
@@ -1372,7 +1372,7 @@
       } else // prepare new line
       {
         echo '<tr' . 'class="newline"' . '>';
-        Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => ''));
+        Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => '', 'sales_type' => $this->sales_type));
         if (Forms::isListUpdated('stock_id')) {
           Ajax::_activate('price');
           Ajax::_activate('description');

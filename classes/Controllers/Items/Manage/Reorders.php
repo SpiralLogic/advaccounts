@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,12 +11,13 @@
    **/
   namespace ADV\Controllers\Items\Manage;
 
+  use ADV\App\Validation;
+
   /**
    * @property \ADV\App\Item\Reorder $object
    */
   class Reorders extends \ADV\App\Controller\InlinePager
   {
-
     protected $stock_id = null;
     protected $security = SA_REORDER;
     protected $frame = false;

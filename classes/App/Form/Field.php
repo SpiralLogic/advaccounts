@@ -9,9 +9,7 @@
    */
   namespace ADV\App\Form;
 
-  /**
-
-   */
+  /** **/
   class Field implements \ArrayAccess
   {
     use \ADV\Core\Traits\HTML;
@@ -44,7 +42,7 @@
      */
     public function name($name) {
       $this->name = $this['name'] = $name;
-      $this->id = $this->nameToId();
+      $this->id   = $this->nameToId();
     }
     /**
      * @param $label
@@ -181,10 +179,10 @@
     public function __toString() {
       $value = (isset($this->value)) ? $this->value : $this->default;
       if ($this->readonly) {
-        $tag = 'span';
+        $tag           = 'span';
         $this->content = $value;
       } else {
-        $tag = $this->tag;
+        $tag                 = $this->tag;
         $this->attr['value'] = $value;
       }
       $control = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');

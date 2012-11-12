@@ -1,5 +1,5 @@
 <?php
-  use ADV\App\User;
+  use ADV\App\Page;
 
   // Turn these next two lines on for debugging
   //error_reporting(E_ALL);

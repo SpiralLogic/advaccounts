@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -17,10 +18,9 @@
   use ADV\App\Dates;
   use ADV\App\WO\WO;
 
-  /**
-
-   */
-  class WO_Produce {
+  /** **/
+  class WO_Produce
+  {
     /**
      * @static
      *

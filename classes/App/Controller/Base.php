@@ -7,16 +7,14 @@
    * To change this template use File | Settings | File Templates.
    */
   namespace ADV\App\Controller;
+
   use ADV\App\Page;
   use ADV\App\User;
   use ADV\Core\Session;
 
-  /**
-
-   */
+  /** **/
   abstract class Base
   {
-
     protected $title;
     /*** @var User */
     protected $User;

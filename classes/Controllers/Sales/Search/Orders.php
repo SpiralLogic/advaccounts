@@ -17,12 +17,9 @@
   use ADV\Core\Input\Input;
   use ADV\App\Item\Item;
 
-  /**
-
-   */
+  /** **/
   class Orders extends \ADV\App\Controller\Action
   {
-
     protected $security;
     protected $trans_type;
     protected $debtor_id;
@@ -139,12 +136,12 @@
         true,
         false,
         array(
-          'submitonselect' => false,
-          'cells'          => true,
-          'size'           => 10,
-          'purchase'       => false,
-          'show_inactive'  => true,
-          'placeholder'    => 'Item',
+             'submitonselect' => false,
+             'cells'          => true,
+             'size'           => 10,
+             'purchase'       => false,
+             'show_inactive'  => true,
+             'placeholder'    => 'Item',
         )
       );
       if ($this->trans_type == ST_SALESQUOTE) {
@@ -163,10 +160,12 @@
     }
     protected function displayTable() { //	Orders inquiry table
       //
-      $sql = "SELECT
+      $sql
+        = "SELECT
  		sorder.trans_type,
  		sorder.order_no,
- 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " : "sorder.customer_ref, ") . "
+ 		sorder.reference," . ($_POST['order_view_mode'] == self::MODE_INVTEMPLATES || $_POST['order_view_mode'] == self::MODE_DELTEMPLATES ? "sorder.comments, " :
+        "sorder.customer_ref, ") . "
  		sorder.ord_date,
  		sorder.delivery_date,
  		debtor.name,
@@ -190,7 +189,8 @@
       } else {
         $sql .= " AND sorder.trans_type = " . DB::_quote($this->trans_type);
       }
-      $sql .= " AND sorder.debtor_id = debtor.debtor_id
+      $sql
+        .= " AND sorder.debtor_id = debtor.debtor_id
  		AND sorder.branch_id = branch.branch_id
  		AND debtor.debtor_id = branch.debtor_id";
       if ($this->debtor_id > 0) {
@@ -201,7 +201,8 @@
             continue;
           }
           $quicksearch = DB::_quoteWild($quicksearch);
-          $sql .= " AND ( debtor.debtor_id = $quicksearch
+          $sql
+            .= " AND ( debtor.debtor_id = $quicksearch
           OR debtor.name LIKE $quicksearch
           OR sorder.order_no LIKE $quicksearch
           OR sorder.reference LIKE $quicksearch
@@ -209,7 +210,8 @@
           OR sorder.customer_ref LIKE $quicksearch
           OR branch.br_name LIKE $quicksearch)";
         }
-        $sql .= " GROUP BY sorder.ord_date,
+        $sql
+          .= " GROUP BY sorder.ord_date,
  				 sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,
@@ -240,7 +242,8 @@
         ) {
           $sql .= " AND sorder.type=1";
         }
-        $sql .= " GROUP BY sorder.ord_date,
+        $sql
+          .= " GROUP BY sorder.ord_date,
  sorder.order_no,
  				sorder.debtor_id,
  				sorder.branch_id,

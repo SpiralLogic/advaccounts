@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,10 +13,9 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class Group extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable {
+  /** **/
+  class Group extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+  {
     protected $_table = 'groups';
     protected $_classname = 'Group';
     protected $_id_column = 'id';
@@ -67,14 +67,15 @@
         return $this->status(false, _("Cannot delete this group because customers have been created using this group."));
       }
       return parent::delete();
-    }  /**
-         * @return array
-         */
+    }
+    /**
+     * @return array
+     */
     public function getPagerColumns() {
-          $cols = [
-            ['type' => 'skip'],
-            'Group Name',
-          ];
-          return $cols;
-        }
+      $cols = [
+        ['type' => 'skip'],
+        'Group Name',
+      ];
+      return $cols;
+    }
   }

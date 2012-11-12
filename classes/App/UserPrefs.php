@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,36 +13,34 @@
   use ADV\Core\Config;
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
+  /** **/
   class UserPrefs
   {
     use \ADV\Core\Traits\SetFromArray;
 
-    /** @var Array|mixed **/
+    /** @var Array|mixed * */
     public $language;
     /** @var */
     public $qty_dec;
-    /** @var int **/
+    /** @var int * */
     public $price_dec = 2;
     /** @var */
     public $exrate_dec = 4;
-    /** @var int **/
+    /** @var int * */
     public $percent_dec = 0;
     /** @var */
     public $show_gl;
     /** @var */
     public $show_codes;
-    /** @var Array|mixed **/
+    /** @var Array|mixed * */
     public $date_format = 1;
-    /** @var Array|mixed **/
+    /** @var Array|mixed * */
     public $date_sep = 0;
-    /** @var int **/
+    /** @var int * */
     public $tho_sep;
-    /** @var int **/
+    /** @var int * */
     public $dec_sep = 0;
-    /** @var string **/
+    /** @var string * */
     public $theme = 'default';
     /** @var */
     public $print_profile;
@@ -55,9 +54,9 @@
     public $query_size = 2; // table pager page length
     /** @var */
     public $graphic_links; // use graphic links
-    /** @var int **/
+    /** @var int * */
     public $sticky_doc_date = 0; // save date on subsequent document entry
-    /** @var Array|mixed **/
+    /** @var Array|mixed * */
     public $startup_tab; // default start-up menu tab
     /**
      * @param null $user

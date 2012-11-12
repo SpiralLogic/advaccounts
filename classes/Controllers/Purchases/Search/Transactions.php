@@ -7,7 +7,6 @@
   use ADV\Core\Event;
   use ADV\App\Reporting;
   use DB_Company;
-  use ADV\Core\View;
   use ADV\Core\Num;
   use GL_UI;
   use ADV\App\SysTypes;
@@ -24,13 +23,15 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Action {
+  class Transactions extends \ADV\App\Controller\Action
+  {
     public $creditor_id;
     protected function before() {
       JS::_openWindow(950, 500);

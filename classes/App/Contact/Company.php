@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,14 +13,12 @@
   use ADV\App\SysTypes;
   use ADV\App\Reporting;
 
-  /**
-
-   */
+  /** **/
   abstract class Contact_Company extends \ADV\App\DB\Base
   {
-    /** @var string **/
+    /** @var string * */
     public $discount = '0';
-    /** @var string **/
+    /** @var string * */
     public $name = '';
     /** @var */
     public $address = '';
@@ -29,23 +28,23 @@
     public $state;
     /** @var */
     public $postcode;
-    /** @var string **/
+    /** @var string * */
     public $post_address = '';
     /** @var */
     public $tax_id = '';
     /** @var */
     public $contact_name = '';
-    /** @var int **/
+    /** @var int * */
     public $credit_limit = 0;
-    /** @var int **/
+    /** @var int * */
     public $dimension_id = 0;
-    /** @var int **/
+    /** @var int * */
     public $dimension2_id = 0;
-    /** @var int **/
+    /** @var int * */
     public $payment_terms = 0;
-    /** @var string **/
+    /** @var string * */
     public $curr_code = '';
-    /** @var array **/
+    /** @var array * */
     public $emailAddresses = [];
     /**
      * @abstract
@@ -71,7 +70,8 @@
      * @return void
      */
     public static function addInfoDialog($selector, $id = false) {
-      $content = '<div class="contactDialog"><span>Name:</span>${name}</br><hr>
+      $content
+               = '<div class="contactDialog"><span>Name:</span>${name}</br><hr>
 				 		<span >Contact: </span>${contact}</br><hr>
             <span >Phone: </span>${phone}</br><hr>
 				 		<span >Phone2: </span>${phone2}</br><hr>
@@ -90,7 +90,8 @@
       if ($id) {
         $details->addOpenEvent($selector, 'click');
       } else {
-        $action = <<<JS
+        $action
+          = <<<JS
 				 $.post('/contacts/manage/{$type}s',{id:$(this).data('id'),_action:'fetch'},function(data) {Adv.o.company_details.render(data.company); \$company_details.dialog('open');},'json');
 JS;
         JS::_addLiveEvent($selector, 'click', $action, 'wrapper', true);
@@ -108,7 +109,7 @@ JS;
     public static function getEmailDialogue($emailid) {
       list($id, $type, $trans) = explode('-', $emailid);
       $company = get_called_class();
-      /** @var \ADV\App\Debtor\Debtor|\ADV\App\Creditor\Creditor $company  */
+      /** @var \ADV\App\Debtor\Debtor|\ADV\App\Creditor\Creditor $company */
       $company = new $company($id);
       $emails  = $company->getEmailAddresses();
       if (count($emails) > 0) {

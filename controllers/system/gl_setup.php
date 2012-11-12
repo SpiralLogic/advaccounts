@@ -1,12 +1,22 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\Table;
+  use ADV\Core\JS;
+  use ADV\Core\Num;
+  use ADV\App\Forms;
+  use ADV\Core\Event;
+  use ADV\App\Validation;
+  use ADV\Core\Input\Input;
+  use ADV\App\Page;
+
   Page::start(_($help_context = "System and General GL Setup"), SA_GLSETUP);
   if (isset($_POST['submit']) && can_process()) {
     $_POST['allow_negative_stock'] = Input::_hasPost('allow_negative_stock');

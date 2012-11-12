@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,12 +15,9 @@
   use ADV\App\Pager\Edit;
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
+  /** **/
   abstract class Pager extends Action
   {
-
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';

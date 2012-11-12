@@ -15,9 +15,7 @@
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
-  /**
-
-   */
+  /** **/
   class People extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '80';
@@ -45,6 +43,5 @@
       $form->amount('break_pt')->label("Break Pt.:");
       $form->percent('provision2')->label("Provision 2: ");
     }
-
   }
 

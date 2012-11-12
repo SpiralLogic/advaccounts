@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,10 +14,9 @@
   use ADV\Core\Dialog;
   use ADV\Core\JS;
 
-  /**
-
-   */
-  class UI {
+  /** **/
+  class UI
+  {
     /**
      * @static
      *
@@ -35,7 +35,7 @@
         $HTML = new HTML();
       }
       $HTML->select($id, $params);
-      foreach ((array) $options as $value => $name) {
+      foreach ((array)$options as $value => $name) {
         if (is_array($name)) {
           $HTML->optgroup(array('label' => $value));
           foreach ($name as $value) {

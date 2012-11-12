@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -33,10 +34,9 @@
   use ADV\Core\Event;
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class WO {
+  /** **/
+  class WO
+  {
     public static $types
       = array(
         WO_ASSEMBLY   => "Assemble", //

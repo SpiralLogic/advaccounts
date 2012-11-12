@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,19 +15,18 @@
   use ADV\Core\DB\DB;
   use ADV\Core\DB\DBException;
 
-  /**
-
-   */
-  class Insert extends Query {
+  /** **/
+  class Insert extends Query
+  {
     /** @var */
     protected $table;
-    /** @var array **/
+    /** @var array * */
     protected $values = [];
-    /** @var array **/
+    /** @var array * */
     protected $fields = [];
-    /** @var array **/
+    /** @var array * */
     protected $hasfields = [];
-    /** @var array **/
+    /** @var array * */
     public $data = [];
     /**
      * @param bool $table
@@ -64,7 +64,7 @@
      * @return Insert|Update
      */
     public function values($values) {
-      $this->data = (array) $values + $this->data;
+      $this->data = (array)$values + $this->data;
       return $this;
     }
     /**
@@ -96,7 +96,7 @@
      */
     protected function execute($data = null) {
       if ($data !== null) {
-        $this->values((array) $data);
+        $this->values((array)$data);
       }
       $this->data   = array_intersect_key($this->data, array_flip($this->hasfields));
       $this->data   = array_filter(

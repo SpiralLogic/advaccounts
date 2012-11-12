@@ -5,9 +5,7 @@
   use ADV\App\Form\Form;
   use ADV\Core\View;
 
-  /**
-
-   */
+  /** **/
   class Groups extends \ADV\App\Controller\FormPager
   {
     protected $security = SA_SALESGROUP;
@@ -17,8 +15,8 @@
       $this->setTitle("Sales Groups");
     }
     /**
-     * @param \ADV\App\Form\Form|\Form   $form
-     * @param \ADV\Core\View|\View       $view
+     * @param \ADV\App\Form\Form   $form
+     * @param \ADV\Core\View       $view
      *
      * @return mixed
      */
@@ -27,6 +25,5 @@
       $form->hidden('id');
       $form->text('description')->label('Group Name:');
     }
-
   }
 

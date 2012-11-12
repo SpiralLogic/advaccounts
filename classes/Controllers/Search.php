@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,10 +14,9 @@
   use ADV\App\Controller\Action;
   use ADV\App\Item\Item;
 
-  /**
-
-   */
-  class Search extends Action {
+  /** **/
+  class Search extends Action
+  {
     protected function before() {
       if (!REQUEST_AJAX) {
         header('Location: /');

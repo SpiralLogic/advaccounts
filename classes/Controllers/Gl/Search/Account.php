@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -21,12 +22,9 @@
   use ADV\App\Forms;
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
+  /** **/
   class Account extends \ADV\App\Controller\Action
   {
-
     public $account = null;
     public $TransFromDate;
     public $trans_date_from;

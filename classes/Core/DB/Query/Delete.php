@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,11 +12,10 @@
 
   use ADV\Core\DB\DB;
 
-  /**
-
-   */
-  class Delete extends Query {
-    /** @var bool **/
+  /** **/
+  class Delete extends Query
+  {
+    /** @var bool * */
     protected $table;
     /**
      * @param bool $table

@@ -6,6 +6,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -22,10 +23,9 @@
   if (!class_exists('OLEwriter')) {
     Event::error('Could not find excel writer module');
   }
-  /**
-
-   */
-  class Excel extends Spreadsheet_Excel_Writer_Workbook {
+  /** **/
+  class Excel extends Spreadsheet_Excel_Writer_Workbook
+  {
     use Doctext;
 
     /** @var string * */
@@ -241,7 +241,7 @@
      */
     public function NumFormat($dec) {
       if (!isset($this->formatAmount[$dec])) {
-        $dec    = (int) $dec;
+        $dec    = (int)$dec;
         $tsep   = ',';
         $dsep   = '.';
         $format = "###{$tsep}###{$tsep}###{$tsep}##0";
@@ -520,9 +520,9 @@
     public function DatePrettyPrint($date, $input_format = 0, $output_format = 0) {
       if ($date != '') {
         $date  = Dates::_dateToSql($date);
-        $year  = (int) (substr($date, 0, 4));
-        $month = (int) (substr($date, 5, 2));
-        $day   = (int) (substr($date, 8, 2));
+        $year  = (int)(substr($date, 0, 4));
+        $month = (int)(substr($date, 5, 2));
+        $day   = (int)(substr($date, 8, 2));
         if ($output_format == 0) {
           return (date('F j, Y', mktime(12, 0, 0, $month, $day, $year)));
         } elseif ($output_format == 1) {
@@ -724,7 +724,7 @@
         $txt = Dates::_dateToSql($txt);
       }
       list($year, $mo, $day) = explode("-", $txt);
-      $date = $this->ymd2date((int) $year, (int) $mo, (int) $day);
+      $date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
       $this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
     }
     /**
@@ -896,7 +896,7 @@
       } elseif ($year > $MAXYEAR) {
         $year = $MAXYEAR;
       }
-      $jul = (int) $day;
+      $jul = (int)$day;
       for ($n = 1; $n < $mon; $n++) {
         $jul += $mo[$n];
       }

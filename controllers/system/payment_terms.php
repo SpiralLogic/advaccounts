@@ -1,12 +1,22 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\App\Page;
+  use ADV\Core\Cell;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
+  use ADV\Core\JS;
+  use ADV\Core\Event;
+
   Page::start(_($help_context = "Payment Terms"), SA_PAYTERMS);
   list($Mode, $selected_id) = Page::simple_mode(true);
   if ($Mode == ADD_ITEM || $Mode == UPDATE_ITEM) {
@@ -39,11 +49,13 @@
         $note = _('Selected payment terms have been updated');
       } else {
         if (Input::_hasPost('DaysOrFoll')) {
-          $sql = "INSERT INTO payment_terms (terms,
+          $sql
+            = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::_escape($_POST['terms']) . ", " . DB::_escape($_POST['DayNumber']) . ", 0)";
         } else {
-          $sql = "INSERT INTO payment_terms (terms,
+          $sql
+            = "INSERT INTO payment_terms (terms,
 					days_before_due, day_in_following_month)
 					VALUES (" . DB::_escape($_POST['terms']) . ",
 					0, " . DB::_escape($_POST['DayNumber']) . ")";
@@ -122,7 +134,8 @@
   if ($selected_id != -1) {
     if ($Mode == MODE_EDIT) {
       //editing an existing payment terms
-      $sql                    = "SELECT * FROM payment_terms
+      $sql
+                              = "SELECT * FROM payment_terms
 			WHERE terms_indicator=" . DB::_escape($selected_id);
       $result                 = DB::_query($sql, "could not get payment term");
       $myrow                  = DB::_fetch($result);

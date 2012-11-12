@@ -14,10 +14,9 @@
 
   use RangeException;
 
-  /**
-
-   */
-  class Assets {
+  /** **/
+  class Assets
+  {
     protected $baseDir = ROOT_WEB;
     protected $charSet = 'UTF-8';
     protected $debug = false;
@@ -194,7 +193,6 @@
         $content[] = $current;
       }
       $content = implode("\n", $content);
-
       if ($this->gzip) {
         return gzencode($content, $this->compressionLevel);
       }

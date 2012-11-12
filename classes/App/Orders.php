@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,10 +10,9 @@
    **/
   namespace ADV\App;
 
-  /**
-
-   */
-  abstract class Orders extends DB\Base {
+  /** **/
+  abstract class Orders extends DB\Base
+  {
     const NEW_ORDER           = 'NewOrder';
     const MODIFY_ORDER        = 'ModifyOrder';
     const NEW_QUOTE           = 'NewQuote';
@@ -42,7 +42,6 @@
     const REFRESH             = 'refresh';
     const TYPE                = 'type';
     /** @var */
-
     public $order_no;
     /** @var */
     public $version;
@@ -66,7 +65,6 @@
      * @return void
      */
     protected static function setup($type) {
-
       if (!isset($_SESSION['orders'])) {
         $_SESSION['orders'] = [];
       }
@@ -95,7 +93,6 @@
       if (isset($_SESSION['orders'][$type][$id])) {
         return $_SESSION['orders'][$type][$id];
       }
-
       return false;
     }
     /**
@@ -109,7 +106,6 @@
       list($type, $id) = explode('.', $order->order_id);
       static::setup($type);
       $_SESSION['orders'][$type][$id] = $order;
-
       return $order;
     }
     /**
@@ -131,7 +127,6 @@
     public static function session_exists($order) {
       list($type, $id) = explode('.', $order->order_id);
       static::setup($type);
-
       return isset($_SESSION['orders'][$type][$id]);
     }
     /**

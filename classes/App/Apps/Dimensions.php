@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,10 +13,9 @@
   use DB_Company;
   use ADV\App\Application\Application;
 
-  /**
-
-   */
-  class Dimensions extends Application {
+  /** **/
+  class Dimensions extends Application
+  {
     public $name = "Dimensions";
     public $help_context = "&Dimensions";
     public $enabled = false;

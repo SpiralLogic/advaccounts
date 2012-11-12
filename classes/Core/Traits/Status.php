@@ -9,10 +9,9 @@
    */
   namespace ADV\Core\Traits;
 
-  /**
-
-   */
-  trait Status {
+  /** **/
+  trait Status
+  {
     /** @var \ADV\Core\Status */
     protected $status = null;
     /**
@@ -27,7 +26,6 @@
       if ($string) {
         return $this->status;
       }
-
       return $this->status->get();
     }
     /***
@@ -40,10 +38,8 @@
     protected function status($status = null, $message = '', $var = null) {
       if (!$this->status) {
         $this->status = new \ADV\Core\Status($status, $message, $var);
-
         return $status;
       }
-
       return $this->status->set($status, $message, $var);
     }
   }

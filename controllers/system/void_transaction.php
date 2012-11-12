@@ -3,6 +3,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -115,9 +116,7 @@
     return true;
   }
 
-  /**
-
-   */
+  /** **/
   function voiding_controls() {
     Forms::start();
     Table::start('standard');

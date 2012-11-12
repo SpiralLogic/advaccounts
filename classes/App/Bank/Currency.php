@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,12 +10,12 @@
    **/
   namespace ADV\App\Bank {
     use ADV\Core\DB\DB;
-    use ADV\App\Validation;
 
     /**
 
      */
-    class Currency extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable {
+    class Currency extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
       protected $_table = 'currencies';
       protected $_classname = 'Currency';
       protected $_id_column = 'id';
@@ -90,33 +91,38 @@
           $q->andWhere('inactive=', 0);
         }
         return $q->fetch()->all();
-      }    /**
-           * @return array
-           */
+      }
+      /**
+       * @return array
+       */
       public function getPagerColumns() {
-            return [
-              ['type' => "skip"],
-              'Currency',
-              'Abbreviation',
-              'Symbol',
-              'Country',
-              'Hundreds',
-              'Inactive' => ['type' => 'inactive'],
-              'Auto Update',
-            ];
-          }
+        return [
+          ['type' => "skip"],
+          'Currency',
+          'Abbreviation',
+          'Symbol',
+          'Country',
+          'Hundreds',
+          'Inactive' => ['type' => 'inactive'],
+          'Auto Update',
+        ];
+      }
     }
   }
 
   namespace {
     use ADV\Core\DB\DB;
+    use ADV\Core\DB\DBSelectException;
+    use ADV\Core\Num;
+    use ADV\Core\Event;
     use ADV\App\Dates;
     use ADV\App\User;
 
     /**
 
      */
-    class Bank_Currency {
+    class Bank_Currency
+    {
       /**
        * @static
        *

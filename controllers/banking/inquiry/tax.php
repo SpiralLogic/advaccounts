@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -28,9 +29,7 @@
   tax_inquiry_controls();
   show_results();
   Page::end();
-  /**
-
-   */
+  /** **/
   function tax_inquiry_controls() {
     Forms::start();
     //Table::start('standard');
@@ -44,9 +43,7 @@
     Forms::end();
   }
 
-  /**
-
-   */
+  /** **/
   function show_results() {
     /*Now get the transactions */
     Ajax::_start_div('trans_tbl');

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,9 +12,7 @@
 
   use ADV\Core\View;
 
-  /**
-
-   */
+  /** **/
   class Sidemenu
   {
     protected $menu;

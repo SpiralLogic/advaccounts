@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -12,10 +13,9 @@
 
   use \ADV\App\Controller\Menu;
 
-  /**
-
-   */
-  class Banking extends Menu {
+  /** **/
+  class Banking extends Menu
+  {
     public $name = "Banking";
     public $help_context = "&Banking";
     /**

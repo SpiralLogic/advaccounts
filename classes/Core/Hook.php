@@ -1,5 +1,6 @@
 <?php  /**
  * PHP version 5.4
+ *
  * @category  PHP
  * @package   adv.accounts.core
  * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -8,16 +9,15 @@
  **/
   namespace ADV\Core;
 
-  /**
-
-   */
-  class HookException extends \Exception {
+  /** **/
+  class HookException extends \Exception
+  {
   }
-  /**
 
-   */
-  class Hook {
-    /** @var array **/
+  /** **/
+  class Hook
+  {
+    /** @var array * */
     protected $hooks = [];
     /**
      * @param       $name
@@ -35,7 +35,7 @@
         $callback_id = count($this->hooks) . serialize($arguments);
       }
       if (!isset($this->hooks[$name][$callback_id])) {
-        return $this->hooks[$name][$callback_id] = [$callback, (array) $arguments];
+        return $this->hooks[$name][$callback_id] = [$callback, (array)$arguments];
       }
       return false;
     }

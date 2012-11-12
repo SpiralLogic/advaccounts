@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -9,10 +10,9 @@
    **/
   namespace ADV\App;
 
-  /**
-
-   */
-  class Report {
+  /** **/
+  class Report
+  {
     /** @var */
     public $id;
     /** @var */
@@ -78,7 +78,6 @@
       return $this->controls;
     }
     public function add_custom_reports() {
-
       $file = PATH_COMPANY . "reporting/reports_custom.php";
       if (file_exists($file)) {
         /** @noinspection PhpIncludeInspection */

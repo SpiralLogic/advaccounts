@@ -11,9 +11,7 @@
    **/
   namespace ADV\Core\Traits;
 
-  /**
-
-   */
+  /** **/
   trait HTML
   {
     /**
@@ -26,7 +24,7 @@
      */
     protected function makeElement($tag, $attributes, $content = null, $close = false) {
       if ($content === true) {
-        $close = true;
+        $close   = true;
         $content = '';
       } elseif ($content === null) {
         $content = '';

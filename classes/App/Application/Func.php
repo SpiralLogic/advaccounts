@@ -8,15 +8,14 @@
    */
   namespace ADV\App\Application;
 
-  /**
-
-   */
-  class Func {
+  /** **/
+  class Func
+  {
     /** @var */
     public $label;
     /** @var */
     public $link;
-    /** @var string **/
+    /** @var string * */
     public $access;
     /**
      * @param        $label
