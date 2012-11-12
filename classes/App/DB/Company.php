@@ -400,8 +400,4 @@
       }
       $this->save($data);
     }
-    /**
-     * @param $_POST
-     */
-    public static function _update_gl_setup($_POST) { }
   }
