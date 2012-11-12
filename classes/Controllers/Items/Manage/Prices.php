@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -19,7 +20,6 @@
    */
   class Prices extends \ADV\App\Controller\InlinePager
   {
-
     protected $stock_id;
     protected $security = SA_SALESPRICE;
     protected $frame = false;
@@ -35,12 +35,12 @@
         UI::search(
           'stock_id',
           [
-            'label'   => 'Item:',
-            'url'     => 'Item',
-            'idField' => 'stock_id',
-            'name'    => 'stock_id', //
-            'value'   => $this->stock_id,
-            'focus'   => true,
+          'label'   => 'Item:',
+          'url'     => 'Item',
+          'idField' => 'stock_id',
+          'name'    => 'stock_id', //
+          'value'   => $this->stock_id,
+          'focus'   => true,
           ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);

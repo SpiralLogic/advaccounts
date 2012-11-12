@@ -34,7 +34,7 @@
     protected function generateTable() {
       $cols       = $this->getPagerColumns();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      Edit::kill($pager_name);
+      //Edit::kill($pager_name);
       $table = Edit::newPager($pager_name, $cols);
       $this->getEditing($table);
       $table->setData($this->getTableRows($pager_name));
