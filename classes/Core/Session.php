@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -39,7 +38,7 @@
       if (session_status() === PHP_SESSION_DISABLED) {
         throw new SessionException('Sessions are disasbled!');
       }
-      ini_set('session.gc_maxlifetime', 3200); // 10hrs
+      ini_set('session.gc_maxlifetime', 60 * 60 * 10); // 10hrs
       if ($handler) {
         /** @noinspection PhpParamsInspection */
         session_set_save_handler($handler, true);
@@ -205,7 +204,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -223,7 +221,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -241,7 +238,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -259,7 +255,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>

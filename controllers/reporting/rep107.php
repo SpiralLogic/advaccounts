@@ -87,11 +87,11 @@
           if ($myrow2["quantity"] == 0) {
             continue;
           }
-          $Net = Num::_round($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::_price_dec());
+          $Net = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::_price_dec());
           $SubTotal += $Net;
           $TaxType      = Tax_ItemType::get_for_item($myrow2['stock_id']);
           $DisplayPrice = Num::_format($myrow2["unit_price"], $dec);
-          $DisplayQty   = Num::_format($sign * $myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
+          $DisplayQty   = Num::_format($myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
           $DisplayNet   = Num::_format($Net, $dec);
           if ($myrow2["discount_percent"] == 0) {
             $DisplayDiscount = "";
@@ -137,7 +137,7 @@
         $rep->NewLine();
         $tax_items = GL_Trans::get_tax_details($j, $i);
         while ($tax_item = DB::_fetch($tax_items)) {
-          $DisplayTax = Num::_format($sign * $tax_item['amount'], $dec);
+          $DisplayTax = Num::_format($tax_item['amount'], $dec);
           if ($tax_item['included_in_price']) {
             $rep->TextCol(3, 7, $rep->doc_included . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . $rep->doc_amount . ": " . $DisplayTax, -2);
           } else {
@@ -146,7 +146,7 @@
           }
         }
         $rep->NewLine();
-        $display_total = Num::_format($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
+        $display_total = Num::_format(($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
         $rep->Font('bold');
         $rep->TextCol(3, 7, $rep->doc_total_invoice, -2);
         $rep->TextCol(7, 8, $display_total, -2);
