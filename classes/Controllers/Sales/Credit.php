@@ -201,10 +201,6 @@
      */
     protected function canProcess() {
       $input_error = 0;
-      if (!count($this->credit->line_items)) {
-        Event::error("There is nothing to process for this credit");
-        return false;
-      }
       if ($this->credit->count_items() == 0 && (!Validation::post_num('ChargeFreightCost', 0))) {
         return false;
       }
