@@ -134,7 +134,7 @@
       }
       Forms::submitCenterBegin(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
       Forms::submitCenterEnd('ProcessCredit', _("Process Credit Note"), '', false);
-      echo "</tr></table></div>";
+      echo "</tr></table>>";
       Forms::end();
       $this->Page->end_page();
     }
