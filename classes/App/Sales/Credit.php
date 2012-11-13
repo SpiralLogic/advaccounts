@@ -21,7 +21,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -593,7 +592,7 @@ debit freight re-charged and debit sales */
         }
         $item_info      = Item::get_edit_info(Input::_post('stock_id'));
         $dec            = $item_info['decimals'];
-        $_POST['qty']   = Num::_format(0, $dec);
+        $_POST['qty']   = Num::_format(1, $dec);
         $_POST['units'] = $item_info["units"];
         $_POST['price'] = Num::_priceFormat(
           Item_Price::get_calculated_price(Input::_post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, $order->document_date)

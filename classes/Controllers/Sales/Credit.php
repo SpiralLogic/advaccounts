@@ -20,7 +20,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -204,6 +203,9 @@
      */
     protected function canProcess() {
       $input_error = 0;
+      if (!count($this->credit->line_items)) {
+        Event::error("There is nothing to process for this credit");
+      }
       if ($this->credit->count_items() == 0 && (!Validation::post_num('ChargeFreightCost', 0))) {
         return false;
       }
