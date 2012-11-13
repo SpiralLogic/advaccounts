@@ -10,6 +10,12 @@
            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
           * ********************************************************************* */
+  use ADV\Core\DB\DB;
+  use ADV\Core\Input\Input;
+  use ADV\App\Item\Item;
+  use ADV\App\User;
+  use ADV\Core\Num;
+
   print_invoices();
   function print_invoices() {
     $report_type = '\\ADV\\App\\Reports\\PDF';
@@ -82,11 +88,11 @@
           if ($myrow2["quantity"] == 0) {
             continue;
           }
-          $Net = Num::_round($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
+          $Net = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::_price_dec());
           $SubTotal += $Net;
           $TaxType      = Tax_ItemType::get_for_item($myrow2['stock_id']);
           $DisplayPrice = Num::_format($myrow2["unit_price"], $dec);
-          $DisplayQty   = Num::_format($sign * $myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
+          $DisplayQty   = Num::_format($myrow2["quantity"], Item::qty_dec($myrow2['stock_id']));
           $DisplayNet   = Num::_format($Net, $dec);
           if ($myrow2["discount_percent"] == 0) {
             $DisplayDiscount = "";
@@ -123,28 +129,27 @@
         $rep->row          = $rep->bottomMargin + ($fromBottom * $rep->lineHeight);
         $linetype          = true;
         $doctype           = $j;
-        $doc_included      = $doc_sub_total = $doc_shipping = $doc_amount = $doc_total_invoice = $doc_invoice_no = '';
-        include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
-        $rep->TextCol(3, 7, $doc_sub_total, -2);
+        extract($rep->getHeaderArray($doctype));
+        $rep->TextCol(3, 7, $rep->doc_sub_total, -2);
         $rep->TextCol(7, 8, $display_sub_total, -2);
         $rep->NewLine();
-        $rep->TextCol(3, 7, $doc_shipping, -2);
+        $rep->TextCol(3, 7, $rep->doc_shipping, -2);
         $rep->TextCol(7, 8, $display_freight, -2);
         $rep->NewLine();
         $tax_items = GL_Trans::get_tax_details($j, $i);
         while ($tax_item = DB::_fetch($tax_items)) {
-          $DisplayTax = Num::_format($sign * $tax_item['amount'], $dec);
+          $DisplayTax = Num::_format($tax_item['amount'], $dec);
           if ($tax_item['included_in_price']) {
-            $rep->TextCol(3, 7, $doc_included . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . $doc_amount . ": " . $DisplayTax, -2);
+            $rep->TextCol(3, 7, $rep->doc_included . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " . $rep->doc_amount . ": " . $DisplayTax, -2);
           } else {
             $rep->TextCol(3, 7, $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)", -2);
             $rep->TextCol(7, 8, $DisplayTax, -2);
           }
         }
         $rep->NewLine();
-        $display_total = Num::_format($sign * ($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
+        $display_total = Num::_format(($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
         $rep->Font('bold');
-        $rep->TextCol(3, 7, $doc_total_invoice, -2);
+        $rep->TextCol(3, 7, $rep->doc_total_invoice, -2);
         $rep->TextCol(7, 8, $display_total, -2);
         $words = Item_Price::toWords($myrow['Total'], $j);
         if ($myrow['type'] == ST_SALESINVOICE) {
@@ -170,7 +175,7 @@
             $myrow['email']      = $branch['email'];
             $myrow['DebtorName'] = $branch['br_name'];
           }
-          $rep->End($email, $doc_invoice_no . " " . $myrow['reference'], $myrow, $j);
+          $rep->End($email, $rep->doc_invoice_no . " " . $myrow['reference'], $myrow, $j);
         }
       }
     }

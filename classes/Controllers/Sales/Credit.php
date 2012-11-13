@@ -2,10 +2,10 @@
   namespace ADV\Controllers\Sales;
 
   use ADV\App\Debtor\Debtor;
+  use ADV\App\Reporting;
   use ADV\Core\Num;
   use Sales_Order;
   use Sales_Credit;
-  use ADV\App\Page;
   use GL_UI;
   use ADV\App\Display;
   use ADV\Core\Event;
@@ -26,7 +26,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Credit extends \ADV\App\Controller\Action {
+  class Credit extends \ADV\App\Controller\Action
+  {
     /** @var Sales_Order */
     public $credit;
     protected function before() {
