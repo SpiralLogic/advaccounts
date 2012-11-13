@@ -18,6 +18,7 @@
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
            * ********************************************************************* */
   print_statements();
+
   /**
    * @param $debtorno
    * @param $month
@@ -58,6 +59,13 @@
   }
 
   function print_statements() {
+    $trans_type_string   = [
+      ST_SALESINVOICE => 'Invoice',
+      ST_CUSTCREDIT   => 'Credit',
+      ST_CUSTPAYMENT  => 'Payment',
+      ST_BANKDEPOSIT  => 'Payment',
+      ST_BANKPAYMENT  => 'Refund'
+    ];
     $report_type         = '\\ADV\\App\\Reports\\PDF';
     $txt_statement       = "Statement";
     $txt_opening_balance = 'Opening Balance';
@@ -182,7 +190,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $balance += $trans["TotalAmount"];
         }
         $display_balance = Num::_format($balance, $dec);
-        $rep->TextCol(0, 1, SysTypes::$short_names[$trans['type']], -2);
+        $rep->TextCol(0, 1, $trans_type_string[$trans['type']], -2);
         $ledgerside = (in_array($trans['type'], [ST_SALESINVOICE, ST_BANKPAYMENT]));
         if ($ledgerside) {
           $rep->Font('bold');
