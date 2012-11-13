@@ -29,7 +29,7 @@
     $dateend   = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
     $datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
     $sql       = "SELECT d.*," . "((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount) * IF(d.type = " . ST_SALESINVOICE . " OR d.type = " . ST_BANKPAYMENT . ",1,-1) ) AS TotalAmount,";
-    $sql .= "IF(d.type <> 10,-SUM(d.alloc), if(a.amt is null,0,SUM(a.amt))*if(b.tran_date > '$dateend',0,1)) AS Allocated, ";
+    $sql .= "IF(d.type <> 10 AND d.type <> 1,-SUM(d.alloc), if(a.amt is null,0,SUM(a.amt))*if(b.tran_date > '$dateend',0,1)) AS Allocated, ";
     $sql
       .= "( d.due_date < '$datestart' AND (b.tran_date < '$datestart' or b.tran_date is null)) AS OverDue
                             FROM debtor_trans d
@@ -109,7 +109,7 @@
     $sql
       = 'SELECT DISTINCT db.*,c.name AS DebtorName,c.tax_id,a.email,c.curr_code, c.payment_terms,
 CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address FROM debtor_balances db, branches a,
-        debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts" AND Balance>0  ';
+        debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts" ';
     if ($customer > 0) {
       $sql .= " AND c.debtor_id = " . DB::_escape($customer);
     } else {
@@ -175,7 +175,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       }
       foreach ($transactions as $i => $trans) {
         if (!$inc_payments && in_array($trans['type'], [ST_CUSTPAYMENT, ST_BANKDEPOSIT])) {
-          continue;
+          //  continue;
         }
         $display_total       = Num::_format(abs($trans["TotalAmount"]), $dec);
         $outstanding         = abs($trans["TotalAmount"] - $trans["Allocated"]);
