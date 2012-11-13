@@ -155,6 +155,8 @@
       if ($this->credit->trans_no == 0) {
         $this->credit->reference = $_POST['ref'];
       }
+      $this->credit->debtor_id     = $_POST['debtor_id'];
+      $this->credit->Branch        = $_POST['branch_id'];
       $this->credit->ship_via      = $_POST['ShipperID'];
       $this->credit->dimension_id  = $_POST['dimension_id'];
       $this->credit->dimension2_id = $_POST['dimension2_id'];
