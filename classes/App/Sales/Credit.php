@@ -21,7 +21,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -84,26 +83,8 @@
       /*Now insert the Credit Note into the debtor_trans table with the allocations as calculated above*/
       // all amounts in debtor's currency
       $credit_no = Debtor_Trans::write(
-        ST_CUSTCREDIT,
-        $trans_no,
-        $credit_note->debtor_id,
-        $credit_note->Branch,
-        $credit_date,
-        $credit_note->reference,
-        $credit_note_total,
-        0,
-        $items_added_tax,
-        $credit_note->freight_cost,
-        $freight_added_tax,
-        $credit_note->sales_type,
-        $credit_note->order_no,
-        $credit_invoice ? : 0,
-        $credit_note->ship_via,
-        null,
-        $alloc,
-        0,
-        $credit_note->dimension_id,
-        $credit_note->dimension2_id
+        ST_CUSTCREDIT, $trans_no, $credit_note->debtor_id, $credit_note->Branch, $credit_date, $credit_note->reference, $credit_note_total, 0, $items_added_tax, $credit_note->freight_cost, $freight_added_tax, $credit_note->sales_type, $credit_note->order_no, $credit_invoice ? :
+          0, $credit_note->ship_via, null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id
       );
       // 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
       if ($trans_no == 0) {
@@ -140,23 +121,11 @@
         }
         $line_taxfree_price = Tax::tax_free_price($credit_line->stock_id, $credit_line->price, 0, $credit_note->tax_included, $credit_note->tax_group_array);
         $line_tax           = Tax::full_price_for_item(
-          $credit_line->stock_id,
-          $credit_line->price,
-          0,
-          $credit_note->tax_included,
-          $credit_note->tax_group_array
+          $credit_line->stock_id, $credit_line->price, 0, $credit_note->tax_included, $credit_note->tax_group_array
         ) - $line_taxfree_price;
         Debtor_TransDetail::add(
-          ST_CUSTCREDIT,
-          $credit_no,
-          $credit_line->stock_id,
-          $credit_line->description,
-          $credit_line->qty_dispatched,
-          $credit_line->line_price(),
-          $line_tax,
-          $credit_line->discount_percent,
-          $credit_line->standard_cost,
-          $trans_no == 0 ? 0 : $credit_line->id
+          ST_CUSTCREDIT, $credit_no, $credit_line->stock_id, $credit_line->description, $credit_line->qty_dispatched, $credit_line->line_price(), $line_tax, $credit_line->discount_percent, $credit_line->standard_cost, $trans_no == 0 ?
+            0 : $credit_line->id
         );
         Sales_Credit::add_movements($credit_note, $credit_line, $credit_type, $line_taxfree_price + $line_tax, $credit_invoice);
         $total += Sales_Credit::add_gl_costs($credit_note, $credit_line, $credit_no, $credit_date, $credit_type, $write_off_acc, $branch_data);
@@ -165,55 +134,22 @@
 debit freight re-charged and debit sales */
       if (($credit_note_total + $credit_note->freight_cost) != 0) {
         $total += Debtor_TransDetail::add_gl_trans(
-          ST_CUSTCREDIT,
-          $credit_no,
-          $credit_date,
-          $branch_data["receivables_account"],
-          0,
-          0,
-          -($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax),
-          $credit_note->debtor_id,
-          "The total debtor GL posting for the credit note could not be inserted"
+          ST_CUSTCREDIT, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0, -($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax), $credit_note->debtor_id, "The total debtor GL posting for the credit note could not be inserted"
         );
       }
       if ($credit_note->freight_cost != 0) {
         $total += Debtor_TransDetail::add_gl_trans(
-          ST_CUSTCREDIT,
-          $credit_no,
-          $credit_date,
-          $company_data["freight_act"],
-          0,
-          0,
-          $credit_note->get_tax_free_shipping(),
-          $credit_note->debtor_id,
-          "The freight GL posting for this credit note could not be inserted"
+          ST_CUSTCREDIT, $credit_no, $credit_date, $company_data["freight_act"], 0, 0, $credit_note->get_tax_free_shipping(), $credit_note->debtor_id, "The freight GL posting for this credit note could not be inserted"
         );
       }
       foreach ($taxes as $taxitem) {
         if ($taxitem['Net'] != 0) {
           $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_debtor($credit_note->debtor_id), $credit_note->document_date);
           GL_Trans::add_tax_details(
-            ST_CUSTCREDIT,
-            $credit_no,
-            $taxitem['tax_type_id'],
-            $taxitem['rate'],
-            $credit_note->tax_included,
-            $taxitem['Value'],
-            $taxitem['Net'],
-            $ex_rate,
-            $credit_note->document_date,
-            $credit_note->reference
+            ST_CUSTCREDIT, $credit_no, $taxitem['tax_type_id'], $taxitem['rate'], $credit_note->tax_included, $taxitem['Value'], $taxitem['Net'], $ex_rate, $credit_note->document_date, $credit_note->reference
           );
           $total += Debtor_TransDetail::add_gl_trans(
-            ST_CUSTCREDIT,
-            $credit_no,
-            $credit_date,
-            $taxitem['sales_gl_code'],
-            0,
-            0,
-            $taxitem['Value'],
-            $credit_note->debtor_id,
-            "A tax GL posting for this credit note could not be inserted"
+            ST_CUSTCREDIT, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0, $taxitem['Value'], $credit_note->debtor_id, "A tax GL posting for this credit note could not be inserted"
           );
         }
       }
@@ -250,31 +186,11 @@ debit freight re-charged and debit sales */
           $reference .= "Ex Inv: " . $credited_invoice;
         }
         Inv_Movement::add_for_debtor(
-          ST_CUSTCREDIT,
-          $credit_line->stock_id,
-          key($credit_note->trans_no),
-          $credit_note->location,
-          $credit_note->document_date,
-          $reference,
-          -$credit_line->qty_dispatched,
-          $credit_line->standard_cost,
-          0,
-          $price,
-          $credit_line->discount_percent
+          ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->location, $credit_note->document_date, $reference, -$credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent
         );
       }
       Inv_Movement::add_for_debtor(
-        ST_CUSTCREDIT,
-        $credit_line->stock_id,
-        key($credit_note->trans_no),
-        $credit_note->location,
-        $credit_note->document_date,
-        $credit_note->reference,
-        $credit_line->qty_dispatched,
-        $credit_line->standard_cost,
-        0,
-        $price,
-        $credit_line->discount_percent
+        ST_CUSTCREDIT, $credit_line->stock_id, key($credit_note->trans_no), $credit_note->location, $credit_note->document_date, $credit_note->reference, $credit_line->qty_dispatched, $credit_line->standard_cost, 0, $price, $credit_line->discount_percent
       );
     }
     /**
@@ -305,17 +221,7 @@ debit freight re-charged and debit sales */
       if ($standard_cost != 0) {
         /*first the cost of sales entry*/
         $total += GL_Trans::add_std_cost(
-          ST_CUSTCREDIT,
-          $credit_no,
-          $date_,
-          $stock_gl_codes["cogs_account"],
-          $dim,
-          $dim2,
-          "",
-          -($standard_cost * $order_line->qty_dispatched),
-          PT_CUSTOMER,
-          $order->debtor_id,
-          "The cost of sales GL posting could not be inserted"
+          ST_CUSTCREDIT, $credit_no, $date_, $stock_gl_codes["cogs_account"], $dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->debtor_id, "The cost of sales GL posting could not be inserted"
         );
         /*now the stock entry*/
         if ($credit_type == "WriteOff") {
@@ -325,17 +231,7 @@ debit freight re-charged and debit sales */
           $stock_entry_account = $stock_gl_code["inventory_account"];
         }
         $total += GL_Trans::add_std_cost(
-          ST_CUSTCREDIT,
-          $credit_no,
-          $date_,
-          $stock_entry_account,
-          0,
-          0,
-          "",
-          ($standard_cost * $order_line->qty_dispatched),
-          PT_CUSTOMER,
-          $order->debtor_id,
-          "The stock side (or write off) of the cost of sales GL posting could not be inserted"
+          ST_CUSTCREDIT, $credit_no, $date_, $stock_entry_account, 0, 0, "", ($standard_cost * $order_line->qty_dispatched), PT_CUSTOMER, $order->debtor_id, "The stock side (or write off) of the cost of sales GL posting could not be inserted"
         );
       } /* end of if GL and stock integrated and standard cost !=0 */
       if ($order_line->line_price() != 0) {
@@ -350,27 +246,11 @@ debit freight re-charged and debit sales */
           $sales_account = $stock_gl_codes['sales_account'];
         }
         $total += Debtor_TransDetail::add_gl_trans(
-          ST_CUSTCREDIT,
-          $credit_no,
-          $date_,
-          $sales_account,
-          $dim,
-          $dim2,
-          ($line_taxfree_price * $order_line->qty_dispatched),
-          $order->debtor_id,
-          "The credit note GL posting could not be inserted"
+          ST_CUSTCREDIT, $credit_no, $date_, $sales_account, $dim, $dim2, ($line_taxfree_price * $order_line->qty_dispatched), $order->debtor_id, "The credit note GL posting could not be inserted"
         );
         if ($order_line->discount_percent != 0) {
           $total += Debtor_TransDetail::add_gl_trans(
-            ST_CUSTCREDIT,
-            $credit_no,
-            $date_,
-            $branch_data["sales_discount_account"],
-            $dim,
-            $dim2,
-            -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent),
-            $order->debtor_id,
-            "The credit note discount GL posting could not be inserted"
+            ST_CUSTCREDIT, $credit_no, $date_, $branch_data["sales_discount_account"], $dim, $dim2, -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent), $order->debtor_id, "The credit note discount GL posting could not be inserted"
           );
         } /*end of if discount !=0 */
       } /*if line_price!=0 */
@@ -593,7 +473,7 @@ debit freight re-charged and debit sales */
         }
         $item_info      = Item::get_edit_info(Input::_post('stock_id'));
         $dec            = $item_info['decimals'];
-        $_POST['qty']   = Num::_format(0, $dec);
+        $_POST['qty']   = Num::_format(1, $dec);
         $_POST['units'] = $item_info["units"];
         $_POST['price'] = Num::_priceFormat(
           Item_Price::get_calculated_price(Input::_post('stock_id'), $order->customer_currency, $order->sales_type, $order->price_factor, $order->document_date)
@@ -657,13 +537,10 @@ debit freight re-charged and debit sales */
       }
       echo "<td>\n";
       echo Forms::arraySelect(
-        $name,
-        $selected,
-        array(
-             'Return'   => _("Items Returned to Inventory Location"),
-             'WriteOff' => _("Items Written Off")
-        ),
-        array('select_submit' => $submit_on_change)
+        $name, $selected, array(
+                               'Return'   => _("Items Returned to Inventory Location"),
+                               'WriteOff' => _("Items Written Off")
+                          ), array('select_submit' => $submit_on_change)
       );
       echo "</td>\n";
     }

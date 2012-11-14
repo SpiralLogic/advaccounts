@@ -20,7 +20,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -64,11 +63,7 @@
       if (isset($_POST[Orders::UPDATE_ITEM])) {
         if ($_POST[Orders::UPDATE_ITEM] != "" && $this->checkItemData()) {
           $this->credit->update_order_item(
-            $_POST['line_no'],
-            Validation::input_num('qty'),
-            Validation::input_num('price'),
-            Validation::input_num('Disc') / 100,
-            $_POST['description']
+            $_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
           );
         }
         Item_Line::start_focus('stock_id');
@@ -139,7 +134,7 @@
       }
       Forms::submitCenterBegin(Orders::CANCEL_CHANGES, _("Cancel Changes"), _("Revert this document entry back to its former state."));
       Forms::submitCenterEnd('ProcessCredit', _("Process Credit Note"), '', false);
-      echo "</tr></table></div>";
+      echo "</tr></table>";
       Forms::end();
       $this->Page->end_page();
     }
@@ -160,6 +155,8 @@
       if ($this->credit->trans_no == 0) {
         $this->credit->reference = $_POST['ref'];
       }
+      $this->credit->debtor_id     = $_POST['debtor_id'];
+      $this->credit->Branch        = $_POST['branch_id'];
       $this->credit->ship_via      = $_POST['ShipperID'];
       $this->credit->dimension_id  = $_POST['dimension_id'];
       $this->credit->dimension2_id = $_POST['dimension2_id'];
