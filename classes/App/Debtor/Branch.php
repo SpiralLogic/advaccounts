@@ -5,13 +5,17 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtor_Branch extends \ADV\App\DB\Base {
+  class Debtor_Branch extends \ADV\App\DB\Base
+  {
+    const ACCOUNTS = 'accounts';
+    const DELIVERY = 'delivery';
     /** @var string * */
     public $post_address = '';
     /** @var int * */
@@ -33,7 +37,7 @@
     /** @var */
     public $debtor_id;
     /** @var string * */
-    public $branch_ref = "New";
+    public $branch_ref = self::DELIVERY;
     /** @var string * */
     public $contact_name = "";
     /** @var */
@@ -143,8 +147,8 @@
       if (!empty($this->city)) {
         $this->br_name = $this->city . " " . strtoupper($this->state);
       }
-      if ($this->branch_ref != 'accounts') {
-        $this->branch_ref = substr($this->br_name, 0, 30);
+      if ($this->branch_ref != self::ACCOUNTS) {
+        $this->branch_ref = self::DELIVERY;
       }
     }
     /**
@@ -191,8 +195,8 @@
      */
     public static function select($debtor_id, $name, $selected_id = null, $spec_option = true, $enabled = true, $submit_on_change = false, $editkey = false) {
       $sql
-             = "SELECT branch_id, branch_ref FROM branches
-            WHERE branch_ref <> 'accounts' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
+             = "SELECT branch_id, br_name FROM branches
+            WHERE branch_ref <> '" . self::ACCOUNTS . "' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : [];
       return Forms::selectBox(
         $name,
@@ -202,7 +206,7 @@
         'br_name',
         array(
              'where'         => $where,
-             'order'         => array('branch_ref'),
+             'order'         => array('br_name'),
              'spec_option'   => $spec_option === true ? _('All branches') : $spec_option,
              'spec_id'       => ALL_TEXT,
              'select_submit' => $submit_on_change,

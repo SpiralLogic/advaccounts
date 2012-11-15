@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,9 +15,8 @@
     /**
 
      */
-    class Type extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable
+    class Type extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
     {
-
       protected $_table = 'chart_types';
       protected $_classname = 'Chart Type';
       protected $_id_column = 'id';
@@ -75,7 +75,6 @@
       public function getPagerColumns() {
         return [['type' => 'skip'], 'Name', 'Class', 'Parent', 'Inactive' => ['type' => 'inactive']];
       }
-
       /**
        * @return array
        */
@@ -91,9 +90,11 @@
     }
   }
   namespace {
+    /**
+     *
+     */
     class GL_Type
     {
-
       /**
        * @static
        *
@@ -203,9 +204,9 @@
           'id',
           'name',
           array(
-            'order'       => 'id',
-            'spec_option' => $all_option,
-            'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT
+               'order'       => 'id',
+               'spec_option' => $all_option,
+               'spec_id'     => $all_option_numeric ? 0 : ALL_TEXT
           )
         );
       }

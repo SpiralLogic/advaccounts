@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -21,6 +22,9 @@
     /** @var \Memcached */
     public $connection;
     public $lockid;
+    /**
+     * @return bool
+     */
     public function close() {
       return true;
     }
@@ -31,7 +35,6 @@
      */
     public function destroy($session_id) {
       $this->connection->delete($session_id);
-
       return true;
     }
     /**
@@ -65,7 +68,6 @@
       } else {
         throw new SessionException('Memcached extension does not exist!');
       }
-
       return $this->connected;
     }
     /**
@@ -76,10 +78,8 @@
     public function read($session_id) {
       $result = $this->connection->get($session_id);
       if ($this->connection->getResultCode() === \Memcached::RES_SUCCESS) {
-
-        return (string) $result;
+        return (string)$result;
       }
-
       return '';
     }
     /**
@@ -90,7 +90,6 @@
      */
     public function write($session_id, $session_data) {
       $this->connection->set($session_id, $session_data, $this->lifetime);
-
       return ($this->connection->getResultCode() !== \Memcached::RES_NOTSTORED);
     }
   }

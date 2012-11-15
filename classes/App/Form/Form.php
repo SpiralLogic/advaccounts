@@ -170,7 +170,9 @@
     }
     /**
      * @param       $name
-     * @param array $input_attr
+     * @param array $attrs
+     *
+     * @internal param array $input_attr
      *
      * @internal param null $value
      * @return \ADV\App\Form\Field
@@ -182,7 +184,9 @@
     }
     /**
      * @param       $name
-     * @param array $input_attr
+     * @param array $attrs
+     *
+     * @internal param array $input_attr
      *
      * @internal param $value
      * @return \ADV\App\Form\Field
@@ -193,7 +197,9 @@
     }
     /**
      * @param       $name
-     * @param array $input_attr
+     * @param array $attrs
+     *
+     * @internal param array $input_attr
      *
      * @internal param $value
      * @return Field
@@ -206,8 +212,10 @@
       return $field->mergeAttr($attrs);
     }
     /**
-     * @param           $name
-     * @param array     $input_attr
+     * @param       $name
+     * @param array $attrs
+     *
+     * @internal param array $input_attr
      *
      * @internal param bool $value
      * @return Field
@@ -218,7 +226,9 @@
     }
     /**
      * @param       $name
-     * @param array $inputparams
+     * @param array $attrs
+     *
+     * @internal param array $inputparams
      *
      * @internal param null $value
      * @return Field
@@ -230,7 +240,9 @@
     /**
      * @param       $name
      * @param int   $dec
-     * @param array $input_attr
+     * @param array $attrs
+     *
+     * @internal param array $input_attr
      *
      * @internal param null $value
      * @return \ADV\App\Form\Field
@@ -349,7 +361,9 @@
      *
      * @param             $action
      * @param bool|string $caption
-     * @param array       $input_attr
+     * @param array       $attrs
+     *
+     * @internal param array $input_attr
      *
      * @return \ADV\App\Form\Button
      */

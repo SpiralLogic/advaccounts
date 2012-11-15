@@ -57,6 +57,11 @@
       $this->attr['id'] = $id;
       return $this;
     }
+    /**
+     * @param bool $hide
+     *
+     * @return Button
+     */
     public function hide($hide = true) {
       $this->attr['style'] = $hide ? 'display:none;' : null;
       return $this;

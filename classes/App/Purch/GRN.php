@@ -411,6 +411,12 @@
       $result = DB::_query($sql, "Cannot query GRNs");
       return (DB::_numRows($result) > 0);
     }
+    /**
+     * @param $type
+     * @param $grn_batch
+     *
+     * @return bool
+     */
     public static function void($type, $grn_batch) {
       if ($type != ST_SUPPRECEIVE) {
         $type = ST_SUPPRECEIVE;

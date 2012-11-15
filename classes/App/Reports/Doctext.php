@@ -5,7 +5,8 @@
    * @property mixed title
    * @property mixed headers
    */
-  trait Doctext {
+  trait Doctext
+  {
     public $txt_date;
     public $txt_cust_no;
     public $doc_debtor_id;
@@ -59,6 +60,15 @@
     public $doc_as_of;
     public $txt_days;
     public $txt_over;
+    /**
+     * @param int  $doctype
+     * @param bool $header2type
+     * @param null $linetype
+     * @param bool $isproforma
+     * @param bool $emailtype
+     *
+     * @return mixed
+     */
     public function getHeaderArray($doctype = 0, $header2type = true, $linetype = null, $isproforma = false, $emailtype = false) {
       global $print_as_quote;
       global $packing_slip;

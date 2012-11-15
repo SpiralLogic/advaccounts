@@ -93,10 +93,12 @@
       return static::$i;
     }
     /**
-     * @param $title
-     * @param $security
-     * @param $isIndex
-     * @param $menu
+     * @param      $title
+     * @param      $security
+     * @param bool $no_menu
+     * @param bool $isIndex
+     *
+     * @internal param $menu
      */
     public function init($title, $security, $no_menu = false, $isIndex = false) {
       $this->title    = $title;
@@ -173,6 +175,9 @@
       $css  = implode(',', $this->css);
       return [$path . $css];
     }
+    /**
+     * @return string
+     */
     protected function menu_header() {
       $menu = $this->Session->get('menu_header');
       if ($menu instanceof View) {

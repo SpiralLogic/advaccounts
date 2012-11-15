@@ -22,6 +22,9 @@
     public function render() {
       return $this->menu->render(true);
     }
+    /**
+     * @return array
+     */
     public function get() {
       return $this->menu->getALL();
     }

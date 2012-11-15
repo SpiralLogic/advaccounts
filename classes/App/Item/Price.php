@@ -83,6 +83,11 @@
         ];
         return $cols;
       }
+      /**
+       * @param $row
+       *
+       * @return mixed
+       */
       public function formatType($row) {
         return $row['sales_type'];
       }

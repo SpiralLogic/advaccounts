@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -25,7 +26,8 @@
    * @param string $action
    * @param string $name
    */
-  class Forms {
+  class Forms
+  {
     /** @var \ADV\Core\DB\DB */
     static $DB;
     static $Ajax;
@@ -64,7 +66,7 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
-          return $numeric ? (int) $id : $id;
+          return $numeric ? (int)$id : $id;
         }
       }
       return $numeric ? -1 : null;
@@ -102,12 +104,12 @@
      * $sql must return selector values and selector texts in columns 0 & 1
      * Options are merged with default.
      *
-     * @param      $name
-     * @param      $selected_id
-     * @param      $sql
-     * @param      $valfield
-     * @param      $namefield
-     * @param null $options
+     * @param            $name
+     * @param            $selected_id
+     * @param            $sql
+     * @param            $valfield
+     * @param            $namefield
+     * @param array|null $options
      *
      * @return string
      */
@@ -168,7 +170,7 @@
       //if($name=='SelectStockFromList') Event::error($sql);
       foreach ($items as $value => $descr) {
         $sel = '';
-        if (in_array((string) $value, $selected_id)) {
+        if (in_array((string)$value, $selected_id)) {
           $sel   = 'selected';
           $found = $value;
         }

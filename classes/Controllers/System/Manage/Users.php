@@ -22,11 +22,11 @@
   class Users extends \ADV\App\Controller\FormPager implements \ADV\App\Pager\Pageable
   {
     protected $tableWidth = '80';
-    protected $security = SA_SALESMAN;
+    protected $security = SA_USERS;
     protected function before() {
       $this->object = new User();
       $this->runPost();
-      $this->setTitle("Sales Persons");
+      $this->setTitle("Users");
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -38,6 +38,7 @@
       $view['title'] = 'Users';
       $form->hidden('id');
       $form->text('user_id')->label('User ID:')->focus($this->action == EDIT);
+      $form->password('password')->label('Password:');
       $form->text('real_name')->label('Name:');
       $form->text('phone')->label('Telephone number:');
       $form->text('email')->label('Email Address:');

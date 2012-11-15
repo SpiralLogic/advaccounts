@@ -29,8 +29,9 @@
       $this->username = $username;
     }
     /**
-     * @param $id
-     * @param $password
+     * @param     $id
+     * @param     $password
+     * @param int $change_password
      */
     public function updatePassword($id, $password, $change_password = 0) {
       $change_password = $change_password == true ? 1 : 0;
@@ -53,6 +54,8 @@
     }
     /**
      * @param $username
+     *
+     * @param $password
      *
      * @internal param $user_id
      * @internal param $password

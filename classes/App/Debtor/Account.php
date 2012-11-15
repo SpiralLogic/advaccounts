@@ -1,19 +1,21 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Debtor_Account extends Debtor_Branch {
-    /** @var int **/
+  class Debtor_Account extends Debtor_Branch
+  {
+    /** @var int * */
     public $accounts_id = 0;
-    /** @var string **/
+    /** @var string * */
     public $br_name = 'Accounts Department';
-    /** @var string **/
-    public $branch_ref = 'accounts';
+    /** @var string * */
+    public $branch_ref = self::ACCOUNTS;
     /**
      * @param int|null $id
      */
@@ -24,7 +26,7 @@
     }
     protected function defaults() {
       parent::defaults();
-      $this->branch_ref = 'accounts';
+      $this->branch_ref = self::ACCOUNTS;
       $this->br_name    = 'Accounts Department';
     }
   }

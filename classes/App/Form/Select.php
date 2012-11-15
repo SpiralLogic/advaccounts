@@ -25,14 +25,25 @@
     public $items = [];
     public $spec_id = 0;
     public $spec_option = false;
+    /**
+     * @param       $name
+     * @param       $items
+     * @param array $options
+     */
     public function __construct($name, $items, array $options = []) {
       parent::__construct('select', $name);
       $this->items = $items;
       $this->setFromArray($options);
     }
+    /**
+     * @param $selected
+     */
     public function value($selected) {
       $this->value = $this->multi ? (array)$selected : $selected;
     }
+    /**
+     * @return \ADV\Core\HTML|string
+     */
     public function generate() {
       if ($this->spec_option !== false) { // if special option used - add it
         array_unshift($this->items, [$this->spec_id => $this->spec_option]);
@@ -53,6 +64,9 @@
       $selector         = $HTML->span("_" . $this->name . "_sel", ['class' => 'combodiv'])->select($this->id, $selector, $this->attr, false)->_span()->__toString();
       return $selector;
     }
+    /**
+     * @return string
+     */
     public function __toString() {
       $value            = (isset($this->value)) ? $this->value : $this->default;
       $this->attr['id'] = $this->id;

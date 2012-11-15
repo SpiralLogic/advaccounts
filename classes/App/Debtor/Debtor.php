@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -219,7 +220,7 @@
       $contacts       = $this->contacts;
       $this->contacts = [];
       foreach ($contacts as $contact) {
-        $wasnew = $contact->save(array('parent_id' => (int) $this->id));
+        $wasnew = $contact->save(array('parent_id' => (int)$this->id));
         if ($wasnew) {
           $this->contacts[] = $contact;
         }
@@ -264,12 +265,16 @@
       }
       if (!Validation::is_num($this->payment_discount, 0, 100)) {
         return $this->status(
-          false, "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'payment_discount'
+          false,
+          "The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0.",
+          'payment_discount'
         );
       }
       if (!Validation::is_num($this->discount, 0, 100)) {
         return $this->status(
-          false, "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount'
+          false,
+          "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
+          'discount'
         );
       }
       if (Validation::is_num($this->webid, 0)) {
@@ -278,7 +283,9 @@
       if ($this->id != 0) {
         $previous = new Debtor($this->id);
         if ((filter_var($this->credit_limit, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) != filter_var(
-          $previous->credit_limit, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION
+          $previous->credit_limit,
+          FILTER_SANITIZE_NUMBER_FLOAT,
+          FILTER_FLAG_ALLOW_FRACTION
         ) || $this->payment_terms != $previous->payment_terms) && !User::_i()->hasAccess(SA_CUSTOMER_CREDIT)
         ) {
           return $this->status(false, "You don't have access to alter credit limits", 'credit_limit');
@@ -312,7 +319,7 @@
      */
     protected function countTransactions() {
       static::$staticDB->_select('COUNT(*)')->from('debtor_trans')->where('debtor_id=', $this->id);
-      return (int) static::$staticDB->_numRows();
+      return (int)static::$staticDB->_numRows();
     }
     /**
      * @return void
@@ -324,7 +331,7 @@
       $this->credit_limit = Num::_priceFormat(DB_Company::_get_pref('default_credit_limit'));
     }
     protected function _getAccounts() {
-      static::$staticDB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->andWhere('branch_ref=', 'accounts');
+      static::$staticDB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->andWhere('branch_ref=', Debtor_Account::ACCOUNTS);
       $this->accounts = static::$staticDB->_fetch()->asClassLate('Debtor_Account')->one();
       if (!$this->accounts && $this->id > 0 && $this->defaultBranch > 0) {
         $this->accounts          = clone($this->branches[$this->defaultBranch]);
@@ -333,22 +340,17 @@
       }
     }
     protected function _getBranches() {
-      $this->branches = new Collection(new Debtor_Branch(), ['debtor_id']);
-      $this->branches->getAll(['debtor_id' => $this->id]);
+      $this->branches = new Collection(new Debtor_Branch(), ['debtor_id', 'branch_ref']);
+      $this->branches->getAll(['debtor_id' => $this->id, 'branch_ref' => Debtor_Branch::DELIVERY]);
       $this->defaultBranch = $this->branches->first()->id;
     }
     /**
      * @return void
      */
     protected function _getContacts() {
-      static::$staticDB->_select()->from('contacts')->where('parent_id=', $this->id)->andWhere('parent_type =', CT_CUSTOMER)->orderby('name ASC');
-      $contacts = static::$staticDB->_fetch()->asClassLate('Contact', array(CT_CUSTOMER));
-      if (count($contacts)) {
-        foreach ($contacts as $contact) {
-          $this->contacts[] = $contact;
-        }
-        $this->defaultContact = reset($this->contacts)->id;
-      }
+      $this->contacts = new Collection(new Contact(CT_CUSTOMER), ['parent_type', 'parent_id'], true);
+      $this->contacts->getAll(['parent_type' => CT_CUSTOMER, 'parent_id' => $this->id]);
+      $this->defaultContact = $this->contacts->first()->id;
     }
     /**
      * @return array|null
@@ -384,7 +386,7 @@
      * @return void
      */
     protected function setDefaults() {
-      $this->defaultContact = count($this->contacts) ? reset($this->contacts)->id : 0;
+      $this->defaultContact = count($this->contacts) ? $this->contacts->first()->id : 0;
       $this->contacts[]     = new Contact(CT_CUSTOMER, array('parent_id' => $this->id));
     }
     /**
@@ -462,10 +464,12 @@ JS;
       $term1    = static::$staticDB->_escape(trim($term[0]) . '%');
       $term2    = static::$staticDB->_escape(
         '%' . implode(
-          ' AND name LIKE ', array_map(
+          ' AND name LIKE ',
+          array_map(
             function ($v) {
               return trim($v);
-            }, $term
+            },
+            $term
           )
         ) . '%'
       );
@@ -651,7 +655,9 @@ JS;
     /**
      * @static
      *
-     * @param null $value
+     * @param null  $value
+     *
+     * @param array $options
      *
      * @return void
      */
@@ -692,15 +698,16 @@ JS;
       }
       Forms::hidden('debtor_id');
       UI::search(
-        'customer', array(
-                         'url'         => 'Debtor',
-                         'name'        => 'customer',
-                         'idField'     => 'debtor_id',
-                         'focus'       => $focus,
-                         'class'       => '',
-                         'value'       => $value,
-                         'placeholder' => $o['placeholder']
-                    )
+        'customer',
+        array(
+             'url'         => 'Debtor',
+             'name'        => 'customer',
+             'idField'     => 'debtor_id',
+             'focus'       => $focus,
+             'class'       => '',
+             'value'       => $value,
+             'placeholder' => $o['placeholder']
+        )
       );
       echo "</td>";
       if ($o['row']) {
@@ -724,20 +731,25 @@ JS;
       $sql  = "SELECT debtor_id, name as debtor_ref, curr_code, inactive FROM debtors ";
       $mode = DB_Company::_get_pref('no_customer_list');
       return Forms::selectBox(
-        $name, $selected_id, $sql, 'debtor_id', 'name', array(
-                                                             'format'        => 'Forms::addCurrFormat',
-                                                             'order'         => array('name'),
-                                                             'search_box'    => $mode != 0,
-                                                             'type'          => 1,
-                                                             'size'          => 20,
-                                                             'spec_option'   => $spec_option === true ? _("All Customers") : $spec_option,
-                                                             'spec_id'       => ALL_TEXT,
-                                                             'select_submit' => $submit_on_change,
-                                                             'async'         => $async,
-                                                             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') :
-                                                               _('Select customer'),
-                                                             'show_inactive' => $show_inactive
-                                                        )
+        $name,
+        $selected_id,
+        $sql,
+        'debtor_id',
+        'name',
+        array(
+             'format'        => 'Forms::addCurrFormat',
+             'order'         => array('name'),
+             'search_box'    => $mode != 0,
+             'type'          => 1,
+             'size'          => 20,
+             'spec_option'   => $spec_option === true ? _("All Customers") : $spec_option,
+             'spec_id'       => ALL_TEXT,
+             'select_submit' => $submit_on_change,
+             'async'         => $async,
+             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment; F2 - entry new customer') :
+               _('Select customer'),
+             'show_inactive' => $show_inactive
+        )
       );
     }
     /**

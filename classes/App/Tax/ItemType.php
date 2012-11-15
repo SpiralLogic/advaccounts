@@ -1,20 +1,21 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-
   namespace ADV\App\Tax {
     use ADV\Core\DB\DB;
 
     /**
 
      */
-    class ItemType extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable {
+    class ItemType extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
       protected $_table = 'item_tax_types';
       protected $_classname = 'Item Tax Type';
       protected $_id_column = 'id';
@@ -53,7 +54,6 @@
         if (strlen($this->name) > 60) {
           return $this->status(false, 'Name must be not be longer than 60 characters!', 'name');
         }
-
         return true;
       }
       /**
@@ -66,7 +66,6 @@
         if (!$inactive) {
           $q->andWhere('inactive=', 0);
         }
-
         return $q->fetch()->all();
       }
       /**
@@ -77,15 +76,18 @@
           ['type' => 'skip'],
           'Item Tax Type',
           'Fully Exempt' => ['type' => 'bool'],
-          'Inactive' => ['type' => 'inactive'],
+          'Inactive'     => ['type' => 'inactive'],
         ];
         return $cols;
       }
     }
   }
   namespace {
-
-    class Tax_ItemType {
+    /**
+     *
+     */
+    class Tax_ItemType
+    {
       /**
        * @static
        *

@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,7 +15,8 @@
     /**
 
      */
-    class Point extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable{
+    class Point extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
       protected $_table = 'sales_pos';
       protected $_classname = 'Sales POS';
       protected $_id_column = 'id';
@@ -37,6 +39,9 @@
         }
         return true;
       }
+      /**
+       * @return \ADV\Core\Traits\Status|bool
+       */
       public function delete() {
         $sql = "SELECT * FROM users WHERE pos=" . DB::_escape($this->id);
         $res = DB::_query($sql, "canot check pos usage");
@@ -56,30 +61,35 @@
           $q->andWhere('inactive=', 0);
         }
         return $q->fetch()->all();
-      }    /**
-           * @return array
-           */
+      }
+      /**
+       * @return array
+       */
       public function getPagerColumns() {
-            $cols = [
-              ['type' => 'skip'],
-              'Name',
-              'Cash Sale'   => ['type' => 'bool'],
-              'Credit Sale' => ['type' => 'bool'],
-              'Location',
-              'Account',
-              'Inactive'    => ['type', 'inactive'],
-              ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
-              ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
-            ];
-            return $cols;
-          }
+        $cols = [
+          ['type' => 'skip'],
+          'Name',
+          'Cash Sale'   => ['type' => 'bool'],
+          'Credit Sale' => ['type' => 'bool'],
+          'Location',
+          'Account',
+          'Inactive'    => ['type', 'inactive'],
+          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatEditBtn']],
+          ['type' => 'insert', "align" => "center", 'fun' => [$this, 'formatDeleteBtn']],
+        ];
+        return $cols;
+      }
     }
   }
 
   namespace {
     use ADV\App\Forms;
 
-    class Sales_Point {
+    /**
+     *
+     */
+    class Sales_Point
+    {
       /**
        * @static
        *

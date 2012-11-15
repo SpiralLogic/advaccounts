@@ -12,6 +12,9 @@
   use ADV\App\Forms;
 
   // STOCK ITEMS
+  /**
+   *
+   */
   class Item_UI
   {
     /**

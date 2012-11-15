@@ -102,6 +102,7 @@
     /**
      * @param string       $title
      * @param array|string $filename
+     * @param string       $security_level
      * @param mixed|string $size
      * @param int          $fontsize
      * @param string       $orientation

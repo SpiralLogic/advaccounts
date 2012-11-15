@@ -81,6 +81,13 @@
       echo "<div class='center'>$msg</div>\n";
       str_repeat("<br>", $br2);
     }
+    /**
+     * @param      $label
+     * @param      $url
+     * @param bool $icon
+     *
+     * @return string
+     */
     public static function link_button($label, $url, $icon = false) {
       if (User::_graphic_links() && $icon) {
         $label = Forms::setIcon($icon, $label);

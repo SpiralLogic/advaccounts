@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,8 +17,10 @@
   class APC implements \SessionHandlerInterface
   {
     protected $key;
-    public function close()
-    {
+    /**
+     * @return bool
+     */
+    public function close() {
       return true;
     }
     /**
@@ -25,10 +28,8 @@
      *
      * @return mixed
      */
-    public function destroy($session_id)
-    {
+    public function destroy($session_id) {
       apc_delete($this->key . $session_id);
-
       return true;
     }
     /**
@@ -36,8 +37,7 @@
      *
      * @return mixed
      */
-    public function gc($maxlifetime)
-    {
+    public function gc($maxlifetime) {
       return true;
     }
     /**
@@ -46,11 +46,9 @@
      *
      * @return mixed
      */
-    public function open($save_path, $session_id)
-    {
+    public function open($save_path, $session_id) {
       $this->key      = 'sess.key.' . $_SERVER['SERVER_NAME'];
       $this->lifetime = min(ini_get('session.gc_maxlifetime'), 60 * 60 * 24 * 30);
-
       return true;
     }
     /**
@@ -58,13 +56,11 @@
      *
      * @return mixed
      */
-    public function read($session_id)
-    {
+    public function read($session_id) {
       $result = apc_fetch($this->key . $session_id, $success);
       if ($success === true) {
-        return (string) $result;
+        return (string)$result;
       }
-
       return '';
     }
     /**
@@ -73,8 +69,7 @@
      *
      * @return mixed
      */
-    public function write($session_id, $session_data)
-    {
+    public function write($session_id, $session_data) {
       return apc_store($this->key . $session_id, $session_data, $this->lifetime);
     }
   }

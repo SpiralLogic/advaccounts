@@ -490,7 +490,8 @@ JS;
      * @param bool $spec_option
      * @param bool $submit_on_change
      * @param bool $all
-     * @param bool $editkey
+     *
+     * @internal param bool $editkey
      *
      * @return string
      */

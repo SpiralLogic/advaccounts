@@ -11,6 +11,9 @@
 
   use ADV\Core\Input\Input;
 
+  /**
+   *
+   */
   trait Action
   {
     protected $action = null;
@@ -21,9 +24,8 @@
      * @return int|mixed
      */
     protected function getActionId($prefix) {
-
-        $this->action = Input::_post('_action');
-      $prefix = (array) $prefix;
+      $this->action = Input::_post('_action');
+      $prefix       = (array)$prefix;
       foreach ($prefix as $action) {
         if (strpos($this->action, $action) === 0) {
           $result = str_replace($action, '', $this->action);

@@ -29,6 +29,9 @@
     public $order_no;
     /** @var DB */
     protected $jobsboardDB;
+    /**
+     *
+     */
     public function __construct() {
       parent::__construct();
       if (!$this->jobsboardDB) {

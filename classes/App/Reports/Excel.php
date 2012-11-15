@@ -103,6 +103,7 @@
     /**
      * @param        $title
      * @param        $filename
+     * @param        $security_level
      * @param string $size
      * @param int    $fontsize
      * @param string $orientation

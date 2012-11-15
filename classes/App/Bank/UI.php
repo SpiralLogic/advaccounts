@@ -15,6 +15,9 @@
   use ADV\Core\Table;
   use ADV\App\Display;
 
+  /**
+   *
+   */
   class Bank_UI
   {
     /**
@@ -91,6 +94,9 @@
      * @param      $name
      * @param null $selected_id
      * @param bool $submit_on_change
+     * @param bool $raw
+     *
+     * @return string
      */
     public static function cash_accounts_row($label, $name, $selected_id = null, $submit_on_change = false, $raw = false) {
       $sql

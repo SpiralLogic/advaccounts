@@ -4,8 +4,9 @@
   /**
    * Container test case.
    */
-  class DICTest extends \PHPUnit_Framework_TestCase {
-    /** @var \ADV\Core\DIC **/
+  class DICTest extends \PHPUnit_Framework_TestCase
+  {
+    /** @var \ADV\Core\DIC * */
     private $container;
     /**
      * Prepares the environment before running a test.
@@ -106,11 +107,11 @@
       $this->assertSame($o1, $o4);
     }
     public function testAlternateMethodFormat() {
-      $c = $this->container;
+      $c                = $this->container;
       $c['arrayaccess'] = function ($c, $name) {
         return new TestObj($name);
       };
-      $obj = $c->offsetGet('arrayaccess', 'wawa');
+      $obj              = $c->offsetGet('arrayaccess', 'wawa');
       $this->assertInstanceOf('ADV\\Core\\TestObj', $obj);
       $this->assertAttributeEquals('wawa', 'name', $obj);
     }
@@ -127,8 +128,13 @@
       $this->assertAttributeEquals('object one', 'name', $obj);
     }
   }
-  class TestObj {
+
+  class TestObj
+  {
     public $name;
+    /**
+     * @param $name
+     */
     public function __construct($name) {
       $this->name = $name;
     }

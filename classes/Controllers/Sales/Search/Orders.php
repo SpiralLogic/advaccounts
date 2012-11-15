@@ -329,7 +329,9 @@
       return Debtor::viewTrans($row['trans_type'], $order_no);
     }
     /**
-     * @param $row
+     * @param                        $row
+     *
+     * @param \ADV\App\Form\DropDown $dd
      *
      * @return string
      */
@@ -351,7 +353,9 @@
       }
     }
     /**
-     * @param $row
+     * @param                        $row
+     *
+     * @param \ADV\App\Form\DropDown $dd
      *
      * @return string
      */

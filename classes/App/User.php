@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -117,7 +118,7 @@
     /**
      */
     public function __construct($id = 0) {
-      parent::__construct($id = 0);
+      parent::__construct($id);
       $this->logged = false;
       $this->prefs  = new UserPrefs();
     }
@@ -313,9 +314,9 @@
       if (!is_numeric($num)) {
         return false;
       }
-      $num = (float) $num;
-      if ($num == (int) $num) {
-        return (int) $num;
+      $num = (float)$num;
+      if ($num == (int)$num) {
+        return (int)$num;
       } else {
         return $num;
       }

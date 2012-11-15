@@ -24,13 +24,15 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Invoice extends \ADV\App\Controller\Action {
+  class Invoice extends \ADV\App\Controller\Action
+  {
     /** @var Creditor_Trans */
     protected $trans;
     protected $creditor_id;
@@ -53,7 +55,6 @@
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
       }
-
       $id = Forms::findPostPrefix('grn_item_id');
       if ($id != -1) {
         $this->commitItemData($id);
@@ -100,6 +101,9 @@
       $this->addJS();
       $this->Page->end_page(true);
     }
+    /**
+     * @param $invoice_no
+     */
     protected function pageComplete($invoice_no) {
       $trans_type = ST_SUPPINVOICE;
       echo "<div class='center'>";
@@ -111,7 +115,6 @@
       Display::link_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
       GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice"));
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-
       $this->Ajax->activate('_page_body');
       $this->Page->endExit();
     }
@@ -246,7 +249,6 @@
       $this->Session->setGlobal('creditor', $this->creditor_id, '');
       $this->trans->clear_items();
       Creditor_Trans::killInstance();
-
       $this->pageComplete($invoice_no);
     }
     //	GL postings are often entered in the same form to two accounts
@@ -422,7 +424,7 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, "qty_recd") === 0) {
           $id = substr($postkey, strlen("qty_recd"));
-          $id = (int) $id;
+          $id = (int)$id;
           $this->commitItemData($id);
         }
       }

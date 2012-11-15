@@ -22,7 +22,6 @@
       $this->object = new ChartClass();
       $this->runPost();
     }
-
     /**
      * @param $pager_name
      *
@@ -32,6 +31,9 @@
       $inactive = $this->getShowInactive($pager_name);
       return $this->object->getAll($inactive);
     }
+    /**
+     * @param \ADV\App\Pager\Edit $pager
+     */
     public function getEditing(Edit $pager) {
       $pager->setObject($this->object);
     }

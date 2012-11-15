@@ -78,6 +78,9 @@
       unset ($view);
       return $output;
     }
+    /**
+     * @return DropDown
+     */
     public function addDivider() {
       return $this;
     }

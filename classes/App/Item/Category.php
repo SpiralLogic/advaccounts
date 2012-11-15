@@ -1,6 +1,7 @@
 <?php
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,7 +17,8 @@
     /**
 
      */
-    class Category extends \ADV\App\DB\Base  implements \ADV\App\Pager\Pageable{
+    class Category extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+    {
       protected $_table = 'stock_category';
       protected $_classname = 'Stock Category';
       protected $_id_column = 'category_id';
@@ -155,7 +157,11 @@
     }
   }
   namespace {
-    class Item_Category {
+    /**
+     *
+     */
+    class Item_Category
+    {
       /**
        * @static
        *

@@ -85,20 +85,30 @@
         return [
           ['type' => 'hidden'],
           ['type' => 'hidden'],
-          _("Supplier") => ['edit' => [$this, 'formatSupplierEdit']],
+          _("Supplier")          => ['edit' => [$this, 'formatSupplierEdit']],
           ['type' => 'hidden'],
           ['type' => 'hidden'],
-          _("Price") => ['type' => 'amount'],
-          _("Supplier's UOM") => ['edit' => [$this, 'formatUOMEdit']],
+          _("Price")             => ['type' => 'amount'],
+          _("Supplier's UOM")    => ['edit' => [$this, 'formatUOMEdit']],
           _("Conversion Factor") => ['type' => 'rate'],
           _("Supplier's Code"),
-          _("Updated") => ['type' => 'date', 'readonly' => true],
+          _("Updated")           => ['type' => 'date', 'readonly' => true],
         ];
       }
+      /**
+       * @param \ADV\App\Form\Form $form
+       *
+       * @return \ADV\App\Form\Field
+       */
       public function formatSupplierEdit(Form $form) {
         JS::_autocomplete('supplier', '"creditor_id"', 'Creditor');
         return $form->text('supplier', ['class' => 'nosubmit']);
       }
+      /**
+       * @param \ADV\App\Form\Form $form
+       *
+       * @return \ADV\App\Form\Field
+       */
       public function formatUOMEdit(Form $form) {
         return $form->custom(Item_Unit::select('suppliers_uom'))->initial('ea');
       }
@@ -197,7 +207,7 @@
        */
       public static function get($selected_id, $stock_id) {
         $sql
-          = "SELECT purch_data.*,suppliers.name FROM purch_data
+                = "SELECT purch_data.*,suppliers.name FROM purch_data
         INNER JOIN suppliers ON purch_data.creditor_id=suppliers.creditor_id
         WHERE purch_data.creditor_id=" . DB::_escape($selected_id) . "
         AND purch_data.stock_id=" . DB::_escape($stock_id);
@@ -212,9 +222,9 @@
        * @param bool $all_option
        * @param bool $submit_on_change
        * @param bool $all
-       * @param bool $editkey
        * @param bool $legacy
        *
+       * @internal param bool $editkey
        * @return string
        */
       public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $legacy = false) {
@@ -224,9 +234,9 @@
           $all_option,
           $submit_on_change,
           array(
-               'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+               'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
                'show_inactive' => $all,
-               'editable' => false
+               'editable'      => false
           ),
           false,
           $legacy
@@ -240,7 +250,8 @@
        * @param null $selected_id
        * @param bool $all_option
        * @param bool $submit_on_change
-       * @param bool $editkey
+       *
+       * @internal param bool $editkey
        */
       public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
         if ($label != null) {
@@ -252,11 +263,11 @@
           $all_option,
           $submit_on_change,
           array(
-               'where' => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-               'editable' => 30,
-               'cells' => true,
+               'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+               'editable'    => 30,
+               'cells'       => true,
                'description' => '',
-               'class' => 'auto'
+               'class'       => 'auto'
           )
         );
       }
@@ -268,7 +279,8 @@
        * @param null $selected_id
        * @param bool $all_option
        * @param bool $submit_on_change
-       * @param bool $editkey
+       *
+       * @internal param bool $editkey
        */
       public static function row($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false) {
         echo "<tr><td class='label'>$label</td>";

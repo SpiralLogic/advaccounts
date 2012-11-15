@@ -2,6 +2,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -60,6 +61,9 @@
       $view->render();
       $this->Page->end();
     }
+    /**
+     * @return array
+     */
     protected function getApplications() {
       $apps = ADVAccounting::i()->applications;
       $tabs = [];
@@ -70,6 +74,9 @@
       }
       return $tabs;
     }
+    /**
+     * @return array
+     */
     protected function getThemes() {
       $themes = [];
       try {

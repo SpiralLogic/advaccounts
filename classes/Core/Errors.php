@@ -110,6 +110,12 @@
       }
       return true;
     }
+    /**
+     * @param        $type
+     * @param string $message
+     * @param string $file
+     * @param string $line
+     */
     public static function writeLog($type, $message = '', $file = '', $line = '') {
       if (is_writable(ROOT_DOC . '../error_log')) {
         error_log(

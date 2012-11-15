@@ -278,6 +278,8 @@ JS;
      * @param string $class
      * @param string $id
      *
+     * @param bool   $raw
+     *
      * @return string
      */
     public static function print_link($link_text, $rep, $pars = [], $dir = '', $icon = false, $class = 'printlink', $id = '', $raw = false) {

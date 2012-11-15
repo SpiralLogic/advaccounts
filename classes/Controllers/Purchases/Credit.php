@@ -140,6 +140,9 @@
 JS;
       $this->JS->onload($js);
     }
+    /**
+     * @param $invoice_no
+     */
     protected function pageComplete($invoice_no) {
       $trans_type = ST_SUPPCREDIT;
       echo "<div class='center'>";

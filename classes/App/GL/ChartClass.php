@@ -23,6 +23,9 @@
       public $ctype;
       public $sign_convert = 0;
       public $inactive = 0;
+      /**
+       * @return \ADV\Core\Traits\Status|bool
+       */
       public function delete() {
         $result = $this->DB->select("COUNT(*) as count")->from('chart_types')->where('class_id=', $this->id)->fetch()->one('count');
         if ($result > 0) {

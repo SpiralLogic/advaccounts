@@ -18,7 +18,6 @@
            See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
            * ********************************************************************* */
   print_statements();
-
   /**
    * @param $debtorno
    * @param $month
@@ -110,7 +109,7 @@
     $sql
       = 'SELECT DISTINCT db.*,c.name AS DebtorName,c.tax_id,a.email,c.curr_code, c.payment_terms,
 CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address FROM debtor_balances db, branches a,
-        debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts"   ';
+        debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref LIKE ' . DB::_quote(Debtor_Account::ACCOUNTS);
     if ($customer > 0) {
       $sql .= " AND c.debtor_id = " . DB::_escape($customer);
     } else {

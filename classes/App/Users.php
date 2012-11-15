@@ -31,7 +31,8 @@
      * @param $profile
      * @param $rep_popup
      * @param $pos
-     * @param $hash
+     *
+     * @internal param $hash
      *
      * @internal param $password
      */
@@ -223,6 +224,8 @@
      * @param      $name
      * @param null $selected_id
      * @param bool $spec_opt
+     *
+     * @param bool $inactive
      *
      * @return string
      */
