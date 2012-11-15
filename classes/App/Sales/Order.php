@@ -1,5 +1,8 @@
 <?php
   use ADV\Core\Cell;
+  use ADV\App\Ref;
+  use ADV\Core\Config;
+  use ADV\App\SysTypes;
   use ADV\Core\Session;
   use ADV\App\Orders;
   use ADV\Core\HTML;
@@ -44,7 +47,6 @@
    */
   class Sales_Order
   {
-
     /**
      * @var int
      */

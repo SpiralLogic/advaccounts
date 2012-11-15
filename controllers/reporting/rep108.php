@@ -28,8 +28,8 @@
   function get_transactions($debtorno, $month, $inc_all) {
     $dateend   = date('Y-m-d', mktime(0, 0, 0, date('n') - $month, 0));
     $datestart = date('Y-m-d', mktime(0, 0, 0, date('n') - $month - 1, 1));
-    $sql       = "SELECT d.*," . "((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount) * IF(d.type = " . ST_SALESINVOICE . ",1,-1) ) AS TotalAmount,";
-    $sql .= "IF(d.type <> 10,-SUM(d.alloc), if(a.amt is null,0,SUM(a.amt))*if(b.tran_date > '$dateend',0,1)) AS Allocated, ";
+    $sql       = "SELECT d.*," . "((d.ov_amount + d.ov_gst + d.ov_freight + d.ov_freight_tax + d.ov_discount) * IF(d.type = " . ST_SALESINVOICE . " OR d.type = " . ST_BANKPAYMENT . ",1,-1) ) AS TotalAmount,";
+    $sql .= "IF(d.type <> 10 AND d.type <> 1,-SUM(d.alloc), if(a.amt is null,0,SUM(a.amt))*if(b.tran_date > '$dateend',0,1)) AS Allocated, ";
     $sql
       .= "( d.due_date < '$datestart' AND (b.tran_date < '$datestart' or b.tran_date is null)) AS OverDue
                             FROM debtor_trans d
@@ -58,6 +58,13 @@
   }
 
   function print_statements() {
+    $trans_type_string   = [
+      ST_SALESINVOICE => 'Invoice',
+      ST_CUSTCREDIT   => 'Credit',
+      ST_CUSTPAYMENT  => 'Payment',
+      ST_BANKDEPOSIT  => 'Payment',
+      ST_BANKPAYMENT  => 'Refund'
+    ];
     $report_type         = '\\ADV\\App\\Reports\\PDF';
     $txt_statement       = "Statement";
     $txt_opening_balance = 'Opening Balance';
@@ -102,7 +109,7 @@
     $sql
       = 'SELECT DISTINCT db.*,c.name AS DebtorName,c.tax_id,a.email,c.curr_code, c.payment_terms,
 CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address FROM debtor_balances db, branches a,
-        debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts" AND Balance>0  ';
+        debtors c WHERE db.debtor_id = a.debtor_id AND c.debtor_id=db.debtor_id AND a.branch_ref = "Accounts" ';
     if ($customer > 0) {
       $sql .= " AND c.debtor_id = " . DB::_escape($customer);
     } else {
@@ -119,7 +126,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
       if (round($customer_record["Balance"], 2) == 0) {
         continue;
       }
-      if ($customer_record["Balance"] < 0) {
+      if (!$inc_negatives && $customer_record["Balance"] < 0) {
         continue;
       }
       $baccount              = Bank_Account::get_default($myrow['curr_code']);
@@ -136,12 +143,12 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $branch = $transaction['branch_id'];
         }
         if ($transaction['OverDue'] && !$inc_all) {
-          $openingbalance += abs($transaction["TotalAmount"] - $transaction["Allocated"]) * ($transaction['type'] == ST_SALESINVOICE ? 1 : -1);
+          $openingbalance += abs($transaction["TotalAmount"] - $transaction["Allocated"]) * (in_array($transaction['type'], [ST_SALESINVOICE, ST_BANKPAYMENT]) ? 1 : -1);
           continue;
         }
         $transactions[] = $transaction;
       }
-      if ($balance <= 0) {
+      if (!$inc_negatives && $balance <= 0) {
         continue;
       }
       if ($email == 1) {
@@ -167,8 +174,8 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
         $display_balance = Num::_format($balance, $dec);
       }
       foreach ($transactions as $i => $trans) {
-        if (!$inc_payments && $trans['type'] == ST_CUSTPAYMENT) {
-          continue;
+        if (!$inc_payments && in_array($trans['type'], [ST_CUSTPAYMENT, ST_BANKDEPOSIT])) {
+          //  continue;
         }
         $display_total       = Num::_format(abs($trans["TotalAmount"]), $dec);
         $outstanding         = abs($trans["TotalAmount"] - $trans["Allocated"]);
@@ -177,25 +184,26 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           continue;
         }
         if (!$inc_all || !$inc_payments) {
-          $balance += ($trans['type'] == ST_SALESINVOICE) ? $outstanding : -$outstanding;
+          $balance += (in_array($trans['type'], [ST_SALESINVOICE, ST_BANKPAYMENT])) ? $outstanding : -$outstanding;
         } else {
           $balance += $trans["TotalAmount"];
         }
         $display_balance = Num::_format($balance, $dec);
-        $rep->TextCol(0, 1, SysTypes::$short_names[$trans['type']], -2);
-        if ($trans['type'] == ST_SALESINVOICE) {
+        $rep->TextCol(0, 1, $trans_type_string[$trans['type']], -2);
+        $ledgerside = (in_array($trans['type'], [ST_SALESINVOICE, ST_BANKPAYMENT]));
+        if ($ledgerside) {
           $rep->Font('bold');
         }
         $rep->TextCol(1, 2, $trans['reference'], -2);
-        if ($trans['type'] == ST_SALESINVOICE) {
+        if ($ledgerside) {
           $rep->TextCol(2, 3, getTransactionPO($trans['order_']), -2);
         }
         $rep->Font();
         $rep->TextCol(3, 4, Dates::_sqlToDate($trans['tran_date']), -2);
-        if ($trans['type'] == ST_SALESINVOICE) {
+        if ($ledgerside) {
           $rep->TextCol(4, 5, Dates::_sqlToDate($trans['due_date']), -2);
         }
-        if ($trans['type'] == ST_SALESINVOICE && isset($display_total)) {
+        if ($ledgerside && isset($display_total)) {
           $rep->TextCol(5, 6, $display_total, -2);
         } elseif (isset($display_total)) {
           $rep->TextCol(6, 7, $display_total, -2);
