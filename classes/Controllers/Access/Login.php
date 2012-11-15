@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,6 +10,7 @@
   namespace ADV\Controllers\Access;
 
   use ADV\App\Form\Form;
+  use ADV\App\Dates;
   use ADV\Core\View;
 
   /** **/
@@ -41,9 +41,9 @@
       $view['timeout']       = $timeout = $this->User->last_action;
       $view['encoding']      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
       $view['rtl']           = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
-      $view['idletime']      = $this->User->last_action + $this->User->timeout - time();
-      $view['usernamevalue'] = $this->User->last_action ? $this->User->loginname :
-        ($this->Config->get('demo_mode') ? "demouser" : "");
+      $idletime              = time() - $this->User->last_action;
+      $view['idletime']      = Dates::_getReadableTime($idletime);
+      $view['usernamevalue'] = $this->User->last_action ? $this->User->loginname : ($this->Config->get('demo_mode') ? "demouser" : "");
       $view['company']       = $this->User->company;
       if (!headers_sent()) {
         header("Content-type: text/html; charset=UTF-8");

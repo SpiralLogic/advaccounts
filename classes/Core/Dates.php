@@ -40,7 +40,8 @@
    * @method static _endFiscalYear()
    * @method static _beginFiscalYear()
    */
-  class Dates {
+  class Dates
+  {
     use \ADV\Core\Traits\StaticAccess;
 
     protected $sep = '-';
@@ -234,7 +235,6 @@
       if (!$date) {
         return $this->today(true);
       }
-
       return $date->format('Y-m-d');
     }
     /**
@@ -458,20 +458,34 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      *
      * @return float|string
      */
-    public static function getReadableTime($time) {
-      $ret       = $time;
-      $formatter = 0;
-      $formats   = array('ms', 's', 'm');
-      if ($time >= 1000 && $time < 60000) {
-        $formatter = 1;
-        $ret       = ($time / 1000);
+    public static function getReadableTime($seconds, $granularity = 2) {
+      $units  = array(
+        '1 year|:count years' => 31536000,
+        '1 week|:count weeks' => 604800,
+        '1 day|:count days'   => 86400,
+        '1 hour|:count hours' => 3600,
+        '1 min|:count mins'   => 60,
+        '1 sec|:count secs'   => 1
+      );
+      $output = '';
+      foreach ($units as $key => $value) {
+        $key = explode('|', $key);
+        if ($seconds >= $value) {
+          $count = floor($seconds / $value);
+          $output .= ($output ? ' ' : '');
+          if ($count == 1) {
+            $output .= $key[0];
+          } else {
+            $output .= str_replace(':count', $count, $key[1]);
+          }
+          $seconds %= $value;
+          $granularity--;
+        }
+        if ($granularity == 0) {
+          break;
+        }
       }
-      if ($time >= 60000) {
-        $formatter = 2;
-        $ret       = ($time / 1000) / 60;
-      }
-      $ret = number_format($ret, 3, '.', '') . ' ' . $formats[$formatter];
-      return $ret;
+      return $output ? $output : '0 sec';
     }
     /**
      * @static

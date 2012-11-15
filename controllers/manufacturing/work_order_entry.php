@@ -1,9 +1,23 @@
 <?php
   use ADV\App\WO\WO;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\Core\Ajax;
+  use ADV\App\Item\Item;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Num;
+  use ADV\Core\Input\Input;
+  use ADV\App\Ref;
+  use ADV\App\Dates;
+  use ADV\App\Reporting;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use ADV\App\Validation;
+  use ADV\App\Page;
+  use ADV\Core\JS;
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -127,7 +141,8 @@
         if ($_POST['type'] == WO_ASSEMBLY) {
           // check bom if assembling
           $result = WO::get_bom(Input::_post('stock_id'));
-          while ($bom_item = DB::_fetch($result)) {
+          while ($bom_item
+            = DB::_fetch($result)) {
             if (WO::has_stock_holding($bom_item["ResourceType"])) {
               $quantity = $bom_item["quantity"] * Validation::input_num('quantity');
               $qoh      = Item::get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
@@ -182,18 +197,7 @@
       $_POST['cr_lab_acc'] = "";
     }
     $id = WO::add(
-      $_POST['wo_ref'],
-      $_POST['StockLocation'],
-      Validation::input_num('quantity'),
-      Input::_post('stock_id'),
-      $_POST['type'],
-      $_POST['date_'],
-      $_POST['RequDate'],
-      $_POST['memo_'],
-      Validation::input_num('Costs'),
-      $_POST['cr_acc'],
-      Validation::input_num('Labour'),
-      $_POST['cr_lab_acc']
+      $_POST['wo_ref'], $_POST['StockLocation'], Validation::input_num('quantity'), Input::_post('stock_id'), $_POST['type'], $_POST['date_'], $_POST['RequDate'], $_POST['memo_'], Validation::input_num('Costs'), $_POST['cr_acc'], Validation::input_num('Labour'), $_POST['cr_lab_acc']
     );
     Dates::_newDocDate($_POST['date_']);
     Display::meta_forward($_SERVER['DOCUMENT_URI'], "AddedID=$id&type=" . $_POST['type'] . "&date=" . $_POST['date_']);

@@ -7,6 +7,16 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\JS;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use ADV\App\Validation;
+  use ADV\App\Page;
+
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Inventory Location Transfers"), SA_LOCATIONTRANSFER);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system (Purchased or manufactured items)."), STOCK_SERVICE);
@@ -20,7 +30,7 @@
     Page::footer_exit();
   }
   if (isset($_POST['Process'])) {
-    $tr          = &$_SESSION['transfer_items'];
+    $tr          = & $_SESSION['transfer_items'];
     $input_error = 0;
     if (count($tr->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
@@ -61,13 +71,7 @@
   }
   if (isset($_POST['Process'])) {
     $trans_no = Inv_Transfer::add(
-      $_SESSION['transfer_items']->line_items,
-      $_POST['FromStockLocation'],
-      $_POST['ToStockLocation'],
-      $_POST['AdjDate'],
-      $_POST['type'],
-      $_POST['ref'],
-      $_POST['memo_']
+      $_SESSION['transfer_items']->line_items, $_POST['FromStockLocation'], $_POST['ToStockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']
     );
     Dates::_newDocDate($_POST['AdjDate']);
     $_SESSION['transfer_items']->clear_items();

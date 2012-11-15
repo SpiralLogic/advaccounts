@@ -1,5 +1,4 @@
 <?php
-
   /* * ********************************************************************
      Copyright (C) Advanced Group PTY LTD
      Released under the terms of the GNU General Public License, GPL,
@@ -10,8 +9,17 @@
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
      See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * ********************************************************************* */
-  // New version (without vertical lines)
+  use ADV\App\Dates;
+  use ADV\App\Ref;
+  use ADV\App\SysTypes;
+  use ADV\App\WO\WO;
+  use ADV\App\User;
+  use ADV\Core\DB\DB;
+  use ADV\Core\Config;
+  use ADV\App\Creditor\Creditor;
+  use ADV\App\Debtor\Debtor;
 
+  // New version (without vertical lines)
   $this->row = $this->pageHeight - $this->topMargin;
   $upper     = $this->row - 2 * $this->lineHeight;
   $lower     = $this->bottomMargin + 8 * $this->lineHeight;

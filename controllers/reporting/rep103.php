@@ -9,6 +9,12 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
+  use ADV\Core\DB\DB;
+  use ADV\Core\Num;
+  use ADV\App\User;
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Dates;
+
   print_customer_details_listing();
   /**
    * @param int $area

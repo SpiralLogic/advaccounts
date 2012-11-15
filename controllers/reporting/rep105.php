@@ -9,6 +9,11 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
+  use ADV\App\Dates;
+  use ADV\App\Item\Item;
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\User;
+  use ADV\Core\DB\DB;
 
   print_order_status_list();
   /**
@@ -55,7 +60,6 @@
       $sql .= " AND sales_order_details.quantity - sales_order_details.qty_sent > 0";
     }
     $sql .= " ORDER BY sales_orders.order_no";
-
     return DB::_query($sql, "Error getting order details");
   }
 
@@ -68,10 +72,8 @@
     $comments    = $_POST['PARAM_5'];
     $destination = $_POST['PARAM_6'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     if ($category == ALL_NUMERIC) {

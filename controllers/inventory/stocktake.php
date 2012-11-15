@@ -7,6 +7,17 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\JS;
+  use ADV\App\Ref;
+  use ADV\Core\Table;
+  use ADV\App\Forms;
+  use ADV\App\Dates;
+  use ADV\App\Item\Item;
+  use ADV\App\Display;
+  use ADV\Core\Event;
+  use ADV\App\Validation;
+  use ADV\App\Page;
+
   JS::_openWindow(950, 500);
   Page::start(_($help_context = "Item Stocktake Note"), SA_INVENTORYADJUSTMENT);
   Validation::check(Validation::COST_ITEMS, _("There are no inventory items defined in the system which can be adjusted (Purchased or Manufactured)."), STOCK_SERVICE);
@@ -27,13 +38,7 @@
       $line->quantity -= $current_stock['qty'];
     }
     $trans_no = Inv_Adjustment::add(
-      $_SESSION['adj_items']->line_items,
-      $_POST['StockLocation'],
-      $_POST['AdjDate'],
-      $_POST['type'],
-      $_POST['Increase'],
-      $_POST['ref'],
-      $_POST['memo_']
+      $_SESSION['adj_items']->line_items, $_POST['StockLocation'], $_POST['AdjDate'], $_POST['type'], $_POST['Increase'], $_POST['ref'], $_POST['memo_']
     );
     Dates::_newDocDate($_POST['AdjDate']);
     $_SESSION['adj_items']->clear_items();
@@ -124,7 +129,7 @@
    * @return bool
    */
   function can_process() {
-    $adj = &$_SESSION['adj_items'];
+    $adj = & $_SESSION['adj_items'];
     if (count($adj->line_items) == 0) {
       Event::error(_("You must enter at least one non empty item line."));
       JS::_setFocus('stock_id');

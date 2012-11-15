@@ -1,4 +1,9 @@
 <?php
+  use ADV\Core\DB\DB;
+  use ADV\Core\Num;
+  use ADV\App\Debtor\Debtor;
+  use ADV\App\Dates;
+
   /**********************************************************************
   Copyright (C) Advanced Group PTY LTD
   Released under the terms of the GNU General Public License, GPL,
@@ -59,7 +64,6 @@
         AND " . '' . "debtor_trans.debtor_id = " . DB::_escape($debtorno) . "
         AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . " GROUP BY debtor_id";
     $result = DB::_query($sql, "No transactions were returned");
-
     return DB::_fetch($result);
   }
 
@@ -85,12 +89,10 @@
         AND " . '' . "debtor_trans.debtor_id = " . DB::_escape($debtorno) . "
         AND " . '' . "debtor_trans.type <> " . ST_CUSTDELIVERY . "
      ORDER BY " . '' . "debtor_trans.tran_date";
-
     return DB::_query($sql, "No transactions were returned");
   }
 
   function print_customer_balances() {
-
     $from        = $_POST['PARAM_0'];
     $to          = $_POST['PARAM_1'];
     $fromcust    = $_POST['PARAM_2'];

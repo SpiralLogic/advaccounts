@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -147,7 +146,7 @@
     protected $_id_column = 'id';
     protected $_classname = 'Item';
     /***
-     * @param int $id
+     * @param int|Array $id
      */
     public function __construct($id = 0) {
       parent::__construct($id);
@@ -163,7 +162,7 @@
     protected function read($id = null, $extra = []) {
       $id = $id ? : 0;
       if (!is_numeric($id)) {
-        $stockid = static::getStockID((string)$id);
+        $stockid = static::getStockID((string) $id);
         if ($stockid) {
           $id = $stockid;
         }
@@ -213,7 +212,7 @@
      */
     protected function saveNew() {
       DB::_begin();
-      $data = (array)$this;
+      $data = (array) $this;
       unset($data['id']);
       if (!parent::saveNew()) {
         DB::_cancel();
@@ -985,15 +984,13 @@ JS;
     public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = [], $editkey = false, $legacy = false) {
       if (!$legacy) {
         Item::addSearchBox(
-          $name,
-          array_merge(
+          $name, array_merge(
             array(
                  'submitonselect' => $submit_on_change,
                  'selected'       => $selected_id,
                  'purchase'       => true,
                  'cells'          => true
-            ),
-            $opts
+            ), $opts
           )
         );
         return '';
@@ -1002,12 +999,7 @@ JS;
         = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
                     FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
       return Forms::selectBox(
-        $name,
-        $selected_id,
-        $sql,
-        'stock_id',
-        's.description',
-        array_merge(
+        $name, $selected_id, $sql, 'stock_id', 's.description', array_merge(
           array(
                'format'        => 'Forms::stockItemsFormat',
                'spec_option'   => $all_option === true ? _("All Items") : $all_option,
@@ -1028,8 +1020,7 @@ JS;
                ),
                'editable'      => 30,
                'max'           => 50
-          ),
-          $opts
+          ), $opts
         )
       );
     }
@@ -1049,21 +1040,15 @@ JS;
      */
     public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
       echo Item::select(
-        $name,
-        $selected_id,
-        $all_option,
-        $submit_on_change,
-        array(
-             'submitonselect' => $submit_on_change,
-             'label'          => $label,
-             'cells'          => true,
-             'size'           => 10,
-             'purchase'       => false,
-             'show_inactive'  => $all,
-             'editable'       => $editkey
-        ),
-        $editkey,
-        $legacy
+        $name, $selected_id, $all_option, $submit_on_change, array(
+                                                                  'submitonselect' => $submit_on_change,
+                                                                  'label'          => $label,
+                                                                  'cells'          => true,
+                                                                  'size'           => 10,
+                                                                  'purchase'       => false,
+                                                                  'show_inactive'  => $all,
+                                                                  'editable'       => $editkey
+                                                             ), $editkey, $legacy
       );
     }
   }

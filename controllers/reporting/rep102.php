@@ -1,5 +1,6 @@
 <?php
   use ADV\App\Dates;
+  use ADV\Core\Config;
   use ADV\App\SysTypes;
   use ADV\App\User;
   use ADV\App\Debtor\Debtor;

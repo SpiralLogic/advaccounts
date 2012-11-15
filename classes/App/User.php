@@ -33,7 +33,8 @@
    * @method static _percent_dec()
    *  @method static _graphic_links()
    */
-  class User extends \ADV\App\DB\Base {
+  class User extends \ADV\App\DB\Base
+  {
     use \ADV\Core\Traits\Hook;
     use StaticAccess;
 
@@ -124,7 +125,9 @@
      * @return bool
      */
     public function logged_in() {
-      $this->timeout();
+      if ($this->timeout()) {
+        return false;
+      }
       if ($this->logged && date('i', time() - $this->last_record) > 4) {
         $this->last_record = time();
         Event::registerShutdown([$this, '_addLog']);
@@ -210,15 +213,18 @@
     public function register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
     }
+    /**
+     * @return bool
+     */
     public function timeout() {
       // skip timeout on logout page
       if ($this->logged) {
-        $tout = $this->timeout;
-        if ($tout && (time() > $this->last_action + $tout)) {
-          $this->logged = false;
+        if (time() > $this->last_action + $this->timeout) {
+          return true;
         }
       }
       $this->last_action = time();
+      return false;
     }
     public function addLog() {
       DB::_insert('user_login_log')->values(

@@ -1,5 +1,4 @@
 <?php
-
   /* * ********************************************************************
      Copyright (C) Advanced Group PTY LTD
      Released under the terms of the GNU General Public License, GPL,
@@ -10,6 +9,10 @@
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
      See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
      * ********************************************************************* */
+  use ADV\App\User;
+  use ADV\App\Tax\Tax;
+  use ADV\Core\Num;
+
   print_sales_orders();
   $print_as_quote = 0;
   function print_sales_orders() {

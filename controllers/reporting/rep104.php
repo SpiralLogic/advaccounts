@@ -9,6 +9,10 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
   See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
    ***********************************************************************/
+  use ADV\Core\DB\DB;
+  use ADV\Core\Config;
+  use ADV\App\Item\Item;
+  use ADV\App\User;
 
   print_price_listing();
   /**
@@ -31,7 +35,6 @@
     $sql
       .= " ORDER BY stock_master.category_id,
                 stock_master.stock_id";
-
     return DB::_query($sql, "No transactions were returned");
   }
 
@@ -53,7 +56,6 @@
       $sql .= " AND c.category_id = " . DB::_escape($category);
     }
     $sql .= " GROUP BY i.item_code";
-
     return DB::_query($sql, "No kits were returned");
   }
 
@@ -66,10 +68,8 @@
     $comments    = $_POST['PARAM_5'];
     $destination = $_POST['PARAM_6'];
     if ($destination) {
-
       $report_type = '\\ADV\\App\\Reports\\Excel';
     } else {
-
       $report_type = '\\ADV\\App\\Reports\\PDF';
     }
     $dec       = User::_price_dec();
