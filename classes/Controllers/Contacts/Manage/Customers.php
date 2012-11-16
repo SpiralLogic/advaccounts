@@ -25,7 +25,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -37,10 +36,10 @@
     /** @var Debtor */
     protected $debtor;
     protected function before() {
-      if ($this->action == 'save') {
+      if ($this->action == SAVE) {
         $this->debtor = new Debtor();
         $this->debtor->save($_POST['company']);
-      } elseif ($this->action == 'fetch' && $this->Input->request('id', Input::NUMERIC) > 0) {
+      } elseif ($this->action == FETCH && $this->Input->request('id', Input::NUMERIC) > 0) {
         $this->debtor        = new Debtor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->debtor->id, CT_CUSTOMER);
         $this->Session->setGlobal('debtor_id', $this->debtor->id);
@@ -76,7 +75,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('customer_form');
-      //   $cache = null;
+      $cache = null;
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
@@ -90,18 +89,12 @@
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
       $view->set('menu', $menu);
       $view->set(
-        'branchlist',
-        UI::select(
-          'branchList',
-          array_map(
+        'branchlist', UI::select(
+          'branchList', array_map(
             function ($v) {
               return $v->br_name;
-            },
-            $this->debtor->branches
-          ),
-          ['class' => 'med', 'name' => 'branchList'],
-          null,
-          new HTML
+            }, $this->debtor->branches
+          ), ['class' => 'med', 'name' => 'branchList'], null, new HTML
         )
       );
       $form->group('shipping_details')->text('branch[contact_name]')->label('Contact:');
