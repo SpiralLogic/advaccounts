@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -20,11 +19,8 @@
   {
     public $editing;
     protected function index() {
-      $this->Page->init($this->title, $this->security);
       $this->beforeTable();
       $this->generateTable();
-      echo '<br>';
-      $this->Page->end_page(true);
     }
     protected function beforeTable() {
     }

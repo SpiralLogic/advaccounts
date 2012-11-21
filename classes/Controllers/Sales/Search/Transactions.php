@@ -28,7 +28,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Transactions extends \ADV\App\Controller\Action {
+  class Transactions extends \ADV\App\Controller\Action
+  {
     public $isQuickSearch;
     public $filterType;
     public $debtor_id;
@@ -42,6 +43,7 @@
     const FILTER_DELIVERIES  = '5';
     const FILTER_INVOICEONLY = '6';
     protected $frame;
+    protected $security = SA_SALESTRANSVIEW;
     protected function before() {
       $this->JS->openWindow(950, 500);
       $this->frame = $this->Input->hasGet('debtor_id');
@@ -55,9 +57,9 @@
       $this->debtor_id     = Input::$post['debtor_id'] = $this->Input->postGetGlobal('debtor_id', INPUT::NUMERIC, null);
       $this->filterType    = Input::$post['filterType'] = $this->Input->post('filterType', Input::NUMERIC);
       $this->isQuickSearch = ($this->Input->postGet('q'));
+      $this->setTitle("Customer Transactions");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Customer Transactions"), SA_SALESTRANSVIEW, $this->frame);
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
@@ -144,7 +146,6 @@
       $table->display($table);
       UI::emailDialogue(CT_CUSTOMER);
       Forms::end();
-      $this->Page->end_page();
     }
     /**
      * @param $trans
@@ -352,12 +353,10 @@
         return '';
       }
       return (new HTML)->button(
-        false,
-        'Email',
-        array(
-             'class'        => 'button email-button',
-             'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
-        )
+        false, 'Email', array(
+                             'class'        => 'button email-button',
+                             'data-emailid' => $row['debtor_id'] . '-' . $row['type'] . '-' . $row['trans_no']
+                        )
       )->__toString();
     }
     /**

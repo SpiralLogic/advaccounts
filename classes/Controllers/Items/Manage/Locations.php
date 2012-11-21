@@ -7,7 +7,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -17,16 +16,16 @@
   class Locations extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '90';
+    protected $security = SA_INVENTORYLOCATION;
     protected function before() {
       $this->object = new Location();
       $this->runPost();
+      $this->setTitle("Inventory Locations");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Inventory Locations"), SA_INVENTORYLOCATION);
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      $this->Page->end_page(true);
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -47,7 +46,6 @@
       $form->text('email')->label('Email:');
       $form->text('contact')->label('Contact Name:');
     }
-
     /**
      * @param $pager_name
      *

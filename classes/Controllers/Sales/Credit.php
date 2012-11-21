@@ -30,6 +30,7 @@
   {
     /** @var Sales_Order */
     public $credit;
+    protected $security = SA_SALESCREDIT;
     protected function before() {
       $this->JS->openWindow(950, 500);
       $this->credit = Orders::session_get() ? : null;
@@ -115,7 +116,6 @@
       $this->Page->endExit();
     }
     protected function index() {
-      $this->Page->init($this->title, SA_SALESCREDIT);
       if (isset($_POST['ProcessCredit'])) {
         $this->processCredit();
       }
@@ -136,7 +136,6 @@
       Forms::submitCenterEnd('ProcessCredit', _("Process Credit Note"), '', false);
       echo "</tr></table>";
       Forms::end();
-      $this->Page->end_page();
     }
     protected function runValidation() {
       Validation::check(Validation::STOCK_ITEMS, _("There are no items defined in the system."));

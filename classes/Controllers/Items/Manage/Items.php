@@ -26,13 +26,13 @@
    **/
   class Items extends \ADV\App\Controller\Action
   {
-
     protected $itemData;
     protected $stock_id = 0;
     protected $stockid = 0;
     /** @var \ADV\App\Item\Item */
     protected $item;
     protected $formid;
+    protected $security = SA_CUSTOMER;
     protected function before() {
       $this->formid   = $this->Input->getPostGlobal('_form_id');
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
@@ -44,6 +44,7 @@
       $this->stock_id = $this->item->stock_id;
       $this->runPost();
       $this->JS->footerFile("/js/quickitems.js");
+      $this->setTitle("Items");
     }
     /**
      * @internal param $id
@@ -75,7 +76,6 @@
       }
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
       $menu = new MenuUI('disabled');
       $view->set('menu', $menu);
@@ -104,15 +104,13 @@
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!$this->stock_id && REQUEST_GET) {
         $searchBox = UI::search(
-          'itemSearchId',
-          [
-            'url'      => 'Item',
-            'idField'  => 'stock_id',
-            'name'     => 'itemSearchId', //
-            'focus'    => true,
-            'callback' => 'Items.fetch'
-          ],
-          true
+          'itemSearchId', [
+                          'url'      => 'Item',
+                          'idField'  => 'stock_id',
+                          'name'     => 'itemSearchId', //
+                          'focus'    => true,
+                          'callback' => 'Items.fetch'
+                          ], true
         );
         $view->set('searchBox', $searchBox);
         $this->JS->setFocus('itemSearchId');
@@ -125,7 +123,6 @@
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
       $this->JS->onload("Items.onload(" . json_encode($data) . ");");
-      $this->Page->end_page(true);
     }
     /**
      * @return \ADV\App\Pager\Edit

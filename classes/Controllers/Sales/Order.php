@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -98,7 +97,6 @@
       $this->setSecurity();
     }
     protected function index() {
-      $this->Page->init($this->title, $this->security);
       $this->checkBranch();
       if (isset($_GET[REMOVED])) {
         $this->removed();
@@ -142,7 +140,6 @@
       Debtor::addEditDialog();
       Item::addEditDialog();
       UI::emailDialogue(CT_CUSTOMER);
-      $this->Page->end_page(true);
     }
     protected function checkBranch() {
       if (Forms::isListUpdated('branch_id')) {
@@ -209,10 +206,7 @@
       echo  Reporting::emailDialogue($customer->id, $trans_type, $order_no) . '<br><br>';
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
         echo    Display::submenu_print(
-          _("Print Proforma Invoice"),
-          ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ),
-          $order_no,
-          'prtopt'
+          _("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt'
         ) . '<br><br>';
       }
       echo "</div>";
@@ -291,11 +285,7 @@
       if (count($this->order->line_items) == 0) {
         if (!empty($_POST['stock_id']) && $this->checkItemData()) {
           $this->order->add_line(
-            $_POST['stock_id'],
-            Validation::input_num('qty'),
-            Validation::input_num('price'),
-            Validation::input_num('Disc') / 100,
-            $_POST['description']
+            $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
           );
           $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
         } else {
@@ -383,8 +373,7 @@
         $this->JS->setFocus('price');
         return false;
       } elseif (!$this->User->hasAccess(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num(
-        'qty',
-        $this->order->line_items[$_POST['LineNo']]->qty_done
+        'qty', $this->order->line_items[$_POST['LineNo']]->qty_done
       )
       ) {
         $this->JS->setFocus('qty');
@@ -548,11 +537,7 @@
     protected function updateItem() {
       if ($this->checkItemData($this->order)) {
         $this->order->update_order_item(
-          $_POST['LineNo'],
-          Validation::input_num('qty'),
-          Validation::input_num('price'),
-          Validation::input_num('Disc') / 100,
-          $_POST['description']
+          $_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
         );
       }
       Item_Line::start_focus('stock_id');

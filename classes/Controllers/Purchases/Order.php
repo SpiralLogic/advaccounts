@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -75,6 +74,13 @@
         if ($this->Input->get('UseOrder') && !count($this->order->line_items)) {
         }
       }
+      if (isset($_GET[Orders::MODIFY_ORDER])) {
+        $this->security = SA_PURCHASEORDER;
+        $this->setTitle("Modify Purchase Order #" . $_GET[Orders::MODIFY_ORDER]);
+      } else {
+        $this->security = SA_PURCHASEORDER;
+        $this->setTitle("Purchase Order Entry");
+      }
     }
     protected function cancelChanges() {
       $order_no = $this->order->order_no;
@@ -141,16 +147,7 @@
           if ($allow_update) {
             $myrow = DB::_fetch($result);
             $this->order->add_to_order(
-              $_POST['line_no'],
-              $_POST['stock_id'],
-              Validation::input_num('qty'),
-              $_POST['description'],
-              Validation::input_num('price'),
-              $myrow["units"],
-              $_POST['req_del_date'],
-              0,
-              0,
-              $_POST['discount'] / 100
+              $_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'], Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100
             );
             unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
             $_POST['stock_id'] = "";
@@ -174,23 +171,13 @@
         $this->JS->setFocus('qty');
       } else {
         $this->order->update_order_item(
-          $_POST['line_no'],
-          Validation::input_num('qty'),
-          Validation::input_num('price'),
-          $_POST['req_del_date'],
-          $_POST['description'],
-          $_POST['discount'] / 100
+          $_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100
         );
         unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
         Item_Line::start_focus('stock_id');
       }
     }
     protected function index() {
-      if (isset($_GET[Orders::MODIFY_ORDER])) {
-        $this->Page->init(_($help_context = "Modify Purchase Order #") . $_GET[Orders::MODIFY_ORDER], SA_PURCHASEORDER);
-      } else {
-        $this->Page->init(_($help_context = "Purchase Order Entry"), SA_PURCHASEORDER);
-      }
       if ($this->action == COMMIT) {
         $this->commitOrder();
       }
@@ -233,7 +220,6 @@
       if (isset($this->order->creditor_id)) {
         Creditor::addInfoDialog("td[name=\"supplier_name\"]", $this->order->supplier_details['creditor_id']);
       }
-      $this->Page->end_page(true);
     }
     protected function runValidation() {
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
@@ -284,16 +270,7 @@
         $this->order->supplier_to_order($row['creditor_id']);
         foreach ($sales_order->line_items as $line_no => $line_item) {
           $this->order->add_to_order(
-            $line_no,
-            $line_item->stock_id,
-            $line_item->quantity,
-            $line_item->description,
-            0,
-            $line_item->units,
-            Dates::_addDays(Dates::_today(), 10),
-            0,
-            0,
-            0
+            $line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::_addDays(Dates::_today(), 10), 0, 0, 0
           );
         }
         if (isset($_GET[LOC_DROP_SHIP])) {

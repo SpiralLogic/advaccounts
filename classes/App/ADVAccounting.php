@@ -29,7 +29,6 @@
    */
   class ADVAccounting
   {
-
     use \ADV\Core\Traits\Singleton;
 
     public $applications = [];
@@ -61,8 +60,7 @@
           }
           class_exists('ADV\\Core\\Errors', false) or include_once PATH_CORE . 'Errors.php';
           return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
-        },
-        E_ALL & ~E_STRICT & ~E_NOTICE
+        }, E_ALL & ~E_STRICT & ~E_NOTICE
       );
       set_exception_handler(
         function (\Exception $e) {
@@ -78,14 +76,12 @@
       $dic  = \ADV\Core\DIC::i();
       $self = $this;
       $dic->offsetSet(
-        'ADVAccounting',
-        function () use ($self) {
+        'ADVAccounting', function () use ($self) {
           return $self;
         }
       );
       $this->Cache  = $dic->offsetSet(
-        'Cache',
-        function () {
+        'Cache', function () {
           $driver = new \ADV\Core\Cache\APC();
           $cache  = new \ADV\Core\Cache($driver);
           if (isset($_GET['cache_reloaded'])) {
@@ -95,30 +91,25 @@
         }
       )->offsetGet(null);
       $this->Config = $dic->offsetSet(
-        'Config',
-        function (\ADV\Core\DIC $c) {
+        'Config', function (\ADV\Core\DIC $c) {
           return new \ADV\Core\Config($c->offsetGet('Cache'));
         }
       )->offsetGet(null);
       $loader->registerCache($this->Cache);
       $this->Cache->defineConstants(
-        $_SERVER['SERVER_NAME'] . '.defines',
-        function () {
+        $_SERVER['SERVER_NAME'] . '.defines', function () {
           return include(ROOT_DOC . 'config' . DS . 'defines.php');
         }
       );
       $this->Ajax = $dic->offsetSet(
-        'Ajax',
-        function () {
+        'Ajax', function () {
           return new \ADV\Core\Ajax();
         }
       )->offsetGet(null);
       $dic->offsetSet(
-        'Input',
-        function () {
+        'Input', function () {
           array_walk(
-            $_POST,
-            function (&$v) {
+            $_POST, function (&$v) {
               $v = is_string($v) ? trim($v) : $v;
             }
           );
@@ -126,8 +117,7 @@
         }
       );
       $dic->offsetSet(
-        'Num',
-        function () {
+        'Num', function () {
           $num              = new \ADV\Core\Num();
           $num->price_dec   = $this->User->price_dec();
           $num->qty_dec     = $this->User->qty_dec();
@@ -139,14 +129,12 @@
         }
       );
       $dic->offsetSet(
-        'DB_Company',
-        function () {
+        'DB_Company', function () {
           return new \DB_Company();
         }
       );
       $dic->offsetSet(
-        'Dates',
-        function (\ADV\Core\DIC $c) {
+        'Dates', function (\ADV\Core\DIC $c) {
           $config  = $c->offsetGet('Config');
           $user    = $c->offsetGet('User');
           $company = $c->offsetGet('DB_Company');
@@ -160,8 +148,7 @@
         }
       );
       $dic->offsetSet(
-        'DB',
-        function (\ADV\Core\DIC $c, $name = 'default') {
+        'DB', function (\ADV\Core\DIC $c, $name = 'default') {
           $config   = $c->offsetGet('Config');
           $dbconfig = $config->get('db.' . $name);
           $cache    = $c->offsetGet('Cache');
@@ -170,14 +157,12 @@
         }
       );
       $dic->offsetSet(
-        'Pager',
-        function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
+        'Pager', function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
         }
       );
       ob_start([$this, 'flush_handler'], 0);
       $this->JS = $dic->offsetSet(
-        'JS',
-        function (\ADV\Core\DIC $c) {
+        'JS', function (\ADV\Core\DIC $c) {
           $js             = new \ADV\Core\JS();
           $config         = $c->offsetGet('Config');
           $js->apikey     = $config->get('assets.maps_api_key');
@@ -186,8 +171,7 @@
         }
       )->offsetGet(null);
       $dic->offsetSet(
-        'User',
-        function () {
+        'User', function () {
           if (isset($_SESSION['User'])) {
             return $_SESSION['User'];
           }
@@ -196,8 +180,7 @@
         }
       );
       $this->Session = $dic->offsetSet(
-        'Session',
-        function (\ADV\Core\DIC $c) {
+        'Session', function (\ADV\Core\DIC $c) {
           $handler           = new \ADV\Core\Session\Memcached();
           $session           = new \ADV\Core\Session($handler);
           $config            = $c->offsetGet('Config');
@@ -244,11 +227,9 @@
           $request = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
         }
         $controller = 'ADV\\Controllers' . array_reduce(
-          explode('/', ltrim($request, '/')),
-          function ($result, $val) {
+          explode('/', ltrim($request, '/')), function ($result, $val) {
             return $result . '\\' . ucfirst($val);
-          },
-          ''
+          }, ''
         );
         if (class_exists($controller)) {
           $this->runController($controller);
@@ -395,12 +376,13 @@
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
       );
-      $dic                 = \ADV\Core\DIC::i();
-      (new \ADV\Controllers\Access\Login($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default')))->run();
+      $this->Session->keepFlash('uri', $_SERVER['HTTP_REFERER'] . '?' . $_SERVER['QUERY_STRING']);
+      $dic = \ADV\Core\DIC::i();
+      (new \ADV\Controllers\Access\Login($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input']))->run();
       if ($this->Ajax->inAjax()) {
         $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
       } elseif (REQUEST_AJAX) {
-        $this->JS->redirect('/');
+        $this->JS->redirect($_SERVER['HTTP_REFERER'] . '?' . $_SERVER['QUERY_STRING']);
       }
       exit();
     }
@@ -417,8 +399,7 @@
     private function setupPage() {
       $dic = \ADV\Core\DIC::i();
       $dic->offsetSet(
-        'Page',
-        function (\ADV\Core\DIC $c) {
+        'Page', function (\ADV\Core\DIC $c) {
           return new Page($c['Session'], $c['User'], $c['Config'], $c['Ajax'], $c['JS'], $c['Dates']);
         }
       );

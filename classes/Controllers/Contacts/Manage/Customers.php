@@ -25,7 +25,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -36,6 +35,7 @@
   {
     /** @var Debtor */
     protected $debtor;
+    protected $security = SA_CUSTOMER;
     protected function before() {
       if ($this->action == 'save') {
         $this->debtor = new Debtor();
@@ -61,15 +61,14 @@
         $this->JS->renderJSON($data);
       }
       $this->JS->footerFile("/js/company.js");
+      $this->setTitle("Customers");
     }
     protected function index() {
-      $this->Page->init(_($this->help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
       echo $this->generateForm();
       $this->JS->onload("Company.setValues(" . json_encode(['company' => $this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
-      $this->Page->end_page(true);
     }
     /**
      * @return string
@@ -90,18 +89,12 @@
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');
       $view->set('menu', $menu);
       $view->set(
-        'branchlist',
-        UI::select(
-          'branchList',
-          array_map(
+        'branchlist', UI::select(
+          'branchList', array_map(
             function ($v) {
               return $v->br_name;
-            },
-            $this->debtor->branches
-          ),
-          ['class' => 'med', 'name' => 'branchList'],
-          null,
-          new HTML
+            }, $this->debtor->branches
+          ), ['class' => 'med', 'name' => 'branchList'], null, new HTML
         )
       );
       $form->group('shipping_details')->text('branch[contact_name]')->label('Contact:');

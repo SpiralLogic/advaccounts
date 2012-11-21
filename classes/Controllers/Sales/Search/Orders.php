@@ -119,7 +119,6 @@
       }
     }
     protected function index() {
-      $this->Page->init($this->title, $this->security);
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
@@ -131,18 +130,14 @@
       }
       Inv_Location::cells(_(""), 'StockLocation', null, true);
       Item::select(
-        'SelectStockFromList',
-        null,
-        true,
-        false,
-        array(
-             'submitonselect' => false,
-             'cells'          => true,
-             'size'           => 10,
-             'purchase'       => false,
-             'show_inactive'  => true,
-             'placeholder'    => 'Item',
-        )
+        'SelectStockFromList', null, true, false, array(
+                                                       'submitonselect' => false,
+                                                       'cells'          => true,
+                                                       'size'           => 10,
+                                                       'purchase'       => false,
+                                                       'show_inactive'  => true,
+                                                       'placeholder'    => 'Item',
+                                                  )
       );
       if ($this->trans_type == ST_SALESQUOTE) {
         Forms::checkCells(_("Show All:"), 'show_all');
@@ -156,7 +151,6 @@
       UI::emailDialogue(CT_CUSTOMER);
       Forms::submitCenter('Update', _("Update"), true, '');
       Forms::end();
-      $this->Page->end_page();
     }
     protected function displayTable() { //	Orders inquiry table
       //
@@ -310,8 +304,7 @@
         $mark = (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row['delivery_date'])));
       } else {
         $mark = ($row['type'] == 0 && Dates::_sqlToDate($row['delivery_date']) && Dates::_isGreaterThan(
-          Dates::_today(),
-          Dates::_sqlToDate($row['delivery_date'])
+          Dates::_today(), Dates::_sqlToDate($row['delivery_date'])
         ) && ($row['TotDelivered'] < $row['TotQuantity']));
       }
       if ($mark) {
@@ -330,7 +323,6 @@
     }
     /**
      * @param                        $row
-     *
      * @param \ADV\App\Form\DropDown $dd
      *
      * @return string
@@ -354,7 +346,6 @@
     }
     /**
      * @param                        $row
-     *
      * @param \ADV\App\Form\DropDown $dd
      *
      * @return string
@@ -373,9 +364,7 @@
       // save also in hidden field for testing during 'Update'
       return Forms::checkbox(null, $name, $value, true, _('Set this order as a template for direct deliveries/invoices')) . Forms::hidden(
         'last[' . $row
-        ['order_no'] . ']',
-        $value,
-        false
+        ['order_no'] . ']', $value, false
       );
     }
     /**
@@ -427,16 +416,7 @@
           }
           $dd->addItem('Email', '#', ['emailid' => $row['debtor_id'] . '-' . $row['trans_type'] . '-' . $row['order_no']], ['class' => 'email-button']);
           $href = Reporting::print_doc_link(
-            $row['order_no'],
-            _("Proforma"),
-            true,
-            ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ),
-            ICON_PRINT,
-            'button printlink',
-            '',
-            0,
-            0,
-            true
+            $row['order_no'], _("Proforma"), true, ($row['trans_type'] == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), ICON_PRINT, 'button printlink', '', 0, 0, true
           );
           $dd->addItem('Print Proforma', $href, [], ['class' => 'printlink']);
           $href = Reporting::print_doc_link($row['order_no'], _("Print"), true, $row['trans_type'], ICON_PRINT, 'button printlink', '', 0, 0, true);

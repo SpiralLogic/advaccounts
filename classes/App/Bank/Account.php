@@ -10,7 +10,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Bank_Account {
+  class Bank_Account
+  {
     static $types
       = array(
         BT_TRANSFER => "Savings Account", //
@@ -191,16 +192,11 @@
     public static function  select($name, $selected_id = null, $submit_on_change = false) {
       $sql = "SELECT bank_accounts.id, bank_account_name, bank_curr_code, inactive FROM bank_accounts";
       return Forms::selectBox(
-        $name,
-        $selected_id,
-        $sql,
-        'id',
-        'bank_account_name',
-        array(
-             'format'        => 'Forms::addCurrFormat',
-             'select_submit' => $submit_on_change,
-             'async'         => false
-        )
+        $name, $selected_id, $sql, 'id', 'bank_account_name', array(
+                                                                   'format'        => 'Forms::addCurrFormat',
+                                                                   'select_submit' => $submit_on_change,
+                                                                   'async'         => false
+                                                              )
       );
     }
     /**
@@ -281,15 +277,16 @@
      * @return array
      */
     public static function getBalances($bank_account, $begin_date, $end_date) {
-      $begin_date    = static::checkBeginDate($begin_date);
-      $sql           = "(select (rb - amount) as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote(
-        $end_date
-      ) . " and bank_account_id=" . DB::_quote($bank_account) . " order by date, id desc limit 0,
-          1) union (select rb as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote(
+      $begin_date = static::checkBeginDate($begin_date);
+      $sql        = "(select (rb - amount) as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote($bank_account) . " order by date, id desc limit 0,
+          1)";
+      $result     = DB::_query($sql);
+      var_dump($sql);
+      $begin_balance = DB::_fetch($result)['amount'];
+      $sql           = "(select rb as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote(
         $bank_account
       ) . " order by date desc, id asc limit 0,1)";
       $result        = DB::_query($sql);
-      $begin_balance = DB::_fetch($result)['amount'];
       $end_balance   = DB::_fetch($result)['amount'];
       return array($begin_balance, $end_balance);
     }

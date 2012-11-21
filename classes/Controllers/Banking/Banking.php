@@ -31,7 +31,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -95,7 +94,6 @@
       }
     }
     protected function index() {
-      $this->Page->init($this->title, $this->security);
       $this->runAction();
       Forms::start();
       $this->header($this->order);
@@ -113,7 +111,6 @@
       echo (new Button('_action', COMMIT, COMMIT))->type('success')->preIcon(ICON_SUBMIT);
       echo "</div>";
       Forms::end();
-      $this->Page->end_page();
     }
     /**
      * @return void
@@ -176,11 +173,7 @@
             $this->Ajax->activate('total_amount');
           }
           Forms::AmountRow(
-            $qid['base_desc'] . ":",
-            'total_amount',
-            Num::_priceFormat($qid['base_amount']),
-            null,
-            "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
+            $qid['base_desc'] . ":", 'total_amount', Num::_priceFormat($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
           );
           break;
         //case payment_person_types::Project() :
@@ -302,10 +295,7 @@
     }
     protected function quickEntries() {
       GL_QuickEntry::addEntry(
-        $this->order,
-        $_POST['person_id'],
-        Validation::input_num('total_amount'),
-        $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
+        $this->order, $_POST['person_id'], Validation::input_num('total_amount'), $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
       );
       $_POST['total_amount'] = Num::_priceFormat(0);
       $this->Ajax->activate('total_amount');
@@ -344,15 +334,7 @@
         return;
       }
       $trans            = GL_Bank::add_bank_transaction(
-        $this->order->trans_type,
-        $_POST['bank_account'],
-        $this->order,
-        $_POST['date_'],
-        $_POST['PayType'],
-        $_POST['person_id'],
-        $this->Input->post('PersonDetailID'),
-        $_POST['ref'],
-        $_POST['memo_']
+        $this->order->trans_type, $_POST['bank_account'], $this->order, $_POST['date_'], $_POST['PayType'], $_POST['person_id'], $this->Input->post('PersonDetailID'), $_POST['ref'], $_POST['memo_']
       );
       $this->trans_type = $trans[0];
       $this->trans_no   = $trans[1];

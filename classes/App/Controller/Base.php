@@ -23,6 +23,8 @@
     public $help_context;
     /** @var Page */
     public $Page;
+    protected $security = SA_SECROLES;
+    protected $embedded = false;
     /**
 
      */
@@ -38,10 +40,15 @@
     }
     abstract protected function index();
     /**
-     * @param $title
+     * @param      $title
      */
     protected function setTitle($title) {
       $this->title = _($this->help_context = $title);
     }
-    abstract public function run();
+    /**
+     * @param $embed
+     *
+     * @return mixed
+     */
+    abstract public function run($embed = false);
   }
