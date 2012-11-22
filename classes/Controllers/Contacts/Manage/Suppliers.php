@@ -26,14 +26,15 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Suppliers extends \ADV\App\Controller\Action {
+  class Suppliers extends \ADV\App\Controller\Action
+  {
     /** @var Creditor */
     protected $creditor;
     protected function before() {
-      if ($this->action == 'save') {
+      if ($this->action == SAVE) {
         $this->creditor = new Creditor();
         $this->creditor->save($_POST['company']);
-      } elseif ($this->action == 'fetch' && $this->Input->request('id', Input::NUMERIC) > 0) {
+      } elseif ($this->action == FETCH && $this->Input->request('id', Input::NUMERIC) > 0) {
         $this->creditor      = new Creditor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->creditor->id, CT_CUSTOMER);
         $this->Session->setGlobal('creditor_id', $this->creditor->id);
@@ -55,7 +56,7 @@
         $this->delete();
       }
       echo $this->generateForm();
-      $this->JS->onload("Company.setValues(" . json_encode(['company'=> $this->creditor]) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
+      $this->JS->onload("Company.setValues(" . json_encode(['company' => $this->creditor]) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
       $this->Page->end_page(true);
     }
     /**
@@ -63,7 +64,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('supplier_form');
-      //  $cache = null; //Cache::_get('supplier_form');
+      $cache = null; //Cache::_get('supplier_form');
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];
@@ -84,7 +85,7 @@
       $form->text('phone')->label('Phone Number:');
       $form->text('fax')->label('Fax Number:');
       $form->text('email')->label('Email:');
-      $form->textarea('address', ['cols'=> 37, 'rows'=> 4])->label('Street:');
+      $form->textarea('address', ['cols' => 37, 'rows' => 4])->label('Street:');
       $postcode = new Postcode(array(
                                     'city'     => array('city'),
                                     'state'    => array('state'),
@@ -92,15 +93,15 @@
                                ), $js);
       $view->set('postcode', $postcode->getForm());
       $form->text('supp_phone')->label('Phone Number:');
-      $form->textarea('supp_address', ['cols'=> 37, 'rows'=> 4])->label('Address:');
+      $form->textarea('supp_address', ['cols' => 37, 'rows' => 4])->label('Address:');
       $supp_postcode = new Postcode(array(
                                          'city'     => array('supp_city'),
                                          'state'    => array('supp_state'),
                                          'postcode' => array('supp_postcode')
                                     ), $js);
       $view->set('supp_postcode', $supp_postcode->getForm());
-      $form->percent('payment_discount', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
-      $form->amount('credit_limit', ["disabled"=> !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
+      $form->percent('payment_discount', ["disabled" => !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Prompt Payment Discount:");
+      $form->amount('credit_limit', ["disabled" => !$this->User->hasAccess(SA_SUPPLIERCREDIT)])->label("Credit Limit:");
       $form->text('tax_id')->label("GST No:");
       $form->text('account_no')->label("Acccount #:");
       $form->custom(Tax_Groups::select('tax_group_id'))->label('Tax Group:');
@@ -120,16 +121,16 @@
       $contact_form = new Form();
       $view['date'] = date('Y-m-d H:i:s');
       $contact_form->text('contact_name')->label('Contact:');
-      $contact_form->textarea('message', ['cols'=> 100, 'rows'=> 10])->label('Entry:');
+      $contact_form->textarea('message', ['cols' => 100, 'rows' => 10])->label('Entry:');
       $view->set('contact_form', $contact_form);
       if (!$this->Input->get('frame')) {
         $shortcuts = [
           [
-            'caption'=> 'Supplier Payment',
+            'caption' => 'Supplier Payment',
             'Make supplier payment!',
-            'data'   => '/purchases/payment.php?creditor_id='
+            'data'    => '/purchases/payment.php?creditor_id='
           ],
-          ['caption'=> 'Create Order', 'Create Order for this supplier!', 'data'=> '/purchases/invoice.php?New=1&creditor_id='],
+          ['caption' => 'Create Order', 'Create Order for this supplier!', 'data' => '/purchases/invoice.php?New=1&creditor_id='],
         ];
         $view->set('shortcuts', $shortcuts);
         UI::emailDialogue(CT_SUPPLIER, $js);

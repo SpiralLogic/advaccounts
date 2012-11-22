@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -558,6 +557,7 @@
   /** **/
   define('SAVE', 'Save');
   define('ADD', 'ADD');
+  define('FETCH', 'fetch');
   define('INACTIVE', 'Inactive');
   define('DELETE', 'Delete');
   define('CHANGED', 'Changed');

@@ -37,10 +37,10 @@
     protected $debtor;
     protected $security = SA_CUSTOMER;
     protected function before() {
-      if ($this->action == 'save') {
+      if ($this->action == SAVE) {
         $this->debtor = new Debtor();
         $this->debtor->save($_POST['company']);
-      } elseif ($this->action == 'fetch' && $this->Input->request('id', Input::NUMERIC) > 0) {
+      } elseif ($this->action == FETCH && $this->Input->request('id', Input::NUMERIC) > 0) {
         $this->debtor        = new Debtor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->debtor->id, CT_CUSTOMER);
         $this->Session->setGlobal('debtor_id', $this->debtor->id);
@@ -75,7 +75,7 @@
      */
     protected function generateForm() {
       $cache = Cache::_get('customer_form');
-      //   $cache = null;
+      $cache = null;
       if ($cache) {
         $this->JS->addState($cache[1]);
         return $form = $cache[0];

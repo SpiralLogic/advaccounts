@@ -144,8 +144,7 @@
     protected function compileHashes($value) {
       $pattern = '/\{\{#([^?]+?)\}\}(.*?)\{\{\/\1}\}/s';
       $return  = preg_replace_callback(
-        $pattern,
-        function ($input) {
+        $pattern, function ($input) {
           $var      = ltrim($input[1], '$');
           $contents = $input[2];
           $tempvar  = uniqid();
@@ -157,8 +156,7 @@
           $return .= '<?php endforeach; endif; ?>';
           //        }
           return $return;
-        },
-        $value
+        }, $value
       );
       return $return;
     }
@@ -171,14 +169,12 @@
      */
     protected function compileMixins($value) {
       return preg_replace_callback(
-        '/\{\{\>(.+?)\}\}/',
-        function ($input) {
+        '/\{\{\>(.+?)\}\}/', function ($input) {
           $view = new View($input[1]);
           $view->addContext($input[1]);
           $this->_js = array_unique(array_merge($this->_js, $view->_js));
           return '<?php if ($' . $view->context . '!==false): ?>' . $view->getCompiled() . '<?php endif; ?>';
-        },
-        $value
+        }, $value
       );
     }
     /**
@@ -200,14 +196,10 @@
      */
     protected function compileEchos($value) {
       $value = preg_replace(
-        '/\{\{(\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\}\}/',
-        '<?php if (isset($1)) echo $1; ?>',
-        $value
+        '/\{\{(\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\}\}/', '<?php if (isset($1)) echo $1; ?>', $value
       );
       return preg_replace(
-        '/\{\{([^!\.].*?)\}\}/',
-        '<?php echo $1; ?>',
-        $value
+        '/\{\{([^!\.].*?)\}\}/', '<?php echo $1; ?>', $value
       );
     }
     /**
@@ -219,7 +211,7 @@
      */
     public function render($return = false) {
       $__contents = $this->getCompiled();
-      //   return var_dump($__contents);
+//         return var_dump($__contents);
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
@@ -299,7 +291,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -317,7 +308,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -335,7 +325,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -353,7 +342,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>
