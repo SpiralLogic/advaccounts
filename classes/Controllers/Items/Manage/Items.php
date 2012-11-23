@@ -35,9 +35,9 @@
     protected $security = SA_CUSTOMER;
     protected function before() {
       $this->formid   = $this->Input->getPostGlobal('_form_id');
-      $this->stock_id = $this->Input->getPostGlobal('stock_id');
-      $this->stockid  = $this->Input->getPostGlobal('stockid');
-      if ($this->stock_id) {
+      $this->stock_id = & $this->Input->getPostGlobal('stock_id');
+      $this->stockid  = & $this->Input->getPostGlobal('stockid');
+      if (!$this->stockid) {
         $this->stockid = Item::getStockID($this->stock_id);
       }
       $this->item     = new Item($this->stockid);
@@ -53,8 +53,8 @@
     protected function getItemData() {
       $data['item']          = $this->item;
       $data['stockLevels']   = $this->item->getStockLevels();
-      $data['sellprices']    = (string) $this->generateSellPrices();
-      $data['buyprices']     = (string) $this->generateBuyPrices();
+      $data['sellprices']    = $this->embed('Items\\Manage\\Prices');
+      $data['buyprices']     = $this->embed('Items\\Manage\\Purchasing');
       $data['reorderlevels'] = (string) $this->generateReorderLevels();
       return $data;
     }
@@ -97,12 +97,12 @@
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $form->group('buttons');
-      $form->submit(ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
-      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
-      $form->submit(SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button('_action', ADD, ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
+      $form->button('_action', CANCEL, CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button('_action', SAVE, SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
       $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
-      if (!$this->stock_id && REQUEST_GET) {
+      if (!$this->Input->hasGet('stock_id')) {
         $searchBox = UI::search(
           'itemSearchId', [
                           'url'      => 'Item',

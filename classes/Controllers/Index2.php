@@ -21,7 +21,7 @@
 
      */
     protected function index() {
-      $this->embed('Items\\Manage\\Prices');
+      echo   $this->embed('Items\\Manage\\Prices');
       $this->embed('Items\\Manage\\Purchasing');
     }
   }

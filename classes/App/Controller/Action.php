@@ -43,12 +43,15 @@
     }
     /**
      * @param $controller
+     *
+     * @return bool
      */
     protected function embed($controller) {
       $controller = '\\ADV\\Controllers\\' . $controller;
       if (class_exists($controller)) {
-        (new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $this->Input, static::$DB))->run(true);
+        return (new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $this->Input, static::$DB))->run(true);
       }
+      return false;
     }
     /**
      * @param bool $embed
@@ -65,9 +68,11 @@
         echo '<br>';
         $this->Page->end_page(true);
       } else {
+        ob_start();
         $this->index();
       }
       $this->after();
+      return !$embed ? : ob_get_clean();
     }
     protected function before() {
     }

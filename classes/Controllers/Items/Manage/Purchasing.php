@@ -22,10 +22,8 @@
     protected $security = SA_PURCHASEPRICING;
     protected $tableWidth = '90';
     protected function before() {
-      $this->frame    = $this->Input->request('frame');
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
       $this->object   = new Purchase();
-      $this->runPost();
       if ($this->stock_id) {
         $this->object->stock_id = $this->stock_id;
         $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);

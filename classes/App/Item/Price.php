@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -15,6 +14,7 @@
     use ADV\App\Form\Form;
     use ADV\App\Item\Item;
     use ADV\App\Validation;
+    use ADV\App\User;
 
     /**
 
@@ -59,6 +59,7 @@
         if (strlen($this->curr_abrev) > 3) {
           return $this->status(false, 'Curr_abrev must be not be longer than 3 characters!', 'curr_abrev');
         }
+        $this->price = User::_numeric($this->price);
         if (!Validation::is_num($this->price, 0)) {
           return $this->status(false, 'Price must be a number', 'price');
         }
@@ -422,14 +423,7 @@
           $value_of_change = $qoh * ($new_cost - $last_cost);
           $memo_           = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
           GL_Trans::add_std_cost(
-            ST_COSTUPDATE,
-            $update_no,
-            $date_,
-            $stock_gl_code["adjustment_account"],
-            $stock_gl_code["dimension_id"],
-            $stock_gl_code["dimension2_id"],
-            $memo_,
-            (-$value_of_change)
+            ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change)
           );
           GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, $value_of_change);
         }

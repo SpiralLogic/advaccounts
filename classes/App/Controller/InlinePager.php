@@ -32,6 +32,7 @@
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
       //Edit::kill($pager_name);
       $table = Edit::newPager($pager_name, $cols);
+      $table->setActionURI(strtolower(str_replace(['ADV\\Controllers', '\\'], ['', '/'], get_called_class())));
       $this->getEditing($table);
       $table->setData($this->getTableRows($pager_name));
       $table->width = $this->tableWidth;

@@ -5,6 +5,7 @@
     use Item_Unit;
     use ADV\Core\JS;
     use ADV\App\Validation;
+    use ADV\App\User;
 
     /**
 
@@ -59,6 +60,7 @@
         if (!Validation::is_num($this->stockid, 0)) {
           return $this->status(false, 'Stockid must be a number', 'stockid');
         }
+        $this->price = User::_numeric($this->price);
         if (!Validation::is_num($this->price, 0)) {
           return $this->status(false, 'Price must be a number and $0 or more', 'price');
         }
@@ -67,9 +69,7 @@
         }
         if (!Validation::is_num($this->conversion_factor)) {
           return $this->status(
-            false,
-            '"The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."r',
-            'conversion_factor'
+            false, '"The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."r', 'conversion_factor'
           );
         }
         if (strlen($this->supplier_description) > 20) {
@@ -120,7 +120,6 @@
 
     /**
      * PHP version 5.4
-     *
      * @category  PHP
      * @package   adv.accounts.app
      * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -229,17 +228,11 @@
        */
       public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $legacy = false) {
         return Item::select(
-          $name,
-          $selected_id,
-          $all_option,
-          $submit_on_change,
-          array(
-               'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-               'show_inactive' => $all,
-               'editable'      => false
-          ),
-          false,
-          $legacy
+          $name, $selected_id, $all_option, $submit_on_change, array(
+                                                                    'where'         => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+                                                                    'show_inactive' => $all,
+                                                                    'editable'      => false
+                                                               ), false, $legacy
         );
       }
       /**
@@ -258,17 +251,13 @@
           echo "<td>$label</td>\n";
         }
         echo Item::select(
-          $name,
-          $selected_id,
-          $all_option,
-          $submit_on_change,
-          array(
-               'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
-               'editable'    => 30,
-               'cells'       => true,
-               'description' => '',
-               'class'       => 'auto'
-          )
+          $name, $selected_id, $all_option, $submit_on_change, array(
+                                                                    'where'       => "mb_flag!= '" . STOCK_MANUFACTURE . "'",
+                                                                    'editable'    => 30,
+                                                                    'cells'       => true,
+                                                                    'description' => '',
+                                                                    'class'       => 'auto'
+                                                               )
         );
       }
       /**
