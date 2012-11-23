@@ -22,7 +22,6 @@
    **/
   class Items extends \ADV\App\Controller\Action
   {
-
     protected $itemData;
     protected function before() {
       if (REQUEST_AJAX) {
@@ -65,9 +64,9 @@
       $view->set('menu', $menu);
       $form = new Form();
       $form->group('items');
-      $form->hidden('id');
+      $form->hidden('stockid');
       $form->text('stock_id')->label('Item Code:');
-      $form->text('name')->label('Item Name:');
+      $form->text('description')->label('Item Name:');
       $form->textarea('long_description', ['rows' => 4])->label('Description:');
       $form->custom(Item_Category::select('category_id'))->label('Category:');
       $form->custom(Item_Unit::select('uom'))->label('Units:');
@@ -81,17 +80,15 @@
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
-      if (!isset($_GET['stock_id'])) {
+      if (!$this->Input->hasGet('stock_id')) {
         $searchBox = UI::search(
-          'itemSearchId',
-          [
-            'url'      => 'Item',
-            'idField'  => 'stock_id',
-            'name'     => 'itemSearchId', //
-            'focus'    => true,
-            'callback' => 'Items.fetch'
-          ],
-          true
+          'itemSearchId', [
+                          'url'      => 'Item',
+                          'idField'  => 'stock_id',
+                          'name'     => 'itemSearchId', //
+                          'focus'    => true,
+                          'callback' => 'Items.fetch'
+                          ], true
         );
         $view->set('searchBox', $searchBox);
         $id = 0;

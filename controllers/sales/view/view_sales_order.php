@@ -121,9 +121,8 @@
     Table::header($th);
     $payments_total = 0;
     if (count($inv_numbers)) {
-      $sql    = "SELECT a.*, d.reference FROM debtor_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_to=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(
-        ',',
-        array_values($inv_numbers)
+      $sql    = "SELECT a.*, d.reference,d.tran_date as date2 FROM debtor_allocations a, debtor_trans d WHERE a.trans_type_from=" . ST_CUSTPAYMENT . " AND a.trans_no_from=d.trans_no AND d.type=" . ST_CUSTPAYMENT . " AND a.trans_no_to IN(" . implode(
+        ',', array_values($inv_numbers)
       ) . ")";
       $result = DB::_query($sql, "The related payments could not be retreived");
       $k      = 0;
@@ -132,7 +131,7 @@
         $payments_total += $this_total;
         Cell::label(Debtor::viewTrans($payment_row["trans_type_from"], $payment_row["trans_no_from"]));
         Cell::label($payment_row["reference"]);
-        Cell::label(Dates::_sqlToDate($payment_row["date_alloc"]));
+        Cell::label(Dates::_sqlToDate($payment_row["date2"]));
         Cell::amount($this_total);
         echo '</tr>';
       }
@@ -202,8 +201,7 @@
     array_map(
       function ($line) {
         return ($line->quantity - $line->qty_done);
-      },
-      $_SESSION['View']->line_items
+      }, $_SESSION['View']->line_items
     )
   );
   $items_total   = $_SESSION['View']->get_items_total();
