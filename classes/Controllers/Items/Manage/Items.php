@@ -84,7 +84,7 @@
       $form->group('items');
       $form->hidden('stockid');
       $form->text('stock_id')->label('Item Code:');
-      $form->text('name')->label('Item Name:');
+      $form->text('description')->label('Item Name:');
       $form->textarea('long_description', ['rows' => 4])->label('Description:');
       $form->custom(Item_Category::select('category_id'))->label('Category:');
       $form->custom(Item_Unit::select('uom'))->label('Units:');
