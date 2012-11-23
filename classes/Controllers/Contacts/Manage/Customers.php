@@ -25,6 +25,7 @@
 
   /**
    * PHP version 5.4
+   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -33,7 +34,6 @@
    **/
   class Customers extends \ADV\App\Controller\Action
   {
-
     /** @var Debtor */
     protected $debtor;
     protected function before() {
@@ -44,7 +44,7 @@
         $this->debtor        = new Debtor($this->Input->request('id', Input::NUMERIC));
         $data['contact_log'] = Contact_Log::read($this->debtor->id, CT_CUSTOMER);
         $this->Session->setGlobal('debtor_id', $this->debtor->id);
-      } elseif ($this->action == 'addBranch') {
+      } elseif ($this->action == 'newBranch') {
         $this->debtor   = new Debtor($this->Input->request('id', Input::NUMERIC));
         $data['branch'] = $this->debtor->addBranch();
       } elseif ($this->action == 'deleteBranch') {
@@ -111,10 +111,10 @@
       $form->text('branch[email]')->label("Email:");
       $form->textarea('branch[br_address]', ['cols' => 37, 'rows' => 4])->label('Street:');
       $branch_postcode = new Postcode([
-        'city'     => ['branch[city]'], //
-        'state'    => ['branch[state]'], //
-        'postcode' => ['branch[postcode]']
-      ], $js);
+                                      'city'     => ['branch[city]'], //
+                                      'state'    => ['branch[state]'], //
+                                      'postcode' => ['branch[postcode]']
+                                      ], $js);
       $view->set('branch_postcode', $branch_postcode->getForm());
       $form->group('accounts_details')->text('accounts[contact_name]')->label('Accounts Contact:');
       $form->text('accounts[phone]')->label('Phone Number:');
@@ -123,10 +123,10 @@
       $form->text('accounts[email]')->label('Email:');
       $form->textarea('accounts[br_address]', ['cols' => 37, 'rows' => 4])->label('Street:');
       $accounts_postcode = new Postcode([
-        'city'     => ['accounts[city]'], //
-        'state'    => ['accounts[state]'], //
-        'postcode' => ['accounts[postcode]'] //
-      ], $js);
+                                        'city'     => ['accounts[city]'], //
+                                        'state'    => ['accounts[state]'], //
+                                        'postcode' => ['accounts[postcode]'] //
+                                        ], $js);
       $view->set('accounts_postcode', $accounts_postcode->getForm());
       $form->hidden('accounts_id');
       $form->group('accounts');
