@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -69,7 +68,12 @@
       }
       return $modules;
     }
-    public function run() {
+    /**
+     * @param bool $embed
+     *
+     * @return mixed|void
+     */
+    public function run($embed = false) {
       $this->before();
       $this->index();
     }

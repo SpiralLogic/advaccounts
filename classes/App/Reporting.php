@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -240,21 +239,18 @@
       $html->br()->p(['class' => 'center']);
       UI::select('EmailSelect' . $type_no, $emails, ['style' => 'max-width:400px'], null, $html)->br;
       $html->button(
-        'EmailButton' . $type_no,
-        $link_text,
-        array(
-             'style'    => 'margin:20px',
-             'data-url' => $url,
-        ),
-        false
+        'EmailButton' . $type_no, $link_text, array(
+                                                   'style'    => 'margin:20px',
+                                                   'data-url' => $url,
+                                              ), false
       )->p;
       $js
         = <<<JS
 		$('#EmailButton$type_no').click(function() {
 		if (!confirm("Send email now?")) { return false;}
 			var email = $("#EmailSelect$type_no").val();
-		Adv.loader.on(65000);
 				$.getJSON($(this).data('url') + "&Email="+email);
+		Adv.loader.on(65000);
 			\$emailBox.dialog("close");
 		return false;
 		});
@@ -267,7 +263,6 @@ JS;
     }
     /**
      * Universal link to any kind of report.
-     *
      * @static
      *
      * @param        $link_text
@@ -277,7 +272,6 @@ JS;
      * @param bool   $icon
      * @param string $class
      * @param string $id
-     *
      * @param bool   $raw
      *
      * @return string
@@ -326,13 +320,10 @@ JS;
      */
     public static function emailDialogue($id, $type, $type_no, $text = "Email") {
       return (new HTML)->button(
-        false,
-        $text,
-        array(
-             'class'        => 'button email-button',
-             'data-emailid' => $id . '-' . $type . '-' . $type_no
-        ),
-        false
+        false, $text, array(
+                           'class'        => 'button email-button',
+                           'data-emailid' => $id . '-' . $type . '-' . $type_no
+                      ), false
       )->__toString();
     }
   }

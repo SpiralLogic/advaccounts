@@ -30,9 +30,11 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Payment extends \ADV\App\Controller\Action {
+  class Payment extends \ADV\App\Controller\Action
+  {
     public $date_banked;
     public $debtor_id;
+    protected $security = SA_SALESPAYMNT;
     protected function before() {
       if (REQUEST_GET && $this->Input->get('account', 'amount', 'memo', 'date')) {
         $_POST['bank_acount'] = $this->Input->get('account');
@@ -71,6 +73,7 @@
       if (!Forms::isListUpdated('bank_account') && !isset($_POST['bank_account'])) {
         $_POST['bank_account'] = Bank_Account::get_customer_default($this->debtor_id);
       }
+      $this->setTitle("Customer Payment Entry");
     }
     /**
      * @return bool
@@ -89,27 +92,11 @@
       }
       if ($this->Input->hasPost('createinvoice')) {
         GL_Allocation::create_miscorder(
-          new Debtor($this->debtor_id),
-          $_POST['branch_id'],
-          $this->date_banked,
-          $_POST['memo_'],
-          $_POST['ref'],
-          Validation::input_num('amount'),
-          Validation::input_num('discount')
+          new Debtor($this->debtor_id), $_POST['branch_id'], $this->date_banked, $_POST['memo_'], $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount')
         );
       }
       $payment_no = Debtor_Payment::add(
-        0,
-        $this->debtor_id,
-        $_POST['branch_id'],
-        $_POST['bank_account'],
-        $this->date_banked,
-        $_POST['ref'],
-        Validation::input_num('amount'),
-        Validation::input_num('discount'),
-        $_POST['memo_'],
-        $rate,
-        Validation::input_num('charge')
+        0, $this->debtor_id, $_POST['branch_id'], $_POST['bank_account'], $this->date_banked, $_POST['ref'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['memo_'], $rate, Validation::input_num('charge')
       );
       if (!$payment_no) {
         return false;
@@ -127,7 +114,6 @@
       return true;
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Customer Payment Entry"), SA_SALESPAYMNT, $this->Input->request('frame'));
       $this->runAction();
       Forms::start();
       Table::startOuter('standard width90 pad2');
@@ -169,7 +155,6 @@
       }
       Forms::submitCenter('_action', 'addPaymentItem', true, 'Add Payment', 'default');
       Forms::end();
-      $this->Page->end_page(!$this->Input->request('frame'));
     }
     /**
      * @internal param $prefix

@@ -29,7 +29,8 @@
    * @method static Ajax _start_div($id = null, $trigger = null, $non_ajax = false)
    * @method static Ajax _end_div($return_div = false)
    */
-  class Ajax extends \JsHttpRequest {
+  class Ajax extends \JsHttpRequest
+  {
     use Traits\StaticAccess;
 
     /** @var array * */
@@ -121,13 +122,11 @@
      */
     public function addAssign($trigger, $sTarget, $sAttribute, $sData) {
       $this->addCommand(
-        $trigger,
-        array(
-             'n' => 'as',
-             't' => $sTarget,
-             'p' => $sAttribute
-        ),
-        $sData
+        $trigger, array(
+                       'n' => 'as',
+                       't' => $sTarget,
+                       'p' => $sAttribute
+                  ), $sData
       );
       return $this;
     }
@@ -142,12 +141,10 @@
      */
     public function addUpdate($trigger, $sTarget, $sData) {
       $this->addCommand(
-        $trigger,
-        array(
-             'n' => 'up',
-             't' => $sTarget
-        ),
-        $sData
+        $trigger, array(
+                       'n' => 'up',
+                       't' => $sTarget
+                  ), $sData
       );
       return $this;
     }
@@ -162,12 +159,10 @@
      */
     public function addDisable($trigger, $sTarget, $sData = true) {
       $this->addCommand(
-        $trigger,
-        array(
-             'n' => 'di',
-             't' => $sTarget
-        ),
-        $sData
+        $trigger, array(
+                       'n' => 'di',
+                       't' => $sTarget
+                  ), $sData
       );
       return $this;
     }
@@ -182,12 +177,10 @@
      */
     public function addEnable($trigger, $sTarget, $sData = true) {
       $this->addCommand(
-        $trigger,
-        array(
-             'n' => 'di',
-             't' => $sTarget
-        ),
-        !$sData
+        $trigger, array(
+                       'n' => 'di',
+                       't' => $sTarget
+                  ), !$sData
       );
       return $this;
     }
@@ -248,12 +241,12 @@
       if ($non_ajax) { // div for non-ajax elements
         array_push($this->ajax_divs, [$id, null]);
         echo "<div class='js hidden' " . ($id ? "id='$id'" : '') . ">";
-      } else { // ajax ready div
-        array_push($this->ajax_divs, [$id, $trigger === null ? $id : $trigger]);
-        echo "<div " . ($id ? "id='$id'" : '') . ">";
-        if ($this->_inAjax()) {
-          ob_start();
-        }
+        return;
+      }
+      array_push($this->ajax_divs, [$id, $trigger === null ? $id : $trigger]);
+      echo "<div " . ($id ? "id='$id'" : '') . ">";
+      if ($this->_inAjax()) {
+        ob_start();
       }
     }
     /**

@@ -18,7 +18,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -29,6 +28,7 @@
   {
     public $debtor_id;
     public $stock_id;
+    protected $security = SA_SALESINVOICE;
     protected function before() {
       JS::_openWindow(950, 600);
       if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) {
@@ -59,7 +59,6 @@
       }
     }
     protected function index() {
-      $this->Page->init($this->title, SA_SALESINVOICE);
       if (isset($_POST[Orders::BATCH_INVOICE])) {
         $this->batchInvoice();
       }
@@ -78,7 +77,6 @@
       Table::end();
       $this->displayTable();
       Forms::end();
-      $this->Page->end_page();
     }
     protected function displayTable() {
       $sql

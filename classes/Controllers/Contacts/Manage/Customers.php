@@ -35,6 +35,7 @@
   {
     /** @var Debtor */
     protected $debtor;
+    protected $security = SA_CUSTOMER;
     protected function before() {
       if ($this->action == SAVE) {
         $this->debtor = new Debtor();
@@ -60,15 +61,14 @@
         $this->JS->renderJSON($data);
       }
       $this->JS->footerFile("/js/company.js");
+      $this->setTitle("Customers");
     }
     protected function index() {
-      $this->Page->init(_($this->help_context = "Customers"), SA_CUSTOMER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
       echo $this->generateForm();
       $this->JS->onload("Company.setValues(" . json_encode(['company' => $this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
-      $this->Page->end_page(true);
     }
     /**
      * @return string

@@ -33,7 +33,7 @@
     /**
 
      */
-    public function __construct(Session $session, User $user, Ajax $ajax, JS $js, Input $input, DB $db) {
+    public function __construct(Session $session, User $user, Ajax $ajax, JS $js, Input $input, DB $db = null) {
       $this->Ajax    = $ajax;
       $this->JS      = $js;
       $this->Session = $session;
@@ -41,11 +41,38 @@
       $this->Input   = $input;
       static::$DB    = $db;
     }
-    public function run() {
-      $this->action = $this->Input->post('_action');
+    /**
+     * @param $controller
+     *
+     * @return bool
+     */
+    protected function embed($controller) {
+      $controller = '\\ADV\\Controllers\\' . $controller;
+      if (class_exists($controller)) {
+        return (new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $this->Input, static::$DB))->run(true);
+      }
+      return false;
+    }
+    /**
+     * @param bool $embed
+     *
+     * @return mixed|void
+     */
+    public function   run($embed = false) {
+      $this->action   = $this->Input->post('_action');
+      $this->embedded = $embed || $this->Input->request('frame');
       $this->before();
-      $this->index();
+      if ($this->Page && !REQUEST_AJAX && !$this->Ajax->inAjax()) {
+        $this->Page->init($this->title, $this->security, $this->embedded);
+        $this->index();
+        echo '<br>';
+        $this->Page->end_page(true);
+      } else {
+        ob_start();
+        $this->index();
+      }
       $this->after();
+      return !$embed ? : ob_get_clean();
     }
     protected function before() {
     }

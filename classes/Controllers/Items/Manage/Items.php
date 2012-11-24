@@ -26,24 +26,25 @@
    **/
   class Items extends \ADV\App\Controller\Action
   {
-
     protected $itemData;
     protected $stock_id = 0;
     protected $stockid = 0;
     /** @var \ADV\App\Item\Item */
     protected $item;
     protected $formid;
+    protected $security = SA_CUSTOMER;
     protected function before() {
       $this->formid   = $this->Input->getPostGlobal('_form_id');
-      $this->stock_id = $this->Input->getPostGlobal('stock_id');
-      $this->stockid  = $this->Input->getPostGlobal('stockid');
-      if ($this->stock_id) {
+      $this->stock_id = & $this->Input->getPostGlobal('stock_id');
+      $this->stockid  = & $this->Input->getPostGlobal('stockid');
+      if (!$this->stockid) {
         $this->stockid = Item::getStockID($this->stock_id);
       }
       $this->item     = new Item($this->stockid);
       $this->stock_id = $this->item->stock_id;
       $this->runPost();
       $this->JS->footerFile("/js/quickitems.js");
+      $this->setTitle("Items");
     }
     /**
      * @internal param $id
@@ -52,8 +53,8 @@
     protected function getItemData() {
       $data['item']          = $this->item;
       $data['stockLevels']   = $this->item->getStockLevels();
-      $data['sellprices']    = (string) $this->generateSellPrices();
-      $data['buyprices']     = (string) $this->generateBuyPrices();
+      $data['sellprices']    = $this->embed('Items\\Manage\\Prices');
+      $data['buyprices']     = $this->embed('Items\\Manage\\Purchasing');
       $data['reorderlevels'] = (string) $this->generateReorderLevels();
       return $data;
     }
@@ -75,7 +76,6 @@
       }
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Items"), SA_CUSTOMER, isset($_GET['frame']));
       $view = new View('items/quickitems');
       $menu = new MenuUI('disabled');
       $view->set('menu', $menu);
@@ -84,7 +84,7 @@
       $form->group('items');
       $form->hidden('stockid');
       $form->text('stock_id')->label('Item Code:');
-      $form->text('name')->label('Item Name:');
+      $form->text('description')->label('Item Name:');
       $form->textarea('long_description', ['rows' => 4])->label('Description:');
       $form->custom(Item_Category::select('category_id'))->label('Category:');
       $form->custom(Item_Unit::select('uom'))->label('Units:');
@@ -97,22 +97,20 @@
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $form->group('buttons');
-      $form->submit(ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
-      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
-      $form->submit(SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button('_action', ADD, ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
+      $form->button('_action', CANCEL, CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button('_action', SAVE, SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
       $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
-      if (!$this->stock_id && REQUEST_GET) {
+      if (!$this->Input->hasGet('stock_id')) {
         $searchBox = UI::search(
-          'itemSearchId',
-          [
-            'url'      => 'Item',
-            'idField'  => 'stock_id',
-            'name'     => 'itemSearchId', //
-            'focus'    => true,
-            'callback' => 'Items.fetch'
-          ],
-          true
+          'itemSearchId', [
+                          'url'      => 'Item',
+                          'idField'  => 'stock_id',
+                          'name'     => 'itemSearchId', //
+                          'focus'    => true,
+                          'callback' => 'Items.fetch'
+                          ], true
         );
         $view->set('searchBox', $searchBox);
         $this->JS->setFocus('itemSearchId');
@@ -125,7 +123,6 @@
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
       $this->JS->onload("Items.onload(" . json_encode($data) . ");");
-      $this->Page->end_page(true);
     }
     /**
      * @return \ADV\App\Pager\Edit

@@ -167,8 +167,10 @@
     /**
      * @param $var
      */
-    public function keepFlash($var) {
-      $this->setFlash($var, $this->getFlash($var));
+    public function keepFlash($var, $default = null) {
+      $value = $this->getFlash($var);
+      $value = ($value === null) ? $default : $value;
+      $this->setFlash($var, $value);
     }
     /**
      * @internal param $globals

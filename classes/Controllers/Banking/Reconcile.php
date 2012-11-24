@@ -36,7 +36,8 @@
   /**
    * @property \ADV\Core\Input\Input Input
    */
-  class Reconcile extends \ADV\App\Controller\Action {
+  class Reconcile extends \ADV\App\Controller\Action
+  {
     /** @var Num Num */
     protected $Num;
     /** @var Dates Dates */
@@ -53,6 +54,7 @@
     protected $end_date;
     /** @var bool * */
     protected $accountHasStatements = false;
+    protected $security = SA_RECONCILE;
     /**
 
      */
@@ -75,7 +77,6 @@
         $this->updateData();
       }
       $this->accountHasStatements = Bank_Account::hasStatements($this->bank_account);
-
       if (Forms::isListUpdated('bank_date')) {
         $this->reconcile_date = $this->Dates->sqlToDate($this->bank_date);
         $this->Session->setGlobal('bank_date', $this->bank_date);
@@ -98,13 +99,13 @@
       if ($id != -1) {
         $this->updateCheckbox($id);
       }
+      $this->setTitle("Reconcile Bank Account");
+      $this->runAction();
     }
     /**
 
      */
     protected function index() {
-      $this->runAction();
-      $this->Page->init(_($help_context = "Reconcile Bank Account"), SA_RECONCILE);
       Forms::start();
       Table::start();
       echo '<tr>';
@@ -122,7 +123,6 @@
         $this->addDialogs();
       }
       $this->JS->addLive("Adv.Reconcile.setUpGrid();");
-      $this->Page->end_page();
     }
     /**
 
@@ -280,6 +280,7 @@
       echo '</tr>';
       Table::end();
       $this->Ajax->end_div();
+      $this->Ajax->activate('summary');
     }
     /**
      * @return int
@@ -292,7 +293,6 @@
         $_POST["reconciled"]  = $this->Num->priceFormat($end_balance - $beg_balance);
       }
       $result = GL_Account::get_max_reconciled($this->reconcile_date, $this->bank_account);
-
       if ($row = static::$DB->fetch($result)) {
         $_POST["reconciled"] = $this->Num->priceFormat($row["end_balance"] - $row["beg_balance"]);
         if (!isset($_POST["beg_balance"])) {
@@ -379,9 +379,7 @@
       $hidden   = 'last[' . $row['id'] . ']';
       $value    = $row['reconciled'] != '';
       return Forms::checkbox(null, $name, $value, false, _('Reconcile this transaction')) . Forms::hidden($hidden, $value, false) . Forms::hidden(
-        'state_' . $row['id'],
-        $state_id,
-        false
+        'state_' . $row['id'], $state_id, false
       );
     }
     /**
@@ -602,12 +600,7 @@
       }
       $reconcile_value = $this->Input->hasPost("rec_" . $reconcile_id) ? ("'" . $this->Dates->dateToSql($this->reconcile_date) . "'") : 'null';
       GL_Account::update_reconciled_values(
-        $reconcile_id,
-        $reconcile_value,
-        $this->reconcile_date,
-        Validation::input_num('end_balance'),
-        $this->bank_account,
-        $this->Input->post('state_' . $reconcile_id, Input::NUMERIC, -1)
+        $reconcile_id, $reconcile_value, $this->reconcile_date, Validation::input_num('end_balance'), $this->bank_account, $this->Input->post('state_' . $reconcile_id, Input::NUMERIC, -1)
       );
       $this->Ajax->activate('_page_body');
       return true;

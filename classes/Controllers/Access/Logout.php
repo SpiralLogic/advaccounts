@@ -14,13 +14,22 @@
   /**
    *
    */
-  class Logout extends \ADV\App\Controller\Base {
+  class Logout extends \ADV\App\Controller\Base
+  {
     protected function index() {
       $this->Page->start('Logout', SA_OPEN, true);
       (new View('logout'))->render();
       $this->Page->end(true);
     }
-    public function run() {
+    /**
+     * @param bool $embed
+     */
+    /**
+     * @param bool $embed
+     *
+     * @return mixed|void
+     */
+    public function run($embed = false) {
       $this->index();
       $this->after();
     }

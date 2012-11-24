@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -32,12 +31,10 @@
      */
     abstract protected function formContents(Form $form, View $view);
     protected function index() {
-      $this->Page->init($this->title, $this->security);
       $this->beforeTable();
       $this->generateTable();
       echo '<br>';
       $this->generateForm();
-      $this->Page->end_page(true);
     }
     protected function beforeTable() {
     }

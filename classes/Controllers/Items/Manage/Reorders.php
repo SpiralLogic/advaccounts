@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -32,13 +31,11 @@
       }
     }
     protected function index() {
-      $this->Page->init($this->title, $this->security);
       $this->beforeTable();
       $this->generateTable();
       $btn          = $this->formatBtn(SAVE, SAVE, ICON_SAVE);
       $btn['class'] = 'btn btn-primary margin20';
       echo '<div class="center">' . $btn . '</div>';
-      $this->Page->end_page(true);
     }
     /**
      * @param $pagername
