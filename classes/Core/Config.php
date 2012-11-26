@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -14,6 +13,7 @@
 
   /**
    * @method static _get($var, $default = false)
+   * @method static _getAll($var, $default = false)
    * @method static _removeAll()
    * @method static Config i()
    */
@@ -161,8 +161,4 @@
       }
       return $this->Cache->set('config', $this->_vars);
     }
-    /**
-     * @param $string1
-     */
-    public static function _getAll($string1) { }
   }

@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -146,7 +145,9 @@
       } catch (Exception $e) {
         var_dump($e);
       }
-      fastcgi_finish_request();
+      if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+      }
       static::$request_finsihed = true;
       try {
         static::fireHooks('shutdown');

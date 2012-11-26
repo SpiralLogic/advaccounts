@@ -55,7 +55,7 @@
       $data['stockLevels']   = $this->item->getStockLevels();
       $data['sellprices']    = $this->embed('Items\\Manage\\Prices');
       $data['buyprices']     = $this->embed('Items\\Manage\\Purchasing');
-      $data['reorderlevels'] = (string) $this->generateReorderLevels();
+      $data['reorderlevels'] = $this->embed('Items\\Manage\\Reorders');
       return $data;
     }
     protected function runPost() {

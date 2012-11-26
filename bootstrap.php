@@ -12,12 +12,11 @@
   } elseif (strpos($_SERVER['HTTP_HOST'], 'advaccounts') !== false) {
     header('Location: http://advanced.advancedgroup.com.au' . $_SERVER['REQUEST_URI']);
   }
-  if ($_SERVER['DOCUMENT_URI'] !== '/assets.php' && (!isset($_SERVER['QUERY_STRING']) || (strlen($_SERVER['QUERY_STRING']) && substr_compare(
-    $_SERVER['QUERY_STRING'],
-    '/profile/',
-    0,
-    9,
-    true
+  if (!isset($_SERVER['DOCUMENT_URI']) && isset($_SERVER['PATH_INFO'])) {
+    $_SERVER['DOCUMENT_URI'] = $_SERVER['PATH_INFO'];
+  }
+  if (isset($_SERVER['DOCUMENT_URI']) && $_SERVER['DOCUMENT_URI'] !== '/assets.php' && (!isset($_SERVER['QUERY_STRING']) || (strlen($_SERVER['QUERY_STRING']) && substr_compare(
+    $_SERVER['QUERY_STRING'], '/profile/', 0, 9, true
   )) !== 0) && extension_loaded('xhprof')
   ) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
@@ -38,6 +37,9 @@
         );
       }
     );
+  }
+  if (function_exists("date_default_timezone_set") and function_exists("date_default_timezone_get")) {
+    @date_default_timezone_set(@date_default_timezone_get());
   }
   error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
   ini_set('display_errors', 'On');
@@ -63,7 +65,7 @@
   define('REQUEST_PUT', REQUEST_METHOD === 'PUT' ? 'PUT' : false);
   define('REQUEST_DELETE', REQUEST_METHOD === 'DELETE' ? 'DELETE' : false);
   define('CRLF', chr(13) . chr(10));
-  /** @var $loader  */
+  /** @var $loader */
   $loader = require PATH_CORE . 'Loader.php';
   if ($_SERVER['DOCUMENT_URI'] === '/assets.php') {
     new \ADV\Core\Assets();
@@ -77,6 +79,16 @@
      */
     function e($string) {
       return \ADV\Core\Security::htmlentities($string);
+    }
+  }
+  if (!function_exists('_')) {
+    /**
+     * @param $string
+     *
+     * @return array|string
+     */
+    function _($string) {
+      return $string;
     }
   }
   call_user_func(

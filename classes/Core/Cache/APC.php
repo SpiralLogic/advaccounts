@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -16,6 +15,14 @@
   {
     public $defineFunction;
     public $loadFunction;
+    /**
+     *
+     */
+    public function __construct() {
+      if (!extension_loaded('apc')) {
+        throw new \RuntimeException('APC is not installed!');
+      }
+    }
     public function init() {
       $this->loadFunction   = (function_exists('apc_load_constants')) ? 'apc_load_constants' : false;
       $this->defineFunction = (function_exists('apc_define_constants')) ? 'apc_define_constants' : false;
@@ -90,7 +97,7 @@
         return true;
       }
       if (is_callable($constants)) {
-        $constants = (array)call_user_func($constants);
+        $constants = (array) call_user_func($constants);
       }
       $definer = $this->defineFunction;
       if (is_callable($definer)) {

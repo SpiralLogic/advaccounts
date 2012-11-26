@@ -82,8 +82,12 @@
       );
       $this->Cache  = $dic->offsetSet(
         'Cache', function () {
-          $driver = new \ADV\Core\Cache\APC();
-          $cache  = new \ADV\Core\Cache($driver);
+          try {
+            $driver = new \ADV\Core\Cache\APC();
+          } catch (\RuntimeException $e) {
+            $driver = new \ADV\Core\Cache\Session;
+          }
+          $cache = new \ADV\Core\Cache($driver);
           if (isset($_GET['cache_reloaded'])) {
             Event::notice('Cache Reloaded');
           }
@@ -181,7 +185,11 @@
       );
       $this->Session = $dic->offsetSet(
         'Session', function (\ADV\Core\DIC $c) {
-          $handler           = new \ADV\Core\Session\Memcached();
+          try {
+            $handler = new \ADV\Core\Session\Memcached();
+          } catch (\RuntimeException $e) {
+            $handler = new \SessionHandler();
+          }
           $session           = new \ADV\Core\Session($handler);
           $config            = $c->offsetGet('Config');
           $l                 = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
@@ -353,15 +361,11 @@
             }
           );
         }
-        try {
-          $password = \AesCtr::decrypt(base64_decode($_POST['password']), $this->Session->getFlash('password_iv'), 256);
-          if (!$this->User->login($company, $_POST["user_name"], $password)) {
-            // Incorrect password
-            $this->Session->keepFlash('uri');
-            $this->loginFail();
-          }
-        } catch (\ADV\Core\DB\DBException $e) {
-          throw new \ADV\Core\DB\DBException('Could not connect to database!');
+        $password = \AesCtr::decrypt(base64_decode($_POST['password']), $this->Session->getFlash('password_iv'), 256);
+        if (!$this->User->login($company, $_POST["user_name"], $password)) {
+          // Incorrect password
+          $this->Session->keepFlash('uri');
+          $this->loginFail();
         }
         $this->Session->checkUserAgent();
         $this->Session['User'] = $this->User;

@@ -729,7 +729,7 @@
         array(
              'autoopen'   => false,
              'modal'      => true,
-             'width'      => 940,
+             'width'      => 1024,
              'height'     => 630,
              'resizeable' => true
         )

@@ -20,7 +20,7 @@
     protected $baseDir = ROOT_WEB;
     protected $charSet = 'UTF-8';
     protected $debug = false;
-    protected $gzip = true;
+    protected $gzip = false;
     protected $compressionLevel = 9;
     protected $gzipExceptions = ['gif', 'jpeg', 'jpg', 'png', 'swf', 'ico'];
     protected $minify = true;
@@ -259,6 +259,9 @@
     protected function serverCache() {
       $this->cacheFile = $cachedFile = $this->cacheDir . DIRECTORY_SEPARATOR . $this->cachePrefix . md5(serialize($this->files)) . '.' . $this->fileType . ($this->gzip ? '.gz' :
         '');
+      if (!is_writeable($this->cacheFile)) {
+        $this->serverCache = false;
+      }
       if (!$this->serverCache) {
         $this->generate = true;
       } else {
@@ -312,6 +315,8 @@
         header('Content-Type: ' . $this->mimeTypes[$this->fileType] . '; charset=' . $this->charSet);
       }
     }
-    protected function sendContent() {
+    protected function sendContent($content) {
+      echo $content;
+      exit;
     }
   }

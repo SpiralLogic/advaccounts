@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -78,20 +77,23 @@
       $this->default_connection = $config['name'];
     }
     /**
-     * @param  $config
+     * @param $config
      *
-     * @throws \ADV\Core\DB\DBException
+     * @throws \Exception|\PDOException
      * @return bool
      */
     protected function connect($config) {
       try {
-        parent::__construct('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], array(\PDO::MYSQL_ATTR_FOUND_ROWS => true));
+        $options = [];
+        if (defined('\\PDO\\MYSQL_ATTR_FOUND_ROWS')) {
+          $options[\PDO::MYSQL_ATTR_FOUND_ROWS] = true;
+        }
+        parent::__construct('mysql:host=' . $config['host'] . ';dbname=' . $config['dbname'], $config['user'], $config['pass'], $options);
         $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->setAttribute(\PDO::ATTR_ORACLE_NULLS, \PDO::NULL_TO_STRING);
         //       $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
       } catch (\PDOException $e) {
-        throw $e;
-        //throw new DBException('Could not connect to database:' . $config['name'] . ', check configuration!');
+        throw new DBException('Could not connect to database: ' . $config['name'] . '!<br> (' . $e->getMessage() . ')');
       }
       return true;
     }
@@ -384,7 +386,7 @@
       }
       $rows = ($this->Cache) ? $this->Cache->get('sql.rowcount.' . md5($sql)) : false;
       if ($rows !== false) {
-        return (int)$rows;
+        return (int) $rows;
       }
       $rows = $this->query($sql)->rowCount();
       if ($this->Cache) {
@@ -616,7 +618,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * String representation of object
-     *
      * @link http://php.net/manual/en/serializable.serialize.php
      */
     public function serialize() {
@@ -628,7 +629,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Constructs the object
-     *
      * @link http://php.net/manual/en/serializable.unserialize.php
      *
      * @param string $serialized <p>

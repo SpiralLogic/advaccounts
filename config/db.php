@@ -8,24 +8,24 @@
    * @link      http://www.advancedgroup.com.au
    **/
   return array(
-    'default'      => array(
+    'default'   => array(
       'id'      => 1,
       'company' => 'Advanced Group PTY LTD',
       'name'    => 'fa', //
       'dbname'  => 'fa', //
       'user'    => 'fa', //
       'pass'    => '1willenberg', //
-      'host'    => 'localhost', //
+      'host'    => '127.0.0.1', //
       'port'    => 3306, //
       'debug'   => false
     ),
-    'jobsboard'    => array(
+    'jobsboard' => array(
       'company' => false,
       'name'    => 'jobsboard',
       'dbname'  => 'jobsboard',
       'user'    => 'fa',
       'pass'    => '1willenberg',
-      'host'    => 'localhost',
+      'host'    => '127.0.0.1',
       'port'    => 3306,
       'debug'   => false,
     ),

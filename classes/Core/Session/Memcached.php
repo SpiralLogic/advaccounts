@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -22,6 +21,11 @@
     /** @var \Memcached */
     public $connection;
     public $lockid;
+    public function __construct() {
+      if (!extension_loaded('memcached')) {
+        throw new \RuntimeException('MemCached is not installed!');
+      }
+    }
     /**
      * @return bool
      */
@@ -46,9 +50,10 @@
       return true;
     }
     /**
-     * @param $save_path
-     * @param $session_id
+     * @param string $save_path
+     * @param string $session_id
      *
+     * @throws \ADV\Core\SessionException
      * @return mixed
      */
     public function open($save_path, $session_id) {
@@ -78,7 +83,7 @@
     public function read($session_id) {
       $result = $this->connection->get($session_id);
       if ($this->connection->getResultCode() === \Memcached::RES_SUCCESS) {
-        return (string)$result;
+        return (string) $result;
       }
       return '';
     }

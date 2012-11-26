@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -119,9 +118,7 @@
     public static function writeLog($type, $message = '', $file = '', $line = '') {
       if (is_writable(ROOT_DOC . '../error_log')) {
         error_log(
-          date(DATE_RFC822) . ' ' . $type . ": " . static::dumpVar($message) . " in file: " . $file . " on line:" . $line . "\n\n",
-          3,
-          ROOT_DOC . '../error_log'
+          date(DATE_RFC822) . ' ' . $type . ": " . static::dumpVar($message) . " in file: " . $file . " on line:" . $line . "\n\n", 3, ROOT_DOC . '../error_log'
         );
       }
     }
@@ -215,7 +212,7 @@
         $headers .= "From: Accounts Errors <errors@advancedgroup.com.au>\r\n";
         $headers .= "Reply-To: errors@advancedgroup.com.au\r\n";
         $headers .= "X-Mailer: \r\n";
-        $success = mail($to, $subject, $text, $headers);
+        $success = true; //mail($to, $subject, $text, $headers);
         if (!$success) {
           static::handler(E_ERROR, $success, __FILE__, __LINE__);
         }
@@ -372,9 +369,7 @@
       $error              = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
       static::$debugLog[] = $error;
       error_log(
-        date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content, true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n",
-        3,
-        ROOT_DOC . '../error_log'
+        date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content, true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, ROOT_DOC . '../error_log'
       );
     }
     /**

@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -23,37 +22,6 @@
     protected $tableWidth = '50';
     protected $security;
     protected $form_id = null;
-    protected function runPost() {
-      if (REQUEST_POST) {
-        $this->form_id = $this->Input->post('_form_id');
-        $id            = $this->getActionId([DELETE, EDIT, INACTIVE]);
-        switch ($this->action) {
-          case DELETE:
-            $status = $this->onDelete($id);
-            break;
-          case EDIT:
-            $this->onEdit($id);
-            break;
-          /** @noinspection PhpMissingBreakStatementInspection */
-          case INACTIVE:
-            $this->object->load($id);
-            $changes['inactive'] = $this->Input->post('_value', Input::NUMERIC);
-          case SAVE:
-            $changes = isset($changes) ? $changes : $_POST;
-            $status  = $this->onSave($changes);
-            break;
-          case CANCEL:
-            $this->object->getStatus();
-            break;
-          case 'showInactive':
-            $this->generateTable();
-            exit();
-        }
-        if (isset($status)) {
-          $this->Ajax->addStatus($status);
-        }
-      }
-    }
     /**
      * @param                       $changes
      * @param \ADV\App\DB\Base|null $object
@@ -116,8 +84,7 @@
       $inactive = false;
       if (isset($_SESSION['pager'][$pager_name])) {
         $inactive = ($this->action == 'showInactive' && $this->Input->post(
-          '_value',
-          Input::NUMERIC
+          '_value', Input::NUMERIC
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
         return $inactive;
       }

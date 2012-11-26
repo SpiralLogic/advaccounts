@@ -211,7 +211,7 @@
      */
     public function render($return = false) {
       $__contents = $this->getCompiled();
-//         return var_dump($__contents);
+      //        return var_dump($__contents);
       ob_start() and extract($this->_viewdata, EXTR_SKIP);
       // We'll include the view contents for parsing within a catcher
       // so we can avoid any WSOD errors. If an exception occurs we
