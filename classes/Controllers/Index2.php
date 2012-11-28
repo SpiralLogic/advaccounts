@@ -11,6 +11,7 @@
   namespace ADV\Controllers;
 
   use ADV\App\Controller\Action;
+  use ADV\Core\Dialog;
 
   /** **/
   class Index2 extends Action
@@ -21,7 +22,6 @@
 
      */
     protected function index() {
-      echo   $this->embed('Items\\Manage\\Prices');
-      $this->embed('Items\\Manage\\Purchasing');
+      echo "<a href='/Items/Manage/items' class='openWindow'>test</a>";
     }
   }

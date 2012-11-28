@@ -715,29 +715,9 @@
      * @return void
      */
     public static function addEditDialog($options = []) {
-      $default  = array('page' => 0);
-      $o        = array_merge($default, $options);
-      $stockbox = new Dialog('Item Edit', 'stockbox', '');
-      $stockbox->addButtons(
-        array(
-             'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
-                item.get().description)} $(this).dialog("close")',
-             'Close' => '$(this).dialog("close");'
-        )
-      );
-      $stockbox->setOptions(
-        array(
-             'autoopen'   => false,
-             'modal'      => true,
-             'width'      => 1024,
-             'height'     => 630,
-             'resizeable' => true
-        )
-      );
-      $stockbox->show();
       $action
         = <<<JS
-            $('#stockbox').html("<iframe src='/items/manage/items?frame=1&stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' style='width:100%' height='500'  style='border:none' frameborder='0'></iframe>").dialog('open');
+            Adv.popupWindow.load("/items/manage/items?stock_id="+$(this).data('stock_id'));
 JS;
       JS::_addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
       JS::_addLiveEvent('label.stock', 'click', $action, "wrapper", true);

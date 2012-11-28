@@ -27,7 +27,8 @@
   any form.
 
    */
-  class Pager implements \Countable {
+  class Pager implements \Countable
+  {
     const SQL            = 1;
     const ARR            = 2;
     const NEXT           = 'next';

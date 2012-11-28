@@ -57,6 +57,7 @@
         if ($this->debtor) {
           $data['company'] = $this->debtor;
           $data['status']  = $this->debtor->getStatus();
+          $data['status2'] = FETCH;
         }
         $this->JS->renderJSON($data);
       }

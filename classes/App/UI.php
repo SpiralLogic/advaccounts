@@ -1,8 +1,7 @@
 <?php
   /**
    * PHP version 5.4
-   *
-   * @category  PHP
+   * @category  PHPw
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -35,7 +34,7 @@
         $HTML = new HTML();
       }
       $HTML->select($id, $params);
-      foreach ((array)$options as $value => $name) {
+      foreach ((array) $options as $value => $name) {
         if (is_array($name)) {
           $HTML->optgroup(array('label' => $value));
           foreach ($name as $value) {
@@ -201,25 +200,21 @@
         $HTML->label(null, $o['label'], array('for' => $id), false);
       }
       $HTML->input(
-        $id,
-        array(
-             'value'       => $o['selected'],
-             'placeholder' => $o['placeholder'],
-             'name'        => $id,
-             'class'       => $o['class'],
-             'size'        => $o['size']
-        )
+        $id, array(
+                  'value'       => $o['selected'],
+                  'placeholder' => $o['placeholder'],
+                  'name'        => $id,
+                  'class'       => $o['class'],
+                  'size'        => $o['size']
+             )
       );
       if ($o['editable']) {
         $HTML->label(
-          'lineedit',
-          'edit',
-          array(
-               'for'   => $id,
-               'class' => 'stock button',
-               'style' => 'display:none'
-          ),
-          false
+          'lineedit', 'edit', array(
+                                   'for'   => $id,
+                                   'class' => 'stock button',
+                                   'style' => 'display:none'
+                              ), false
         );
         $desc_js .= '$("#lineedit").data("stock_id",value.stock_id).show().parent().css("white-space","nowrap"); ';
       }
@@ -231,14 +226,11 @@
         $selectjs = $o['selectjs'];
       } elseif ($o['description'] !== false) {
         $HTML->textarea(
-          'description',
-          $o['description'],
-          array(
-               'name'  => 'description',
-               'rows'  => 1,
-               'class' => 'width90'
-          ),
-          false
+          'description', $o['description'], array(
+                                                 'name'  => 'description',
+                                                 'rows'  => 1,
+                                                 'class' => 'width90'
+                                            ), false
         );
         $desc_js .= "$('#description').css('height','auto').attr('rows',4);";
       } elseif ($o['submitonselect']) {

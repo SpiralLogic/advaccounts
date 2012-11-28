@@ -325,7 +325,7 @@
     'REMOVED'                 => 'Removed',
     'CANCEL'                  => 'Cancel',
     'SAVE'                    => 'Save',
-    'FETCH'                   => 'Save',
+    'FETCH'                   => 'fetch',
     'ADD'                     => 'Add',
     'EDIT'                    => 'Edit',
     'DELETE'                  => 'Delete',

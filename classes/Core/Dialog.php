@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -120,7 +119,7 @@
     }
     public function show() {
       $buttons = '';
-      if (count($this->buttons > 0)) {
+      if (count($this->buttons) > 0) {
         $buttons = '.dialog("option","buttons", {';
         foreach ($this->buttons as $button => $action) {
           $buttons .= '"' . $button . '": function() { ' . $action . '}, ';
@@ -132,7 +131,7 @@
         echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
         $js = '$' . $this->name . '=$("#' . $this->name . '").dialog(' . $this->JS->arrayToOptions($this->options) . ')' . $buttons;
       } else {
-        $this->JS->beforeload('$' . $this->name . " = $('" . '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>)' . "');");
+        $this->JS->beforeload('var html  = ' . json_encode('<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>') . ';$' . $this->name . " = $(html);");
         $js = '$' . $this->name . '.dialog(' . $this->JS->arrayToOptions($this->options) . ')' . $buttons;
       }
       if (!empty($js)) {

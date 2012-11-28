@@ -24,7 +24,6 @@
     protected function before() {
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
       $this->object   = new \ADV\App\Item\Reorder();
-      $this->runPost();
       if ($this->stock_id) {
         $this->object->stock_id = $this->stock_id;
         $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
@@ -44,6 +43,13 @@
      */
     protected function getTableRows($pagername) {
       return $this->object->getAll($this->stock_id);
+    }
+    /**
+     * @param \ADV\App\Pager\Edit $pager
+     */
+    protected function getEditing(\ADV\App\Pager\Edit $pager) {
+      $pager->setObject($this->object);
+      $this->object->stock_id = $this->stock_id;
     }
     /**
      * @return array
