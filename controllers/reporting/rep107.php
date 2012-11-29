@@ -1,5 +1,4 @@
 <?php
-
   /* * ********************************************************************
            Copyright (C) Advanced Group PTY LTD
            Released under the terms of the GNU General Public License, GPL,
@@ -160,7 +159,7 @@
           $rep->AmountCol(7, 8, $myrow['Total'] - $invBalance, $dec, -2);
           $rep->NewLine();
           $rep->TextCol(3, 7, 'Outstanding Balance', -2);
-          $rep->TextCol(7, 8, $invBalance, -2);
+          $rep->AmountCol(7, 8, $invBalance, $dec, -2);
           $rep->NewLine();
           if ($words != "") {
             $rep->NewLine(1);
