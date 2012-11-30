@@ -87,7 +87,7 @@
           if ($myrow2["quantity"] == 0) {
             continue;
           }
-          $Net = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::_price_dec());
+          $Net = Num::_round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), User::price_dec());
           $SubTotal += $Net;
           $TaxType      = Tax_ItemType::get_for_item($myrow2['stock_id']);
           $DisplayPrice = Num::_format($myrow2["unit_price"], $dec);
@@ -128,7 +128,7 @@
         $rep->row          = $rep->bottomMargin + ($fromBottom * $rep->lineHeight);
         $linetype          = true;
         $doctype           = $j;
-        extract($rep->getHeaderArray($doctype));
+        include(PATH_REPORTS . 'includes' . DS . 'doctext.php');
         $rep->TextCol(3, 7, $rep->doc_sub_total, -2);
         $rep->TextCol(7, 8, $display_sub_total, -2);
         $rep->NewLine();
@@ -146,7 +146,7 @@
           }
         }
         $rep->NewLine();
-        $display_total = Num::_format(($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
+        $display_total = Num::_fwwsDormat(($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
         $rep->Font('bold');
         $rep->TextCol(3, 7, $rep->doc_total_invoice, -2);
         $rep->TextCol(7, 8, $display_total, -2);
