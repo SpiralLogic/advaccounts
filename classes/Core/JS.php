@@ -25,7 +25,8 @@
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
-  class JS {
+  class JS
+  {
     use Traits\StaticAccess;
 
     /** @var array * */
@@ -138,12 +139,11 @@
         ob_start();
       }
       $files = $content = $onReady = '';
-      if (!REQUEST_AJAX) {
-        foreach ($this->footerFiles as $dir => $file) {
-          $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
-        }
-        echo $files;
-      } else {
+      foreach ($this->footerFiles as $dir => $file) {
+        $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
+      }
+      echo $files;
+      if (REQUEST_AJAX) {
         $this->beforeload = array_merge($this->beforeload, $this->onlive, $this->onload);
         $this->onlive     = $this->onload = [];
       }

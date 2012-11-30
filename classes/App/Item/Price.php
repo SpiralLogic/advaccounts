@@ -38,7 +38,7 @@
       protected $_classname = 'Price';
       protected $_id_column = 'id';
       public $id = 0;
-      public $item_code_id;
+      public $item_code_id = 0;
       public $stock_id;
       public $sales_type_id = 1;
       public $curr_abrev;

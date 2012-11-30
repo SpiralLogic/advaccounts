@@ -44,7 +44,7 @@ var Items = function () {
       if (id.id !== undefined) {
         id = id.id;
       }
-      $.post("#", {stockid: id}, function (data) {
+      $.post("/Items/Manage/Items", {stockid: id}, function (data) {
         Items.onload(data, true);
       }, 'json');
       return false;

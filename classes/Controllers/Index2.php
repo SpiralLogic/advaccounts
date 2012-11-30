@@ -11,7 +11,7 @@
   namespace ADV\Controllers;
 
   use ADV\App\Controller\Action;
-  use ADV\Core\Dialog;
+  use ADV\Core\JS;
 
   /** **/
   class Index2 extends Action
@@ -22,6 +22,13 @@
 
      */
     protected function index() {
-      echo "<a href='/Items/Manage/items' class='openWindow'>test</a>";
+      echo "<a data-href='/Items/Manage/items' class='test'>test</a><div id='test'></div>";
+      $this->JS->onload(
+        <<<JS
+        $('.test').on('click',function(){
+        $.get($(this).data('href'),function(data) { $( data ).appendTo('#test'); $('#test').find('[name=_action]').off('click mousedown').end().on('click','button', function(e){ e.stopPropagation();$('#test') . empty();
+    return false;})});});
+JS
+      );
     }
   }

@@ -67,8 +67,8 @@ Adv.extend({
              }())
            });
 window.addEventListener('scroll', Adv.ScrollDetect.off, false);
-Adv.extend({  headerHeight: Adv.o.header.height(),
-             msgbox:        $('#msgbox').ajaxError(function (event, request, settings) {
+Adv.extend({  headerHeight:     Adv.o.header.height(),
+             msgbox:            $('#msgbox').ajaxError(function (event, request, settings) {
                var status;
                if (request.statusText == "abort") {
                  return;
@@ -91,7 +91,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                                }
                                return undefined;
                              }),
-             Status:        {
+             Status:            {
                msgboxTimeout: null,
                show:          function (status) {
                  var text = '', type;
@@ -161,38 +161,34 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                  Adv.msgbox.css({opacity: 0, height: 0});
                }//
              }, //
-             openWindow:    function (url, title, width, height) {
+             openWindow:        function (url, title, width, height) {
                width = width || 900;
                height = height || 600;
                var left = (screen.width - width) / 2, top = (screen.height - height) / 2;
                return window.open(url, title, 'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',screenX=' + left + ',screenY=' + top + ',status=no,scrollbars=yes');
              }, //
-             openTab:       function (url) {window.open(url, '_blank');},//
-              updateQueryString: function(key, value, url) {
-                 if (!url) {url = window.location.href;}
-                 var re = new RegExp("([?|&])" + key + "=.*?(&|#|$)", "gi");
-
-                 if (url.match(re)) {
-                     if (value)
-                         {return url.replace(re, '$1' + key + "=" + value + '$2');}
-                     else
-                         {return url.replace(re, '$2');}
+             openTab:           function (url) {window.open(url, '_blank');},//
+             updateQueryString: function (key, value, url) {
+               if (!url) {url = window.location.href;}
+               var re = new RegExp("([?|&])" + key + "=.*?(&|#|$)", "gi");
+               if (url.match(re)) {
+                 if (value) {return url.replace(re, '$1' + key + "=" + value + '$2');}
+                 else {return url.replace(re, '$2');}
+               }
+               else {
+                 if (value) {
+                   var separator = url.indexOf('?') !== -1 ? '&' : '?', hash = url.split('#');
+                   url = hash[0] + separator + key + '=' + value;
+                   if (hash[1]) {url += '#' + hash[1];}
+                   return url;
                  }
-                 else {
-                     if (value) {
-                         var separator = url.indexOf('?') !== -1 ? '&' : '?',
-                             hash = url.split('#');
-                         url = hash[0] + separator + key + '=' + value;
-                         if (hash[1]) {url += '#' + hash[1];}
-                         return url;
-                     }
-                     else
-                         {return url;}
-                 }
+                 else {return url;}
+               }
              },
-             hoverWindow:   {
-               _init: false,//
-               init:  function (width, height) {
+             hoverWindow:       {
+               _init:        false,//
+               popupCurrent: null, //
+               init:         function (width, height) {
                  Adv.hoverWindow.width = width || 600;
                  Adv.hoverWindow.height = height || 600;
                  if (Adv.hoverWindow._init) {
@@ -200,40 +196,41 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                  }
                  Adv.hoverWindow._init = true;
                  Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e) {
+                   var self=this;
                    switch (e.type) {
                      case 'click':
                        Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
                        return false;
                      case 'mouseenter':
-                       Adv.popupWindow.load(this.href,$(this).parent());
+                       if (Adv.hoverWindow.popupCurrent) {
+                         clearTimeout(Adv.hoverWindow.popupCurrent);
+                       }
+                       Adv.hoverWindow.popupCurrent = setTimeout(function () {
+                         Adv.popupWindow.load(self.href, $(self).parent());
+
+                       }, 750);
                        break;
                      case 'mouseleave':
-                       Adv.popupWindow.cancel();
+                       clearTimeout(Adv.hoverWindow.popupCurrent);
                        break;
                      default:
                    }
                  });
                }},
-             popupWindow:   (function () {
-               var popupWindow //
-                 , popupURL //
+             popupWindow:       (function () {
+               var popupURL //
                  , popupDiv //
-                 , popupCurrent //
+                 , popupWindow //
                  , popupParent//
                  , win = $(window);
                return {
-                 cancel:  function () {
-                   clearTimeout(popupCurrent);
-                 },//
-                 load:    function (url,element) {
-                   if (popupCurrent) {
-                     clearTimeout(popupCurrent);
-                   }
+
+                 load:    function (url, element) {
                    popupURL = url;
-                   if (element!==undefined) {
+                   if (element !== undefined) {
                      popupParent = element;
                    }
-                   popupCurrent = setTimeout(Adv.popupWindow.show, 750);
+                   Adv.popupWindow.show();
                  },//
                  loaded:  function () {
                    popupWindow.show();
@@ -253,7 +250,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                      popupWindow.parent().remove();
                    }
                    popupWindow = $("<iframe>", {
-                     src:    Adv.updateQueryString('frame',1,popupURL),
+                     src:    Adv.updateQueryString('frame', 1, popupURL),
                      width:  Adv.hoverWindow.width,
                      onload: 'Adv.popupWindow.loaded()'
                    }).css({background: 'white'}).hide();
@@ -266,7 +263,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                  }
                }
              }()), //
-             TabMenu:       (function () {
+             TabMenu:           (function () {
                var deferreds = [];
                return{
                  init:  function (id, ajax, links, page) {
@@ -292,7 +289,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                  }
                }
              }()),//
-             Forms:         (function () {
+             Forms:             (function () {
                var focusOff = false//
                  , tooltip//
                  , hidden = []//
@@ -669,9 +666,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                  },
                  //returns the absolute position of some element within document
                  elementPos:      function (e) {
-                   var res = {};
-                   res.x = 0;
-                   res.y = 0;
+                   var res = {x: 0, y: 0};
                    if (e !== null) {
                      res.x = e.offsetLeft;
                      res.y = e.offsetTop;
@@ -777,7 +772,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
                    }, 3000);
                  }
                }
-             })(), Scroll:  (function () {
+             })(), Scroll:      (function () {
     return{
       focus:        null,
       elementName:  null,
@@ -806,7 +801,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
 
 
     };
-  })(), Events:             (function () {
+  })(), Events:                 (function () {
     var events = [], onload = false, toClean = false, firstBind = function (s, t, a) {
       $(s).bind(t, a);
     };
@@ -850,7 +845,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
         }
       }
     }
-  }()), postcode:           (function () {
+  }()), postcode:               (function () {
     var sets = [];
     return {
       add:   function (set, city, state, code) {
@@ -865,7 +860,7 @@ Adv.extend({  headerHeight: Adv.o.header.height(),
         return false;
       }
     };
-  }()), inView:             function (el) {
+  }()), inView:                 function (el) {
     var rect = el.getBoundingClientRect();
     return (
       rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth

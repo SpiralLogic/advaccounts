@@ -62,7 +62,7 @@
       $this->action   = $this->Input->post('_action');
       $this->embedded = $embed || $this->Input->request('frame');
       $this->before();
-      if ($this->Page && !REQUEST_AJAX && !$this->Ajax->inAjax()) {
+      if ($this->Page && !$this->Ajax->inAjax()) {
         $this->Page->init($this->title, $this->security, $this->embedded);
         $this->index();
         echo '<br>';

@@ -23,8 +23,6 @@
 </div>
 {{>sidemenu}}
 {{$messages}}
-{{#if !REQUEST_AJAX}}
-{{/if}}
 <script>{{$beforescripts}}
 </script>  {#$JS->render()#}
 {{#if !REQUEST_AJAX}}

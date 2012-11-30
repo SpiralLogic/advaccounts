@@ -203,7 +203,9 @@
       )->offsetGet(null);
       $this->User    = $dic['User'];
       $this->Input   = $dic['Input'];
-      $this->JS->footerFile($this->Config->get('assets.footer'));
+      if (!REQUEST_AJAX) {
+        $this->JS->footerFile($this->Config->get('assets.footer'));
+      }
       $this->menu = new Menu(_("Main Menu"));
       $this->menu->addItem(_("Main Menu"), "index.php");
       $this->menu->addItem(_("Logout"), "/account/access/logout.php");
