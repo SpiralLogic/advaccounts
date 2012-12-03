@@ -694,9 +694,9 @@
           }
         }
         $sql = "INSERT INTO sales_order_details (order_no, trans_type, stk_code, description, unit_price, quantity, discount_percent,sort_order) VALUES (";
-        $sql .= $order_no . "," . $this->trans_type . "," . DB::_escape($line->stock_id) . ", " . DB::_escape(
+        $sql .= $order_no . "," . $this->trans_type . "," . DB::_quote($line->stock_id) . ", " . DB::_quote(
           $line->description
-        ) . "," . $line->price . ", " . $line->quantity . ", " . $line->discount_percent . ", " . $position . ")";
+        ) . "," . $line->price . ", " . $line->quantity . ", " . $line->discount_percent . ", " . (int) $position . ")";
         DB::_query($sql, "order Details Cannot be Added");
       } /* inserted line items into sales order details */
       DB_AuditTrail::add($this->trans_type, $order_no, $this->document_date);
@@ -738,15 +738,7 @@
         $line_no = 0;
         while ($myrow = DB::_fetch($result)) {
           $this->add_to_order(
-            $line_no,
-            $myrow["stk_code"],
-            $myrow["quantity"],
-            $myrow["unit_price"],
-            $myrow["discount_percent"],
-            $myrow["qty_done"],
-            $myrow["standard_cost"],
-            $myrow["description"],
-            $myrow["id"]
+            $line_no, $myrow["stk_code"], $myrow["quantity"], $myrow["unit_price"], $myrow["discount_percent"], $myrow["qty_done"], $myrow["standard_cost"], $myrow["description"], $myrow["id"]
           );
           $line_no++;
         }
@@ -976,12 +968,7 @@
         $ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
       }
       $this->set_customer(
-        $debtor_id,
-        $name,
-        $myrow['curr_code'],
-        $myrow['discount'],
-        $myrow['payment_terms'],
-        $myrow['payment_discount']
+        $debtor_id, $name, $myrow['curr_code'], $myrow['discount'], $myrow['payment_terms'], $myrow['payment_discount']
       ); // the sales type determines the price list to be used by default
       $this->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
       if ($this->trans_type != ST_SALESORDER && $this->trans_type != ST_SALESQUOTE) {
@@ -1095,8 +1082,7 @@
               // oops, we don't have enough of one of the component items
               $row_class = "class='stockmankobg'";
               $qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::_format(
-                $qoh,
-                Item::qty_dec($stock_item->stock_id)
+                $qoh, Item::qty_dec($stock_item->stock_id)
               ) . '<br>';
               $has_marked = true;
             }
@@ -1144,10 +1130,7 @@
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
       Forms::amountCellsSmall(null, 'totalDiscount', $total_discount, null, ['$']);
       echo  (new HTML)->td(null, array('colspan' => 2, 'class' => 'center'))->button(
-        'discountAll',
-        'Discount All',
-        array('name' => '_action', 'value' => 'discountAll'),
-        false
+        'discountAll', 'Discount All', array('name' => '_action', 'value' => 'discountAll'), false
       );
       Forms::hidden('_discountAll', '0', true);
       echo HTML::td();
@@ -1279,9 +1262,7 @@
         Table::section(2);
         Table::label(_("Customer Currency:"), $this->customer_currency);
         GL_ExchangeRate::display(
-          $this->customer_currency,
-          Bank_Currency::for_company(),
-          ($editable && Input::_post('OrderDate') ? $_POST['OrderDate'] : $this->document_date)
+          $this->customer_currency, Bank_Currency::for_company(), ($editable && Input::_post('OrderDate') ? $_POST['OrderDate'] : $this->document_date)
         );
       }
       Table::section(3);
@@ -1445,20 +1426,12 @@
           Ajax::_activate('items_table');
         }
         Forms::dateRow(
-          $delname,
-          'delivery_date',
-          $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') : $this->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : ''
+          $delname, 'delivery_date', $this->trans_type == ST_SALESORDER ? _('Enter requested day of delivery') :
+            $this->trans_type == ST_SALESQUOTE ? _('Enter Valid until Date') : ''
         );
         Forms::textRow(_("Deliver To:"), 'deliver_to', $this->deliver_to, 40, 40, _('Additional identifier for delivery e.g. name of receiving person'));
         Forms::textareaRow(
-          "<a href='#'>Address:</a>",
-          'delivery_address',
-          $this->delivery_address,
-          35,
-          5,
-          _('Delivery address. Default is address of customer branch'),
-          null,
-          'id="address_map"'
+          "<a href='#'>Address:</a>", 'delivery_address', $this->delivery_address, 35, 5, _('Delivery address. Default is address of customer branch'), null, 'id="address_map"'
         );
         if (strlen($this->delivery_address) > 10) {
           //JS::_gmap("#address_map", $this->delivery_address, $this->deliver_to);
