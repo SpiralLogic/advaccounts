@@ -203,7 +203,7 @@
       )->offsetGet(null);
       $this->User    = $dic['User'];
       $this->Input   = $dic['Input'];
-      if (!REQUEST_AJAX) {
+      if (!REQUEST_AJAX && REQUEST_GET) {
         $this->JS->footerFile($this->Config->get('assets.footer'));
       }
       $this->menu = new Menu(_("Main Menu"));

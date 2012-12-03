@@ -561,9 +561,8 @@
      * @return int
      */
     public static function get_demand($stock_id, $location) {
-      $sql = "SELECT SUM(sales_order_details.quantity - " . "sales_order_details.qty_sent) AS QtyDemand
-                        FROM sales_order_details,
-                                sales_orders
+      $sql
+        = "SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS QtyDemand FROM sales_order_details, sales_orders
                             WHERE sales_order_details.order_no=" . "sales_orders.order_no AND sales_orders.trans_type=" . ST_SALESORDER . " AND
                             sales_orders.trans_type=sales_order_details.trans_type AND ";
       if ($location != "") {

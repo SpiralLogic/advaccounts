@@ -22,12 +22,12 @@
 
      */
     protected function index() {
-      echo "<a data-href='/Items/Manage/items' class='test'>test</a><div id='test'></div>";
+      echo "<a data-href='/Items/Manage/items' class='test'>test</a>";
       $this->JS->onload(
         <<<JS
         $('.test').on('click',function(){
-        $.get($(this).data('href'),function(data) { $( data ).appendTo('#test'); $('#test').find('[name=_action]').off('click mousedown').end().on('click','button', function(e){ e.stopPropagation();$('#test') . empty();
-    return false;})});});
+  Adv.dialogWindow.open('Items/Manage/Items');
+  });
 JS
       );
     }

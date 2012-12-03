@@ -80,7 +80,7 @@
       $menu = new MenuUI('disabled');
       $view->set('menu', $menu);
       $form = new Form();
-      $form->start('item');
+      $form->start('item','/Items/Manage/Items');
       $form->group('items');
       $form->hidden('stockid');
       $form->text('stock_id')->label('Item Code:');

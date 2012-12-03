@@ -90,7 +90,7 @@ var Items = function () {
     save:      function () {
       var action = item;
       item['_action'] = 'Save';
-      $.post('#', item, function (data) {
+      $.post('/Items/Manage/Items', item, function (data) {
         if (data.success && data.success.success) {
           Items.onload(data);
         }

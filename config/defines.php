@@ -13,6 +13,7 @@
     'ICON_ADD'                => "icon-ok",
     'ICON_UPDATE'             => "icon-ok",
     'ICON_OK'                 => "icon-ok",
+    'ICON_SAVE'               => "icon-ok",
     'ICON_CANCEL'             => "icon-remove",
     'ICON_GL'                 => "icon-columns",
     'ICON_PRINT'              => "icon-print",

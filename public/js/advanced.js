@@ -185,11 +185,23 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  else {return url;}
                }
              },
-             hoverWindow:       {
-               _init:        false,//
-               popupCurrent: null, //
-               init:         function (width, height) {
-                 Adv.hoverWindow.width = width || 600;
+  dialogWindow: (function () {
+    var dialog = $('<div></div>').appendTo(Adv.o.wrapper);
+    return {
+      open: function (url) {
+        $.get(url, function (data) {
+          dialog.append(data).dialog({autoOpen: true,width:900});
+          $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})
+        });
+      }
+    }
+  }(
+    )),
+  hoverWindow: {
+    _init: false,//
+    popupCurrent: null, //
+    init: function (width, height) {
+      Adv.hoverWindow.width = width || 600;
                  Adv.hoverWindow.height = height || 600;
                  if (Adv.hoverWindow._init) {
                    return;

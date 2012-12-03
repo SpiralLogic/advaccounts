@@ -143,7 +143,7 @@
         $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
       }
       echo $files;
-      if (REQUEST_AJAX) {
+      if (!REQUEST_AJAX) {
         $this->beforeload = array_merge($this->beforeload, $this->onlive, $this->onload);
         $this->onlive     = $this->onload = [];
       }
