@@ -160,12 +160,11 @@
         ob_start();
       }
       $files = $content = $onReady = '';
-      if (!REQUEST_AJAX) {
         foreach ($this->footerFiles as $dir => $file) {
           $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
         }
         echo $files;
-      } else {
+      if (REQUEST_AJAX) {
         $this->beforeload = array_merge($this->beforeload, $this->onlive, $this->onload);
         $this->onlive     = $this->onload = [];
       }
