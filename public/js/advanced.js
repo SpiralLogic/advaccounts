@@ -185,30 +185,29 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  else {return url;}
                }
              },
-  dialogWindow: (function () {
-    var dialog = $('<div></div>').appendTo(Adv.o.wrapper);
-    return {
-      open: function (url) {
-        $.get(url, function (data) {
-          dialog.append(data).dialog({autoOpen: true,width:900});
-          $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})
-        });
-      }
-    }
-  }(
-    )),
-  hoverWindow: {
-    _init: false,//
-    popupCurrent: null, //
-    init: function (width, height) {
-      Adv.hoverWindow.width = width || 600;
+             dialogWindow:      (function () {
+               var dialog = $('<div></div>').appendTo(Adv.o.wrapper);
+               return {
+                 open: function (url) {
+                   $.get(url, function (data) {
+                     dialog.append(data).dialog({autoOpen: true, width: 900});
+                     $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})
+                   });
+                 }
+               }
+             }()),
+             hoverWindow:       {
+               _init:        false,//
+               popupCurrent: null, //
+               init:         function (width, height) {
+                 Adv.hoverWindow.width = width || 600;
                  Adv.hoverWindow.height = height || 600;
                  if (Adv.hoverWindow._init) {
                    return;
                  }
                  Adv.hoverWindow._init = true;
                  Adv.o.$content.off('click.open mouseenter.open').on('click.open mouseenter.open mouseleave.open', 'div .openWindow,td .openWindow', function (e) {
-                   var self=this;
+                   var self = this;
                    switch (e.type) {
                      case 'click':
                        Adv.openWindow(this.href, this.target, Adv.hoverWindow.width, Adv.hoverWindow.height);
@@ -219,7 +218,6 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                        }
                        Adv.hoverWindow.popupCurrent = setTimeout(function () {
                          Adv.popupWindow.load(self.href, $(self).parent());
-
                        }, 750);
                        break;
                      case 'mouseleave':
@@ -286,6 +284,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                    if (deferreds[id] !== undefined) {
                      deferreds[id].resolve();
+                     delete(deferreds[id]);
                    }
                  }, //
                  page:  function (id, page) {
@@ -710,13 +709,20 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                    return res;
                  },
-                 resetHighlights: function () {
-                   $(".ui-state-highlight").removeClass("ui-state-highlight");
-                   Adv.fieldsChanged = 0;
+                 resetHighlights: function (form) {
+                   if (!form) {
+                     form = window;
+                   }
+                   else {
+                     form.fieldsChanged = 0;
+                   }
+                   $(form).find(".ui-state-highlight").removeClass("ui-state-highlight");
                    Adv.Events.onLeave();
                  },
                  stateModified:   function (field) {
-                   var value, defaultValue;
+                   var value//
+                     , defaultValue//
+                     , form = field[0].form;
                    if (field.is(':checkbox')) {
                      value = field.prop('checked');
                      field.val(value);
@@ -732,10 +738,10 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                        defaultValue = field[0].defaultValue;
                      }
                    }
-                   if (defaultValue == value && field.hasClass("ui-state-highlight")) {
-                     Adv.fieldsChanged--;
-                     if (Adv.fieldsChanged === 0) {
-                       Adv.Forms.resetHighlights();
+                   if (form && defaultValue == value && field.hasClass("ui-state-highlight")) {
+                     form.fieldsChanged.fieldsChanged--;
+                     if (form.fieldsChanged === 0) {
+                       Adv.Forms.resetHighlights(form);
                      }
                      else {
                        field.removeClass("ui-state-highlight");
@@ -743,10 +749,10 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      return;
                    }
                    else {
-                     if (defaultValue != value && !field.hasClass("ui-state-highlight")) {
-                       Adv.fieldsChanged++;
+                     if (form && defaultValue != value && !field.hasClass("ui-state-highlight")) {
+                       form.fieldsChanged++;
                        if (field.prop('disabled')) {
-                         return Adv.fieldsChanged;
+                         return form.fieldsChanged;
                        }
                        var fieldname = field.addClass("ui-state-highlight").attr('name');
                      }
@@ -784,67 +790,71 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }, 3000);
                  }
                }
-             })(), Scroll:      (function () {
-    return{
-      focus:        null,
-      elementName:  null,
-      to:           function (position, duration) {
-        if (duration === undefined) {
-          $(window).scrollTop(position);
-          return;
-        }
-        $('html,body').animate({scrollTop: position}, {queue: false, duration: duration, easing: 'easeInSine'});
-      }, set:       function (el) {
-        Adv.Scroll.focus = $(el).position().top - scrollY;
-        Adv.Scroll.elementName = $(el).attr('name');
-      },
-      loadPosition: function (force) {
-        if (Adv.ScrollDetect.loaded && force === undefined) {
-          return;
-        }
-        if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.elementName == 'string') {
-          var pos = $(document.getElementsByName(Adv.Scroll.elementName)[0]).position().top;
-          Adv.Scroll.to(pos - Adv.Scroll.focus);
-          Adv.Scroll.focus = Adv.Scroll.elementName = Adv.ScrollDetect.loaded = true;
-          return;
-        }
-        Adv.Forms.setFocus();
-      }
+             })(),
+             Scroll:            (function () {
+               return{
+                 focus:        null,
+                 elementName:  null,
+                 to:           function (position, duration) {
+                   if (duration === undefined) {
+                     $(window).scrollTop(position);
+                     return;
+                   }
+                   $('html,body').animate({scrollTop: position}, {queue: false, duration: duration, easing: 'easeInSine'});
+                 }, set:       function (el) {
+                   Adv.Scroll.focus = $(el).position().top - scrollY;
+                   Adv.Scroll.elementName = $(el).attr('name');
+                 },
+                 loadPosition: function (force) {
+                   if (Adv.ScrollDetect.loaded && force === undefined) {
+                     return;
+                   }
+                   if (typeof(Adv.Scroll.focus) == 'number' && typeof Adv.Scroll.elementName == 'string') {
+                     var pos = $(document.getElementsByName(Adv.Scroll.elementName)[0]).position().top;
+                     Adv.Scroll.to(pos - Adv.Scroll.focus);
+                     Adv.Scroll.focus = Adv.Scroll.elementName = Adv.ScrollDetect.loaded = true;
+                     return;
+                   }
+                   Adv.Forms.setFocus();
+                 }
 
 
-    };
-  })(), Events:                 (function () {
-    var events = [], onload = false, toClean = false, firstBind = function (s, t, a) {
-      $(s).bind(t, a);
-    };
+               };
+             })(), Events:      (function () {
+    var events = []//
+      , onloads = {}//
+      , toClean = false//
+      , firstBind = function (s, t, a) {
+        $(s).bind(t, a);
+      }//
+      , load = function () {
+        $.each(onloads, function (k, v) { v();});
+      };
     return {
-      bind:    function (selector, types, action) {
+      bind:      function (selector, types, action) {
         events[events.length] = {s: selector, t: types, a: action};
         firstBind(selector, types, action);
       },
-      onload:  function (actions, clean) {
-        var c = !!onload;
-        onload = actions;
-        if (c) {
-          return;
-        }
-        onload();
+      onload:    function (actions, clean, id) {
+
+        onloads[id] = actions;
+        load();
         if (clean !== undefined) {
           toClean = clean;
         }
       },
-      rebind:  function () {
+      rebind:    function () {
         if (toClean) {
           toClean();
         }
-        if (onload) {
-          onload();
+        if (onloads) {
+          load();
         }
         $.each(events, function (k, v) {
           firstBind(v.s, v.t, v.a);
         });
       },
-      onLeave: function (msg) {
+      onLeave:   function (msg) {
         if (msg) {
           window.onbeforeunload = function () {
             return msg;
@@ -855,29 +865,32 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
             return null;
           };
         }
-      }
-    }
-  }()), postcode:               (function () {
-    var sets = [];
-    return {
-      add:   function (set, city, state, code) {
-        sets[set] = {city: $(document.getElementsByName(city)), state: $(document.getElementsByName(state)), postcode: $(document.getElementsByName(code))}
       },
-      fetch: function (data, item, ui) {
-        var set = $(ui).data("set");
-        data = data.value.split('|');
-        sets[set].city.val(data[0]).trigger('change');
-        sets[set].state.val(data[1]).trigger('change');
-        sets[set].postcode.val(data[2]).trigger('change');
-        return false;
-      }
-    };
-  }()), inView:                 function (el) {
-    var rect = el.getBoundingClientRect();
-    return (
-      rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
-      )
-  }
+      getOnload: function () {return onloads;}
+    }
+  }()),//
+             postcode:          (function () {
+               var sets = [];
+               return {
+                 add:   function (set, city, state, code) {
+                   sets[set] = {city: $(document.getElementsByName(city)), state: $(document.getElementsByName(state)), postcode: $(document.getElementsByName(code))}
+                 },
+                 fetch: function (data, item, ui) {
+                   var set = $(ui).data("set");
+                   data = data.value.split('|');
+                   sets[set].city.val(data[0]).trigger('change');
+                   sets[set].state.val(data[1]).trigger('change');
+                   sets[set].postcode.val(data[2]).trigger('change');
+                   return false;
+                 }
+               };
+             }()),//\
+             inView:            function (el) {
+               var rect = el.getBoundingClientRect();
+               return (
+                 rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth
+                 )
+             }
            });
 $(function () {
   var tabs = $("#tabs")//

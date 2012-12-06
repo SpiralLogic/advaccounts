@@ -400,7 +400,7 @@
         $class  = "class='overduebg deny mark'";
         $amount = e($row['state_amount']);
         $date   = e($this->Dates->sqlToDate($row['state_date']));
-        return "$class  data-date='$date' data-amount='$amount' ";
+        return "$class data-date='$date' data-amount='$amount' ";
       }
       $name     = $row['id'];
       $amount   = $row['amount'];
@@ -409,7 +409,7 @@
       $trans_no = $row['trans_no'];
       $class    = "class='cangroup'";
       if ($row['reconciled'] && $row['state_date']) {
-        return "class='  $tocheck deny'";
+        return "class='$tocheck deny'";
       } elseif (!isset($row['state_date'])) {
         $class = "class='cangroup'";
       } elseif (($row['trans_date'] && $row['reconciled'] && !$row['state_date']) || ($row['state_date'] && !$row['transdate'])

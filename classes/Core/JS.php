@@ -25,6 +25,8 @@
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
+  use ADV\App\ADVAccounting;
+
   class JS
   {
     use Traits\StaticAccess;
@@ -151,11 +153,12 @@
         $content .= implode("", $this->beforeload);
       }
       if ($this->onlive) {
+
         $onReady .= 'Adv.Events.onload(function(){' . implode("", $this->onlive) . '}';
         if (count($this->toclean)) {
           $onReady .= ',function(){' . implode("", $this->toclean) . '}';
         }
-        $onReady .= ');';
+        $onReady .= ',"'.ADVAccounting::i()->getController().'");';
       }
       if ($this->onload) {
         $onReady .= implode("", $this->onload);

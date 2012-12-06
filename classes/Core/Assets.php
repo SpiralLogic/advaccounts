@@ -36,7 +36,7 @@
     protected $minifyTypes
       = array(
         'js'  => array(
-          'minify'   => true, //
+          'minify'   => false, //
           'minifier' => '\\ADV\\Core\\JSMin', //
           'settings' => [] //
         ), //

@@ -194,11 +194,11 @@
      * @return void
      */
     protected function defaults() {
-      $this->sales_account      = DB_Company::_i()->default_inv_sales_act;
-      $this->inventory_account  = DB_Company::_i()->default_inventory_act;
-      $this->cogs_account       = DB_Company::_i()->default_cogs_act;
-      $this->assembly_account   = DB_Company::_i()->default_assembly_act;
-      $this->adjustment_account = DB_Company::_i()->default_adj_act;
+      $this->sales_account      = DB_Company::i()->default_inv_sales_act;
+      $this->inventory_account  = DB_Company::i()->default_inventory_act;
+      $this->cogs_account       = DB_Company::i()->default_cogs_act;
+      $this->assembly_account   = DB_Company::i()->default_assembly_act;
+      $this->adjustment_account = DB_Company::i()->default_adj_act;
     }
     /**
      * @return array|null
@@ -241,12 +241,12 @@
     }
     protected function setDefaults() {
       if ($this->mb_flag == STOCK_MANUFACTURE || $this->mb_flag == STOCK_PURCHASED) {
-        $this->inventory_account = DB_Company::_i()->default_inventory_act;
+        $this->inventory_account = DB_Company::i()->default_inventory_act;
       } else {
         $this->inventory_account = '';
       }
       if ($this->mb_flag == STOCK_MANUFACTURE) {
-        $this->assembly_account = DB_Company::_i()->default_assembly_act;
+        $this->assembly_account = DB_Company::i()->default_assembly_act;
       } else {
         $this->assembly_account = '';
       }

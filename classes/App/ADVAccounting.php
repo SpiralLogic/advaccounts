@@ -267,6 +267,7 @@
      * @internal param $controller2
      */
     protected function runController($controller) {
+      $this->controller=$controller;
       $dic = \ADV\Core\DIC::i();
       /** @var \ADV\App\Controller\Base $controller */
       $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default'));

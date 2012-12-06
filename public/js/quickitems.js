@@ -1,25 +1,8 @@
+console.profile();
 /**
  * User: Eli Sklar
  * Date: 17/07/11 - 10:58 PM
  */
-Adv.extend({
-             revertState: function () {
-               var form = document.getElementsByTagName('form')[0];
-               form.reset();
-               Adv.btnConfirm.hide();
-               Adv.btnCancel.hide();
-               Adv.btnNew.show();
-               Adv.Forms.resetHighlights();
-               $("#itemSearchId").val('');
-             },
-             resetState:  function () {
-               $("#tabs0 input, #tabs0 textarea").empty();
-               Items.fetch(0);
-               Adv.btnCancel.hide();
-               Adv.btnConfirm.hide();
-               Adv.btnNew.show();
-             }
-           });
 var Items = function () {
   var item, //
     $itemsearch = $('#itemSearchId'), //
@@ -27,12 +10,15 @@ var Items = function () {
     $selects = $('select'), //
     $Items = $("#Items").show(), //
     $Accounts = $("#Accounts"), //
-    $stockRow = $("#stockRow"), $stockLevels = $("#stockLevels");
+    $stockRow = $("#stockRow"),//
+    $stockLevels = $("#stockLevels");
   $Items.template('items');
   $Accounts.template('accounts');
   $stockRow.template('stockrow');
   return {
-    fetch:     function (id) {
+    tabs:        null,
+    form:        document.getElementById('item_form'),
+    fetch:       function (id) {
       if (id.value !== undefined) {
         $itemsearch.val(id.value);
         Items.getFrames(id.value);
@@ -49,17 +35,17 @@ var Items = function () {
       }, 'json');
       return false;
     },
-    getFrames: function (id) {
+    getFrames:   function (id) {
       if (!id) {
-        Adv.o.tabs[0].tabs('option', 'disabled', [2, 3, 4, 5]);
+        Items.tabs.tabs('option', 'disabled', [2, 3, 4, 5]);
         return;
       }
-      Adv.o.tabs[0].tabs('option', 'disabled', []);
+      Items.tabs.tabs('option', 'disabled', []);
     },
-    set:       function (fieldname, val) {
+    set:         function (fieldname, val) {
       item[fieldname] = val;
     },
-    onload:    function (data, noframes) {
+    onload:      function (data, noframes) {
       var form;
       if (!noframes) {
         this.getFrames(data.item.stock_id);
@@ -84,10 +70,10 @@ var Items = function () {
       });
       Adv.Forms.setFocus('stock_id');
     },
-    get:       function () {
+    get:         function () {
       return item;
     },
-    save:      function () {
+    save:        function () {
       var action = item;
       item['_action'] = 'Save';
       $.post('/Items/Manage/Items', item, function (data) {
@@ -95,37 +81,56 @@ var Items = function () {
           Items.onload(data);
         }
       }, 'json');
+    },
+    revertState: function () {
+      Items.form.reset();
+      Items.btnConfirm.hide();
+      Items.btnCancel.hide();
+      Items.btnNew.show();
+      Adv.Forms.resetHighlights(Items.form);
+      $("#itemSearchId").val('');
+    },
+    resetState:  function () {
+      $(Items.form).find("#tabs0 input, #tabs0 textarea").empty();
+      Items.fetch(0);
+      Items.btnCancel.hide();
+      Items.btnConfirm.hide();
+      Items.btnNew.show();
     }
   };
 }();
 $(function () {
-  Adv.extend({btnCancel: $("#btnCancel").mousedown(function () {
-    Adv.revertState();
+  Items.btnCancel = $("#btnCancel").mousedown(function () {
+    Items.revertState();
     return false;
-  }), btnConfirm:        $("#btnConfirm").click(function () {
+  });
+  Items.btnConfirm = $("#btnConfirm").click(function () {
     Items.save();
     return false;
-  }),
-               btnNew:   $("#btnNew").mousedown(function () {
-                 Adv.resetState();
-                 return false;
-               }) });
-  Adv.o.tabs[0] = $("#tabs0").tabs();
-  Adv.o.tabs[0].delegate("input,textarea,select", "change keyup", function () {
-    var $this = $(this), $thisname = $this.attr('name');
-    Adv.Forms.stateModified($this);
-    if (Adv.fieldsChanged > 0) {
-      Adv.btnNew.hide();
-      Adv.btnCancel.show();
-      Adv.btnConfirm.show();
-    }
-    else {
-      if (Adv.fieldsChanged === 0) {
-        Adv.btnConfirm.hide();
-        Adv.btnCancel.hide();
-        Adv.btnNew.show();
+  });
+  Items.btnNew = $("#btnNew").mousedown(function () {
+    Items.resetState();
+    return false;
+  });
+  Adv.TabMenu.defer(0).done(function () {
+    Items.tabs = Adv.o.tabs[0];
+    Items.tabs.delegate("input,textarea,select", "change keyup", function () {
+      var $this = $(this), $thisname = $this.attr('name');
+      Adv.Forms.stateModified($this);
+      if (Items.form.fieldsChanged > 0) {
+        Items.btnNew.show();
+        Items.btnCancel.show();
+        Items.btnConfirm.show();
       }
-    }
-    Items.set($thisname, this.value);
-  })
+      else {
+        if (Items.form.fieldsChanged === 0) {
+          Items.btnConfirm.show();
+          Items.btnCancel.show();
+          Items.btnNew.show();
+        }
+      }
+      Items.set($thisname, this.value);
+    });
+  });
 });
+console.profileEnd();
