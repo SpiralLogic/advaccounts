@@ -77,7 +77,7 @@
     }
     protected function index() {
       $view = new View('items/quickitems');
-      $menu = new MenuUI('disabled');
+      $menu = new MenuUI('disabled','itemedit');
       $view->set('menu', $menu);
       $form = new Form();
       $form->start('item','/Items/Manage/Items');
@@ -121,7 +121,6 @@
       $view->set('reorderlevels', $data['reorderlevels']);
       $view->set('firstPage', $this->Input->get('page'));
       $view->render();
-      $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
       $this->JS->onload("Items.onload(" . json_encode($data) . ");");
     }
     /**

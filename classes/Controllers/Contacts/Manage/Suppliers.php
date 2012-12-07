@@ -56,7 +56,7 @@
         $this->delete();
       }
       echo $this->generateForm();
-      $this->JS->onload("Company.setValues(" . json_encode(['company' => $this->creditor]) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
+      $this->JS->onload("Company.fetchUrl='/Contacts/Manage/Suppliers';Company.setValues(" . json_encode(['company' => $this->creditor]) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
       $this->Page->end_page(true);
     }
     /**

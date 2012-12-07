@@ -8,7 +8,7 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
-
+  use ADV\App\ADVAccounting;
   /**
    * @method static \ADV\Core\JS i()
    * @method static JS _openWindow($width, $height)
@@ -25,7 +25,7 @@
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
-  use ADV\App\ADVAccounting;
+
 
   class JS
   {
@@ -119,6 +119,7 @@
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
       $haslinks = $options['hasLinks'] ? 'true' : 'false';
+
       $this->onload("Adv.TabMenu.init('$id',$noajax,$haslinks,$page)");
     }
     /**

@@ -190,7 +190,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                return {
                  open: function (url) {
                    $.get(url, function (data) {
-                     dialog.append(data).dialog({autoOpen: true, width: 900});
+                     dialog.append(data).dialog({autoOpen: true, width: 1024});
                      $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})
                    });
                  }
@@ -277,7 +277,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                var deferreds = [];
                return{
                  init:  function (id, ajax, links, page) {
-                   Adv.o.tabs[id] = $('#tabs' + id);
+                   Adv.o.tabs[id] = $('#tabs_' + id);
                    Adv.o.tabs[id].tabs();
                    if (page) {
                      Adv.TabMenu.page(id, page);
@@ -440,6 +440,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    else {
                      els = Adv.Forms.findInputEl(id);
                    }
+                   console.log(form);
                    isdefault = !!arguments[4];
                    $.each(els, function (k, el) {
                      _setFormValue(el, value, disabled, isdefault);

@@ -25,12 +25,15 @@
     protected $defaultState = 'default';
     /** @var array * */
     protected $options = [];
+    protected $id;
     /**
      * @param string $defaultState
+     * @param null   $id
      *
      * @internal param array $options
      */
-    public function __construct($defaultState = 'default') {
+    public function __construct($defaultState = 'default',$id=null) {
+      $this->id = 'tabs_'.($id?:static::$menuCount);
       $this->defaultState = $defaultState;
       $this->setJSObject();
     }
@@ -93,8 +96,8 @@
       if ($state == null) {
         $state = $this->defaultState;
       }
-      $this->items[]                       = new MenuUI_item($title, $tooltip, '#tabs' . MenuUI::$menuCount . '-' . $count, null, null, $state);
-      $this->current_tab['attrs']['id']    = 'tabs' . MenuUI::$menuCount . '-' . $count;
+      $this->items[]                       = new MenuUI_item($title, $tooltip, '#' . $this->id. '-' . $count, null, null, $state);
+      $this->current_tab['attrs']['id']    = $this->id  . '-' . $count;
       $this->current_tab['attrs']['class'] = 'ui-tabs-panel ui-widget-content';
       $this->current_tab['attrs']['style'] = ($count > 0 || $this->firstPage != $count) ? ' display:none;' : '';
       ob_start();
@@ -114,11 +117,11 @@
      */
     public function render() {
       $menu              = new View('ui/menu');
-      $menu['menuCount'] = MenuUI::$menuCount;
+      $menu['id'] = $this->id;
       $menu->set('items', $this->items);
       $menu->set('tabs', $this->tabs);
       $menu->render();
-      $this->JS->tabs(MenuUI::$menuCount, $this->options, $this->firstPage);
+      $this->JS->tabs(substr($this->id,5), $this->options, $this->firstPage);
       foreach ($this->jslinks as $js) {
         $this->JS->onload($js);
       }

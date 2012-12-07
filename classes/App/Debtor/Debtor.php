@@ -348,7 +348,8 @@
      */
     protected function init() {
       $this->defaults();
-      $this->accounts               = new Debtor_Account();
+      $this->accounts               = new Debtor_Account;
+      $this->branches[0]            = new Debtor_Branch;
       $this->branches[0]->debtor_id = $this->accounts->debtor_id = $this->id = 0;
       $this->setDefaults();
       return $this->status(true, 'Now working with a new customer');

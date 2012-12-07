@@ -1,43 +1,4 @@
 console.profile();
-Adv.extend({
-             revertState: function (formid) {
-               var form = document.getElementsByTagName('form')[0];
-               form.reset();
-               Adv.o.companysearch.prop('disabled', false);
-               Adv.btnConfirm.hide();
-               Adv.btnCancel.hide();
-               Adv.btnNew.show();
-               Branches.btnBranchAdd();
-               Adv.Forms.resetHighlights();
-             },
-             resetState:  function () {
-               $("#tabs0 input, #tabs0 textarea").empty();
-               $("#company").val('');
-               Company.fetch(0);
-               Adv.fieldsChanged = 0;
-               Adv.btnCancel.hide();
-               Adv.btnConfirm.hide();
-               Adv.btnNew.show();
-             }
-           });
-Adv.extend({
-             getContactLog: function (id, type) {
-               var data = {
-                 contact_id: id,
-                 type:       type
-               };
-               $.post('contact_log.php', data, function (data) {
-                 Adv.setContactLog(data);
-               }, 'json');
-             },
-             setContactLog: function (data) {
-               var logbox = $("[id='messageLog']").val(''), str = '';
-               $.each(data, function (key, message) {
-                 str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
-               });
-               logbox.val(str);
-             }
-           });
 (function (window, $, undefined) {
   var Contacts = {};
   (function () {
@@ -83,7 +44,11 @@ Adv.extend({
   window.Contacts = Contacts
 })(window, jQuery);
 var Branches = function () {
-  var current = {}, list = $("#branchList"), menu = $("#branchMenu"), addBtn = $(".addBranchBtn").eq(0), delBtn = $(".delBranchBtn").eq(0);
+  var current = {} //
+    , list = $("#branchList")//
+    , menu = $("#branchMenu")//
+    , addBtn = $(".addBranchBtn").eq(0)//
+    , delBtn = $(".delBranchBtn").eq(0);
   return {
     adding:       false,
     init:         function () {
@@ -125,7 +90,7 @@ var Branches = function () {
         data = Company.get().branches[data];
       }
       $.each(data, function (key, value) {
-        Adv.Forms.setFormDefault('branch[' + key + ']', value);
+        Adv.Forms.setFormDefault('branch[' + key + ']', value, 'company_form');
       });
       Adv.Forms.resetHighlights();
       list.val(data.branch_id);
@@ -183,8 +148,39 @@ var Accounts = function () {
   }
 }();
 var Company = function () {
-  var company, transactions = $('#transactions'), companyIDs = $("#companyIDs"), $companyID = $("#name").attr('autocomplete', 'off');
+  var company, //
+    transactions = $('#transactions'), //
+    companyIDs = $("#companyIDs"), //
+    $companyID = $("#name").attr('autocomplete', 'off'),//
+    tabs = null;
+  Adv.TabMenu.defer('companyedit').done(function () {
+    Company.tabs = Adv.o.tabs['companyedit'];
+    Company.tabs.delegate("input, textarea,select", "change keyup", function () {
+      var $this = $(this), $thisname = $this.attr('name'), buttontext;
+      if ($thisname === 'messageLog' || $thisname === 'branchList') {
+        return;
+      }
+      Adv.Forms.stateModified($this);
+      if (Company.fieldsChanged > 0) {
+        Company.btnNew.hide();
+        Company.btnCancel.show();
+        Company.btnConfirm.show();
+        Company.companySearch.prop('disabled', true);
+      }
+      else {
+        if (Company.fieldsChanged === 0) {
+          Company.btnConfirm.hide();
+          Company.btnCancel.hide();
+          Company.btnNew.show();
+          Adv.Events.onLeave();
+        }
+      }
+      Company.set($thisname, $this.val());
+    });
+  });
   return {
+    companySearch: $('#companysearch'),
+    fetchUrl:      '#',
     init:          function () {
       Branches.init();
       $companyID.autocomplete({
@@ -215,22 +211,26 @@ var Company = function () {
                                     });
     },
     setValues:     function (content) {
+      console.log(content);
       if (!content.company) {
         return;
       }
       company = content.company;
-      var data = company, activetabs = [];
+      var data = company, disabledTabs = [];
       if ((Number(company.id) == 0)) {
-        activetabs = [1, 2, 3, 4];
-        Adv.o.tabs[0].tabs('select', 0);
+        disabledTabs = [1, 2, 3, 4];
+        Company.tabs.tabs('select', 0);
       }
       else {
         $('.email-button').data('emailid', company.id + '-91-1');
       }
-      Adv.o.tabs[0].tabs('option', 'disabled', activetabs);
+      if (Company.tabs) {
+        Company.tabs.tabs('option', 'disabled', disabledTabs);
+      }else{
+      Adv.TabMenu.defer('companyedit').done(function () {Company.tabs.tabs('option', 'disabled', disabledTabs)});}
       $('#shortcuts').find('button').prop('disabled', !company.id);
       if (content.contact_log !== undefined) {
-        Adv.setContactLog(content.contact_log);
+        Company.setContactLog(content.contact_log);
       }
       if (content.transactions !== undefined) {
         transactions.empty().append(content.transactions);
@@ -244,10 +244,9 @@ var Company = function () {
       if (data.accounts) {
         Accounts.change(data.accounts);
       }
-      (company.id) ? Company.hideSearch() : Company.showSearch();
       $.each(company, function (i, data) {
         if (i !== 'contacts' && i !== 'branches' && i !== 'accounts') {
-          Adv.Forms.setFormDefault(i, data);
+          Adv.Forms.setFormDefault(i, data, 'company_form');
         }
       });
       Adv.Forms.resetHighlights();
@@ -262,7 +261,7 @@ var Company = function () {
       if (typeof(item) === "number") {
         item = {id: item};
       }
-      $.post('#', {_action: 'fetch', id: item.id}, function (data) {
+      $.post(Company.fetchUrl, {_action: 'fetch', id: item.id}, function (data) {
         Company.setValues(data);
       }, 'json');
       Company.getFrames(item.id);
@@ -275,11 +274,11 @@ var Company = function () {
       if (!id) {
         return;
       }
-      data = data || '';
+      data = data || '';ww
       $invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
     },
     useShipFields: function () {
-      Adv.accFields.each(function () {
+      Company.accFields.each(function () {
         var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
         if ($this.val().length > 0) {
           return;
@@ -301,13 +300,13 @@ var Company = function () {
     },
     Save:          function () {
       Branches.btnBranchAdd();
-      Adv.btnConfirm.prop('disabled', true);
+      Company.btnConfirm.prop('disabled', true);
       $.post('#', {_action: 'save', company: Company.get()}, function (data) {
-        Adv.btnConfirm.prop('disabled', false);
+        Company.btnConfirm.prop('disabled', false);
         if (data.status && data.status.status) {
           Branches.adding = false;
           Company.setValues(data);
-          Adv.revertState();
+          Company.revertState();
         }
       }, 'json');
     },
@@ -333,99 +332,106 @@ var Company = function () {
     },
     get:           function () {
       return company
-    }
-  }
+    },
+    revertState:   function (formid) {
+      var form = document.getElementById('form_company');
+      form.reset();
+      Company.companySearch.prop('disabled', false);
+      Company.btnConfirm.hide();
+      Company.btnCancel.hide();
+      Company.btnNew.show();
+      Branches.btnBranchAdd();
+      Adv.Forms.resetHighlights();
+    },
+    resetState:    function () {
+      $("#tabs0 input, #tabs0 textarea").empty();
+      $("#company").val('');
+      Company.fetch(0);
+      Company.fieldsChanged = 0;
+      Company.btnCancel.hide();
+      Company.btnConfirm.hide();
+      Company.btnNew.show();
+    },
+    accFields:     $("[name^='accounts']"),
+    fieldsChanged: 0,
+    btnConfirm:    $("#btnConfirm").mousedown(function () {
+      Company.Save();
+      return false;
+    }).hide(),
+    btnCancel:     $("#btnCancel").mousedown(function () {
+      Company.revertState();
+      return false;
+    }).hide(),
+    btnNew:        $("#btnNew").mousedown(function () {
+      Company.resetState();
+      return false;
+    }),
+    ContactLog:    $("#contactLog").hide(),
+    getContactLog: function (id, type) {
+      var data = {
+        contact_id: id,
+        type:       type
+      };
+      $.post('contact_log.php', data, function (data) {
+        Company.setContactLog(data);
+      }, 'json');
+    },
+    setContactLog: function (data) {
+      var logbox = $("[id='messageLog']").val(''), str = '';
+      $.each(data, function (key, message) {
+        str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
+      });
+      logbox.val(str);
+    }}
 }();
 $(function () {
-  Adv.extend({
-               accFields:     $("[name^='accounts']"),
-               fieldsChanged: 0,
-               btnConfirm:    $("#btnConfirm").mousedown(function () {
-                 Company.Save();
-                 return false;
-               }).hide(),
-               btnCancel:     $("#btnCancel").mousedown(function () {
-                 Adv.revertState();
-                 return false;
-               }).hide(),
-               btnNew:        $("#btnNew").mousedown(function () {
-                 Adv.resetState();
-                 return false;
-               }),
-               ContactLog:    $("#contactLog").hide()
-             });
-  if (!Adv.accFields.length) {
-    Adv.accFields = $("[name^='supp_']");
+  if (!Company.accFields.length) {
+    Company.accFields = $("[name^='supp_']");
   }
   $("#useShipAddress").click(function (e) {
     Company.useShipFields();
     return false;
   });
-  Adv.o.companysearch = $('#companysearch');
   $("#addLog").click(function () {
-    Adv.ContactLog.dialog("open");
+    Company.ContactLog.dialog("open");
     return false;
   });
-  Adv.ContactLog.dialog({
-                          autoOpen:  false,
-                          show:      "slide",
-                          resizable: false,
-                          hide:      "explode",
-                          modal:     true,
-                          width:     700,
-                          maxWidth:  700,
-                          buttons:   {
-                            "Ok":   function () {
-                              var data = {
-                                contact_name: Adv.ContactLog.find("[name='contact_name']").val(),
-                                contact_id:   Company.get().id,
-                                message:      Adv.ContactLog.find("[name='message']").val(),
-                                type:         Adv.ContactLog.find("#type").val()
-                              };
-                              Adv.ContactLog.dialog('disable');
-                              $.post('contact_log.php', data, function (data) {
-                                Adv.ContactLog.find(':input').each(function () {
-                                  Adv.ContactLog.dialog('close').dialog('enable');
-                                });
-                                Adv.ContactLog.find("[name='message']").val('');
-                                Adv.setContactLog(data);
-                              }, 'json');
-                            },
-                            Cancel: function () {
-                              Adv.ContactLog.find("[name='message']").val('');
-                              $(this).dialog("close");
-                            }
-                          }
-                        }).click(function () {
-                                   $(this).dialog("open");
-                                 });
+  Company.ContactLog.dialog({
+                              autoOpen:  false,
+                              show:      "slide",
+                              resizable: false,
+                              hide:      "explode",
+                              modal:     true,
+                              width:     700,
+                              maxWidth:  700,
+                              buttons:   {
+                                "Ok":   function () {
+                                  var data = {
+                                    contact_name: Company.ContactLog.find("[name='contact_name']").val(),
+                                    contact_id:   Company.get().id,
+                                    message:      Company.ContactLog.find("[name='message']").val(),
+                                    type:         Company.ContactLog.find("#type").val()
+                                  };
+                                  Company.ContactLog.dialog('disable');
+                                  $.post('contact_log.php', data, function (data) {
+                                    Company.ContactLog.find(':input').each(function () {
+                                      Company.ContactLog.dialog('close').dialog('enable');
+                                    });
+                                    Company.ContactLog.find("[name='message']").val('');
+                                    Company.setContactLog(data);
+                                  }, 'json');
+                                },
+                                Cancel: function () {
+                                  Company.ContactLog.find("[name='message']").val('');
+                                  $(this).dialog("close");
+                                }
+                              }
+                            }).click(function () {
+                                       $(this).dialog("open");
+                                     });
   $("#messageLog").prop('disabled', true).css('background', 'white');
   $("[name='messageLog']").keypress(function () {
     return false;
-  });
-  Adv.TabMenu.defer(0).done(function () {
-    Adv.o.tabs[0].delegate("input, textarea,select", "change keyup", function () {
-      var $this = $(this), $thisname = $this.attr('name'), buttontext;
-      if ($thisname === 'messageLog' || $thisname === 'branchList') {
-        return;
-      }
-      Adv.Forms.stateModified($this);
-      if (Adv.fieldsChanged > 0) {
-        Adv.btnNew.hide();
-        Adv.btnCancel.show();
-        Adv.btnConfirm.show();
-        Adv.o.companysearch.prop('disabled', true);
-      }
-      else {
-        if (Adv.fieldsChanged === 0) {
-          Adv.btnConfirm.hide();
-          Adv.btnCancel.hide();
-          Adv.btnNew.show();
-          Adv.Events.onLeave();
-        }
-      }
-      Company.set($thisname, $this.val());
-    });
   });
   $("#shortcuts").on('click', 'button', function () {
     var $this = $(this), url = $this.data('url');

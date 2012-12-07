@@ -4,7 +4,7 @@
 </div>
 {{/if}}
 <div>
-  {{$form->start()}}
+  {{$form->start('company')}}
   {#$menu->startTab('Details', 'Customer Details','active')#}
   <div id="companyIDs" class='pad5'>
     <label for="name">Customer name:</label><input id="name" placeholder='Customer' name="name" class="big">
@@ -105,7 +105,7 @@
 <div id="shortcuts" class="center">{{#$shortcuts}}
   <button {{HTML::attr($.attrs)}} data-url="{{$.data}}">{{$.caption}}</button>
   {{/$shortcuts}}</div>
-{{$contact_form->start()}}
+{{$contact_form->start('contact')}}
 <div id="contactLog" class='ui-helper-hidden center'>
   <div class="formbox marginauto ">
     {{$contact_form.contact_name}}<br>
