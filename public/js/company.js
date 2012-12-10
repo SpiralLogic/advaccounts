@@ -184,7 +184,7 @@ var Company = function () {
     init:          function () {
       Branches.init();
       $companyID.autocomplete({
-                                source:    function (request, response) {
+                                source:     function (request, response) {
                                   request['type'] = (company.type == 1 ? 'Debtor' : 'Creditor');
                                   var lastXhr = $.getJSON('/search', request, function (data, status, xhr) {
                                     if (xhr === lastXhr) {
@@ -192,26 +192,27 @@ var Company = function () {
                                     }
                                   });
                                 },
-                                select:    function (event, ui) {
+                                select:     function (event, ui) {
                                   Company.fetch(ui.item);
                                   return false;
                                 },
-                                focus:     function () {
+                                focus:      function () {
                                   return false;
                                 },
-                                autoFocus: false, delay: 10, 'position': {
-          my:        "left middle",
-          at:        "right top",
-          of:        $companyID,
-          collision: "none"
-        }
+                                autoFocus:  false, //
+                                delay:      10,//
+                                'position': {
+                                  my:        "left middle",
+                                  at:        "right top",
+                                  of:        $companyID,
+                                  collision: "none"
+                                }
                               }).on('paste', function () {
                                       var $this = $(this);
                                       window.setTimeout(function () {$this.autocomplete('search', $this.val())}, 1)
                                     });
     },
     setValues:     function (content) {
-      console.log(content);
       if (!content.company) {
         return;
       }
@@ -281,7 +282,9 @@ var Company = function () {
     },
     useShipFields: function () {
       Company.accFields.each(function () {
-        var newval, $this = $(this), name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
+        var newval //
+          ,$this = $(this)//
+          , name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
         if ($this.val().length > 0) {
           return;
         }
@@ -313,7 +316,8 @@ var Company = function () {
       }, 'json');
     },
     set:           function (key, value) {
-      var group, valarray = key.match(/([^[]*)\[(.+)\]/);
+      var group//
+       , valarray = key.match(/([^[]*)\[(.+)\]/);
       if (valarray !== null) {
         group = valarray[1];
         key = valarray[2];
@@ -346,7 +350,8 @@ var Company = function () {
       Adv.Forms.resetHighlights(form);
     },
     resetState:    function () {
-      $("#tabs0 input, #tabs0 textarea").empty();
+      var form = document.getElementById('company_form');
+      $(form).find("#tabs0 input, #tabs0 textarea").empty();
       $("#company").val('');
       Company.fetch(0);
       Company.fieldsChanged = 0;
@@ -379,7 +384,8 @@ var Company = function () {
       }, 'json');
     },
     setContactLog: function (data) {
-      var logbox = $("[id='messageLog']").val(''), str = '';
+      var logbox = $("[id='messageLog']").val('')//
+       , str = '';
       $.each(data, function (key, message) {
         str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
       });
@@ -436,7 +442,8 @@ $(function () {
     return false;
   });
   $("#shortcuts").on('click', 'button', function () {
-    var $this = $(this), url = $this.data('url');
+    var $this = $(this)//
+     , url = $this.data('url');
     if (url) {
       Adv.openTab(url + Company.get().id);
     }

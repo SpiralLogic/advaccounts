@@ -41,7 +41,7 @@
       } else {
         $this->creditor = new Creditor();
       }
-      if (REQUEST_AJAX) {
+      if (REQUEST_POST && REQUEST_AJAX) {
         if ($this->creditor) {
           $data['company'] = $this->creditor;
         }
@@ -51,13 +51,11 @@
       $this->JS->footerFile("/js/company.js");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Suppliers"), SA_SUPPLIER, $this->Input->request('frame'));
       if (isset($_POST['delete'])) {
         $this->delete();
       }
       echo $this->generateForm();
       $this->JS->onload("Company.fetchUrl='/Contacts/Manage/Suppliers';Company.setValues(" . json_encode(['company' => $this->creditor]) . ");")->setFocus($this->creditor->id ? 'name' : 'supplier');
-      $this->Page->end_page(true);
     }
     /**
      * @return string
