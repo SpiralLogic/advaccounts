@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -34,7 +33,7 @@
      */
     public function __construct(Base $object, $idColumns, $withNew = false) {
       $this->class = get_class($object);
-      $idColumns   = (array)$idColumns;
+      $idColumns   = (array) $idColumns;
       foreach ($idColumns as $idColumn) {
         if (!property_exists($this->class, $idColumn)) {
           throw new InvalidArgumentException('Collection ID Column must be a property of the collection object');
@@ -42,6 +41,7 @@
       }
       $this->idColumns = $idColumns;
       $this->table     = $object->getTable();
+      $this->withNew   = $withNew;
       if ($withNew) {
         $this->collection[] = $object;
       }
@@ -56,7 +56,7 @@
       if (!is_array($ids) && count($this->idColumns) == 1) {
         $ids = [key($this->idColumns) => $ids];
       } else {
-        $ids = (array)$ids;
+        $ids = (array) $ids;
       }
       $q = static::$staticDB->_select()->from($this->table);
       foreach ($this->idColumns as $idColumn) {
@@ -84,7 +84,7 @@
           continue;
         }
         if (!isset($this->collection[$k])) {
-          $this->collection[(int)$k] = new $this->class;
+          $this->collection[(int) $k] = new $this->class;
         }
         $this->collection[$k]->load($v);
       }
@@ -101,8 +101,10 @@
         if ($this->collection[$k]->id != $k) {
           $object                        = $this->collection[$k];
           $this->collection[$object->id] = $object;
-          unset ($this->collection[$k]);
         }
+      }
+      if (!$this->withNew) {
+        unset($this->collection[0]);
       }
     }
     /**
@@ -127,7 +129,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Return the current element
-     *
      * @link http://php.net/manual/en/iterator.current.php
      * @return \ADV\App\DB\Base mixed Can return any type.
      */
@@ -137,7 +138,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Move forward to next element
-     *
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
@@ -148,7 +148,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Return the key of the current element
-     *
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar on success, or null on failure.
      */
@@ -158,7 +157,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Checks if current position is valid
-     *
      * @link http://php.net/manual/en/iterator.valid.php
      * @return boolean The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
@@ -169,7 +167,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Rewind the Iterator to the first element
-     *
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
@@ -180,7 +177,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -198,7 +194,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -208,12 +203,11 @@
      * @return Base Can return all value types.
      */
     public function offsetGet($offset) {
-      return $this->collection[(int)$this->collection];
+      return $this->collection[(int) $this->collection];
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -230,12 +224,11 @@
       if (!is_a($value, $this->class)) {
         throw new InvalidArgumentException('Value must be of type ' . $this->class . ' for this collection');
       }
-      $this->collection[(int)$offset] = $value;
+      $this->collection[(int) $offset] = $value;
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>
@@ -253,7 +246,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Count elements of an object
-     *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>
@@ -266,7 +258,6 @@
     /**
      * (PHP 5 >= 5.4.0)
      * Serializes the object to a value that can be serialized natively by json_encode().
-     *
      * @link http://docs.php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed Returns data which can be serialized by json_encode(), which is a value of any type other than a resource.
      */

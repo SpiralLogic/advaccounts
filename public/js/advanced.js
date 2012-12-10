@@ -190,7 +190,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                return {
                  open: function (url) {
                    $.get(url, function (data) {
-                     dialog.append(data).dialog({autoOpen: true, width: 1024});
+                     dialog.empty().append(data).dialog({autoOpen: true, width: 1024,modal:true});
                      $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})
                    });
                  }
@@ -253,7 +253,8 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                    popupWindow.css('height', height);
                    popupDiv.css({width: Adv.hoverWindow.width, height: height, left: left, top: top});
-                 }, show: function () {
+                 },//
+                  show: function () {
                    var top = (win.height() / 2 - 50)//
                      , left = (win.width() / 2 - 50);
                    if (popupWindow) {
@@ -440,7 +441,6 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    else {
                      els = Adv.Forms.findInputEl(id);
                    }
-                   console.log(form);
                    isdefault = !!arguments[4];
                    $.each(els, function (k, el) {
                      _setFormValue(el, value, disabled, isdefault);
@@ -724,6 +724,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    var value//
                      , defaultValue//
                      , form = field[0].form;
+                 if (!form.fieldsChanged) {form.fieldsChanged=0;}
                    if (field.is(':checkbox')) {
                      value = field.prop('checked');
                      field.val(value);

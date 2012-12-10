@@ -161,14 +161,14 @@ var Company = function () {
         return;
       }
       Adv.Forms.stateModified($this);
-      if (Company.fieldsChanged > 0) {
+      if (this.form.fieldsChanged > 0) {
         Company.btnNew.hide();
         Company.btnCancel.show();
         Company.btnConfirm.show();
         Company.companySearch.prop('disabled', true);
       }
       else {
-        if (Company.fieldsChanged === 0) {
+        if (this.form.fieldsChanged === 0) {
           Company.btnConfirm.hide();
           Company.btnCancel.hide();
           Company.btnNew.show();
@@ -226,8 +226,10 @@ var Company = function () {
       }
       if (Company.tabs) {
         Company.tabs.tabs('option', 'disabled', disabledTabs);
-      }else{
-      Adv.TabMenu.defer('companyedit').done(function () {Company.tabs.tabs('option', 'disabled', disabledTabs)});}
+      }
+      else {
+        Adv.TabMenu.defer('companyedit').done(function () {Company.tabs.tabs('option', 'disabled', disabledTabs)});
+      }
       $('#shortcuts').find('button').prop('disabled', !company.id);
       if (content.contact_log !== undefined) {
         Company.setContactLog(content.contact_log);
@@ -274,7 +276,7 @@ var Company = function () {
       if (!id) {
         return;
       }
-      data = data || '';ww
+      data = data || '';
       $invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
     },
     useShipFields: function () {
@@ -301,7 +303,7 @@ var Company = function () {
     Save:          function () {
       Branches.btnBranchAdd();
       Company.btnConfirm.prop('disabled', true);
-      $.post('#', {_action: 'save', company: Company.get()}, function (data) {
+      $.post(Company.fetchUrl, {_action: 'Save', company: Company.get()}, function (data) {
         Company.btnConfirm.prop('disabled', false);
         if (data.status && data.status.status) {
           Branches.adding = false;
@@ -333,15 +335,15 @@ var Company = function () {
     get:           function () {
       return company
     },
-    revertState:   function (formid) {
-      var form = document.getElementById('form_company');
+    revertState:   function () {
+      var form = document.getElementById('company_form');
       form.reset();
       Company.companySearch.prop('disabled', false);
       Company.btnConfirm.hide();
       Company.btnCancel.hide();
       Company.btnNew.show();
       Branches.btnBranchAdd();
-      Adv.Forms.resetHighlights();
+      Adv.Forms.resetHighlights(form);
     },
     resetState:    function () {
       $("#tabs0 input, #tabs0 textarea").empty();

@@ -57,7 +57,6 @@
         if ($this->debtor) {
           $data['company'] = $this->debtor;
           $data['status']  = $this->debtor->getStatus();
-          $data['status2'] = FETCH;
         }
         $this->JS->renderJSON($data);
       }
@@ -69,7 +68,9 @@
         $this->delete();
       }
       echo $this->generateForm();
-      $this->JS->onload("Company.fetchUrl='/Contacts/Manage/Customers';Company.setValues(" . json_encode(['company' => $this->debtor]) . ");")->setFocus($this->debtor->id ? 'name' : 'customer');
+      $this->JS->onload("Company.fetchUrl='/Contacts/Manage/Customers';Company.setValues(" . json_encode(['company' => $this->debtor]) . ");")->setFocus(
+        $this->debtor->id ? 'name' : 'customer'
+      );
     }
     /**
      * @return string
@@ -84,7 +85,7 @@
       $js = new JS();
       $js->autocomplete('customer', 'Company.fetch', 'Debtor');
       $form = new Form();
-      $menu = new MenuUI('disabled','companyedit');
+      $menu = new MenuUI('disabled', 'companyedit');
       $menu->setJSObject($js);
       $view          = new View('contacts/customers');
       $view['frame'] = $this->Input->get('frame') || $this->Input->get('id');

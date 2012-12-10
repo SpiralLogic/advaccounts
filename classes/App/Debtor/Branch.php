@@ -5,7 +5,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -114,6 +113,15 @@
       return true;
     }
     /**
+     * @param null $changes
+     *
+     * @return array|bool|int|null|void
+     */
+    public function save($changes = null) {
+      unset($changes['address'], $changes['name'], $changes['br_postaddress']);
+      return parent::save($changes);
+    }
+    /**
      * @return void
      */
     protected function countTransactions() {
@@ -199,19 +207,14 @@
             WHERE branch_ref <> '" . self::ACCOUNTS . "' AND inactive <> 1  AND debtor_id='" . $debtor_id . "' ";
       $where = $enabled ? array("disable_trans = 0") : [];
       return Forms::selectBox(
-        $name,
-        $selected_id,
-        $sql,
-        'branch_id',
-        'br_name',
-        array(
-             'where'         => $where,
-             'order'         => array('br_name'),
-             'spec_option'   => $spec_option === true ? _('All branches') : $spec_option,
-             'spec_id'       => ALL_TEXT,
-             'select_submit' => $submit_on_change,
-             'sel_hint'      => _('Select customer branch')
-        )
+        $name, $selected_id, $sql, 'branch_id', 'br_name', array(
+                                                                'where'         => $where,
+                                                                'order'         => array('br_name'),
+                                                                'spec_option'   => $spec_option === true ? _('All branches') : $spec_option,
+                                                                'spec_id'       => ALL_TEXT,
+                                                                'select_submit' => $submit_on_change,
+                                                                'sel_hint'      => _('Select customer branch')
+                                                           )
       );
     }
     /**

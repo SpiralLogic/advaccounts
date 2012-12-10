@@ -79,7 +79,7 @@
      * @param int|null $id
      */
     public function __construct($id = null) {
-      $this->debtor_id =& $this->id;
+      $this->id =& $this->debtor_id;
       parent::__construct($id);
       $this->debtor_ref = substr($this->name, 0, 60);
     }
@@ -208,22 +208,7 @@
         return false;
       }
       $this->accounts->save(array('debtor_id' => $this->id));
-      foreach ($this->branches as $branch_id => $branch) {
-        /** @var Debtor_Branch $branch */
-        $branch->save(array('debtor_id' => $this->id));
-        if ($branch_id == 0) {
-          $this->branches[$branch->branch_id] = $branch;
-          unset($this->branches[0]);
-        }
-      }
-      $contacts       = $this->contacts;
-      $this->contacts = [];
-      foreach ($contacts as $contact) {
-        $wasnew = $contact->save(array('parent_id' => (int) $this->id));
-        if ($wasnew) {
-          $this->contacts[] = $contact;
-        }
-      }
+      $this->branches->save($changes['branches']);
       $this->setDefaults();
       return true;
     }
@@ -233,19 +218,17 @@
      * @return array|null|void
      */
     protected function setFromArray($changes = null) {
+      if (isset($changes['branches']) && is_array($changes['branches'])) {
+        $this->branches->load($changes['branches']);
+        unset($changes['branches']);
+      }
+      if (isset($changes['contacts']) && is_array($changes['contacts'])) {
+        $this->contacts->load($changes['contacts']);
+        unset($changes['contacts']);
+      }
       parent::setFromArray($changes);
       if (isset($changes['accounts']) && is_array($changes['accounts'])) {
         $this->accounts = new Debtor_Account($changes['accounts']);
-      }
-      if (isset($changes['branches']) && is_array($changes['branches'])) {
-        foreach ($changes['branches'] as $branchid => $branch) {
-          $this->branches[$branchid] = new Debtor_Branch($branch);
-        }
-      }
-      if (isset($changes['contacts']) && is_array($changes['contacts'])) {
-        foreach ($changes['contacts'] as $id => $contact) {
-          $this->contacts[$id] = new Contact(CT_CUSTOMER, $contact);
-        }
       }
       $this->credit_limit = str_replace(',', '', $this->credit_limit);
     }
@@ -272,7 +255,7 @@
           false, "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount'
         );
       }
-      if (Validation::is_num($this->webid, 0)) {
+      if (!Validation::is_num($this->webid, 1)) {
         $this->webid = null;
       }
       if ($this->id != 0) {
@@ -318,12 +301,13 @@
      * @return void
      */
     protected function defaults() {
+      $this->branches = new Collection(new Debtor_Branch(), ['debtor_id', 'branch_ref']);
+      $this->contacts = new Collection(new Contact(CT_CUSTOMER), ['parent_type', 'parent_id'], true);
       parent::defaults();
       $this->curr_code    = Bank_Currency::for_company();
       $this->discount     = $this->payment_discount = Num::_percentFormat(0);
       $this->credit_limit = Num::_priceFormat(DB_Company::_get_pref('default_credit_limit'));
-      $this->branches     = new Collection(new Debtor_Branch(), ['debtor_id', 'branch_ref']);
-      $this->contacts     = new Collection(new Contact(CT_CUSTOMER), ['parent_type', 'parent_id'], true);
+      $this->accounts     = new Debtor_Account;
     }
     protected function _getAccounts() {
       static::$staticDB->_select()->from('branches')->where('debtor_id=', $this->debtor_id)->andWhere('branch_ref=', Debtor_Account::ACCOUNTS);
@@ -348,7 +332,6 @@
      */
     protected function init() {
       $this->defaults();
-      $this->accounts               = new Debtor_Account;
       $this->branches[0]            = new Debtor_Branch;
       $this->branches[0]->debtor_id = $this->accounts->debtor_id = $this->id = 0;
       $this->setDefaults();

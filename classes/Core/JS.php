@@ -8,7 +8,9 @@
    * @link      http://www.advancedgroup.com.au
    **/
   namespace ADV\Core;
+
   use ADV\App\ADVAccounting;
+
   /**
    * @method static \ADV\Core\JS i()
    * @method static JS _openWindow($width, $height)
@@ -25,8 +27,6 @@
    * @method static JS _addLiveEvent($selector, $type, $action, $delegate = false, $cached = false)
    * @method static JS _defaultFocus($name = null)
    */
-
-
   class JS
   {
     use Traits\StaticAccess;
@@ -119,7 +119,6 @@
       $options  = array_merge($defaults, $options);
       $noajax   = $options['noajax'] ? 'true' : 'false';
       $haslinks = $options['hasLinks'] ? 'true' : 'false';
-
       $this->onload("Adv.TabMenu.init('$id',$noajax,$haslinks,$page)");
     }
     /**
@@ -154,12 +153,11 @@
         $content .= implode("", $this->beforeload);
       }
       if ($this->onlive) {
-
         $onReady .= 'Adv.Events.onload(function(){' . implode("", $this->onlive) . '}';
         if (count($this->toclean)) {
           $onReady .= ',function(){' . implode("", $this->toclean) . '}';
         }
-        $onReady .= ',"'.ADVAccounting::i()->getController().'");';
+        $onReady .= ',"' . ADVAccounting::i()->getController() . '");';
       }
       if ($this->onload) {
         $onReady .= implode("", $this->onload);
@@ -204,6 +202,9 @@
         exit();
       }
       ob_end_clean();
+      if (!headers_sent()) {
+        header('Content-type: application/json');
+      }
       echo   json_encode($data);
       exit();
     }

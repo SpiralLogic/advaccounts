@@ -112,10 +112,6 @@
         }
       }
       static::$DB->commit();
-      if (!$updated) {
-        $this->id = 0;
-        return $this->status(Status::WARNING, 'Could not find ' . $this->_classname . '  to update, save again to try and add as new.');
-      }
       return $this->status(Status::SUCCESS, $this->_classname . ' changes saved to database.');
     }
     /**
