@@ -63,7 +63,7 @@
       if ($this->stock_id) {
         parent::generateTable();
       }
-      if ($this->Input->post('_control') == 'stock_id') {
+      if ($this->Input->post(FORM_CONTROL) == 'stock_id') {
         $this->Ajax->activate('prices_table');
       }
       $this->Ajax->end_div();

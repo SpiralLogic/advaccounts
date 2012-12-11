@@ -84,7 +84,7 @@
       $inactive = false;
       if (isset($_SESSION['pager'][$pager_name])) {
         $inactive = ($this->action == 'showInactive' && $this->Input->post(
-          '_value', Input::NUMERIC
+          FORM_VALUE, Input::NUMERIC
         ) == 1) || ($this->action != 'showInactive' && $_SESSION['pager'][$pager_name]->showInactive);
         return $inactive;
       }
@@ -115,7 +115,7 @@
      * @return \ADV\App\Form\Button
      */
     public function formatBtn($action, $id = '', $icon = null, $type = 'primary') {
-      $button = new \ADV\App\Form\Button('_action', $action . $id, $action);
+      $button = new \ADV\App\Form\Button(FORM_ACTION, $action . $id, $action);
       $button->preIcon($icon);
       $button->type('mini')->type($type);
       return $button;

@@ -109,7 +109,7 @@
         null, [
               'type'  => 'hidden',
               'value' => $this->uniqueid,
-              'name'  => '_form_id'
+              'name'  => FORM_ID
               ]
       );
       return $this->start;
@@ -309,8 +309,8 @@
     public function arraySelect($name, $items, $selected_id = null, Array $options = []) {
       $field = $this->addField(new Select($name, $items, $options));
       $field->initial($selected_id);
-      if ($this->Input->post('_action') == CHANGED && $this->Input->post('_control') == $name) {
-        if ($this->uniqueid == $this->Input->post('_form_id')) {
+      if ($this->Input->post(FORM_ACTION) == CHANGED && $this->Input->post(FORM_CONTROL) == $name) {
+        if ($this->uniqueid == $this->Input->post(FORM_ID)) {
           $field->async ? $this->Ajax->activate($name) : $this->Ajax->activate('_page_body');
         }
       }
@@ -363,7 +363,7 @@
       if ($caption === null) {
         $caption = $action;
       }
-      $button         = new Button('_action', $action, $caption);
+      $button         = new Button(FORM_ACTION, $action, $caption);
       $button['type'] = 'submit';
       $button->id     = $this->nameToId($action);
       if (is_array($this->currentgroup)) {
@@ -461,7 +461,7 @@
         }
         $return[$id] = $value;
       }
-      $return['_form_id'] = $this->uniqueid;
+      $return[FORM_ID] = $this->uniqueid;
       return $return;
     }
     /**

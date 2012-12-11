@@ -34,7 +34,7 @@
     protected $formid;
     protected $security = SA_CUSTOMER;
     protected function before() {
-      $this->formid   = $this->Input->getPostGlobal('_form_id');
+      $this->formid   = $this->Input->getPostGlobal(FORM_ID);
       $this->stock_id = & $this->Input->getPostGlobal('stock_id');
       $this->stockid  = & $this->Input->getPostGlobal('stockid');
       if (!$this->stockid) {
@@ -77,10 +77,10 @@
     }
     protected function index() {
       $view = new View('items/quickitems');
-      $menu = new MenuUI('disabled','itemedit');
+      $menu = new MenuUI('disabled', 'itemedit');
       $view->set('menu', $menu);
       $form = new Form();
-      $form->start('item','/Items/Manage/Items');
+      $form->start('item', '/Items/Manage/Items');
       $form->group('items');
       $form->hidden('stockid');
       $form->text('stock_id')->label('Item Code:');
@@ -97,9 +97,9 @@
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $form->group('buttons');
-      $form->button('_action', ADD, ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
-      $form->button('_action', CANCEL, CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
-      $form->button('_action', SAVE, SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, ADD, ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, CANCEL, CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, SAVE, SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
       $view->set('form', $form);
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!$this->Input->hasGet('stock_id')) {

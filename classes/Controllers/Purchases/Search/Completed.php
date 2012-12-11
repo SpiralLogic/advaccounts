@@ -26,7 +26,6 @@
    **/
   class Completed extends \ADV\App\Controller\Action
   {
-
     protected $order_number;
     protected $creditor_id;
     protected function before() {
@@ -42,7 +41,7 @@
         $this->Ajax->addFocus(true, 'creditor');
       }
       $this->Ajax->activate('orders_tbl');
-      if ($this->Input->post('_control') != 'supplier' && !$this->Input->post('supplier')) {
+      if ($this->Input->post(FORM_CONTROL) != 'supplier' && !$this->Input->post('supplier')) {
         $_POST['creditor_id'] = $this->Session->setGlobal('creditor', '');
       }
     }
@@ -75,7 +74,8 @@
         $searchArray = explode(' ', $_POST['q']);
         unset($_POST['creditor_id']);
       }
-      $sql = "SELECT
+      $sql
+        = "SELECT
   	porder.order_no,
   	porder.reference,
   	supplier.name,

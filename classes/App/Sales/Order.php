@@ -1130,7 +1130,7 @@
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
       Forms::amountCellsSmall(null, 'totalDiscount', $total_discount, null, ['$']);
       echo  (new HTML)->td(null, array('colspan' => 2, 'class' => 'center'))->button(
-        'discountAll', 'Discount All', array('name' => '_action', 'value' => 'discountAll'), false
+        'discountAll', 'Discount All', array('name' => FORM_ACTION, 'value' => 'discountAll'), false
       );
       Forms::hidden('_discountAll', '0', true);
       echo HTML::td();
@@ -1143,7 +1143,7 @@
       $display_total = Num::_priceFormat(($total + Validation::input_num('freight_cost') + $tax_total));
       echo '<tr>';
       Cell::labelled(_("Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
-      Forms::submitCells('_action', Orders::REFRESH, "colspan=2", _("Refresh"), true);
+      Forms::submitCells(FORM_ACTION, Orders::REFRESH, "colspan=2", _("Refresh"), true);
       echo '</tr>';
       Table::footEnd();
       Table::end();
@@ -1183,7 +1183,7 @@
       } else {
         //Debtor::row(_("Customer:"), 'debtor_id', null, false, true, false, true);
         Debtor::newselect();
-        if (Input::_post('_control') == 'customer') {
+        if (Input::_post(FORM_CONTROL) == 'customer') {
           // customer has changed
           JS::_setFocus('stock_id');
           Ajax::_activate('_page_body');
@@ -1381,12 +1381,12 @@
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');
       if ($id != -1) {
-        Forms::buttonCell('_action', Orders::UPDATE_ITEM, _("Update"), ICON_UPDATE); //_('Confirm changes'),
-        Forms::buttonCell('_action', Orders::CANCEL_ITEM_CHANGES, _("Cancel"), ICON_CANCEL); //, _('Cancel changes')
+        Forms::buttonCell(FORM_ACTION, Orders::UPDATE_ITEM, _("Update"), ICON_UPDATE); //_('Confirm changes'),
+        Forms::buttonCell(FORM_ACTION, Orders::CANCEL_ITEM_CHANGES, _("Cancel"), ICON_CANCEL); //, _('Cancel changes')
         Forms::hidden('LineNo', $line_no);
         JS::_setFocus('qty');
       } else {
-        Forms::submitCells('_action', Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
+        Forms::submitCells(FORM_ACTION, Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
       }
       echo '</tr>';
     }

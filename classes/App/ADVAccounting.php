@@ -267,8 +267,8 @@
      * @internal param $controller2
      */
     protected function runController($controller) {
-      $this->controller=$controller;
-      $dic = \ADV\Core\DIC::i();
+      $this->controller = $controller;
+      $dic              = \ADV\Core\DIC::i();
       /** @var \ADV\App\Controller\Base $controller */
       $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default'));
       $controller->setPage($dic->offsetGet('Page'));
@@ -348,7 +348,7 @@
         ini_set('html_errors', 'On');
       }
       $this->selected = $this->User->selectedApp;
-      if ($this->User->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password.php') == false) {
+      if ($this->User->change_password && strstr($_SERVER['DOCUMENT_URI'], 'change_current_user_password') == false) {
         header('Location: /system/change_current_user_password?selected_id=' . $this->User->username);
       }
     }

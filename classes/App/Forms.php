@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -66,7 +65,7 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, $prefix) === 0) {
           $id = substr($postkey, strlen($prefix));
-          return $numeric ? (int)$id : $id;
+          return $numeric ? (int) $id : $id;
         }
       }
       return $numeric ? -1 : null;
@@ -170,7 +169,7 @@
       //if($name=='SelectStockFromList') Event::error($sql);
       foreach ($items as $value => $descr) {
         $sel = '';
-        if (in_array((string)$value, $selected_id)) {
+        if (in_array((string) $value, $selected_id)) {
           $sel   = 'selected';
           $found = $value;
         }
@@ -257,8 +256,8 @@
           }
         }
       }
-      $caption = ($name == '_action') ? $title : $value;
-      //$id         = ($name == '_action') ? '' : "id=\"$name\"";
+      $caption = ($name == FORM_ACTION) ? $title : $value;
+      //$id         = ($name == FORM_ACTION) ? '' : "id=\"$name\"";
       $submit_str = "<button class=\"" . (($atype === true || $atype === false) ? (($atype) ? 'ajaxsubmit' : 'inputsubmit') :
         $atype) . "\" type=\"submit\" " . $aspect . " name=\"$name\" value=\"$value\"" . ($title ? " title='$title'" : '') . ">" . Forms::setIcon(
         $icon
@@ -450,7 +449,7 @@
         $rel   = " rel='$value'";
         $value = _("Select");
       }
-      $caption = ($name == '_action') ? $title : $value;
+      $caption = ($name == FORM_ACTION) ? $title : $value;
       $name    = htmlentities(strtr($name, array('.' => '=2E', ' ' => '=20', '=' => '=3D', '[' => '=5B')));
       if (User::_graphic_links() && $icon) {
         if ($value == _("Delete")) // Helper during implementation
@@ -819,13 +818,10 @@
       $items['0'] = strlen($name_no) ? $name_no : _("No");
       $items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
       return Forms::arraySelect(
-        $name,
-        $selected_id,
-        $items,
-        array(
-             'select_submit' => $submit_on_change,
-             'async'         => false
-        )
+        $name, $selected_id, $items, array(
+                                          'select_submit' => $submit_on_change,
+                                          'async'         => false
+                                     )
       );
     }
     /**
@@ -863,13 +859,10 @@
         $items[$i] = "$i";
       }
       return Forms::arraySelect(
-        $name,
-        $selected,
-        $items,
-        array(
-             'spec_option' => $no_option,
-             'spec_id'     => ALL_NUMERIC
-        )
+        $name, $selected, $items, array(
+                                       'spec_option' => $no_option,
+                                       'spec_id'     => ALL_NUMERIC
+                                  )
       );
     }
     /**
@@ -1052,7 +1045,7 @@
       if (strpos($line_no, 'Delete') === 0 || strpos($line_no, 'BDel') === 0) {
         Forms::buttonCell($line_no, $value, $title, ICON_DELETE);
       } else {
-        Forms::buttonCell('_action', Orders::DELETE_LINE . $line_no, $value, ICON_DELETE);
+        Forms::buttonCell(FORM_ACTION, Orders::DELETE_LINE . $line_no, $value, ICON_DELETE);
       }
     }
     /**
@@ -1066,7 +1059,7 @@
       if (strpos($line_no, 'Edit') === 0 || strpos($line_no, 'BEdit') === 0) {
         Forms::buttonCell($line_no, $value, $title, ICON_EDIT);
       } else {
-        Forms::buttonCell('_action', Orders::EDIT_LINE . $line_no, $value, ICON_EDIT);
+        Forms::buttonCell(FORM_ACTION, Orders::EDIT_LINE . $line_no, $value, ICON_EDIT);
       }
     }
     /**

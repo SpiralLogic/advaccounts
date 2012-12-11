@@ -16,7 +16,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -164,29 +163,13 @@
       $ex_rate = Bank_Currency::exchange_rate_from_home(Bank_Currency::for_creditor($creditor_trans->creditor_id), $date_);
       /*First insert the invoice into the creditor_trans table*/
       $invoice_id = Creditor_Trans::add(
-        $trans_type,
-        $creditor_trans->creditor_id,
-        $date_,
-        $creditor_trans->due_date,
-        $creditor_trans->reference,
-        $creditor_trans->supplier_reference,
-        $invoice_items_total,
-        $tax_total,
-        $creditor_trans->ov_discount
+        $trans_type, $creditor_trans->creditor_id, $date_, $creditor_trans->due_date, $creditor_trans->reference, $creditor_trans->supplier_reference, $invoice_items_total, $tax_total, $creditor_trans->ov_discount
       );
       $total      = 0;
       /* Now the control account */
       $supplier_accounts = Creditor::get_accounts_name($creditor_trans->creditor_id);
       $total += Creditor_Trans::add_gl(
-        $trans_type,
-        $invoice_id,
-        $date_,
-        $supplier_accounts["payable_account"],
-        0,
-        0,
-        -($invoice_items_total + $tax_total + $creditor_trans->ov_discount),
-        $creditor_trans->creditor_id,
-        "The general ledger transaction for the control total could not be added"
+        $trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0, -($invoice_items_total + $tax_total + $creditor_trans->ov_discount), $creditor_trans->creditor_id, "The general ledger transaction for the control total could not be added"
       );
       /*Loop through the GL Entries and create a debit posting for each of the accounts entered */
       /*the postings here are a little tricky, the logic goes like this:
@@ -206,17 +189,7 @@ the credit is to creditors control act done later for the total invoice value + 
         }
         $memo_ = $entered_gl_code->memo_;
         $total += Creditor_Trans::add_gl(
-          $trans_type,
-          $invoice_id,
-          $date_,
-          $entered_gl_code->gl_code,
-          $entered_gl_code->gl_dim,
-          $entered_gl_code->gl_dim2,
-          $entered_gl_code->amount,
-          $creditor_trans->creditor_id,
-          "",
-          0,
-          $memo_
+          $trans_type, $invoice_id, $date_, $entered_gl_code->gl_code, $entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $creditor_trans->creditor_id, "", 0, $memo_
         );
         Purch_Line::add_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code, $entered_gl_code->amount, $memo_);
         // store tax details if the gl account is a tax account
@@ -235,14 +208,7 @@ the credit is to creditors control act done later for the total invoice value + 
         $stock_gl_code = Item::get_gl_code($entered_grn->item_code);
         $iv_act        = (Item::is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : $stock_gl_code["cogs_account"]);
         $total += Creditor_Trans::add_gl(
-          $trans_type,
-          $invoice_id,
-          $date_,
-          $iv_act,
-          $stock_gl_code['dimension_id'],
-          $stock_gl_code['dimension2_id'],
-          $entered_grn->this_quantity_inv * $line_taxfree,
-          $creditor_trans->creditor_id
+          $trans_type, $invoice_id, $date_, $iv_act, $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $entered_grn->this_quantity_inv * $line_taxfree, $creditor_trans->creditor_id
         );
         // -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
         if ($creditor_trans->is_invoice) {
@@ -275,32 +241,10 @@ the credit is to creditors control act done later for the total invoice value + 
             $amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
             if ($amt != 0.0) {
               GL_Trans::add(
-                $trans_type,
-                $invoice_id,
-                $date_,
-                $stock_gl_code["cogs_account"],
-                $stock_gl_code['dimension_id'],
-                $stock_gl_code['dimension2_id'],
-                _("Cost diff."),
-                $amt,
-                null,
-                null,
-                null,
-                "The general ledger transaction could not be added for the price variance of the inventory item"
+                $trans_type, $invoice_id, $date_, $stock_gl_code["cogs_account"], $stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."), $amt, null, null, null, "The general ledger transaction could not be added for the price variance of the inventory item"
               );
               GL_Trans::add(
-                $trans_type,
-                $invoice_id,
-                $date_,
-                $iv_act,
-                0,
-                0,
-                _("Cost diff."),
-                -$amt,
-                null,
-                null,
-                null,
-                "The general ledger transaction could not be added for the price variance of the inventory item"
+                $trans_type, $invoice_id, $date_, $iv_act, 0, 0, _("Cost diff."), -$amt, null, null, null, "The general ledger transaction could not be added for the price variance of the inventory item"
               );
             }
             Inv_Transfer::update_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
@@ -310,20 +254,7 @@ the credit is to creditors control act done later for the total invoice value + 
         }
         // ----------------------------------------------------------------------
         Purch_Line::add_item(
-          $trans_type,
-          $invoice_id,
-          $entered_grn->item_code,
-          $entered_grn->description,
-          0,
-          $line_taxfree,
-          $line_tax,
-          $entered_grn->this_quantity_inv,
-          $entered_grn->id,
-          $entered_grn->po_detail_item,
-          "",
-          "",
-          $entered_grn->discount,
-          $entered_grn->exp_price
+          $trans_type, $invoice_id, $entered_grn->item_code, $entered_grn->description, 0, $line_taxfree, $line_tax, $entered_grn->this_quantity_inv, $entered_grn->id, $entered_grn->po_detail_item, "", "", $entered_grn->discount, $entered_grn->exp_price
         );
       } /* end of GRN postings */
       /* Now the TAX account */
@@ -336,30 +267,13 @@ the credit is to creditors control act done later for the total invoice value + 
           }
           // here we suppose that tax is never included in price (we are company customer).
           GL_Trans::add_tax_details(
-            $trans_type,
-            $invoice_id,
-            $taxitem['tax_type_id'],
-            $taxitem['rate'],
-            0,
-            $taxitem['Value'],
-            $taxitem['Net'],
-            $ex_rate,
-            $date_,
-            $creditor_trans->supplier_reference
+            $trans_type, $invoice_id, $taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'], $taxitem['Net'], $ex_rate, $date_, $creditor_trans->supplier_reference
           );
           if (!$creditor_trans->is_invoice) {
             $taxitem['Value'] = -$taxitem['Value'];
           }
           $total += Creditor_Trans::add_gl(
-            $trans_type,
-            $invoice_id,
-            $date_,
-            $taxitem['purchasing_gl_code'],
-            0,
-            0,
-            $taxitem['Value'],
-            $creditor_trans->creditor_id,
-            "A general ledger transaction for the tax amount could not be added"
+            $trans_type, $invoice_id, $date_, $taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'], $creditor_trans->creditor_id, "A general ledger transaction for the tax amount could not be added"
           );
         }
       }
@@ -441,29 +355,11 @@ the credit is to creditors control act done later for the total invoice value + 
           while ($details_row = DB::_fetch($result)) {
             if ($details_row["gl_code"] == 0) {
               $creditor_trans->add_grn_to_trans(
-                $details_row["grn_item_id"],
-                $details_row["po_detail_item_id"],
-                $details_row["stock_id"],
-                $details_row["description"],
-                0,
-                0,
-                $details_row["quantity"],
-                0,
-                $details_row["FullUnitPrice"],
-                false,
-                0,
-                0,
-                $details_row['discount'],
-                $details_row['exp_price']
+                $details_row["grn_item_id"], $details_row["po_detail_item_id"], $details_row["stock_id"], $details_row["description"], 0, 0, $details_row["quantity"], 0, $details_row["FullUnitPrice"], false, 0, 0, $details_row['discount'], $details_row['exp_price']
               );
             } else {
               $creditor_trans->add_gl_codes_to_trans(
-                $details_row["gl_code"],
-                GL_Account::get_name($details_row["gl_code"]),
-                0,
-                0,
-                $details_row["FullUnitPrice"],
-                $details_row["memo_"]
+                $details_row["gl_code"], GL_Account::get_name($details_row["gl_code"]), 0, 0, $details_row["FullUnitPrice"], $details_row["memo_"]
               );
             }
           }
@@ -508,14 +404,11 @@ the credit is to creditors control act done later for the total invoice value + 
       if (DB::_numRows($result) > 0) {
         $date_ = Dates::_today();
         while ($details_row = DB::_fetch($result)) {
-          if ((int)$details_row["grn_item_id"] > 0) // it can be empty for GL items
+          if ((int) $details_row["grn_item_id"] > 0) // it can be empty for GL items
           {
             // Changed 2008-10-17 by Joe Hunt to get the avg. material cost updated
             $old = static::update_supplier_received(
-              $details_row["grn_item_id"],
-              $details_row["po_detail_item_id"],
-              -$details_row["quantity"],
-              $details_row["FullUnitPrice"]
+              $details_row["grn_item_id"], $details_row["po_detail_item_id"], -$details_row["quantity"], $details_row["FullUnitPrice"]
             );
             //$diff = $details_row["FullUnitPrice"] - $old[2];
             $old_date = Dates::_sqlToDate($old[1]);
@@ -526,21 +419,11 @@ the credit is to creditors control act done later for the total invoice value + 
               $match = static::get_for_item($details_row["stock_id"], $details_row["po_detail_item_id"]);
               if ($match !== false) {
                 $mat_cost = Purch_GRN::update_average_material_cost(
-                  $grn["creditor_id"],
-                  $details_row["stock_id"],
-                  $match["unit_price"],
-                  -$details_row["quantity"],
-                  Dates::_sqlToDate($match['tran_date']),
-                  $match['tran_date'] !== $trans['tran_date']
+                  $grn["creditor_id"], $details_row["stock_id"], $match["unit_price"], -$details_row["quantity"], Dates::_sqlToDate($match['tran_date']), $match['tran_date'] !== $trans['tran_date']
                 );
               } else {
                 $mat_cost = Purch_GRN::update_average_material_cost(
-                  $grn["creditor_id"],
-                  $details_row["stock_id"],
-                  $details_row["FullUnitPrice"],
-                  -$details_row["quantity"],
-                  $old_date,
-                  $old[1] !== $trans['tran_date']
+                  $grn["creditor_id"], $details_row["stock_id"], $details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']
                 );
               }
               $sql
@@ -557,11 +440,7 @@ the credit is to creditors control act done later for the total invoice value + 
               DB::_query($sql);
             } else {
               $diff = static::get_diff_in_home_currency(
-                $grn["creditor_id"],
-                $old_date,
-                Dates::_sqlToDate($trans['tran_date']),
-                $old[2],
-                $details_row["FullUnitPrice"]
+                $grn["creditor_id"], $old_date, Dates::_sqlToDate($trans['tran_date']), $old[2], $details_row["FullUnitPrice"]
               );
               // Only adjust the avg for the diff
               $mat_cost = Purch_GRN::update_average_material_cost(null, $details_row["stock_id"], $diff, -$details_row["quantity"], $old_date, true);
@@ -641,8 +520,7 @@ the credit is to creditors control act done later for the total invoice value + 
       Table::header(_("Invoice #:"));
       if ($creditor_trans->is_invoice && isset($_POST['invoice_no'])) {
         Cell::labelled(
-          null,
-          $_POST['invoice_no'] . Forms::hidden('invoice_no', $_POST['invoice_no'], false) . Forms::hidden('supplier_reference', $_POST['invoice_no'], false)
+          null, $_POST['invoice_no'] . Forms::hidden('invoice_no', $_POST['invoice_no'], false) . Forms::hidden('supplier_reference', $_POST['invoice_no'], false)
         );
       } else {
         Forms::textCells(null, 'supplier_reference', $_POST['supplier_reference'], 20, 20);
@@ -669,7 +547,7 @@ the credit is to creditors control act done later for the total invoice value + 
       Ajax::_end_div();
       Table::start();
       echo '<tr>';
-      if (Input::_post('_control') == 'creditor') {
+      if (Input::_post(FORM_CONTROL) == 'creditor') {
         $creditor_trans->supplier_name = $_POST['creditor'];
         Ajax::i()->activate("_page_body");
       }
@@ -732,17 +610,11 @@ the credit is to creditors control act done later for the total invoice value + 
       $total = $creditor_trans->ov_amount + $tax_total + Input::_post('ChgTotal');
       if ($creditor_trans->is_invoice) {
         Table::label(
-          _("Invoice Total:"),
-          Num::_priceFormat($total),
-          "colspan=$colspan class='alignright bold'",
-          "class='alignright' id='invoiceTotal' data-total=" . $total . " class='bold'"
+          _("Invoice Total:"), Num::_priceFormat($total), "colspan=$colspan class='alignright bold'", "class='alignright' id='invoiceTotal' data-total=" . $total . " class='bold'"
         );
       } else {
         Table::label(
-          _("Credit Note Total"),
-          Num::_priceFormat($total),
-          "colspan=$colspan class='bold red alignright'",
-          " class='alignright nowrap' id='invoiceTotal' data-total=" . $total . " class='bold red'"
+          _("Credit Note Total"), Num::_priceFormat($total), "colspan=$colspan class='bold red alignright'", " class='alignright nowrap' id='invoiceTotal' data-total=" . $total . " class='bold red'"
         );
       }
       Table::end(1);

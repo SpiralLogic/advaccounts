@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -62,7 +61,7 @@
       if (isset($_POST['_date__changed'])) {
         $this->Ajax->activate('_ex_rate');
       }
-      if ($this->Input->post('_control') == 'creditor' || Forms::isListUpdated('bank_account')) {
+      if ($this->Input->post(FORM_CONTROL) == 'creditor' || Forms::isListUpdated('bank_account')) {
         $_SESSION['alloc']->read();
         $this->Ajax->activate('alloc_tbl');
       }
@@ -120,15 +119,7 @@
         $rate = Validation::input_num('_ex_rate');
       }
       $payment_id = Creditor_Payment::add(
-        $this->creditor_id,
-        $_POST['date_'],
-        $_POST['bank_account'],
-        Validation::input_num('amount'),
-        Validation::input_num('discount'),
-        $_POST['ref'],
-        $_POST['memo_'],
-        $rate,
-        Validation::input_num('charge')
+        $this->creditor_id, $_POST['date_'], $_POST['bank_account'], Validation::input_num('amount'), Validation::input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate, Validation::input_num('charge')
       );
       if (!$payment_id) {
         return false;

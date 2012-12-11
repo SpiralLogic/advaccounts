@@ -59,8 +59,8 @@
       $pager->page_length       = $user->prefs->query_size;
       $_SESSION['pager'][$name] = $pager;
       $pager->restoreColumnFunction($coldef);
-      if (static::$Input->post('_action') == 'showInactive') {
-        $pager->showInactive = (static::$Input->post('_value', Input::NUMERIC) == 1);
+      if (static::$Input->post(FORM_ACTION) == 'showInactive') {
+        $pager->showInactive = (static::$Input->post(FORM_VALUE, Input::NUMERIC) == 1);
       }
       return $pager;
     }
@@ -83,7 +83,7 @@
      * @return \ADV\Core\Status|array|string
      */
     public function runPost() {
-      if (REQUEST_POST && static::$Input->post('_form_id') == $this->name . '_form') {
+      if (REQUEST_POST && static::$Input->post(FORM_ID) == $this->name . '_form') {
         $id          = $this->getActionId([DELETE, SAVE, EDIT, INACTIVE]);
         $this->ready = false;
         switch ($this->action) {
@@ -98,7 +98,7 @@
           /** @noinspection PhpMissingBreakStatementInspection */
           case INACTIVE:
             $this->editing->load($id);
-            $changes['inactive'] = static::$Input->post('_value', Input::NUMERIC);
+            $changes['inactive'] = static::$Input->post(FORM_VALUE, Input::NUMERIC);
           case SAVE:
             $changes = isset($changes) ? $changes : $_POST;
             $this->editing->save($changes);
@@ -279,12 +279,12 @@
           $field['form'] = $this->name . '_form';
         }
       }
-      $form->group('save')->button('_action', SAVE, $this->editing->id ? SAVE : ADD, ['form' => $this->name . '_form'])->preIcon(ICON_SAVE)->type('mini')->type(
+      $form->group('save')->button(FORM_ACTION, SAVE, $this->editing->id ? SAVE : ADD, ['form' => $this->name . '_form'])->preIcon(ICON_SAVE)->type('mini')->type(
         'success'
       );
       $form->group('button');
       if ($this->editing->id) {
-        $form->button('_action', CANCEL, CANCEL, ['form' => $this->name . '_form'])->preIcon(ICON_CANCEL)->type('mini')->type('danger');
+        $form->button(FORM_ACTION, CANCEL, CANCEL, ['form' => $this->name . '_form'])->preIcon(ICON_CANCEL)->type('mini')->type('danger');
       } else {
         $form->heading('');
       }
@@ -300,7 +300,7 @@
       if ($this->editing->id) {
         return '';
       }
-      $button = new \ADV\App\Form\Button('_action', EDIT . $row[$this->editing->getIDColumn()], EDIT);
+      $button = new \ADV\App\Form\Button(FORM_ACTION, EDIT . $row[$this->editing->getIDColumn()], EDIT);
       $button->type('mini')->type('primary');
       $button['form'] = $this->name . '_form';
       return $button;
@@ -314,7 +314,7 @@
       if ($this->editing->id) {
         return '';
       }
-      $button = new \ADV\App\Form\Button('_action', DELETE . $row[$this->editing->getIDColumn()], DELETE);
+      $button = new \ADV\App\Form\Button(FORM_ACTION, DELETE . $row[$this->editing->getIDColumn()], DELETE);
       $button->preIcon(ICON_DELETE);
       $button->type('mini')->type('danger');
       $button['form'] = $this->name . '_form';

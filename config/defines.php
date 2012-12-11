@@ -332,6 +332,11 @@
     'DELETE'                  => 'Delete',
     'INACTIVE'                => 'Inactive',
     'CHANGED'                 => 'Changed',
+    //FORMS
+    'FORM_ID'                 => '_form_id',
+    'FORM_VALUE'              => '_value',
+    'FORM_ACTION'             => '_action',
+    'FORM_CONTROL'            => '_control'
   );
   foreach (\ADV\Core\Config::_getAll('default') as $k => $v) {
     $return['DEFAULT_' . strtoupper($k)] = $v;

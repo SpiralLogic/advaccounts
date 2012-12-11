@@ -22,7 +22,8 @@
 
      */
     protected function index() {
-      echo "<a data-href='/Items/Manage/Prices' class='test'>test</a><br>";    echo "<a data-href='/Contacts/Manage/Customers' class='test2'>test2</a>";
+      echo "<a data-href='/Items/Manage/Prices' class='test'>test</a><br>";
+      echo "<a data-href='/Contacts/Manage/Customers' class='test2'>test2</a>";
       $this->JS->onload(
         <<<JS
         $('.test').on('click',function(){
@@ -33,6 +34,7 @@
   });
 JS
       );
+      phpinfo();
     }
   }
 

@@ -59,7 +59,7 @@
      * @return mixed|void
      */
     public function   run($embed = false) {
-      $this->action   = $this->Input->post('_action');
+      $this->action   = $this->Input->post(FORM_ACTION);
       $this->embedded = $embed || $this->Input->request('frame');
       $this->before();
       if ($this->Page && !$this->Ajax->inAjax()) {

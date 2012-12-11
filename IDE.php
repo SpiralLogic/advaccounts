@@ -562,6 +562,11 @@
   define('DELETE', 'Delete');
   define('CHANGED', 'Changed');
   define('EDIT', 'Edit');
+  //FORMS
+  define('FORM_ID', '_form_id');
+  define('FORM_VALUE', '_value');
+  define('FORM_ACTION', '_action');
+  define('FORM_CONTROL', '_control');
   function xhprof_enable() {
   }
 

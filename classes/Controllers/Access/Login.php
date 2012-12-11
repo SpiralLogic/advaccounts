@@ -54,7 +54,7 @@
       }
       $form = new Form();
       $view->set('form', $form);
-      $form->start('login', REQUEST_POST ? $_SESSION['timeout']['uri'] : '#', false, ['class' => 'formbox']);
+      $form->start('login', REQUEST_POST ? $_SESSION['timeout']['uri'] : $_SERVER['REQUEST_URI'], false, ['class' => 'formbox']);
       $form->text('user_name')->label('User name');
       $form->password('password')->label('Password')->value($this->Config->get('demo_mode') ? "password" : null);
       if ($timeout) {

@@ -23,7 +23,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -451,16 +450,7 @@
             $units = $myrow["units"];
           }
           if ($this->add_to_order(
-            $this->lines_on_order + 1,
-            $myrow["item_code"],
-            $myrow["quantity_ordered"],
-            $myrow["description"],
-            $myrow["unit_price"],
-            $units,
-            Dates::_sqlToDate($myrow["delivery_date"]),
-            $myrow["qty_invoiced"],
-            $myrow["quantity_received"],
-            $myrow["discount"]
+            $this->lines_on_order + 1, $myrow["item_code"], $myrow["quantity_ordered"], $myrow["description"], $myrow["unit_price"], $units, Dates::_sqlToDate($myrow["delivery_date"]), $myrow["qty_invoiced"], $myrow["quantity_received"], $myrow["discount"]
           )
           ) {
             $this->line_items[$this->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
@@ -551,15 +541,14 @@
           $_POST['creditor_id'] = Session::_getGlobal('creditor_id');
         }
         Creditor::newselect(
-          null,
-          [
-          'cell_params' => ['colspan' => ($show_currencies + 1), 'rowspan' => $show_currencies],
-          'rowspan'     => $show_currencies,
-          'row'         => false,
-          'cell_class'  => 'label'
-          ]
+          null, [
+                'cell_params' => ['colspan' => ($show_currencies + 1), 'rowspan' => $show_currencies],
+                'rowspan'     => $show_currencies,
+                'row'         => false,
+                'cell_class'  => 'label'
+                ]
         );
-        if (Input::_post('_control') == 'customer') {
+        if (Input::_post(FORM_CONTROL) == 'customer') {
           $this->supplier_to_order($_POST['creditor_id']);
           // customer has changed
           Ajax::_activate('_page_body');
@@ -578,8 +567,7 @@
         foreach ($this->line_items as $line) {
           $line->price    = Item_Price::get_purchase($this->creditor_id, $line->stock_id);
           $line->quantity = $line->quantity / Creditor_Trans::get_conversion_factor($old_supp, $line->stock_id) * Creditor_Trans::get_conversion_factor(
-            $this->creditor_id,
-            $line->stock_id
+            $this->creditor_id, $line->stock_id
           );
         }
         Ajax::_activate('items_table');
@@ -611,13 +599,7 @@
         }
       }
       Forms::textareaCells(
-        null,
-        'delivery_address',
-        $_POST['delivery_address'],
-        'width95',
-        4,
-        null,
-        'colspan=' . (5 - $show_currencies) . ' rowspan=' . (5 - $show_currencies)
+        null, 'delivery_address', $_POST['delivery_address'], 'width95', 4, null, 'colspan=' . (5 - $show_currencies) . ' rowspan=' . (5 - $show_currencies)
       );
       echo '</tr>';
       echo '<tr>';
@@ -696,14 +678,7 @@
       }
       Table::foot();
       Forms::SmallAmountRow(
-        _("Freight"),
-        'freight',
-        Num::_priceFormat(Input::_post('freight', null, 0)),
-        "colspan=8 class='bold alignright'",
-        ['$'],
-        null,
-        3,
-        " class='small alignright'"
+        _("Freight"), 'freight', Num::_priceFormat(Input::_post('freight', null, 0)), "colspan=8 class='bold alignright'", ['$'], null, 3, " class='small alignright'"
       );
       $display_total = Num::_priceFormat($total + Validation::input_num('freight'));
       Table::label(_("Total Excluding Shipping/Tax"), $display_total, "colspan=8 class='bold alignright'", "nowrap class='alignright' _nofreight='$total'", 2);

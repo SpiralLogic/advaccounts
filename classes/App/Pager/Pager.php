@@ -138,8 +138,8 @@
       $pager->page_length       = $user->prefs->query_size;
       $_SESSION['pager'][$name] = $pager;
       $pager->restoreColumnFunction($coldef);
-      if (static::$Input->post('_action') == 'showInactive') {
-        $pager->showInactive = (static::$Input->post('_value', Input::NUMERIC) == 1);
+      if (static::$Input->post(FORM_ACTION) == 'showInactive') {
+        $pager->showInactive = (static::$Input->post(FORM_VALUE, Input::NUMERIC) == 1);
       }
       return $pager;
     }

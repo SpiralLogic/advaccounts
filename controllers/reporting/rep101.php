@@ -147,7 +147,7 @@
       $charges     = Num::_round($bal['charges'], 2);
       $credits     = Num::_round($bal['credits'], 2);
       $outstanding = Num::_round($charges + $credits, 2);
-      if ($no_zeros && $outstanding < 0) {
+      if ($outstanding <= 0) {
         continue;
       }
       $init = [$charges, $credits, $outstanding];

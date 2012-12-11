@@ -153,7 +153,7 @@
       if ($cust_currency != $bank_currency) {
         Event::warning(_("Amount and discount are in customer's currency."));
       }
-      Forms::submitCenter('_action', 'addPaymentItem', true, 'Add Payment', 'default');
+      Forms::submitCenter(FORM_ACTION, 'addPaymentItem', true, 'Add Payment', 'default');
       Forms::end();
     }
     /**

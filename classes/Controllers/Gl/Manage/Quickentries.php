@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -37,7 +36,7 @@
       $this->Page->start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
       $this->generateTable();
       echo '<br>';
-      if (!REQUEST_POST || $this->Input->post('_form_id') != 'QE_Lines_form') {
+      if (!REQUEST_POST || $this->Input->post(FORM_ID) != 'QE_Lines_form') {
         $this->generateForm();
       }
       $this->generateLineTable();
@@ -58,7 +57,7 @@
       $linestable = \ADV\App\Pager\Edit::newPager($pager_name, $cols);
       $linestable->setObject($this->line);
       $linestable->editing->qid = $this->object->id;
-      if ($this->Input->post('_action') == CHANGED && $this->Input->post('_control') == 'action') {
+      if ($this->Input->post(FORM_ACTION) == CHANGED && $this->Input->post(FORM_CONTROL) == 'action') {
         $this->line->action = $this->Input->post('action');
       }
       $linestable->width = $this->tableWidth;
