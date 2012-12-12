@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -19,7 +18,7 @@
   use ADV\Core\View;
 
   /** **/
-  class Users extends \ADV\App\Controller\FormPager implements \ADV\App\Pager\Pageable
+  class Users extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '80';
     protected $security = SA_USERS;

@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -34,7 +33,7 @@
    * @method static _percent_dec()
    *  @method static _graphic_links()
    */
-  class User extends \ADV\App\DB\Base
+  class User extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
   {
     use \ADV\Core\Traits\Hook;
     use StaticAccess;
@@ -314,9 +313,9 @@
       if (!is_numeric($num)) {
         return false;
       }
-      $num = (float)$num;
-      if ($num == (int)$num) {
-        return (int)$num;
+      $num = (float) $num;
+      if ($num == (int) $num) {
+        return (int) $num;
       } else {
         return $num;
       }

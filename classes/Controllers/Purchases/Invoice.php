@@ -24,7 +24,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -143,7 +142,7 @@
       }
       if ($input_error == false) {
         $this->trans->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, Validation::input_num('amount'), $_POST['memo_']);
-        $taxexists = false;
+        $taxexists = ($_POST['gl_code'] == 2430);
         foreach ($this->trans->gl_codes as &$gl_item) {
           if ($gl_item->gl_code == 2430) {
             $taxexists = true;
@@ -204,17 +203,7 @@
           DB::_query($sql, "The quantity invoiced off the items received record could not be updated");
           Purch_GRN::update_average_material_cost($grn["creditor_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::_today());
           Inv_Movement::add(
-            ST_SUPPRECEIVE,
-            $myrow["item_code"],
-            $myrow['grn_batch_id'],
-            $grn['loc_code'],
-            Dates::_sqlToDate($grn["delivery_date"]),
-            "",
-            -$myrow["QtyOstdg"],
-            $myrow['std_cost_unit'],
-            $grn["creditor_id"],
-            1,
-            $myrow['unit_price']
+            ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::_sqlToDate($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["creditor_id"], 1, $myrow['unit_price']
           );
           DB::_commit();
           Event::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
@@ -383,20 +372,7 @@
         }
         $_SESSION['err_over_charge'] = false;
         $this->trans->add_grn_to_trans(
-          $n,
-          $_POST['po_detail_item' . $n],
-          $_POST['item_code' . $n],
-          $_POST['description' . $n],
-          $_POST['qty_recd' . $n],
-          $_POST['prev_quantity_inv' . $n],
-          Validation::input_num('this_quantity_inv' . $n),
-          $_POST['order_price' . $n],
-          Validation::input_num('ChgPrice' . $n),
-          $complete,
-          $_POST['std_cost_unit' . $n],
-          "",
-          Validation::input_num('ChgDiscount' . $n),
-          Validation::input_num('ExpPrice' . $n)
+          $n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n)
         );
       }
       $this->Ajax->activate('grn_items');
@@ -424,7 +400,7 @@
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, "qty_recd") === 0) {
           $id = substr($postkey, strlen("qty_recd"));
-          $id = (int)$id;
+          $id = (int) $id;
           $this->commitItemData($id);
         }
       }

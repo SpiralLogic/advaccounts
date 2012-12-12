@@ -99,16 +99,16 @@
      * @return \ADV\Core\HTML|string
      */
     public function start($name = '', $action = '', $multi = false, Array $attrs = []) {
-      $name            = $name . '_form';
+      $name            = ($name && !$this->uniqueid) ? $this->name($name) : null;
       $attr['enctype'] = $multi ? 'multipart/form-data' : null;
       $attr['method']  = 'post';
       $attr['action']  = $action;
-      $attr['name']    = $this->name($name);
+      $attr['name']    = $name;
       $attr            = array_merge($attr, $attrs);
       $this->start     = (new HTML)->form($name, $attr)->input(
         null, [
               'type'  => 'hidden',
-              'value' => $this->uniqueid,
+              'value' => $name,
               'name'  => FORM_ID
               ]
       );
@@ -116,10 +116,12 @@
     }
     /**
      * @param $name
+     *
+     * @return mixed
      */
     public function name($name) {
-      $this->uniqueid = $this->nameToId($name);
-      return $name;
+      $this->uniqueid = $this->nameToId($name . '_form');
+      return $this->uniqueid;
     }
     /**
      * @return \ADV\Core\HTML|string

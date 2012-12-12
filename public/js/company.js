@@ -277,13 +277,13 @@ var Company = function () {
       if (!id) {
         return;
       }
-      data = data || '';
-      $invoiceFrame.load($invoiceFrameSrc, '&' + data + "&frame=1&id=" + id);
+      data = (data) ? '&' + data + '&' : '';
+      $invoiceFrame.load($invoiceFrameSrc, data + "frame&id=" + id);
     },
     useShipFields: function () {
       Company.accFields.each(function () {
         var newval //
-          ,$this = $(this)//
+          , $this = $(this)//
           , name = $this.attr('name').match(/([^[]*)\[(.+)\]/);
         if ($this.val().length > 0) {
           return;
@@ -317,7 +317,7 @@ var Company = function () {
     },
     set:           function (key, value) {
       var group//
-       , valarray = key.match(/([^[]*)\[(.+)\]/);
+        , valarray = key.match(/([^[]*)\[(.+)\]/);
       if (valarray !== null) {
         group = valarray[1];
         key = valarray[2];
@@ -385,7 +385,7 @@ var Company = function () {
     },
     setContactLog: function (data) {
       var logbox = $("[id='messageLog']").val('')//
-       , str = '';
+        , str = '';
       $.each(data, function (key, message) {
         str += '[' + message['date'] + '] Contact: ' + message['contact_name'] + "\nMessage:  " + message['message'] + "\n\n";
       });
@@ -443,7 +443,7 @@ $(function () {
   });
   $("#shortcuts").on('click', 'button', function () {
     var $this = $(this)//
-     , url = $this.data('url');
+      , url = $this.data('url');
     if (url) {
       Adv.openTab(url + Company.get().id);
     }

@@ -189,6 +189,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                var dialog = $('<div></div>').appendTo(Adv.o.wrapper);
                return {
                  open: function (url) {
+                   url = Adv.updateQueryString('frame', 1, url);
                    $.get(url, function (data) {
                      dialog.empty().append(data).dialog({autoOpen: true, width: 1024,modal:true});
                      $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})

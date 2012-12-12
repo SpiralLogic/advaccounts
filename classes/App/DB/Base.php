@@ -131,6 +131,12 @@
       return $this->_id_column;
     }
     /**
+     * @return mixed
+     */
+    public function getClassname() {
+      return $this->_classname;
+    }
+    /**
      * @return array
      */
     public static function getAll() {
