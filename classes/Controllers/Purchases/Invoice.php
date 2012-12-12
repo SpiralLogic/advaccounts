@@ -30,7 +30,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Invoice extends \ADV\App\Controller\Action {
+  class Invoice extends \ADV\App\Controller\Action
+  {
     /** @var Creditor_Trans */
     protected $trans;
     protected $creditor_id;
@@ -48,12 +49,11 @@
       if (!$this->creditor_id) {
         $this->creditor_id = $this->Session->getGlobal('creditor_id');
       }
-      $this->creditor_id = &$this->Input->postGetGlobal('creditor_id');
+      $this->creditor_id = & $this->Input->postGetGlobal('creditor_id');
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
       }
-
       $id = Forms::findPostPrefix('grn_item_id');
       if ($id != -1) {
         $this->commitItemData($id);
@@ -111,7 +111,6 @@
       Display::link_params("/purchases/allocations/supplier_allocation_main.php", _("Allocate a payment to this invoice."));
       GL_UI::view($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice"));
       Display::link_params("/system/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
-
       $this->Ajax->activate('_page_body');
       $this->Page->endExit();
     }
@@ -140,7 +139,7 @@
       }
       if ($input_error == false) {
         $this->trans->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, Validation::input_num('amount'), $_POST['memo_']);
-        $taxexists = false;
+        $taxexists = ($_POST['gl_code'] == 2430);
         foreach ($this->trans->gl_codes as &$gl_item) {
           if ($gl_item->gl_code == 2430) {
             $taxexists = true;
@@ -201,17 +200,7 @@
           DB::_query($sql, "The quantity invoiced off the items received record could not be updated");
           Purch_GRN::update_average_material_cost($grn["creditor_id"], $myrow["item_code"], $myrow["unit_price"], -$myrow["QtyOstdg"], Dates::_today());
           Inv_Movement::add(
-            ST_SUPPRECEIVE,
-            $myrow["item_code"],
-            $myrow['grn_batch_id'],
-            $grn['loc_code'],
-            Dates::_sqlToDate($grn["delivery_date"]),
-            "",
-            -$myrow["QtyOstdg"],
-            $myrow['std_cost_unit'],
-            $grn["creditor_id"],
-            1,
-            $myrow['unit_price']
+            ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], Dates::_sqlToDate($grn["delivery_date"]), "", -$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["creditor_id"], 1, $myrow['unit_price']
           );
           DB::_commit();
           Event::notice(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
@@ -246,7 +235,6 @@
       $this->Session->setGlobal('creditor', $this->creditor_id, '');
       $this->trans->clear_items();
       Creditor_Trans::killInstance();
-
       $this->pageComplete($invoice_no);
     }
     //	GL postings are often entered in the same form to two accounts
@@ -381,20 +369,7 @@
         }
         $_SESSION['err_over_charge'] = false;
         $this->trans->add_grn_to_trans(
-          $n,
-          $_POST['po_detail_item' . $n],
-          $_POST['item_code' . $n],
-          $_POST['description' . $n],
-          $_POST['qty_recd' . $n],
-          $_POST['prev_quantity_inv' . $n],
-          Validation::input_num('this_quantity_inv' . $n),
-          $_POST['order_price' . $n],
-          Validation::input_num('ChgPrice' . $n),
-          $complete,
-          $_POST['std_cost_unit' . $n],
-          "",
-          Validation::input_num('ChgDiscount' . $n),
-          Validation::input_num('ExpPrice' . $n)
+          $n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantity_inv' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], "", Validation::input_num('ChgDiscount' . $n), Validation::input_num('ExpPrice' . $n)
         );
       }
       $this->Ajax->activate('grn_items');
