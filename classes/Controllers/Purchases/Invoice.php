@@ -141,7 +141,7 @@
         $this->trans->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, Validation::input_num('amount'), $_POST['memo_']);
         $taxexists = ($_POST['gl_code'] == 2430);
         foreach ($this->trans->gl_codes as &$gl_item) {
-          if ($gl_item->gl_code == 2430) {
+          if ($gl_item->gl_code == 2430 && !$taxexists) {
             $taxexists = true;
             $gl_item->amount += Validation::input_num('amount') * .1;
             break;
