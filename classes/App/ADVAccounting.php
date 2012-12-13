@@ -133,8 +133,21 @@
         }
       );
       $dic->offsetSet(
-        'DB_Company', function () {
-          return new \DB_Company();
+        'DB_Company', function (\ADV\Core\DIC $c) {
+          $user    = $c->offsetGet('User');
+          $cache   = $c->offsetGet('Cache');
+          $name    = $user->company;
+          $company = $cache->get('Company.' . $name);
+          if (!$company) {
+            $config  = $c->offsetGet('Config');
+            $input   = $c->offsetGet('Input');
+            $company = $config->get('db.' . $input->post('login_company', null, $name));
+            $company = new \DB_Company($company);
+            $cache->set('Company.' . $name, (array) $company);
+          } else {
+            $company = new \DB_Company($company);
+          }
+          return $company;
         }
       );
       $dic->offsetSet(

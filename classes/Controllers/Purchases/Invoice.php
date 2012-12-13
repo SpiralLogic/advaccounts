@@ -36,7 +36,6 @@
     protected $trans;
     protected $creditor_id;
     protected function before() {
-      $this->JS->openWindow(900, 500);
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = true;
       if (isset($_POST['ClearFields']) || isset($_GET['New'])) {
@@ -140,11 +139,12 @@
         $this->JS->setFocus('gl_code');
         $input_error = true;
       }
+      //TODO: don't hard code this
       if ($input_error == false) {
         $this->trans->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, null, null, Validation::input_num('amount'), $_POST['memo_']);
         $taxexists = ($_POST['gl_code'] == 2430);
         foreach ($this->trans->gl_codes as &$gl_item) {
-          if ($gl_item->gl_code == 2430) {
+          if ($gl_item->gl_code == 2430 && !$taxexists) {
             $taxexists = true;
             $gl_item->amount += Validation::input_num('amount') * .1;
             break;

@@ -12,6 +12,7 @@
 
   use ADV\App\Controller\Action;
   use ADV\Core\JS;
+  use DB_Company;
 
   /** **/
   class Index2 extends Action
@@ -23,7 +24,8 @@
      */
     protected function index() {
       echo "<a data-href='/Items/Manage/Items' class='test'>test</a><br>";
-      echo "<a data-href='/Contacts/Manage/Customers' class='test2'>test2</a>";
+      echo "<a data-href='/Contacts/Manage/Customers' class='test2'>test2</a><br>";
+      echo "<a data-href='/Contacts/Manage/Customers' class='test3'>test2</a>";
       $this->JS->onload(
         <<<JS
         $('.test').on('click',function(){
@@ -31,9 +33,16 @@
   });
   $('.test2').on('click',function(){
   Adv.dialogWindow.open('Contacts/Manage/Customers');
-  });
+
+  })
+  ;
+  $('.test3').click(function() {
+    $.post('/Index2?test3=wawa',{test:'wawa'},function(data) { $('body').append(data); return false});
+    })
 JS
       );
+      var_dump($_GET);
+      var_dump(DB_Company::i());
     }
   }
 

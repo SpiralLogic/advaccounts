@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -89,16 +88,8 @@
      *
      * @internal param int $id
      */
-    public function __construct($name = 0) {
-      $company = Cache::_get('Company.' . $name);
-      if ($company) {
-        $this->setFromArray($company);
-      } else {
-        $name    = $name ? : User::_i()->company;
-        $company = Config::_get('db.' . Input::_post('login_company', null, $name));
-        parent::__construct($company);
-        Cache::_set('Company.' . $name, array_keys((array)$this));
-      }
+    public function __construct($company = 0) {
+      parent::__construct($company);
       $this->id = & $this->coy_code;
     }
     /**
@@ -117,7 +108,7 @@
         $this->saveNew();
       }
       DB::_begin();
-      DB::_update('company')->values((array)$this)->where('coy_code=', $this->id)->exec();
+      DB::_update('company')->values((array) $this)->where('coy_code=', $this->id)->exec();
       DB::_commit();
       $_SESSION['config']['company'] = $this;
       return $this->status(true, "Company has been updated.");
@@ -266,7 +257,7 @@
      * @return mixed
      */
     public function get_pref($pref_name) {
-      $prefs = (array)$this;
+      $prefs = (array) $this;
       return $prefs[$pref_name];
     }
     /**
@@ -274,7 +265,7 @@
      * @return array
      */
     public function get_prefs() {
-      return (array)$this;
+      return (array) $this;
     }
     /**
      * @static
@@ -334,7 +325,6 @@
      * $tables - array of table names (without prefix); when table name is used as a key, then
      * value is name of foreign key field. For numeric keys $stdkey field name is used.
      * $stdkey - standard name of foreign key.
-     *
      * @static
      *
      * @param      $id
