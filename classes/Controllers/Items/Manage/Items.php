@@ -123,42 +123,5 @@
       $view->render();
       $this->JS->onload("Items.onload(" . json_encode($data) . ");");
     }
-    /**
-     * @return \ADV\App\Pager\Edit
-     */
-    protected function generateSellPrices() {
-      $price           = new Price();
-      $price->stock_id = $this->stock_id;
-      $price->stockid  = $this->stockid;
-      $price_pager     = \ADV\App\Pager\Edit::newPager('sellprices', $price->getPagerColumns());
-      $price_pager->setObject($price);
-      $price_pager->editing->stock_id = $this->stock_id;
-      $price_pager->editing->stockid  = $this->stockid;
-      $price_pager->setData(Item_Price::getAll($this->stock_id));
-      return $price_pager;
-    }
-    /**
-     * @return \ADV\App\Pager\Edit
-     */
-    protected function generateBuyPrices() {
-      $price           = new Purchase();
-      $price->stock_id = $this->stock_id;
-      $price->stockid  = $this->stockid;
-      $price_pager     = \ADV\App\Pager\Edit::newPager('buyprices', $price->getPagerColumns());
-      $price_pager->setObject($price);
-      $price_pager->editing->stock_id = $this->stock_id;
-      $price_pager->editing->stockid  = $this->stockid;
-      $price_pager->setData(Purchase::getAll($this->stock_id));
-      return $price_pager;
-    }
-    /**
-     * @return \ADV\App\Pager\Pager
-     */
-    protected function generateReorderLevels() {
-      $reorder       = new Reorder();
-      $reorder_pager = \ADV\App\Pager\Pager::newPager('reorderlevels', $reorder->getPagerColumns());
-      $reorder_pager->setData($reorder->getAll($this->stockid));
-      return $reorder_pager;
-    }
   }
 

@@ -26,6 +26,7 @@
     use \ADV\Core\Traits\Action;
 
     /** @var \ADV\App\DB\Base */
+    const TYPE_READONLY = 'readonly';
     public $editing = null;
     protected $actionurl = '';
     /**
@@ -241,6 +242,9 @@
             break;
           case self::TYPE_DISABLED:
             $form->heading('');
+            break;
+          case self::TYPE_READONLY:
+            $form->heading($value);
             break;
           case self::TYPE_AMOUNT: // column not displayed
             $field      = $form->amount($name);

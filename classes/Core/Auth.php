@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -10,7 +9,6 @@
    **/
   namespace ADV\Core;
 
-  /** **/
   use ADV\Core\DB\DB;
 
   /** **/
@@ -36,10 +34,8 @@
     public function updatePassword($id, $password, $change_password = 0) {
       $change_password = $change_password == true ? 1 : 0;
       DB::_update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)->value(
-        'hash',
-        $this->makeHash(
-          $password,
-          $id
+        'hash', $this->makeHash(
+          $password, $id
         )
       )->value('change_password', $change_password)->where('id=', $id)->exec();
       session_regenerate_id();
@@ -54,7 +50,6 @@
     }
     /**
      * @param $username
-     *
      * @param $password
      *
      * @internal param $user_id
@@ -75,7 +70,7 @@
         }
         unset($result['password']);
       }
-      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => Auth::get_ip(), 'success' => (bool)$result))->exec();
+      DB::_insert('user_login_log')->values(array('user' => $username, 'IP' => Auth::get_ip(), 'success' => (bool) $result))->exec();
       return $result;
     }
     /**

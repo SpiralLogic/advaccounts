@@ -29,13 +29,6 @@
         $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
       }
     }
-    protected function index() {
-      $this->beforeTable();
-      $this->generateTable();
-      $btn          = $this->formatBtn(SAVE, SAVE, ICON_SAVE);
-      $btn['class'] = 'btn btn-primary margin20';
-      echo '<div class="center">' . $btn . '</div>';
-    }
     /**
      * @param $pagername
      *
