@@ -25,7 +25,7 @@
           $value = (trim($value) == null) ? '' : trim($value);
         }
         if (property_exists($this, $key)) {
-          if ($this->$key == null && ($value === '' || $value === 'null')) {
+          if ($this->$key === null && ($value === '' || $value === 'null')) {
             $value = null;
           }
           $this->$key = $value;

@@ -21,18 +21,17 @@
    */
   class Reorders extends \ADV\App\Controller\Pager
   {
-    protected $stock_id = null;
+    protected $stockid = null;
     protected $security = SA_REORDER;
     protected $frame = false;
     protected $tableWidth = '90';
     /** @var Form */
-    public $form;
+    protected $form;
     protected function before() {
-      $this->stock_id = $this->Input->getPostGlobal('stock_id');
-      $this->object   = new \ADV\App\Item\Reorder();
-      if ($this->stock_id) {
-        $this->object->stock_id = $this->stock_id;
-        $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
+      $this->object  = new \ADV\App\Item\Reorder();
+      $this->stockid = $this->Input->getPostGlobal('stockid');
+      if ($this->stockid) {
+        $this->object->stockid = $this->stockid;
       }
       $this->runPost();
     }
@@ -40,11 +39,9 @@
       if (REQUEST_POST && $this->Input->post('_form_id') == 'reorder_levels_form') {
         $locations = $this->Input->post('location');
         foreach ($locations as $loc) {
-          $loc['stock_id'] = $this->stock_id;
-          $loc['stockid']  = $this->object->stockid;
-          $location        = new Reorder($loc);
-          $location->save();
-          $this->Ajax->addDebug($location->getStatus());
+          $loc['stockid']=$this->stockid;
+          $location = new Reorder($loc);
+            $location->save();
         }
       }
     }
@@ -57,11 +54,11 @@
                       'url'     => 'Item',
                       'idField' => 'stock_id',
                       'name'    => 'stock_id', //
-                      'value'   => $this->stock_id,
+                      'value'   => '',
                       'focus'   => true,
                       ]
         );
-        $this->Session->setGlobal('stock_id', $this->stock_id);
+        $this->Session->setGlobal('stockid', $this->stockid);
         echo "</div>";
       }
     }
@@ -71,14 +68,14 @@
      * @return mixed
      */
     protected function getTableRows($pagername) {
-      return $this->object->getAll($this->object->stockid);
+      return $this->object->getAll($this->stockid);
     }
     /**
      * @param \ADV\App\Pager\Edit $pager
      */
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
       $pager->setObject($this->object);
-      $this->object->stock_id = $this->stock_id;
+      $this->object->stockid = $this->stockid;
     }
     /**
      * @return array
@@ -101,7 +98,7 @@
      * @return \ADV\App\Form\Field
      */
     public function formatLocation($row) {
-      return $row['id'] . $this->form->hidden('location[' . $row['id'] . '][loc_code]')->initial($row['loc_code']);
+      return $row['id'] . $this->form->hidden('location[' . $row['id'] . '][loc_code]')->initial($row['loc_code']) ;
     }
     /**
      * @param $row
@@ -132,14 +129,16 @@
     }
     protected function index() {
       $this->beforeTable();
+      $this->Ajax->start_div('reorder_table');
       $this->form = new Form();
       echo         $this->form->start('reorder_levels', strtolower(str_replace(['ADV\\Controllers', '\\'], ['', '/'], get_called_class())));
-      $this->form->hidden('stock_id')->value($this->stock_id);
+      echo  $this->form->hidden('stockid')->value($this->stockid);
       $this->generateTable();
       echo '<div class="pad10 center">';
       echo $this->form->submit(UPDATED, 'Update')->type('primary');
       echo '</div>';
       echo $this->form->end();
+      $this->Ajax->end_div();
     }
     /**
      * @return \ADV\App\Pager\Pager

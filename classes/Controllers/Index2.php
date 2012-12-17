@@ -31,11 +31,11 @@
       var_dump($reorders);
       $reorders->save();
       var_dump($reorders);
-      $reorders                = new Reorder(['loc_code' => 'TEST', 'stockid' => '26382']);
-      $reorders->shelf_primary = 'TEST5';
-      $reorders->stock_id      = 'test';
+      $reorders = new Reorder(['loc_code' => 'TEST4', 'stockid' => '26382']);
+      //      $reorders->shelf_primary = 'TEST5';
+      //$reorders->stock_id      = 'test';
       var_dump($reorders);
-      $reorders->save();
+      //$reorders->save();
       var_dump($reorders);
     }
   }
