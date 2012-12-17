@@ -513,8 +513,11 @@
             return parent::lastInsertId();
           case DB::UPDATE:
           case DB::DELETE:
-            $prepared->execute($data);
-            return $prepared->rowCount();
+            $result = $prepared->execute($data);
+            if ($result !== false) {
+              return $prepared->rowCount();
+            }
+            return false;
           default:
             return false;
         }
@@ -522,8 +525,6 @@
         $error = $this->error($e, false, true);
         switch ($type) {
           case DB::SELECT:
-            debug_print_backtrace();
-            exit;
             throw new DBSelectException('Could not select from database: ' . $this->queryString);
             break;
           case DB::INSERT:

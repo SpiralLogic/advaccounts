@@ -34,6 +34,7 @@
     public $id = 0;
     protected $_table;
     protected $_id_column;
+    protected $_id_values = [];
     protected $_classname;
     abstract protected function canProcess();
     /**
@@ -46,7 +47,7 @@
       static::$DB = DIC::get('DB');
       $this->load($id, $extra);
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
-      if ($this->_id_column != 'id') {
+      if ($this->_id_column != 'id' && !is_array($this->_id_column)) {
         $_id_column = $this->_id_column;
         $this->id   = & $this->$_id_column;
       }
@@ -58,11 +59,14 @@
      * @return \ADV\Core\Traits\Status|bool
      */
     public function load($id = 0, $extra = []) {
+      if (is_array($this->_id_column)) {
+        return $this->loadComposite($id, $extra);
+      }
       $_id_column = $this->_id_column;
       if ((is_numeric($id) && $id > 0) || (is_string($id) && strlen($id) > 0)) {
         $this->$_id_column = $id;
         $this->read($id, $extra);
-        return $this->status(Status::INFO, $this->_classname . " details loaded from DB!");
+        $this->status(Status::INFO, $this->_classname . " details loaded from DB!");
       } elseif (is_array($id)) {
         if (isset($id['id']) && !isset($id[$_id_column])) {
           $id[$_id_column] = $id['id'];
@@ -78,69 +82,66 @@
       return $this->init();
     }
     /**
-     * @param null       $changes
-     * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
+     * @param $id
+     * @param $extra
      *
-     * @return array|bool|int|null
-     * @return \ADV\Core\Traits\Status|array|bool|int|string
-     */
-    public function save($changes = null) {
-      if ($changes !== null) {
-        $this->setFromArray($changes);
-      }
-      if (!$this->canProcess()) {
-        return false;
-      }
-      if ($this->id == 0) {
-        return $this->saveNew();
-      }
-      $data = (array) $this;
-      static::$DB->begin();
-      try {
-        $updated = static::$DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
-      } catch (DBUpdateException $e) {
-        static::$DB->cancel();
-        return $this->status(Status::ERROR, "Could not update " . $this->_classname);
-      }
-      if (property_exists($this, 'inactive')) {
-        try {
-          /** @noinspection PhpUndefinedFieldInspection */
-          static::$DB->updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
-        } catch (DBUpdateException $e) {
-          static::$DB->cancel();
-          return $this->status(Status::ERROR, "Could not update active status of " . $this->_classname);
-        }
-      }
-      static::$DB->commit();
-      return $this->status(Status::SUCCESS, $this->_classname . ' changes saved to database.');
-    }
-    /**
+     * @throws \ADV\Core\DB\DBException
      * @return \ADV\Core\Traits\Status|bool
      */
-    public function delete() {
-      try {
-        $id_column = $this->_id_column;
-        static::$DB->delete($this->_table)->where($id_column . '=', $this->$id_column)->exec();
-      } catch (DBDeleteException $e) {
-        return $this->status(false, 'Could not delete' . $this->_classname);
+    protected function loadComposite($id, $extra) {
+      if (!is_array($id)) {
+        throw new DBException('Comosite key tables must be loaded with initial key vales');
       }
+      foreach ($this->_id_column as $col) {
+        if (isset($id[$col])) {
+          $extra[$col] = $id[$col];
+        } else {
+          throw new DBException('Comosite key tables must be loaded with initial key vales');
+        }
+      }
+      $this->read($id, $extra);
+      if (is_array($this->_id_column)) {
+        foreach ($this->_id_column as $col) {
+          $this->_id_values[$col] = $this->$col;
+        }
+      }
+      $this->setFromArray($id);
+      return $this->status(Status::INFO, $this->_classname . " details loaded from DB!");
+    }
+    /***
+     * @param int|array   $id    Id of row to read from database
+     * @param array       $extra
+     *
+     * @throws \ADV\Core\DB\DBException
+     * @return bool
+     */
+    protected function read($id, $extra = []) {
       $this->defaults();
-      return $this->status(true, $this->_classname . ' deleted!');
-    }
-    public function getIDColumn() {
-      return $this->_id_column;
+      if (!$this->_table || !$this->_id_column) {
+        throw new DBException('No table name or id column for class: ' . get_called_class() . '(' . $this->_classname . ')');
+      }
+      if (!is_array($this->_id_column)) {
+        $extra[$this->_id_column] = $id;
+      }
+      try {
+        $query = static::$DB->select()->from($this->_table);
+        $query = $this->getSelectModifiers($query);
+        foreach ($extra as $field => $value) {
+          $query->andWhere($field . '=', $value);
+        }
+        static::$DB->fetch()->intoClass($this);
+      } catch (DBSelectException $e) {
+        return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
+      }
+      return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
     }
     /**
-     * @return mixed
+     * @param \ADV\Core\DB\Query\Select $query
+     *
+     * @return \ADV\Core\DB\Query\Select
      */
-    public function getClassname() {
-      return $this->_classname;
-    }
-    /**
-     * @return array
-     */
-    public static function getAll() {
-      return [];
+    protected function getSelectModifiers(\ADV\Core\DB\Query\Select $query) {
+      return $query;
     }
     /**
      * @return bool
@@ -151,36 +152,65 @@
       return $this->status(Status::INFO, 'Now working with new ' . $this->_classname);
     }
     /**
-     * Set class properties to their default values
-     */
-    protected function defaults() {
-      $values = get_class_vars(get_called_class());
-      unset($values['DB'], $values['_id_column'], $values['_table'], $values['_classname']);
-      $this->setFromArray($values);
-    }
-    /***
-     * @param int   $id    Id of row to read from database
-     * @param array $extra
+     * @param null       $changes
+     * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
      *
-     * @throws \ADV\Core\DB\DBException
-     * @return bool
+     * @return array|bool|int|null
+     * @return \ADV\Core\Traits\Status|array|bool|int|string
      */
-    protected function read($id, $extra = []) {
-      $this->defaults();
-      if (!$this->_table || !$this->_id_column) {
-        throw new DBException('No table name or id column for class: ' . get_called_class() . '(' . $this->_classname . ')');
+    public function save($changes = []) {
+      $this->setFromArray((array) $changes);
+      if (!$this->canProcess()) {
+        return false;
       }
       try {
-        $query = static::$DB->select()->from($this->_table);
-        $query = $this->getSelectModifiers($query)->where($this->_id_column . '=', $id);
-        foreach ($extra as $field => $value) {
-          $query->andWhere($field . '=', $value);
+        if (is_array($this->_id_column)) {
+          return $this->saveComposite();
+        } else {
+          return $this->saveUpdate();
         }
-        static::$DB->fetch()->intoClass($this);
-      } catch (DBSelectException $e) {
-        return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
+      } catch (DBUpdateException $e) {
+        return $this->status(Status::ERROR, "Could not update " . $this->_classname);
       }
-      return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
+    }
+    /**
+     * @return \ADV\Core\Traits\Status|bool|int
+     */
+    protected function saveUpdate() {
+      if ($this->id == 0) {
+        return $this->saveNew();
+      }
+      $data = (array) $this;
+      static::$DB->update($this->_table)->values($data)->where($this->_id_column . '=', $this->id)->exec();
+      if (property_exists($this, 'inactive')) {
+        try {
+          /** @noinspection PhpUndefinedFieldInspection */
+          static::$DB->updateRecordStatus($this->id, $this->inactive, $this->_table, $this->_id_column);
+        } catch (DBUpdateException $e) {
+          static::$DB->cancel();
+          return $this->status(Status::ERROR, "Could not update active status of " . $this->_classname);
+        }
+      }
+      return $this->status(Status::SUCCESS, $this->_classname . ' changes saved to database.');
+    }
+    /**
+     * @return \ADV\Core\Traits\Status|bool
+     */
+    protected function saveComposite() {
+      foreach ($this->_id_column as $col) {
+        if ($this->$col != $this->_id_values[$col] && !$this->_id_values[$col]) {
+          return $this->saveNew();
+        } elseif ($this->$col != $this->_id_values[$col]) {
+          return $this->status(Status::ERROR, "Identity columns values changed for a composite key table: " . $this->_classname);
+        }
+      }
+      $data  = (array) $this;
+      $query = static::$DB->update($this->_table)->values($data);
+      foreach ($this->_id_column as $field) {
+        $query->where($field . '=', $this->$field);
+      }
+      $query->exec();
+      return $this->status(Status::SUCCESS, $this->_classname . ' changes saved to database.');
     }
     /**
      * @return int|bool Id assigned to new database row or false if entry failed
@@ -200,14 +230,46 @@
       return $this->status(Status::SUCCESS, 'Added ' . $this->_classname . ' to database');
     }
     /**
-     * @param \ADV\Core\DB\Query\Select $query
-     *
-     * @return \ADV\Core\DB\Query\Select
+     * @return \ADV\Core\Traits\Status|bool
      */
-    protected function getSelectModifiers(\ADV\Core\DB\Query\Select $query) {
-      return $query;
+    public function delete() {
+      try {
+        $id_column = (array) $this->_id_column;
+        $query     = static::$DB->delete($this->_table);
+        foreach ($id_column as $field) {
+          $query->where($field . '=', $this->$field);
+        }
+        $query->exec();
+      } catch (DBDeleteException $e) {
+        return $this->status(false, 'Could not delete' . $this->_classname);
+      }
+      $this->defaults();
+      return $this->status(true, $this->_classname . ' deleted!');
+    }
+    /**
+     * Set class properties to their default values
+     */
+    protected function defaults() {
+      $values = get_class_vars(get_called_class());
+      unset($values['DB'], $values['_id_column'], $values['_table'], $values['_classname']);
+      $this->setFromArray($values);
+    }
+    public function getIDColumn() {
+      return $this->_id_column;
+    }
+    /**
+     * @return mixed
+     */
+    public function getClassname() {
+      return $this->_classname;
     }
     public function getTable() {
       return $this->_table;
+    }
+    /**
+     * @return array
+     */
+    public static function getAll() {
+      return [];
     }
   }

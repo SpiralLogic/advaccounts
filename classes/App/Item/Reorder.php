@@ -11,16 +11,16 @@
   use ADV\Core\DB\DB;
 
   /** **/
-  class Reorder extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
+  class Reorder extends \ADV\App\DB\Base
   {
     protected $_table = 'stock_location';
     protected $_classname = 'Stock Location';
-    protected $_id_column = 'loc_code';
+    protected $_id_column = ['loc_code', 'stockid'];
     public $loc_code = 0;
     public $stockid = 0;
     public $stock_id = null;
-    public $shelf_primary;
-    public $shelf_secondary;
+    public $shelf_primary = '';
+    public $shelf_secondary = '';
     public $reorder_level = 0;
     /**
      * @return \ADV\Core\Traits\Status|bool
@@ -53,44 +53,5 @@
         ORDER BY sl.loc_code";
       DB::_query($sql, "an item reorder could not be retreived");
       return DB::_fetchAll(\PDO::FETCH_ASSOC);
-    }
-    /**
-     * @return array
-     */
-    public function getPagerColumns() {
-      return [
-        ['type' => 'skip'],
-        ['type' => 'skip'],
-        _("Location")     => ['type' => 'readonly'],
-        ['type' => 'skip'],
-        ['type' => 'skip'],
-        "Primary Shelf"   => ['fun' => [$this, 'formatPrimaryShelf']],
-        "Secondary Shelf" => ['fun' => [$this, 'formatSecondaryShelf']],
-        "Reorder Level"   => ['fun' => [$this, 'formatReorderLevel']],
-      ];
-    }
-    /**
-     * @param $row
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function formatPrimaryShelf($row) {
-      return (new \ADV\App\Form\Field('input', 'shelf_primary'))->initial($row['shelf_primary']);
-    }
-    /**
-     * @param $row
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function formatSecondaryShelf($row) {
-      return (new \ADV\App\Form\Field('input', 'shelf_secondary'))->initial($row['shelf_secondary']);
-    }
-    /**
-     * @param $row
-     *
-     * @return \ADV\App\Form\Field
-     */
-    public function formatReorderLevel($row) {
-      return (new \ADV\App\Form\Field('input', 'reorder_level'))->initial($row['reorder_level']);
     }
   }
