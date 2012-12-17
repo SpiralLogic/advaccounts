@@ -130,10 +130,10 @@
           $query->andWhere($field . '=', $value);
         }
         static::$DB->fetch()->intoClass($this);
+        return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
       } catch (DBSelectException $e) {
         return $this->status(false, 'Could not read ' . $this->_classname, (string) $id);
       }
-      return $this->status(Status::INFO, 'Successfully read ' . $this->_classname, $id);
     }
     /**
      * @param \ADV\Core\DB\Query\Select $query
