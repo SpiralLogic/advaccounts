@@ -12,6 +12,8 @@
 
   use ADV\App\Controller\Action;
   use ADV\Core\JS;
+  use DB_Company;
+  use ADV\App\Item\Reorder;
 
   /** **/
   class Index2 extends Action

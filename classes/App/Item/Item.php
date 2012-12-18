@@ -716,7 +716,7 @@
     public static function addEditDialog($options = []) {
       $action
         = <<<JS
-            Adv.popupWindow.load("/items/manage/items?stock_id="+$(this).data('stock_id'));
+            Adv.dialogWindow.open("/items/manage/items?stock_id="+$(this).data('stock_id'));
 JS;
       JS::_addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
       JS::_addLiveEvent('label.stock', 'click', $action, "wrapper", true);

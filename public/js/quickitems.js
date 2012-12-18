@@ -80,7 +80,7 @@ var Items = function () {
       $.tmpl('accounts', data.item).appendTo("#Accounts");
       $('#prices_table').replaceWith(data.sellprices);
       $('#purchasing_table').replaceWith(data.buyprices);
-      $('#_reorderlevels_span').replaceWith(data.reorderlevels);
+      $('#reorder_table').replaceWith(data.reorderlevels);
       if (data.stockLevels) {
         $stockLevels.show().find('tbody').html($.tmpl('stockrow', data.stockLevels));
       }
@@ -92,6 +92,7 @@ var Items = function () {
         Adv.Forms.setFormDefault(i, data, form);
       });
       Adv.Forms.setFocus('stock_id');
+      Adv.Forms.resetHighlights(form);
     },
     get:         function () {
       return item;
