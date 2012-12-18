@@ -37,14 +37,14 @@
 
  */
 var Behaviour = {
-  list:        [],
-  register:    function (sheet) {
+  list:         [],
+  register:     function (sheet) {
     Behaviour.list.push(sheet);
   },
-  start:       function () {
+  start:        function () {
     Behaviour.addLoadEvent(Behaviour.apply);
   },
-  apply:       function () {
+  apply:        function () {
     var selector = '', sheet, element, list;
     for (var h = 0; sheet = Behaviour.list[h]; h++) {
       for (selector in sheet) {
@@ -61,7 +61,7 @@ var Behaviour = {
       }
     }
   },
-  addLoadEvent:function (func) {
+  addLoadEvent: function (func) {
     var oldonload = window.onload;
     if (typeof window.onload != 'function') {
       window.onload = func;
@@ -242,7 +242,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
                               Adv.Forms.error(data, errors)
                             }
                             else {
-                              Adv.Status.show({html:errors});
+                              Adv.Status.show({html: errors});
                             }
                           }
                           if (Adv.loader) {
@@ -432,7 +432,7 @@ function passBack(value) {
  Behaviour definitions
  */
 Behaviour.register({
-                     'input':                                                                                                         function (e) {
+                     'input':                                                                                                          function (e) {
                        if (e.onfocus === undefined) {
                          e.onfocus = function () {
                            Adv.Forms.saveFocus(this);
@@ -460,16 +460,16 @@ Behaviour.register({
                          }
                        }
                      },
-                     'input.combo2':                                                                                                  function (e) {
+                     'input.combo2':                                                                                                   function (e) {
                        // this hides search button for js enabled browsers
                        e.style.display = 'none';
                      },
-                     'div.js_only':                                                                                                   function (e) {
+                     'div.js_only':                                                                                                    function (e) {
                        // this shows divs for js enabled browsers only
                        e.style.display = 'block';
                      },
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
-                     'button[name="_action"],button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton':function (e) {
+                     'button[name="_action"],button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton': function (e) {
                        e.onclick = function () {
                          Adv.Forms.saveFocus(e);
                          var asp = e.getAttribute('data-aspect');
@@ -482,7 +482,7 @@ Behaviour.register({
                          return false;
                        }
                      },
-                     'button':                                                                                                        function (e) {
+                     'button':                                                                                                         function (e) {
                        if (e.name) {
                          var func = (e.name == '_action') ? _validate[e.value] : _validate[e.name];
                          var old = e.onclick;
@@ -504,42 +504,42 @@ Behaviour.register({
                          }
                        }
                      },
-                     '[data-dec]':                                                                                                    function (e) {
+                     '[data-dec]':                                                                                                     function (e) {
                        var dec = e.getAttribute("data-dec");
                        if (!e.onblur) {
                          e.onblur = function () {
-                           Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
+                           Adv.Forms.priceFormat(this, Adv.Forms.getAmount(this), dec);
                          };
                          e.onblur();
                        }
                      },
-                     '.freight':                                                                                                      function (e) {
+                     '.freight':                                                                                                       function (e) {
                        if (e.onblur === undefined) {
                          e.onblur = function () {
                            var dec = this.getAttribute("data-dec");
-                           Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec, '2');
+                           Adv.Forms.priceFormat(this, Adv.Forms.getAmount(this), dec, '2');
                          };
                        }
                      },
                      '.searchbox':// emulated onchange event handling for text inputs
-                                                                                                                                      function (e) {
-                                                                                                                                        e.setAttribute('_last_val', e.value);
-                                                                                                                                        e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
-                                                                                                                                        e.onblur = function () {
-                                                                                                                                          var val = this.getAttribute('_last_val');
-                                                                                                                                          if (val != this.value) {
-                                                                                                                                            this.setAttribute('_last_val', this.value);
-                                                                                                                                            JsHttpRequest.request('_' + this.name + '_changed', this.form);
-                                                                                                                                          }
-                                                                                                                                        }
-                                                                                                                                      },
-                     'button[data-aspect="selector"], input[data-aspect="selector"]':                                                 function (e) {
+                                                                                                                                       function (e) {
+                                                                                                                                         e.setAttribute('_last_val', e.value);
+                                                                                                                                         e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+                                                                                                                                         e.onblur = function () {
+                                                                                                                                           var val = this.getAttribute('_last_val');
+                                                                                                                                           if (val != this.value) {
+                                                                                                                                             this.setAttribute('_last_val', this.value);
+                                                                                                                                             JsHttpRequest.request('_' + this.name + '_changed', this.form);
+                                                                                                                                           }
+                                                                                                                                         }
+                                                                                                                                       },
+                     'button[data-aspect="selector"], input[data-aspect="selector"]':                                                  function (e) {
                        e.onclick = function () {
                          passBack(this.getAttribute('rel'));
                          return false;
                        }
                      },
-                     'select':                                                                                                        function (e) {
+                     'select':                                                                                                         function (e) {
                        if (e.onfocus === undefined) {
                          e.onfocus = function () {
                            Adv.Forms.saveFocus(this);
@@ -549,7 +549,7 @@ Behaviour.register({
                          _set_combo_select(e);
                        }
                      },
-                     'a.printlink,button.printlink':                                                                                  function (e) {
+                     'a.printlink,button.printlink':                                                                                   function (e) {
                        e.onclick = function () {
                          Adv.Forms.saveFocus(this);
                          JsHttpRequest.request(this, null, 60000);

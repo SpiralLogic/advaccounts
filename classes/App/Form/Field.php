@@ -20,6 +20,7 @@
     public $default;
     public $validator;
     protected $attr = [];
+    protected $extra = [];
     protected $name;
     protected $content = '';
     protected $label;
@@ -65,7 +66,7 @@
      * @return Field
      */
     public function focus($on = true) {
-      $this->attr['autofocus'] = (bool)$on;
+      $this->attr['autofocus'] = (bool) $on;
       return $this;
     }
     /**
@@ -92,7 +93,7 @@
      * @return Field
      */
     public function mergeAttr($attr) {
-      $this->attr = array_merge($this->attr, (array)$attr);
+      $this->attr = array_merge($this->attr, (array) $attr);
       return $this;
     }
     /**
@@ -134,6 +135,19 @@
      */
     public function prepend($text) {
       $this->prepend = $text;
+      return $this;
+    }
+    /**
+     * @param $property
+     * @param $value
+     *
+     * @return \ADV\App\Form\Field
+     */
+    public function extra($property, $value = null) {
+      if ($value === null) {
+        return $this->extra[$property];
+      }
+      $this->extra[$property] = $value;
       return $this;
     }
     /**
@@ -195,7 +209,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
@@ -213,7 +226,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
@@ -225,13 +237,14 @@
     public function offsetGet($offset) {
       if (isset($this->attr[$offset])) {
         return $this->attr[$offset];
+      } elseif (isset($this->extra[$offset])) {
+        return $this->extra[$offset];
       }
       return null;
     }
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
@@ -253,7 +266,6 @@
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
-     *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>

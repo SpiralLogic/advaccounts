@@ -20,13 +20,13 @@
    */
   class Edit extends Pager
   {
+    use \ADV\Core\Traits\Action;
+
     const TYPE_DISABLED = 'disabled';
     const TYPE_EDIT     = 'edit';
     const TYPE_SELECT   = 'select';
-    use \ADV\Core\Traits\Action;
-
-    /** @var \ADV\App\DB\Base */
     const TYPE_READONLY = 'readonly';
+    /** @var \ADV\App\DB\Base */
     public $editing = null;
     protected $actionurl = '';
     /**
@@ -277,8 +277,8 @@
             $field->readonly($col['readonly']);
           }
           if (!$field instanceof \ADV\App\Form\Custom) {
-            $field['tdclass']   = $alignclass;
-            $field['tdcolspan'] = "colspan=2";
+            $field->extra('tdclass', $alignclass);
+            $field->extra('tdcolspan', 'colspan=2');
           }
           $field['form'] = $this->name . '_form';
         }

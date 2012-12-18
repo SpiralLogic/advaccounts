@@ -560,8 +560,14 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                  },
                  priceFormat:     function (post, num, dec, label, color) {
-                   var sign, decsize, cents, el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
+                   var sign, decsize, cents, el ;
                    //num = num.toString().replace(/\$|\,/g,'');
+                   if (label) {
+                     el= document.getElementById(post);
+                    }
+                   else {
+                     el = typeof(post) === "string" ? document.getElementsByName(post)[0].value : post;
+                   }
                    if (isNaN(num)) {
                      num = "0";
                    }

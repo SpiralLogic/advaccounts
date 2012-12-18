@@ -34,14 +34,17 @@
     protected $formid;
     protected $security = SA_CUSTOMER;
     protected function before() {
-      $this->formid   = $this->Input->getPostGlobal(FORM_ID);
-      $this->stock_id = & $this->Input->getPostGlobal('stock_id');
-      $this->stockid  = & $this->Input->getPostGlobal('stockid');
-      if (!$this->stockid) {
-        $this->stockid = Item::getStockID($this->stock_id);
+      $this->formid = $this->Input->getPostGlobal(FORM_ID);
+      if (REQUEST_GET) {
+        $this->stock_id = & $this->Input->getPostGlobal('stock_id');
+        if ($this->stock_id) {
+          $this->stockid = Item::getStockID($this->stock_id);
+        }
+      } elseif ($this->Input->hasPost('stockid')) {
+        $this->stockid = & $this->Input->postGlobal('stockid');
       }
-      $this->item     = new Item($this->stockid);
-      $this->stock_id = $this->item->stock_id;
+      $this->item        = new Item($this->stockid);
+      $_POST['stock_id'] = $this->stock_id = $this->item->stock_id;
       $this->runPost();
       $this->JS->footerFile("/js/quickitems.js");
       $this->setTitle("Items");

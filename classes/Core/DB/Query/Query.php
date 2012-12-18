@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core.db
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -31,7 +30,7 @@
     /**
      * @param $conn
      */
-    protected function __construct($conn) {
+    public function __construct($conn) {
       $this->conn    = $conn;
       static::$query = $this;
     }
@@ -72,7 +71,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * String representation of object
-     *
      * @link http://php.net/manual/en/serializable.serialize.php
      */
     public function serialize() {
@@ -83,7 +81,6 @@
     /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Constructs the object
-     *
      * @link http://php.net/manual/en/serializable.unserialize.php
      *
      * @param string $serialized <p>
