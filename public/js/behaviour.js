@@ -432,34 +432,7 @@ function passBack(value) {
  Behaviour definitions
  */
 Behaviour.register({
-                     'input':                                                                                                         function (e) {
-                       if (e.onfocus === undefined) {
-                         e.onfocus = function () {
-                           Adv.Forms.saveFocus(this);
-                           if ($(this).is('.combo')) {
-                             this.select();
-                           }
-                         };
-                       }
-                       if ($(e).is('.combo,.combo2')) {
-                         _set_combo_input(e);
-                       }
-                       else {
-                         if (e.type == 'text') {
-                           e.onkeydown = function (ev) {
-                             ev = ev || window.event;
-                             var key = ev.keyCode || ev.which;
-                             if (key == 13) {
-                               if ($(e).is('.searchbox')) {
-                                 e.onblur();
-                               }
-                               return false;
-                             }
-                             return true;
-                           }
-                         }
-                       }
-                     },
+
                      'input.combo2':                                                                                                  function (e) {
                        // this hides search button for js enabled browsers
                        e.style.display = 'none';
@@ -508,7 +481,7 @@ Behaviour.register({
                        var dec = e.getAttribute("data-dec");
                        if (!e.onblur) {
                          e.onblur = function () {
-                           Adv.Forms.priceFormat(this.name, Adv.Forms.getAmount(this.name), dec);
+                           Adv.Forms.priceFormat(this, Adv.Forms.getAmount(this), dec);
                          };
                          e.onblur();
                        }

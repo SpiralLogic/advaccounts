@@ -33,7 +33,7 @@
     /**
 
      */
-    public function run() {
+    public function run($embed=false) {
       $this->Dates = Dates::i();
       parent::run();
     }

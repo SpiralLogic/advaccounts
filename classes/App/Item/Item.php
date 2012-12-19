@@ -684,6 +684,7 @@
         }
         $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
         $prices     = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
+        $sales_type='';
       } elseif ($sale) {
         $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
         $stock_code = " s.item_code as stock_id, MIN(p.price) as price,";
@@ -691,6 +692,7 @@
         $constraints .= " AND s.id = p.item_code_id ";
         if ($sales_type) {
           $sales_type = ' AND (p.sales_type_id = ' . $sales_type . ' OR p.sales_type_id = 1 )';
+          $weight.=', p.sales_type_id';
         }
       } elseif ($kitsonly) {
         $constraints .= " AND s.stock_id!=i.stock_id ";
@@ -698,7 +700,7 @@
       $select = ($select) ? $select : ' ';
       $sql
               = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
-                            $weight, p.sales_type_id FROM stock_category c, item_codes s, stock_master i  $prices
+                            $weight FROM stock_category c, item_codes s, stock_master i  $prices
                             WHERE (s.item_code LIKE ? $termswhere) $constraints
                             AND s.category_id = c.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";

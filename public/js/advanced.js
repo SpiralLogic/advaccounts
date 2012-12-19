@@ -191,7 +191,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  open: function (url) {
                    url = Adv.updateQueryString('frame', 1, url);
                    $.get(url, function (data) {
-                     dialog.empty().append(data).dialog({autoOpen: true, width: 1024,modal:true});
+                     dialog.empty().append(data).dialog({autoOpen: true, width: 1024, modal: true});
                      $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})
                    });
                  }
@@ -236,14 +236,14 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  , win = $(window);
                return {
 
-                 load:    function (url, element) {
+                 load:   function (url, element) {
                    popupURL = url;
                    if (element !== undefined) {
                      popupParent = element;
                    }
                    Adv.popupWindow.show();
                  },//
-                 loaded:  function () {
+                 loaded: function () {
                    popupWindow.show();
                    var height = popupWindow[0].contentWindow.document.body.clientHeight + 10 //
                      , top = (win.height() / 2 - (height / 2)) //
@@ -255,7 +255,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    popupWindow.css('height', height);
                    popupDiv.css({width: Adv.hoverWindow.width, height: height, left: left, top: top});
                  },//
-                  show: function () {
+                 show:   function () {
                    var top = (win.height() / 2 - 50)//
                      , left = (win.width() / 2 - 50);
                    if (popupWindow) {
@@ -560,8 +560,17 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                  },
                  priceFormat:     function (post, num, dec, label, color) {
-                   var sign, decsize, cents, el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
+                   var sign, decsize, cents, el;
+                   if (label) {
+                     el = document.getElementById(post);
+                   }
+                   else {
+                     el = typeof(post) === "string" ? document.getElementsByName(post)[0].value : post.value;
+                   }
                    //num = num.toString().replace(/\$|\,/g,'');
+                   if (!el) {
+                     return;
+                   }
                    if (isNaN(num)) {
                      num = "0";
                    }
@@ -722,10 +731,11 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    Adv.Events.onLeave();
                  },
                  stateModified:   function (field) {
+                   return;
                    var value//
                      , defaultValue//
                      , form = field[0].form;
-                 if (!form.fieldsChanged) {form.fieldsChanged=0;}
+                   if (!form.fieldsChanged) {form.fieldsChanged = 0;}
                    if (field.is(':checkbox')) {
                      value = field.prop('checked');
                      field.val(value);
@@ -742,7 +752,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      }
                    }
                    if (form && defaultValue == value && field.hasClass("ui-state-highlight")) {
-                     form.fieldsChanged.fieldsChanged--;
+                     form.fieldsChanged--;
                      if (form.fieldsChanged === 0) {
                        Adv.Forms.resetHighlights(form);
                      }
@@ -755,14 +765,13 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      if (form && defaultValue != value && !field.hasClass("ui-state-highlight")) {
                        form.fieldsChanged++;
                        if (field.prop('disabled')) {
-                         return form.fieldsChanged;
+                         return;
                        }
-                       var fieldname = field.addClass("ui-state-highlight").attr('name');
+                       field.addClass("ui-state-highlight");
                      }
                    }
-                   $("[name='" + fieldname + "']").addClass("ui-state-highlight");
                    Adv.Events.onLeave("Continue without saving changes?");
-                   return Adv.fieldsChanged;
+                   return;
                  },
                  error:           function (field, error, type) {
                    var $error;
@@ -839,7 +848,6 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
         firstBind(selector, types, action);
       },
       onload:    function (actions, clean, id) {
-
         onloads[id] = actions;
         load();
         if (clean !== undefined) {
