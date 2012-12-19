@@ -243,7 +243,7 @@
       $buttons[] = ['label' => 'New purchase order', 'accesskey' => 'N', 'href' => $new_trans];
       $view->set('buttons', $buttons);
       $view->render();
-      $this->Ajax->activate('_page_body', $new_trans, $edit_trans, $help_context);
+      $this->Ajax->activate('_page_body', $new_trans, $edit_trans);
       $this->Page->endExit();
     }
     /**

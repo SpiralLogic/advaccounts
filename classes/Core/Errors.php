@@ -340,7 +340,7 @@
      */
     public static function databaseError($error, $sql = null, $data = []) {
       $errorCode        = DB\DB::_errorNo();
-      $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'];
+      $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message']. $sql;
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
         $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
       }

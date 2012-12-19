@@ -562,12 +562,15 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  priceFormat:     function (post, num, dec, label, color) {
                    var sign, decsize, cents, el ;
                    //num = num.toString().replace(/\$|\,/g,'');
+
                    if (label) {
                      el= document.getElementById(post);
                     }
                    else {
-                     el = typeof(post) === "string" ? document.getElementsByName(post)[0].value : post;
-                   }
+                     el = typeof(post) === "string" ? document.getElementsByName(post)[0] : post;
+                   }   if (!el) {
+                                        return;
+                                      }
                    if (isNaN(num)) {
                      num = "0";
                    }
@@ -748,7 +751,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      }
                    }
                    if (form && defaultValue == value && field.hasClass("ui-state-highlight")) {
-                     form.fieldsChanged.fieldsChanged--;
+                     form.fieldsChanged--;
                      if (form.fieldsChanged === 0) {
                        Adv.Forms.resetHighlights(form);
                      }
@@ -761,14 +764,13 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      if (form && defaultValue != value && !field.hasClass("ui-state-highlight")) {
                        form.fieldsChanged++;
                        if (field.prop('disabled')) {
-                         return form.fieldsChanged;
+                         return;
                        }
-                       var fieldname = field.addClass("ui-state-highlight").attr('name');
+                       field.addClass("ui-state-highlight");
                      }
                    }
-                   $("[name='" + fieldname + "']").addClass("ui-state-highlight");
                    Adv.Events.onLeave("Continue without saving changes?");
-                   return Adv.fieldsChanged;
+                   return;
                  },
                  error:           function (field, error, type) {
                    var $error;

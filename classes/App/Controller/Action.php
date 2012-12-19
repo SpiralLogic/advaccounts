@@ -67,6 +67,10 @@
         $this->index();
         echo '<br>';
         $this->Page->end_page(true);
+      } elseif (!$embed && $this->Ajax->inAjax()) {
+        $this->Ajax->start_div('_page_body');
+        $this->index();
+        $this->Ajax->end_div();
       } else {
         ob_start();
         $this->index();
