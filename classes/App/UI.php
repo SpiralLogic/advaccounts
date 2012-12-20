@@ -251,7 +251,7 @@ JS;
       $js
              = <<<JS
     Adv.o.stock_id = \$$id = $("#$id");
-    if (\$$id.attr('type')==='hidden'){return;}
+    if (\$$id.attr('type')!=='hidden'){
     \$$id.catcomplete({
                 delay: 0,
                 autoFocus: true,
@@ -295,7 +295,10 @@ JS;
                         focus: function(){return false;},
                         open: function() { $('.ui-autocomplete').unbind('mouseover');}
                         }
-                ).blur(function() { $(this).data('active',false)}).focus(function() { $(this).data('active',true)}).on('paste',function() {var \$this=$(this);window.setTimeout(function(){\$this.catcomplete('search', \$this.val())},1)});
+                ).blur(function() { $(this).data('active',false)})
+                .focus(function() { $(this).data('active',true)})
+                .on('paste',function() {var \$this=$(this);window.setTimeout(function(){\$this.catcomplete('search', \$this.val())},1)});
+                }
 JS;
       $clean = "   try { if (Adv.o.stock_id.attr('type')!=='hidden'){Adv.o.stock_id.catcomplete('destroy');}}catch(\$e){}";
       JS::_addLive($js, $clean);
