@@ -61,6 +61,9 @@
      */
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
       $pager->setObject($this->object);
+      if (!$this->object->id){
+        $this->object->supplier_description = $this->stock_id;
+      }
       if ($this->stock_id) {
         $this->object->stock_id = $this->stock_id;
         $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);

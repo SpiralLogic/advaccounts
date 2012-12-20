@@ -36,7 +36,7 @@
           = "SELECT id, suppliers.creditor_id,suppliers.name as supplier, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
               FROM purch_data INNER JOIN suppliers
               ON purch_data.creditor_id=suppliers.creditor_id
-              WHERE stock_id = " . DB::_quote($stock_id);
+              WHERE stock_id = " . DB::_quote($stock_id)." ORDER BY suppliers.name";
         return DB::_query($sql, "The supplier purchasing details for the selected part could not be retrieved")->fetchAll(\PDO::FETCH_ASSOC);
       }
       /**

@@ -191,8 +191,11 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  open: function (url) {
                    url = Adv.updateQueryString('frame', 1, url);
                    $.get(url, function (data) {
-                     dialog.empty().append(data).dialog({autoOpen: true, width: 1024,modal:true});
-                     $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');})
+                     Adv.Forms.setFocus(false);
+                     dialog.empty().append(data).dialog({autoOpen: true, width: 1024, modal: true});
+                     $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');});
+                     Adv.Events.rebind();
+
                    });
                  }
                }
@@ -236,14 +239,14 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  , win = $(window);
                return {
 
-                 load:    function (url, element) {
+                 load:   function (url, element) {
                    popupURL = url;
                    if (element !== undefined) {
                      popupParent = element;
                    }
                    Adv.popupWindow.show();
                  },//
-                 loaded:  function () {
+                 loaded: function () {
                    popupWindow.show();
                    var height = popupWindow[0].contentWindow.document.body.clientHeight + 10 //
                      , top = (win.height() / 2 - (height / 2)) //
@@ -255,7 +258,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    popupWindow.css('height', height);
                    popupDiv.css({width: Adv.hoverWindow.width, height: height, left: left, top: top});
                  },//
-                  show: function () {
+                 show:   function () {
                    var top = (win.height() / 2 - 50)//
                      , left = (win.width() / 2 - 50);
                    if (popupWindow) {
@@ -560,17 +563,17 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                  },
                  priceFormat:     function (post, num, dec, label, color) {
-                   var sign, decsize, cents, el ;
+                   var sign, decsize, cents, el;
                    //num = num.toString().replace(/\$|\,/g,'');
-
                    if (label) {
-                     el= document.getElementById(post);
-                    }
+                     el = document.getElementById(post);
+                   }
                    else {
                      el = typeof(post) === "string" ? document.getElementsByName(post)[0] : post;
-                   }   if (!el) {
-                                        return;
-                                      }
+                   }
+                   if (!el) {
+                     return;
+                   }
                    if (isNaN(num)) {
                      num = "0";
                    }
@@ -734,7 +737,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    var value//
                      , defaultValue//
                      , form = field[0].form;
-                 if (!form.fieldsChanged) {form.fieldsChanged=0;}
+                   if (!form.fieldsChanged) {form.fieldsChanged = 0;}
                    if (field.is(':checkbox')) {
                      value = field.prop('checked');
                      field.val(value);
@@ -847,7 +850,6 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
         firstBind(selector, types, action);
       },
       onload:    function (actions, clean, id) {
-
         onloads[id] = actions;
         load();
         if (clean !== undefined) {
@@ -895,7 +897,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    return false;
                  }
                };
-             }()),//\
+             }()),//
              inView:            function (el) {
                var rect = el.getBoundingClientRect();
                return (

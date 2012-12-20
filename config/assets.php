@@ -21,6 +21,7 @@
       '/js/libs/bootstrap.js',
       '/js/calc.js',
       '/js/help_modal.js',
+      '/js/sidemenu.js',
     ],
     //
     'maps_api_key' => 'ABQIAAAAi6QUBXugcwuPqyTcPMoi7BRpI0TaLspvsTOnOMM4T78mt8FLYBQC5z4qKk3rJIKFVEWI7RCzzewJLQ',

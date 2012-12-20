@@ -18,12 +18,12 @@
 </div>
 {{/if}}
 {{#if !REQUEST_AJAX}}
-{{>help_modal}}
+{{>ui/help_modal}}
 {{/if}}
 <!-- end content div-->
 </div>
 {{#if !REQUEST_AJAX}}
-{{>sidemenu}}
+{{>ui/sidemenu}}
 {{/if}}
 {{$messages}}
 <script>{{$beforescripts}}
