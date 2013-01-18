@@ -48,7 +48,9 @@
         }
       }
       $this->notOnJobsboard();
-      header('Location: /');
+      if (!headers_sent()) {
+        header('Location: /');
+      }
     }
     /**
      * @return bool|Orders

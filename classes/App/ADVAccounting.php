@@ -237,7 +237,7 @@
     /**
      * @return bool|string
      */
-    protected function route() {
+    public function route() {
       $this->setupPage();
       $request = isset  ($_SERVER['DOCUMENT_URI']) ? parse_url($_SERVER['DOCUMENT_URI'])['path'] : false;
       if ($request == '/index.php') {
@@ -282,8 +282,13 @@
     protected function runController($controller) {
       $this->controller = $controller;
       $dic              = \ADV\Core\DIC::i();
+      $reflection       = new \ReflectionClass($controller);
+      $params           = $reflection->getConstructor()->getParameters();
+      foreach ($params as &$param) {
+        $param = $dic->offsetGet($param->getName());
+      }
+      $controller = $reflection->newInstanceArgs($params);
       /** @var \ADV\App\Controller\Base $controller */
-      $controller = new $controller($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default'));
       $controller->setPage($dic->offsetGet('Page'));
       $controller->run();
     }
@@ -396,7 +401,11 @@
       $_SESSION['timeout'] = array(
         'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
       );
-      $this->Session->keepFlash('uri', $_SERVER['HTTP_REFERER'] . '?' . $_SERVER['QUERY_STRING']);
+      $uri                 = $_SERVER['HTTP_REFERER'] . '?' . $_SERVER['QUERY_STRING'];
+      if (stristr($uri, 'logout')) {
+        $uri = '/';
+      }
+      $this->Session->keepFlash('uri', $uri);
       $dic = \ADV\Core\DIC::i();
       (new \ADV\Controllers\Access\Login($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input']))->run();
       if ($this->Ajax->inAjax()) {

@@ -26,6 +26,8 @@
    */
   class Session implements \ArrayAccess
   {
+    const GLOBALS = '_globals';
+    const FLASH   = '_flash';
     use \ADV\Core\Traits\StaticAccess;
 
     /** @var \ADV\Core\Language */
@@ -48,13 +50,13 @@
         throw new SessionException('Could not start a Session!');
       }
       header("Cache-control: private");
-      if (!isset($_SESSION['_globals'])) {
-        $this['_globals'] = [];
+      if (!isset($_SESSION[self::GLOBALS])) {
+        $this[self::GLOBALS] = [];
       }
-      if (isset($_SESSION['_flash'])) {
-        $this->_flash = $_SESSION['_flash'];
+      if (isset($_SESSION[self::FLASH])) {
+        $this->_flash = $_SESSION[self::FLASH];
       }
-      $_SESSION['_flash'] = [];
+      $_SESSION[self::FLASH] = [];
     }
     /**
      * @static
@@ -82,8 +84,8 @@
      * @return mixed|null
      */
     public function __get($var) {
-      if ($var === '_flash' || $var === '_globals') {
-        throw new SessionException('You muse use getGlobal and getFlash top retrieve global and flash session variables.');
+      if ($var === self::FLASH || $var === self::GLOBALS) {
+        throw new SessionException('You muse use getGlobal and getFlash to retrieve global and flash session variables.');
       }
       return $this->get($var);
     }
@@ -115,13 +117,13 @@
      */
     public function setGlobal($var, $value = null) {
       if ($value === null) {
-        if (isset($_SESSION['_globals'][$var])) {
-          unset($_SESSION['_globals'][$var]);
+        if (isset($_SESSION[self::GLOBALS][$var])) {
+          unset($_SESSION[self::GLOBALS][$var]);
         }
         return null;
       }
-      $_SESSION['_globals'][$var] = $value;
-      $this[$var]                 = $value;
+      $_SESSION[self::GLOBALS][$var] = $value;
+      $this[$var]                    = $value;
       return $value;
     }
     /**
@@ -132,7 +134,7 @@
      * @return float|string
      */
     public function setFlash($var, $value) {
-      $_SESSION['_flash'][$var] = $value;
+      $_SESSION[self::FLASH][$var] = $value;
       return $value;
     }
     /**
@@ -151,7 +153,7 @@
      * @return mixed
      */
     public function getGlobal($var, $default = null) {
-      return Arr::get($_SESSION['_globals'], $var, $default);
+      return Arr::get($_SESSION[self::GLOBALS], $var, $default);
     }
     /**
      * @param      $var
@@ -177,12 +179,12 @@
      */
     public function removeGlobal() {
       if (func_num_args() === 0) {
-        $_SESSION['_globals'] = [];
+        $_SESSION[self::GLOBALS] = [];
       }
       $globals = func_get_args();
       foreach ($globals as $var) {
         if (is_string($var) || is_int($var)) {
-          unset ($_SESSION['_globals'][$var]);
+          unset ($_SESSION[self::GLOBALS][$var]);
         }
       }
     }

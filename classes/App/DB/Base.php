@@ -174,6 +174,14 @@
         }
       } catch (DBUpdateException $e) {
         return $this->status(Status::ERROR, "Could not update " . $this->_classname);
+      } catch (DBInsertException $e) {
+        $error = static::$DB->getLastError();
+        if ($error) {
+          return $this->status(false, $error['message'], $error['var']);
+        }
+        return $this->status(false, 'Could not add ' . $this->_classname . ' to database');
+      } catch (DBDuplicateException $e) {
+        return $this->status(false, 'You have tried to enter a duplicate ' . $this->_classname . '. Please modify the existing record or use different values.');
       }
     }
     /**
@@ -219,17 +227,7 @@
      * @return int|bool Id assigned to new database row or false if entry failed
      */
     protected function saveNew() {
-      try {
-        $this->id = static::$DB->insert($this->_table)->values((array) $this)->exec();
-      } catch (DBInsertException $e) {
-        $error = static::$DB->getLastError();
-        if ($error) {
-          return $this->status(false, $error['message'], $error['var']);
-        }
-        return $this->status(false, 'Could not add ' . $this->_classname . ' to database');
-      } catch (DBDuplicateException $e) {
-        return $this->status(false, 'You have tried to enter a duplicate ' . $this->_classname . '. Please modify the existing record or use different values.');
-      }
+      $this->id = static::$DB->insert($this->_table)->values((array) $this)->exec();
       return $this->status(Status::SUCCESS, 'Added ' . $this->_classname . ' to database');
     }
     /**

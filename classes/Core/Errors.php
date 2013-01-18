@@ -49,13 +49,13 @@
       );
     /** @var string  temporary container for output html data before error box */
     /** @var array Errors which terminate execution */
-    protected static $fatal_levels = array(E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR);
+    protected static $fatal_levels = [E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR];
     /** @var array Errors which are user errors */
-    protected static $user_errors = array(E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
+    protected static $user_errors = [E_SUCCESS, E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING];
     /** @var array Errors where execution can continue */
-    protected static $continue_on = array(E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT);
+    protected static $continue_on = [E_SUCCESS, E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT];
     /** @var array Errors to ignore comeletely */
-    protected static $ignore = array(E_USER_DEPRECATED, E_DEPRECATED, E_STRICT, E_NOTICE);
+    protected static $ignore = [E_USER_DEPRECATED, E_DEPRECATED, E_STRICT, E_NOTICE];
     /** @var */
     protected static $useConfigClass;
     protected static $admin = false;
@@ -66,7 +66,7 @@
       if (class_exists('\ADV\Core\Event')) {
         Event::registerShutdown([__CLASS__, 'sendDebugEmail']);
       }
-      static::$admin = strpos($_SERVER['HTTP_HOST'], 'dev') === 0 || (isset($_SESSION['User']) && $_SESSION['User']->username == 'admin');
+      static::$admin = (isset ($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'dev') === 0) || (isset($_SESSION['User']) && $_SESSION['User']->username == 'admin');
     }
     /**
      * @static
@@ -340,7 +340,7 @@
      */
     public static function databaseError($error, $sql = null, $data = []) {
       $errorCode        = DB\DB::_errorNo();
-      $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message']. $sql;
+      $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'] . $sql;
       if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
         $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
       }

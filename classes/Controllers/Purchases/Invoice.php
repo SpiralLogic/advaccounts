@@ -35,6 +35,7 @@
     /** @var Creditor_Trans */
     protected $trans;
     protected $creditor_id;
+    protected $security = SA_SUPPLIERINVOICE;
     protected function before() {
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = true;
@@ -68,9 +69,9 @@
       if (isset($_POST['go'])) {
         $this->go();
       }
+      $this->setTitle("Enter Supplier Invoice");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Enter Supplier Invoice"), SA_SUPPLIERINVOICE);
       if (isset($_POST['PostInvoice'])) {
         $this->postInvoice();
       }
@@ -97,7 +98,6 @@
       echo "<br>";
       Forms::end();
       $this->addJS();
-      $this->Page->end_page(true);
     }
     /**
      * @param $invoice_no

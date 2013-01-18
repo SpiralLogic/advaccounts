@@ -58,8 +58,10 @@ var Items = function () {
       var disabledTabs = [];
       if (!id) {
         disabledTabs = [2, 3, 4, 5];
+        $stockLevels.hide();
       }
       if (Items.tabs) {
+        id || Items.tabs.tabs('option', 'active', 0);
         Items.tabs.tabs('option', 'disabled', disabledTabs);
         return;
       }
@@ -84,12 +86,9 @@ var Items = function () {
       if (data.stockLevels) {
         $stockLevels.show().find('tbody').html($.tmpl('stockrow', data.stockLevels));
       }
-      else {
-        $stockLevels.hide();
-      }
       form = data._form_id;
       $.each(item, function (i, data) {
-        Adv.Forms.setFormDefault(i, data, form);
+        Adv.Forms.setFormDefault(i, data, 'item_form');
       });
       Adv.Forms.setFocus('stock_id');
       Adv.Forms.resetHighlights(form);

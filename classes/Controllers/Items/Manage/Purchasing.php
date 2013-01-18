@@ -48,9 +48,7 @@
     }
     protected function generateTable() {
       $this->Ajax->start_div('purchasing_table');
-      if ($this->stock_id) {
-        parent::generateTable();
-      }
+      parent::generateTable();
       if ($this->Input->post(FORM_CONTROL) == 'stock_id') {
         $this->Ajax->activate('purchasing_table');
       }
@@ -61,7 +59,7 @@
      */
     protected function getEditing(\ADV\App\Pager\Edit $pager) {
       $pager->setObject($this->object);
-      if (!$this->object->id){
+      if (!$this->object->id) {
         $this->object->supplier_description = $this->stock_id;
       }
       if ($this->stock_id) {

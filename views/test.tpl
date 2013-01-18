@@ -1,8 +1,11 @@
-{{$test.wawa.wawa}}
-lklkjhlkj
+{{$test}}
+{{#$tes2}}
+  {{.}}
+{{/$tes2}}
+{{#$test2}}
+  {{$test2}}
+{{/$test2}}
 
-
-
-
-       kjhdljkdhglkjdnkddndndmn
-{{+application}}
+{{#$test4}}
+    'test'
+{{/$test4}}

@@ -33,6 +33,7 @@
     protected $bank_currency;
     protected $company_currency;
     protected $creditor_id;
+    protected $security = SA_SUPPLIERPAYMNT;
     public $bank_account;
     protected function before() {
       JS::_openWindow(950, 500);
@@ -68,9 +69,9 @@
       $this->company_currency  = Bank_Currency::for_company();
       $this->supplier_currency = Bank_Currency::for_creditor($this->creditor_id);
       $this->bank_currency     = Bank_Currency::for_company($_POST['bank_account']);
+      $this->setTitle("Supplier Payment Entry");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Supplier Payment Entry"), SA_SUPPLIERPAYMNT);
       if (isset($_POST['ProcessSuppPayment'])) {
         $this->processSupplierPayment();
       }
@@ -104,7 +105,6 @@
       }
       Forms::submitCenter('ProcessSuppPayment', _("Enter Payment"), true, '', 'default');
       Forms::end();
-      $this->Page->end_page();
     }
     /**
      * @return bool

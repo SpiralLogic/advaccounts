@@ -28,6 +28,7 @@
   {
     protected $order_number;
     protected $creditor_id;
+    protected $security = SA_SUPPTRANSVIEW;
     protected function before() {
       JS::_openWindow(950, 500);
       $this->order_number = $this->Input->getPost('order_number', Input::STRING);
@@ -44,9 +45,9 @@
       if ($this->Input->post(FORM_CONTROL) != 'supplier' && !$this->Input->post('supplier')) {
         $_POST['creditor_id'] = $this->Session->setGlobal('creditor', '');
       }
+      $this->setTitle("Search Purchase Orders");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Search Purchase Orders"), SA_SUPPTRANSVIEW, $this->Input->request('frame'));
       Forms::start();
       if (!$this->Input->request('frame')) {
         Table::start('noborder');
@@ -65,7 +66,6 @@
       Creditor::addInfoDialog('.pagerclick');
       UI::emailDialogue(CT_SUPPLIER);
       Forms::end();
-      $this->Page->end_page();
     }
     protected function makeTable() {
       $searchArray = [];

@@ -44,6 +44,7 @@
      * @return \ADV\Core\DIC|void
      */
     public function offsetSet($name, $callable) {
+      $name = strtolower($name);
       if (!$callable instanceof \Closure) {
         throw new InvalidArgumentException('Must be closure!');
       }
@@ -56,9 +57,9 @@
      * @param $param
      */
     public function setParam($name, $param) {
+      $name = strtolower($name);
       $this->set(
-        $name,
-        function () use ($param) {
+        $name, function () use ($param) {
           return $param;
         }
       );
@@ -69,6 +70,7 @@
      * @return bool
      */
     public static function has($name) {
+      $name = strtolower($name);
       return static::$i->offsetExists($name);
     }
     /**
@@ -79,6 +81,7 @@
      * @return Boolean
      */
     public function offsetExists($name) {
+      $name = strtolower($name);
       return isset($this->_callbacks[$name]);
     }
     /**
@@ -98,6 +101,7 @@
      * @throws \InvalidArgumentException if the identifier is not defined
      */
     public function offsetGet($name) {
+      $name = strtolower($name);
       $name = $name ? : $this->_last;
       if (isset($this->_objects[$name])) {
         $args = func_get_args();
@@ -140,6 +144,7 @@
      * @return bool
      */
     public static function delete($name) {
+      $name = strtolower($name);
       return static::$i->offsetUnset($name);
     }
     /**
@@ -151,6 +156,7 @@
      */
     public function offsetUnset($name) {
       // TODO: Should this also delete the callback?
+      $name = strtolower($name);
       if (isset($this->_objects[$name])) {
         unset($this->_objects[$name]);
         return true;
@@ -167,8 +173,7 @@
         array_shift($arguments);
       }
       array_walk_recursive(
-        $arguments,
-        function (&$element) {
+        $arguments, function (&$element) {
           # do some special stuff (serialize closure) ...
           if (is_object($element)) {
             $element = spl_object_hash($element);

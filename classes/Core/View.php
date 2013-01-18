@@ -142,19 +142,27 @@
      * @return string
      */
     protected function compileHashes($value) {
-      $pattern = '/\{\{#([^?]+?)\}\}(.*?)\{\{\/\1}\}/s';
+      $pattern = '/\{\{(#|\^)([^?]+?)\}\}(.*?)\{\{\/\2}\}/s';
       $return  = preg_replace_callback(
         $pattern, function ($input) {
-          $var      = ltrim($input[1], '$');
-          $contents = $input[2];
-          $tempvar  = uniqid();
-          $return   = '<?php if (isset($' . $var . ') && (is_array($' . $var . ') || $' . $var . ' instanceof \Traversable )): foreach($' . $var . ' as $_' . $tempvar . '_name =>
-               $_' . $tempvar . '_val): ?>';
+          $inverse  = $input[1] === '^';
+          $var      = ltrim($input[2], '$');
+          $contents = $input[3];
           $contents = $this->compile($contents, true);
-          $contents = str_replace(['{{!}}', '{{.}}'], ['{{$_' . $tempvar . '_name}}', '{{$_' . $tempvar . '_val}}'], $contents);
-          $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
-          $return .= '<?php endforeach; endif; ?>';
-          //        }
+          if ($inverse) {
+            $return = '<?php if (!isset($' . $var . ') || !$' . $var . '): ?>' . $contents;
+          } else {
+            $tempvar  = uniqid();
+            $return   = '<?php if (isset($' . $var . ') && (is_array($' . $var . ') || $' . $var . ' instanceof \Traversable )): foreach($' . $var . ' as $_' . $tempvar . '_name =>
+               $_' . $tempvar . '_val): ?>';
+            $contents = str_replace(['{{!}}', '{{.}}'], ['{{$_' . $tempvar . '_name}}', '{{$_' . $tempvar . '_val}}'], $contents);
+            $return .= str_replace('$.', '$_' . $tempvar . '_val.', $contents);
+            $return .= '<?php endforeach; ?>';
+            if (!preg_match('(\{\{\.\}\}|\{\{!\}\}|\$\.)', $contents)) {
+              $return .= '<?php elseif (isset($' . $var . ')): ?>' . $contents;
+            }
+          }
+          $return .= '<?php endif; ?>';
           return $return;
         }, $value
       );
@@ -199,7 +207,7 @@
         '/\{\{(\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)\}\}/', '<?php if (isset($1)) echo $1; ?>', $value
       );
       return preg_replace(
-        '/\{\{([^!\.].*?)\}\}/', '<?php echo $1; ?>', $value
+        '/\{\{([^^!\.].*?)\}\}/', '<?php echo $1; ?>', $value
       );
     }
     /**
@@ -220,9 +228,11 @@
         $exception = eval('?>' . $__contents);
         if ($exception !== null) {
           ob_start();
+          ini_set('xdebug.var_display_max_data', -1);
           var_dump($__contents);
           $contents = ob_get_clean();
-          Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<pre>" . $contents);
+          Errors::handler(E_ERROR, 'template ' . $this->_template . " failed to render!<pre>");
+          echo $contents;
         }
       } catch (\Exception $e) {
         // If we caught an exception, we'll silently flush the output
@@ -248,8 +258,8 @@
       // The contents of each view file is cached in an array for the
       // request since partial views may be rendered inside of for
       // loops which could incur performance penalties.
-      //    $__contents = null; // static::$Cache->get('template.' . $this->_template);
-      $__contents = static::$Cache->get('template.' . $this->_template);
+      $__contents = null; // static::$Cache->get('template.' . $this->_template);
+      //   $__contents = static::$Cache->get('template.' . $this->_template);
       if (!$__contents || !is_array($__contents)) {
         $__contents = file_get_contents($this->_template);
         while (strpos($__contents, '  ')) {

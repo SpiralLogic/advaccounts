@@ -23,17 +23,17 @@
    **/
   class Orders extends \ADV\App\Controller\Action
   {
-
     /** @var Dates */
     protected $Dates;
     protected $order_no;
     protected $creditor_id;
     protected $selected_stock_item;
     protected $stock_location;
+    protected $security = SA_SUPPTRANSVIEW;
     /**
 
      */
-    public function run($embed=false) {
+    public function run($embed = false) {
       $this->Dates = Dates::i();
       parent::run();
     }
@@ -50,11 +50,9 @@
         $this->Ajax->addFocus(true, 'order_number');
       }
       $this->Ajax->activate('orders_tbl');
+      $this->setTitle("Search Outstanding Purchase Orders");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Search Outstanding Purchase Orders"), SA_SUPPTRANSVIEW);
-      // Ajax updates
-      //
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
@@ -70,10 +68,10 @@
       $this->makeTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();
-      $this->Page->end_page();
     }
     protected function makeTable() { //figure out the sql required from the inputs available
-      $sql = "SELECT
+      $sql
+        = "SELECT
  porder.order_no,
  porder.reference,
  supplier.name,

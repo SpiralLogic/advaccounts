@@ -45,6 +45,7 @@
       }
       $this->item        = new Item($this->stockid);
       $_POST['stock_id'] = $this->stock_id = $this->item->stock_id;
+      $this->Session->setGlobal('stock_id', $this->stock_id);
       $this->runPost();
       $this->JS->footerFile("/js/quickitems.js");
       $this->setTitle("Items");
@@ -104,6 +105,8 @@
       $form->button(FORM_ACTION, CANCEL, CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
       $form->button(FORM_ACTION, SAVE, SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
       $view->set('form', $form);
+      $data = $this->getItemData();
+      $this->JS->onload("Items.onload(" . json_encode($data) . ");");
       $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!$this->Input->hasGet('stock_id')) {
         $searchBox = UI::search(
@@ -112,19 +115,18 @@
                           'idField'  => 'stock_id',
                           'name'     => 'itemSearchId', //
                           'focus'    => true,
+                          'value'    => $this->stock_id,
                           'callback' => 'Items.fetch'
                           ], true
         );
         $view->set('searchBox', $searchBox);
         $this->JS->setFocus('itemSearchId');
       }
-      $data = $this->getItemData();
       $view->set('sellprices', $data['sellprices']);
       $view->set('buyprices', $data['buyprices']);
       $view->set('reorderlevels', $data['reorderlevels']);
       $view->set('firstPage', $this->Input->get('page'));
       $view->render();
-      $this->JS->onload("Items.onload(" . json_encode($data) . ");");
     }
   }
 

@@ -281,7 +281,7 @@
       $sql        = "(select (rb - amount) as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote($bank_account) . " order by date, id desc limit 0,
           1)";
       $result     = DB::_query($sql);
-      var_dump($sql);
+      //var_dump($sql);
       $begin_balance = DB::_fetch($result)['amount'];
       $sql           = "(select rb as amount from temprec where date>" . $begin_date . " and date<=" . DB::_quote($end_date) . " and bank_account_id=" . DB::_quote(
         $bank_account

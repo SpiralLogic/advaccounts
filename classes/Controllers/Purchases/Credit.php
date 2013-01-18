@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -33,6 +32,7 @@
     /** @var \Creditor_trans */
     protected $trans;
     protected $creditor_id;
+    protected $security = SA_SUPPLIERCREDIT;
     protected function before() {
       $this->JS->openWindow(900, 500);
       Validation::check(Validation::SUPPLIERS, _("There are no suppliers defined in the system."));
@@ -75,9 +75,9 @@
       if (isset($_POST['go'])) {
         $this->go();
       }
+      $this->setTitle("Supplier Credit Note");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Supplier Credit Note"), SA_SUPPLIERCREDIT);
       if (isset($_POST['PostCreditNote'])) {
         $this->postCredit();
       }
@@ -99,7 +99,6 @@
       echo "<br>";
       Forms::end();
       $this->addJS();
-      $this->Page->end_page();
     }
     protected function addJS() {
       $js
@@ -181,7 +180,7 @@ JS;
       foreach ($_POST as $postkey => $postval) {
         if (strpos($postkey, "qty_recd") === 0) {
           $id = substr($postkey, strlen("qty_recd"));
-          $id = (int)$id;
+          $id = (int) $id;
           $this->commitItemData($id);
         }
       }
@@ -317,18 +316,7 @@ JS;
       if ($this->checkItemData($n)) {
         $complete = false;
         $this->trans->add_grn_to_trans(
-          $n,
-          $_POST['po_detail_item' . $n],
-          $_POST['item_code' . $n],
-          $_POST['description' . $n],
-          $_POST['qty_recd' . $n],
-          $_POST['prev_quantity_inv' . $n],
-          Validation::input_num('this_quantityCredited' . $n),
-          $_POST['order_price' . $n],
-          Validation::input_num('ChgPrice' . $n),
-          $complete,
-          $_POST['std_cost_unit' . $n],
-          ""
+          $n, $_POST['po_detail_item' . $n], $_POST['item_code' . $n], $_POST['description' . $n], $_POST['qty_recd' . $n], $_POST['prev_quantity_inv' . $n], Validation::input_num('this_quantityCredited' . $n), $_POST['order_price' . $n], Validation::input_num('ChgPrice' . $n), $complete, $_POST['std_cost_unit' . $n], ""
         );
       }
     }

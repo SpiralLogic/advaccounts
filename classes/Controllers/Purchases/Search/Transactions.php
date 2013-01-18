@@ -23,7 +23,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -33,6 +32,7 @@
   class Transactions extends \ADV\App\Controller\Action
   {
     public $creditor_id;
+    protected $security = SA_SUPPTRANSVIEW;
     protected function before() {
       JS::_openWindow(950, 500);
       if (isset($_GET['FromDate'])) {
@@ -49,9 +49,9 @@
       if (Input::_post('RefreshInquiry')) {
         $this->Ajax->activate('totals_tbl');
       }
+      $this->setTitle("Supplier Inquiry");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Supplier Inquiry"), SA_SUPPTRANSVIEW);
       Forms::start();
       Table::start('noborder');
       echo '<tr>';
@@ -71,7 +71,6 @@
       $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();
-      $this->Page->end_page();
     }
     protected function displayTable() {
       if (REQUEST_AJAX && !empty($_POST['q'])) {

@@ -317,9 +317,9 @@
       }
       $id = $this->id;
       $sql
-          = "SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_id as id, r.reorder_level, o.demand, (qty-o.demand) as available, p.onorder, qty
+          = "SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_id AS id, r.reorder_level, o.demand, (qty-o.demand) AS available, p.onorder, qty
             FROM locations l
-            LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) as qty FROM stock_moves WHERE stockid=$id AND tran_date <= now() GROUP BY loc_code, stock_id) i ON l.loc_code = i.loc_code
+            LEFT JOIN (SELECT stock_id, loc_code, SUM(qty) AS qty FROM stock_moves WHERE stockid=$id AND tran_date <= now() GROUP BY loc_code, stock_id) i ON l.loc_code = i.loc_code
             LEFT JOIN stock_location r ON r.loc_code = l.loc_code AND r.stockid = $id
             LEFT JOIN (SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders
                 WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type
@@ -617,10 +617,10 @@
       $where2     = ' AND i.id = s.stockid ';
       $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
       $sql
-                  = "SELECT  $stock_code CONCAT(s.item_code,' - ',i.description) as label, c.description as category,
-                                $weight FROM stock_category c, item_codes s, stock_master i
-                                WHERE (s.item_code LIKE ? $termswhere) $where
-                                AND s.category_id = c.category_id $where2 GROUP BY s.item_code
+                  = "SELECT  $stock_code CONCAT(s.item_code,' - ',i.description) AS label, C.description AS category,
+                                $weight FROM stock_category C, item_codes s, stock_master i
+                                WHERE (s.item_code LIKE ? $termswhere) $WHERE
+                                AND s.category_id = C.category_id $where2 GROUP BY s.item_code
                                 ORDER BY weight, s.category_id, s.item_code LIMIT 30";
       DB::_prepare($sql);
       $result = DB::_execute($terms);
@@ -684,7 +684,7 @@
         }
         $stock_code = ' s.item_code as stock_id, p.supplier_description, MIN(p.price) as price, ';
         $prices     = " LEFT OUTER JOIN purch_data p ON i.id = p.stockid ";
-        $sales_type='';
+        $sales_type = '';
       } elseif ($sale) {
         $weight     = 'IF(s.item_code LIKE ?, 0,20) + IF(s.item_code LIKE ?,0,5) + IF(s.item_code LIKE ?,0,5) as weight';
         $stock_code = " s.item_code as stock_id, MIN(p.price) as price,";
@@ -692,17 +692,17 @@
         $constraints .= " AND s.id = p.item_code_id ";
         if ($sales_type) {
           $sales_type = ' AND (p.sales_type_id = ' . $sales_type . ' OR p.sales_type_id = 1 )';
-          $weight.=', p.sales_type_id';
+          $weight .= ', p.sales_type_id';
         }
       } elseif ($kitsonly) {
         $constraints .= " AND s.stock_id!=i.stock_id ";
       }
       $select = ($select) ? $select : ' ';
       $sql
-              = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
-                            $weight FROM stock_category c, item_codes s, stock_master i  $prices
-                            WHERE (s.item_code LIKE ? $termswhere) $constraints
-                            AND s.category_id = c.category_id $constraints2 $sales_type GROUP BY s.item_code
+              = "SELECT $SELECT $stock_code i.description AS item_name, C.description AS category, i.long_description AS description , editable,
+                            $weight FROM stock_category C, item_codes s, stock_master i  $prices
+                            WHERE (s.item_code LIKE ? $termswhere) $CONSTRAINTS
+                            AND s.category_id = C.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
       DB::_prepare($sql);
       $result = DB::_execute($terms);
@@ -718,9 +718,11 @@
     public static function addEditDialog($options = []) {
       $action
         = <<<JS
+            if (e.ctrlKey){
             Adv.dialogWindow.open("/items/manage/items?stock_id="+$(this).data('stock_id'));
+}
 JS;
-      JS::_addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
+      JS::_addLiveEvent('.stock', 'click', $action, "wrapper", true);
       JS::_addLiveEvent('label.stock', 'click', $action, "wrapper", true);
     }
     /**
@@ -977,8 +979,8 @@ JS;
         return '';
       }
       $sql
-        = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
-                    FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
+        = "SELECT stock_id, s.description, C.description, s.inactive, s.editable, s.long_description
+                    FROM stock_master s,stock_category C WHERE s.category_id=C.category_id";
       return Forms::selectBox(
         $name, $selected_id, $sql, 'stock_id', 's.description', array_merge(
           array(

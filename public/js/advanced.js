@@ -195,7 +195,6 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      dialog.empty().append(data).dialog({autoOpen: true, width: 1024, modal: true});
                      $('#btnCancel').show().on('mousedown', function (e) { dialog.empty().dialog('close');});
                      Adv.Events.rebind();
-
                    });
                  }
                }
@@ -421,7 +420,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    return els;
                  },
                  getFormEl:       function (name, form) {
-                   return form.querySelectorAll('[name=' + name.replace(/([^A-Za-z0-9_\u00A1-\uFFFF-])/g, "\\$1") + ']');
+                   return $(Array.prototype.slice.call(form.elements)).filter('[name=' + name.replace(/([^A-Za-z0-9_\u00A1-\uFFFF-])/g, "\\$1") + ']');
                  },
                  setFormValue:    function (id, value, form, disabled) {
                    var isdefault, els, values = {};
@@ -483,85 +482,98 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                    this.setFormValue(id, value, form, disabled, true);
                  },
-                 autocomplete:    function (searchField, type, callback, data) {
-                   var els = Adv.Forms.findInputEl(searchField)//
-                     , $this = $(els) //
+                 autocomplete:    (function () {
+                   var init = false //
+                     , fieldStore = [] //
                      , blank = {id: 0, value: ''};
-                   if (!els[0] || els[0].type === 'hidden') {
-                     return;
-                   }
-                   if (!$.isFunction(callback)) {
-                     var idField = Adv.Forms.findInputEl(callback);
-                     callback = function (data) {
-                       if ($(idField).length) {
-                         $(idField).val(data.id);
+                   return function (searchField, type, callback, data) {
+                     if (fieldStore[searchField] !== undefined) {return;}
+                     fieldStore[searchField] = {id: searchField, type: type, callback: callback, data: data};
+                     if (init === true) { return;}
+                     Adv.o.body.on('focus', 'input', function () {
+                       var p //
+                         , $this;//
+                       if (fieldStore[this.name] !== undefined) {
+                         p = fieldStore[this.name];
                        }
-                       $this.val(data.value);
-                       if (!$this.is('.nosubmit')) {
-                         JsHttpRequest.request(els[0]);
+                       if (!p && fieldStore[this.id] !== undefined) {
+                         p = fieldStore[this.id];
                        }
-                       return false;
-                     }
+                       if (!p) {return;}
+                       $this = $(this);
+                       if (!$.isFunction(p.callback)) {
+                         var idField = Adv.Forms.findInputEl(p.callback);
+                         p.callback = function (data) {
+                        if ($(idField).length) {
+                             $(idField).val(data.id);
+                           }
+                           $this.val(data.value);
+                           if (!$this.is('.nosubmit')) {
+                             JsHttpRequest.request(this);
+                           }
+                           return false;
+                         }
+                       }
+                       $this.catcomplete({
+                                           minLength: 2,
+                                           delay:     400,
+                                           autoFocus: true,
+                                           source:    function (request, response) {
+                                             $this.off('change.catcomplete');
+                                             $this.data('default', null);
+                                             if ($this.data().catcomplete.previous == $this.val()) {
+                                               return false;
+                                             }
+                                             request['type'] = p.type;
+                                             request['data'] = p.data;
+                                             Adv.lastXhr = $.getJSON('/search', request, function (data) {
+                                               if (!$this.data('active')) {
+                                                 data = blank;
+                                                 return false;
+                                               }
+                                               $this.data('default', data[0]);
+                                               response(data);
+                                             });
+                                           },
+                                           select:    function (event, ui) {
+                                             $this.data('default', null);
+                                             if (p.callback(ui.item, event, this) === false) {
+                                               return false;
+                                             }
+                                           },
+                                           focus:     function () {return false;}});
+                       $this.on({
+                                  blur:             function () {$(this).data('active', false); }, //
+                                  catcompleteclose: function (event) {
+                                    if (this.value.length > 1 && $this.data().catcomplete.selectedItem === null && $this.data()['default'] !== null) {
+                                      if (p.callback($this.data()['default'], event, this) !== false) {
+                                        $this.val($this.data()['default'].label);
+                                      }
+                                    }
+                                    $this.data('default', null)
+                                  }, //
+                                  focus:            function () {
+                                    $(this).data('active', true).on('change.catcomplete', function () {
+                                      $(this).catcomplete('search', $this.val());
+                                    })
+                                  }, //
+                                  paste:            function () {
+                                    var $this = $(this);
+                                    window.setTimeout(function () {$this.catcomplete('search', $this.val())}, 1)
+                                  }, //
+                                  change:           function (event) {
+                                    if (this.value === '') {
+                                      p.callback(blank, event, this);
+                                    }
+                                  }});
+                       $this.css({'z-index': '2'});
+                       if (document.activeElement === $this[0]) {
+                         $this.data('active', true);
+                       }
+                     });
+                     init = true;
                    }
-                   Adv.o.autocomplete[searchField] = $this;
-                   $this.catcomplete({
-                                       minLength: 2,
-                                       delay:     400,
-                                       autoFocus: true,
-                                       source:    function (request, response) {
-                                         var $this = Adv.o.autocomplete[searchField];
-                                         $this.off('change.catcomplete');
-                                         $this.data('default', null);
-                                         if ($this.data().catcomplete.previous == $this.val()) {
-                                           return false;
-                                         }
-                                         request['type'] = type;
-                                         request['data'] = data;
-                                         Adv.lastXhr = $.getJSON('/search', request, function (data) {
-                                           if (!$this.data('active')) {
-                                             data = blank;
-                                             return false;
-                                           }
-                                           $this.data('default', data[0]);
-                                           response(data);
-                                         });
-                                       },
-                                       select:    function (event, ui) {
-                                         $this.data('default', null);
-                                         if (callback(ui.item, event, this) === false) {
-                                           return false;
-                                         }
-                                       },
-                                       focus:     function () {return false;}});
-                   $this.on({
-                              blur:             function () {$(this).data('active', false); }, //
-                              catcompleteclose: function (event) {
-                                if (this.value.length > 1 && $this.data().catcomplete.selectedItem === null && $this.data()['default'] !== null) {
-                                  if (callback($this.data()['default'], event, this) !== false) {
-                                    $this.val($this.data()['default'].label);
-                                  }
-                                }
-                                $this.data('default', null)
-                              }, //
-                              focus:            function () {
-                                $(this).data('active', true).on('change.catcomplete', function () {
-                                  $(this).catcomplete('search', $this.val());
-                                })
-                              }, //
-                              paste:            function () {
-                                var $this = $(this);
-                                window.setTimeout(function () {$this.catcomplete('search', $this.val())}, 1)
-                              }, //
-                              change:           function (event) {
-                                if (this.value === '') {
-                                  callback(blank, event, this);
-                                }
-                              }});
-                   $this.css({'z-index': '2'});
-                   if (document.activeElement === $this[0]) {
-                     $this.data('active', true);
-                   }
-                 },
+                 })(),
                  priceFormat:     function (post, num, dec, label, color) {
                    var sign, decsize, cents, el;
                    //num = num.toString().replace(/\$|\,/g,'');
@@ -681,7 +693,8 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      el = null;
                    }, 0);
                    return true;
-                 }, saveFocus:    function (e) {
+                 }, //
+                  saveFocus:    function (e) {
                    focusonce = e.name || e.id;
                    var h = document.getElementById('hints');
                    if (h) {

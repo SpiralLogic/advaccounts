@@ -24,7 +24,7 @@
    **/
   class Allocations extends \ADV\App\Controller\Action
   {
-
+    protected $security = SA_SUPPLIERALLOC;
     protected function before() {
       $this->JS->openWindow(950, 500);
       if (isset($_GET['creditor_id']) || isset($_GET['id'])) {
@@ -57,9 +57,9 @@
       } elseif (isset($_POST['TransToDate'])) {
         $this->Session->setGlobal('TransToDate', $_POST['TransToDate']);
       }
+      $this->setTitle("Supplier Allocation Inquiry");
     }
     protected function index() {
-      $this->Page->init(_($help_context = "Supplier Allocation Inquiry"), SA_SUPPLIERALLOC);
       Forms::start(false, '', 'invoiceForm');
       Table::start('noborder');
       echo '<tr>';
@@ -77,13 +77,13 @@
       $this->displayTable();
       Creditor::addInfoDialog('.pagerclick');
       Forms::end();
-      $this->Page->end_page();
     }
     protected function displayTable() {
       $date_after = Dates::_dateToSql($_POST['TransAfterDate']);
       $date_to    = Dates::_dateToSql($_POST['TransToDate']);
       // Sherifoz 22.06.03 Also get the description
-      $sql = "SELECT
+      $sql
+        = "SELECT
             trans.type,
             trans.trans_no,
             trans.reference,
@@ -188,7 +188,8 @@
      * @return mixed
      */
     public function formatBalance($row) {
-      $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] : $row["TotalAmount"] - $row["Allocated"];
+      $value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) ? -$row["TotalAmount"] - $row["Allocated"] :
+        $row["TotalAmount"] - $row["Allocated"];
       return $value;
     }
     /**

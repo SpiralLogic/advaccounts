@@ -23,6 +23,7 @@
     protected $collection = [];
     protected $current = 0;
     protected $idColumns = [];
+    protected $_id_values = [];
     /** @var \ADV\Core\DB\DB */
     static $staticDB;
     /**
@@ -34,17 +35,30 @@
     public function __construct(Base $object, $idColumns, $withNew = false) {
       $this->class = get_class($object);
       $idColumns   = (array) $idColumns;
-      foreach ($idColumns as $idColumn) {
+      foreach ($idColumns as $key => $idColumn) {
+        if (!is_int($key)) {
+          $this->_id_values[$key] = $idColumn;
+          $idColumn               = $key;
+        }
         if (!property_exists($this->class, $idColumn)) {
           throw new InvalidArgumentException('Collection ID Column must be a property of the collection object');
         }
+        $this->idColumns[] = $idColumn;
       }
-      $this->idColumns = $idColumns;
-      $this->table     = $object->getTable();
-      $this->withNew   = $withNew;
+      $this->table   = $object->getTable();
+      $this->withNew = $withNew;
+      if ($this->_id_values) {
+        $this->getAll($this->_id_values);
+      }
       if ($withNew) {
         $this->collection[] = $object;
       }
+    }
+    public function addNew() {
+      $class = $this->class;
+      /** @var Base $class */
+      $this->collection[0] = $class = new $class;
+      $class->load($this->_id_values);
     }
     /**
      * @param $ids

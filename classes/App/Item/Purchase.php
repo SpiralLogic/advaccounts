@@ -36,7 +36,7 @@
           = "SELECT id, suppliers.creditor_id,suppliers.name as supplier, stock_id,stockid,price,suppliers_uom,conversion_factor,supplier_description, last_update
               FROM purch_data INNER JOIN suppliers
               ON purch_data.creditor_id=suppliers.creditor_id
-              WHERE stock_id = " . DB::_quote($stock_id)." ORDER BY suppliers.name";
+              WHERE stock_id = " . DB::_quote($stock_id) . " ORDER BY suppliers.name";
         return DB::_query($sql, "The supplier purchasing details for the selected part could not be retrieved")->fetchAll(\PDO::FETCH_ASSOC);
       }
       /**
@@ -52,7 +52,7 @@
        */
       protected function canProcess() {
         if (!Validation::is_num($this->creditor_id, 0)) {
-          return $this->status(false, 'Creditor_id must be a number', 'creditor_id');
+          return $this->status(false, 'Must use an existing supplier', 'supplier');
         }
         if (strlen($this->stock_id) > 20) {
           return $this->status(false, 'Stock_id must be not be longer than 20 characters!', 'stock_id');
