@@ -17,7 +17,7 @@
     use ADV\App\User;
 
     /**
-
+     *
      */
     class Price extends \ADV\App\DB\Base implements \ADV\App\Pager\Pageable
     {
