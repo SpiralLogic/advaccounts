@@ -49,7 +49,7 @@ var Items = function () {
       if (id.id !== undefined) {
         id = id.id;
       }
-      $.post("/Items/Manage/Items", {stockid: id}, function (data) {
+      $.post("/Items/Manage/Items", {id: id}, function (data) {
         Items.onload(data, true);
       }, 'json');
       return false;
@@ -91,7 +91,7 @@ var Items = function () {
         Adv.Forms.setFormDefault(i, data, 'item_form');
       });
       Adv.Forms.setFocus('stock_id');
-      Adv.Forms.resetHighlights(form);
+      Adv.Forms.resetHighlights(Items.form);
     },
     get:         function () {
       return item;

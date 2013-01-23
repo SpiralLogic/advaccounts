@@ -40,8 +40,9 @@
         if ($this->stock_id) {
           $this->stockid = Item::getStockID($this->stock_id);
         }
-      } elseif ($this->Input->hasPost('stockid')) {
+      } elseif ($this->Input->hasPost('id')) {
         $this->stockid = & $this->Input->postGlobal('stockid');
+        $this->stockid = $this->Input->post('id');
       }
       $this->item        = new Item($this->stockid);
       $_POST['stock_id'] = $this->stock_id = $this->item->stock_id;
@@ -51,7 +52,7 @@
       $this->setTitle("Items");
     }
     /**
-     * @internal param $id
+     * @`` param $id
      * @return string
      */
     protected function getItemData() {
@@ -70,6 +71,9 @@
             $this->item->save($_POST);
             $data['status'] = $this->item->getStatus();
             break;
+          case 'clone':
+            $this->stock_id = $this->item->stock_id = '';
+            $this->stockid  = $this->item->id = 0;
         }
         if (isset($_GET['page'])) {
           $data['page'] = $_GET['page'];
@@ -87,6 +91,7 @@
       $form->start('item', '/Items/Manage/Items');
       $form->group('items');
       $form->hidden('stockid');
+      $form->hidden('id');
       $form->text('stock_id')->label('Item Code:');
       $form->text('description')->label('Item Name:');
       $form->textarea('long_description', ['rows' => 4])->label('Description:');
@@ -102,6 +107,7 @@
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $form->group('buttons');
       $form->button(FORM_ACTION, ADD, ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, 'clone', 'Clone')->type('primary')->id('btnClone')->mergeAttr(['form' => 'item_form']);
       $form->button(FORM_ACTION, CANCEL, CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
       $form->button(FORM_ACTION, SAVE, SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
       $view->set('form', $form);

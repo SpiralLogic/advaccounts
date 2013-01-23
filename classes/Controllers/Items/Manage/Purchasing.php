@@ -46,13 +46,13 @@
         echo "</div>";
       }
     }
-    protected function generateTable() {
-      $this->Ajax->start_div('purchasing_table');
-      parent::generateTable();
-      if ($this->Input->post(FORM_CONTROL) == 'stock_id') {
-        $this->Ajax->activate('purchasing_table');
-      }
-      $this->Ajax->end_div();
+    /**
+     * @param $pagername
+     *
+     * @return mixed
+     */
+    protected function getTableRows($pagername) {
+      return $this->object->getAll($this->stock_id);
     }
     /**
      * @param \ADV\App\Pager\Edit $pager
@@ -67,13 +67,13 @@
         $this->object->stockid  = \ADV\App\Item\Item::getStockID($this->stock_id);
       }
     }
-    /**
-     * @param $pagername
-     *
-     * @return mixed
-     */
-    protected function getTableRows($pagername) {
-      return $this->object->getAll($this->stock_id);
+    protected function generateTable() {
+      $this->Ajax->start_div('purchasing_table');
+      parent::generateTable();
+      if ($this->Input->post(FORM_CONTROL) == 'stock_id') {
+        $this->Ajax->activate('purchasing_table');
+      }
+      $this->Ajax->end_div();
     }
     protected function runValidation() {
       Validation::check(Validation::PURCHASE_ITEMS, _("There are no purchasable inventory items defined in the system."), STOCK_PURCHASED);

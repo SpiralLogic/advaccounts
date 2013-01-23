@@ -11,6 +11,7 @@
   namespace ADV\Controllers;
 
   use ADV\App\Controller\Action;
+  use ADV\App\Item\Item;
   use ADV\Core\JS;
   use DB_Company;
   use ADV\App\Item\Reorder;
@@ -24,7 +25,10 @@
 
      */
     protected function index() {
-      var_dump($_SESSION);
+      $item = new Item('test');
+      $item->getSalePrices();
+      $item->getPurchPrices();
+      var_dump($item);
     }
   }
 

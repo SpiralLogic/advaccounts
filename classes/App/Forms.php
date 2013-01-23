@@ -197,7 +197,7 @@
       $selector = "<span id='_{$sel_name}_sel' class='combodiv'>" . $selector . "</span>\n";
       if ($select_submit != false) { // if submit on change is used - add select button
         $_select_button = "<input %s type='submit' class='combo_select' name='%s' value=' ' title='" . _("Select") . "'> ";
-        $selector .= sprintf($_select_button, $disabled, User::_theme(), 'display:none;', '_' . $name . '_update') . "\n";
+        $selector .= sprintf($_select_button, $disabled, '_' . $name . '_update') . "\n";
       }
       //  JS::_defaultFocus($name);
       return $selector;

@@ -9,6 +9,7 @@
    **/
   namespace ADV\App\Item;
 
+  use ADV\App\DB\Collection;
   use Item_Unit;
   use DB_AuditTrail;
   use GL_Trans;
@@ -273,38 +274,16 @@
      * @return void
      */
     public function  getSalePrices() {
-      $sql    = "SELECT * FROM prices WHERE stockid = " . $this->id;
-      $result = DB::_query($sql, 'Could not get item pricing');
-      while ($row = DB::_fetchAssoc($result)) {
-        $this->salePrices[$row['id']] = array(
-          "curr"  => $row['curr_abrev'],
-          "type"  => $row['type'],
-          "price" => $row['price']
-        );
-      }
+      $this->salePrices = new Collection(new Price(), 'stock_id');
+      $this->salePrices->getAll($this->stock_id);
     }
     /**
-     * @param array $option
-     *
+     * @internal param array $option
      * @return array|mixed
      */
-    public function  getPurchPrices($option = []) {
-      $sql = "SELECT * FROM purch_data WHERE stockid = " . $this->id;
-      if ($option['min']) {
-        $sql .= " ORDER BY price LIMIT 1";
-      }
-      $result = DB::_query($sql, 'Could not get item pricing');
-      if ($option['min']) {
-        return DB::_fetchAssoc($result);
-      }
-      while ($row = DB::_fetchAssoc($result)) {
-        $this->salePrices[$row['creditor_id']] = array(
-          "code"  => $row['supplier_description'],
-          "price" => $row['price'], //					"suppliers_uom" => $row['uom'],
-          "conv"  => $row['conversion_factor']
-        );
-      }
-      return $this->salePrices;
+    public function  getPurchPrices() {
+      $this->purchPrices = new Collection(new Purchase(), 'stockid');
+      $this->purchPrices->getAll($this->id);
     }
     /**
      * @param null $location

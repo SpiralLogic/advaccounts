@@ -68,7 +68,7 @@
      */
     public function getAll($ids) {
       if (!is_array($ids) && count($this->idColumns) == 1) {
-        $ids = [key($this->idColumns) => $ids];
+        $ids = [reset($this->idColumns) => $ids];
       } else {
         $ids = (array) $ids;
       }

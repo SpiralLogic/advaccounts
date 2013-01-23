@@ -7,7 +7,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.app
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -141,10 +140,10 @@
         exit;
       }
       if (!REQUEST_JSON) {
-        Ajax::_start_div('_page_body');
         if ($this->title && !$this->isIndex && !$this->frame) {
           echo "<div class='titletext'>{$this->title}</div>";
         }
+        Ajax::_start_div('_page_body');
       }
     }
     protected function header() {

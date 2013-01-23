@@ -60,9 +60,7 @@
     }
     protected function generateTable() {
       $this->Ajax->start_div('prices_table');
-      if ($this->stock_id) {
-        parent::generateTable();
-      }
+      parent::generateTable();
       if ($this->Input->post(FORM_CONTROL) == 'stock_id') {
         $this->Ajax->activate('prices_table');
       }
