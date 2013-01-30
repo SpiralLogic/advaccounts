@@ -684,6 +684,8 @@
                             AND s.category_id = C.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
       DB::_prepare($sql);
+      return var_export($sql, true);
+      exit;
       $result = DB::_execute($terms);
       return $result;
     }

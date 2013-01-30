@@ -144,6 +144,7 @@
       $table->width       = "85%";
       Event::warning(_("Marked items are overdue."), false);
       $table->display($table);
+      Forms::hidden('q');
       UI::emailDialogue(CT_CUSTOMER);
       Forms::end();
     }

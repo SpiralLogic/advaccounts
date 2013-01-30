@@ -113,7 +113,7 @@
      * @param $name
      * @param $coldef
      *
-     * @return $this
+     * @return Pager $this
      */
     public static function newPager($name, $coldef) {
       $c = \ADV\Core\DIC::i();

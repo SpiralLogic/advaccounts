@@ -485,14 +485,11 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  autocomplete:    (function () {
                    var init = false //
                      , fieldStore = [] //
-                     , blank = {id: 0, value: ''};
-                   return function (searchField, type, callback, data) {
-                     if (fieldStore[searchField] !== undefined) {return;}
-                     fieldStore[searchField] = {id: searchField, type: type, callback: callback, data: data};
-                     if (init === true) { return;}
-                     Adv.o.body.on('focus', 'input', function () {
+                     , blank = {id: 0, value: ''}//
+                     , run = function () {
                        var p //
-                         , $this;//
+                         , $this//
+                         , self = this;//
                        if (fieldStore[this.name] !== undefined) {
                          p = fieldStore[this.name];
                        }
@@ -502,14 +499,14 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                        if (!p) {return;}
                        $this = $(this);
                        if (!$.isFunction(p.callback)) {
-                         var idField = Adv.Forms.findInputEl(p.callback);
+                         var field = $(Array.prototype.slice.call(Adv.Forms.findInputEl(p.callback)));
                          p.callback = function (data) {
-                        if ($(idField).length) {
-                             $(idField).val(data.id);
+                           if (field.length) {
+                             field.val(data.id);
                            }
                            $this.val(data.value);
                            if (!$this.is('.nosubmit')) {
-                             JsHttpRequest.request(this);
+                             JsHttpRequest.request(self);
                            }
                            return false;
                          }
@@ -547,7 +544,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                                   catcompleteclose: function (event) {
                                     if (this.value.length > 1 && $this.data().catcomplete.selectedItem === null && $this.data()['default'] !== null) {
                                       if (p.callback($this.data()['default'], event, this) !== false) {
-                                        $this.val($this.data()['default'].label);
+                                       // $this.val($this.data()['default'].label);
                                       }
                                     }
                                     $this.data('default', null)
@@ -570,8 +567,16 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                        if (document.activeElement === $this[0]) {
                          $this.data('active', true);
                        }
-                     });
+                     };
+                   return function (searchField, type, callback, data) {
+                     if (fieldStore[searchField] !== undefined) {return;}
+                     fieldStore[searchField] = {id: searchField, type: type, callback: callback, data: data};
+                     if (init === true) { return;}
                      init = true;
+                     if (document.activeElement.name == searchField) {
+                       run.call(document.activeElement);
+                     }
+                     Adv.o.body.on('focus', 'input', run);
                    }
                  })(),
                  priceFormat:     function (post, num, dec, label, color) {
@@ -694,7 +699,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }, 0);
                    return true;
                  }, //
-                  saveFocus:    function (e) {
+                 saveFocus:       function (e) {
                    focusonce = e.name || e.id;
                    var h = document.getElementById('hints');
                    if (h) {
