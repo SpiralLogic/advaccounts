@@ -677,15 +677,12 @@
         $constraints .= " AND s.stock_id!=i.stock_id ";
       }
       $select = ($select) ? $select : ' ';
-      $sql
-              = "SELECT $SELECT $stock_code i.description AS item_name, C.description AS category, i.long_description AS description , editable,
-                            $weight FROM stock_category C, item_codes s, stock_master i  $prices
-                            WHERE (s.item_code LIKE ? $termswhere) $CONSTRAINTS
-                            AND s.category_id = C.category_id $constraints2 $sales_type GROUP BY s.item_code
+      $sql    = "SELECT $select $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
+                            $weight FROM stock_category c, item_codes s, stock_master i  $prices
+                            WHERE (s.item_code LIKE ? $termswhere) $constraints
+                            AND s.category_id = c.category_id $constraints2 $sales_type GROUP BY s.item_code
                             ORDER BY weight, s.category_id, s.item_code LIMIT 30";
       DB::_prepare($sql);
-      return var_export($sql, true);
-      exit;
       $result = DB::_execute($terms);
       return $result;
     }
