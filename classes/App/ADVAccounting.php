@@ -180,10 +180,9 @@
       ob_start([$this, 'flush_handler'], 0);
       $this->JS = $dic->offsetSet(
         'JS', function (\ADV\Core\DIC $c) {
-          $js             = new \ADV\Core\JS();
-          $config         = $c->offsetGet('Config');
-          $js->apikey     = $config->get('assets.maps_api_key');
-          $js->openWindow = $config->get('ui_windows_popups');
+          $js         = new \ADV\Core\JS();
+          $config     = $c->offsetGet('Config');
+          $js->apikey = $config->get('assets.maps_api_key');
           return $js;
         }
       )->offsetGet(null);

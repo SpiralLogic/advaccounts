@@ -21,7 +21,7 @@
   use ADV\Core\DB\DB;
 
   /**
-   * @method getStatus()
+   * @method \Adv\Core\Status getStatus()
    */
   abstract class Base
   {
@@ -38,13 +38,15 @@
     protected $_classname;
     abstract protected function canProcess();
     /**
-     * @param int             $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
-     * @param array           $extra
+     * @param int              $id    Id to read from database, or an array of changes which can include the id to load before applying changes or 0 for a new object
+     * @param array            $extra
+     * @param \Adv\Core\Status $status
      *
      * @internal param \ADV\Core\DB\DB $db
      */
-    public function __construct($id = 0, $extra = []) {
+    public function __construct($id = 0, $extra = [], \Adv\Core\Status $status = null) {
       static::$DB = DIC::get('DB');
+      $this->setStatus($status);
       $this->load($id, $extra);
       $this->_classname = $this->_classname ? : end(explode('\\', ltrim(get_called_class(), '\\')));
       if ($this->_id_column != 'id' && !is_array($this->_id_column)) {

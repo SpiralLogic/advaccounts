@@ -11,10 +11,8 @@
   namespace ADV\Controllers;
 
   use ADV\App\Controller\Action;
-  use ADV\App\Item\Item;
-  use ADV\Core\JS;
-  use DB_Company;
-  use ADV\App\Item\Reorder;
+  use ADV\App\DB\Collection;
+  use ADV\App\Item\Purchase;
 
   /** **/
   class Index2 extends Action
@@ -25,10 +23,11 @@
 
      */
     protected function index() {
-      $item = new Item('test');
-      $item->getSalePrices();
-      $item->getPurchPrices();
-      var_dump($item);
+      $prices = new Collection(new Purchase(), ['creditor_id']);
+      $prices->getAll(2866);
+      $changes = ['ms' => ['price' => 999]];
+      $prices->setFromArray('stock_id', $changes, false);
+      var_dump($prices);
     }
   }
 

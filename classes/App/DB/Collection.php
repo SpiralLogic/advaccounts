@@ -106,7 +106,12 @@
     /**
      * @param array $values
      */
-    public function save(Array $values) {
+    public function save(Array $values = null) {
+      if ($values === null) {
+        foreach ($this->collection as $object) {
+          $object->save();
+        }
+      }
       foreach ($values as $k => $v) {
         if (!isset($this->collection[$k])) {
           $this->collection[$k] = new $this->class;
@@ -122,6 +127,32 @@
       }
     }
     /**
+     * @param string $identifier property that will identify which values to change
+     * @param Array  $changes    Array of properties and the values they are to be changed to: ['stock1'=>['price'=>20,'UOM'=>'ea'],'stock2'=>['price']=>12]]
+     * @param bool   $caseSensitive
+     */
+    public function setFromArray($identifier, $changes, $caseSensitive = true) {
+      foreach ($changes as $id => $values) {
+        if (!$caseSensitive) {
+          $id = strtolower($id);
+        }
+        foreach ($this->collection as $object) {
+          $idValue = $object->$identifier;
+          if (!$caseSensitive) {
+            $idValue = strtolower($idValue);
+          }
+          if ($idValue != $id) {
+            continue;
+          }
+          foreach ($values as $k => $v) {
+            if (property_exists($this->class, $k)) {
+              $object->$k = $v;
+            }
+          }
+        }
+      }
+    }
+    /**
      * @return array
      */
     public function getStatus() {
@@ -132,7 +163,7 @@
           $statuses[] = $status;
         }
       }
-      return $statuses;
+      return end($statuses);
     }
     /**
      * @return mixed

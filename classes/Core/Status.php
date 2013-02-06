@@ -1,7 +1,6 @@
 <?php
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -13,14 +12,14 @@
   /** **/
   class Status
   {
-    /** @var array * */
-    protected $status = [];
-    /** @var array * */
-    protected $errors = [];
     const SUCCESS = E_SUCCESS;
     const INFO    = E_USER_NOTICE;
     const WARNING = E_USER_WARNING;
     const ERROR   = E_USER_ERROR;
+    /** @var array * */
+    protected $status = [];
+    /** @var array * */
+    protected $errors = [];
     /**
      * @param null   $status
      * @param string $message
@@ -67,36 +66,13 @@
       return !($status == self::ERROR);
     }
     /**
-     * @return array
-     */
-    public function get() {
-      if (!empty($this->errors)) {
-        return end($this->errors);
-      }
-      if (!empty($this->status)) {
-        return end($this->status);
-      }
-      return [];
-    }
-    /**
-     * @return array
-     */
-    public function getAll() {
-      return $this->status;
-    }
-    /**
-     * @param array $statuses
-     * @param bool  $error_only
+     * @param \ADV\Core\Status|array $statuses
+     * @param bool                   $error_only
      *
      * @return mixed
      */
-    public function append(Array $statuses, $error_only = true) {
-      if (!$statuses) {
-        return false;
-      }
-      if (!isset($statuses['status'])) {
-        $statuses = [$statuses];
-      }
+    public function append(Status $statuses, $error_only = true) {
+      $statuses = $statuses->getAll();
       foreach ($statuses as $status) {
         if ($error_only && $status['status'] !== self::ERROR) {
           continue;
@@ -104,6 +80,12 @@
         $this->status[] = $status;
       }
       return false;
+    }
+    /**
+     * @return array
+     */
+    public function getAll() {
+      return $this->status;
     }
     /**
      * @return bool|mixed
@@ -122,5 +104,17 @@
       $str  = ($last['status'] != self::ERROR) ? 'Success: ' : 'Error: ';
       $str .= $last['message'];
       return $str;
+    }
+    /**
+     * @return array
+     */
+    public function get() {
+      if (!empty($this->errors)) {
+        return end($this->errors);
+      }
+      if (!empty($this->status)) {
+        return end($this->status);
+      }
+      return [];
     }
   }

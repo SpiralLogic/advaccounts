@@ -92,7 +92,7 @@
       $this->status->append($this->branches->getStatus());
       $this->status->append($this->contacts->getStatus());
       $this->status->append($this->accounts->getStatus());
-      return parent::getStatus();
+      return parent::getStatus()->get();
     }
     /**
      * @param null $details

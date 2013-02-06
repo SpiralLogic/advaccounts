@@ -23,10 +23,15 @@
       if ($this->status === null) {
         $this->status = new \ADV\Core\Status();
       }
-      if ($string) {
-        return $this->status;
+      return $this->status;
+    }
+    /**
+     * @param \Adv\Core\Status $status
+     */
+    public function setStatus(\Adv\Core\Status $status = null) {
+      if ($status) {
+        $this->status = $status;
       }
-      return $this->status->get();
     }
     /***
      * @param null   $status

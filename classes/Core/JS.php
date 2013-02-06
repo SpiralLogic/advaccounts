@@ -48,7 +48,7 @@
     /** @var bool * */
     public $outputted = false;
     /** @var bool * */
-    public $openWindow = false;
+    protected $openWindow = false;
     public $apikey;
     /**
      * @static
@@ -59,7 +59,7 @@
      * @return mixed
      */
     public function openWindow($width, $height) {
-      if (!(bool) $this->openWindow) {
+      if ((bool) $this->openWindow) {
         return;
       }
       $js = "Adv.hoverWindow.init($width,$height);";
@@ -77,9 +77,14 @@
      * @internal param bool $url
      */
     public function autocomplete($id, $callback, $type, $data = []) {
-      $data  = json_encode($data);
-      $js    = "Adv.Forms.autocomplete('$id','$type',$callback,$data);";
-      $clean = "try {if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}}catch(\$e){}";
+      static $ids = [];
+      if (isset($ids[$id])) {
+        return;
+      }
+      $ids[$id] = true;
+      $data     = json_encode($data);
+      $js       = "Adv.Forms.autocomplete('$id','$type',$callback,$data);";
+      $clean    = "try {if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}}catch(\$e){}";
       $this->addLive($js, $clean);
     }
     /**
@@ -147,7 +152,7 @@
       echo $files;
       if (!REQUEST_AJAX) {
         $this->beforeload = array_merge($this->beforeload, $this->onlive, $this->onload);
-        $this->onlive     = $this->onload = [];
+        $this->onload     = [];
       }
       if ($this->beforeload) {
         $content .= implode("", $this->beforeload);
