@@ -4,20 +4,20 @@
 <div id='tabs'>
   <ul class="menu" id="topmenu">
     {{#$menu}}
-    <li
-    {# echo $.name==$activeapp?"class='active'":'' #}>
-    <a href='{{$.href}}'>{{$.name}}</a>
-    {{#if $.extra}}
-    <ul>
-      {{#$.extra}}
-      <li class='title'>{{$.title}}</li>
-      {{#$.modules}}
-      <li><a href="{{$.href}}">{{$.label}}</a></li>
-      {{/$.modules}}
-      {{/$.extra}}
-    </ul>
-    {{/if}}
-    </li>
+      <li
+      {# echo $.name==$activeapp?"class='active'":'' #} >
+      <a href='{{$.href}}'>{{$.name}}</a>
+      {{#if $.extra}}
+        <ul>
+          {{#$.extra}}
+            <li class='title'>{{$.title}}</li>
+            {{#$.modules}}
+              <li><a href="{{$.href}}">{{$.label}}</a></li>
+            {{/$.modules}}
+          {{/$.extra}}
+        </ul>
+      {{/if}}
+      </li>
     {{/$menu}}
   </ul>
   <ul class="menu" id="rightmenu">
