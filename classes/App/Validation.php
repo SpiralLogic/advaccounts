@@ -147,7 +147,7 @@
      * @return int
      */
     public static function is_num($value, $min = null, $max = null, $default = 0) {
-      $result = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+      $result = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
       if ($min !== null && $result < $min) {
         $result = false;
       }
