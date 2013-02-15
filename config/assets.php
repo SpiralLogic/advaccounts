@@ -11,7 +11,7 @@
     ],
     //
     'footer'       => [
-      '/js/libs/JsHttpRequest.js',
+      '/js/wibs/JsHttpRequest.js',
       '/js/libs/jquery.min.js',
       '/js/libs/jquery-ui.min.js',
       '/js/advanced.js',

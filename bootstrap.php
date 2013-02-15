@@ -95,8 +95,8 @@
     function () use ($loader) {
       $app        = new \ADV\App\ADVAccounting($loader);
       $controller = $app->getController();
-      if ($controller) {
-        include($controller);
+      if ($controller && file_exists($controller)) {
+      include($controller);
       }
     }
   );

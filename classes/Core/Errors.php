@@ -379,8 +379,10 @@
      * @return string
      */
     protected static function  dumpVar($var) {
+      ini_set('html_errors', 0);
       ob_start();
       var_dump($var);
+      ini_set('html_errors', 1);
       return ob_get_clean();
     }
   }

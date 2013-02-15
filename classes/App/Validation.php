@@ -169,7 +169,7 @@
       if (!isset($_POST) || !isset($_POST[$postname])) {
         $_POST[$postname] = $default;
       }
-      $result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND);
+      $result = filter_var($_POST[$postname], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
       if ($min !== null && $result < $min) {
         $result = false;
       }

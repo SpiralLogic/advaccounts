@@ -10,6 +10,7 @@
    **/
   namespace ADV\App\DB;
 
+  use ADV\Core\Status;
   use InvalidArgumentException;
 
   /**
@@ -156,14 +157,11 @@
      * @return array
      */
     public function getStatus() {
-      $statuses = [];
+      $statuses = new Status();
       foreach ($this->collection as $object) {
-        $status = $object->getStatus();
-        if ($status) {
-          $statuses[] = $status;
-        }
+        $statuses->append($object->getStatus());
       }
-      return end($statuses);
+      return $statuses;
     }
     /**
      * @return mixed
