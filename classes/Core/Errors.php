@@ -162,6 +162,7 @@
         $class = $msg_class[$msg['type']] ? : $msg_class[E_USER_NOTICE];
         $content .= "<div class='$class[1]'>" . $msg['message'] . "</div>\n";
       }
+      Ajax::i()->debug=static::$messages;
       if (static::$current_severity > -1) {
         if (class_exists('JS', false)) {
           JS::_beforeload("Adv.Status.show();");

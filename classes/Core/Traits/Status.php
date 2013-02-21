@@ -29,9 +29,8 @@
      * @param \Adv\Core\Status $status
      */
     public function setStatus(\Adv\Core\Status $status = null) {
-      if ($status) {
         $this->status = $status;
-      }
+    $this->getStatus();
     }
     /***
      * @param null   $status

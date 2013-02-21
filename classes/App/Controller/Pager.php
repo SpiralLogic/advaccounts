@@ -17,6 +17,7 @@
   /** **/
   abstract class Pager extends Action
   {
+    /** @var \ADV\App\DB\Base $object */
     protected $object;
     protected $defaultFocus;
     protected $tableWidth = '50';

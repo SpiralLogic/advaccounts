@@ -37,7 +37,7 @@
       }
       $sql .= implode(' OR ', $tr);
       $sql .= ") AND debtor_trans_type=" . DB::_escape($debtor_trans_type) . "
-        AND stock_master.stock_id=debtor_trans_details.stock_id
+        AND stock_master.id=debtor_trans_details.id
         ORDER BY id";
 
       return DB::_query($sql, "The debtor transaction detail could not be queried");
