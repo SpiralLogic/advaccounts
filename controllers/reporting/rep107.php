@@ -146,7 +146,7 @@
           }
         }
         $rep->NewLine();
-        $display_total = Num::_fwwsDormat(($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
+        $display_total = Num::_format(($myrow["ov_freight"] + $myrow["ov_gst"] + $myrow["ov_amount"] + $myrow["ov_freight_tax"]), $dec);
         $rep->Font('bold');
         $rep->TextCol(3, 7, $rep->doc_total_invoice, -2);
         $rep->TextCol(7, 8, $display_total, -2);
