@@ -951,7 +951,7 @@ JS;
         $this->stock_id
       ) . "," . DB::_quote($this->stock_id) . "," . DB::_quote($this->description) . "," . DB::_quote(
         $this->category_id
-      ) . ",0,0)";
+      ) . ",1,0)";
       $result = DB::_query($sql, "The item locstock could not be added");
       if (!$result) {
         DB::_cancel();
