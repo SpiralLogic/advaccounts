@@ -10,6 +10,7 @@
    **/
   namespace ADV\App;
 
+  use ADV\Core\Ajax;
   use ADV\Core\Cache;
   use ADV\Core\DB\DB;
 

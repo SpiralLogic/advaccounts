@@ -560,6 +560,7 @@
         return;
       }
       $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
+
       $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
       Item_Line::start_focus('stock_id');
     }
