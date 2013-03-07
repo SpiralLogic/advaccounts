@@ -284,7 +284,6 @@ JS;
                         },
                      select: function( event, ui ) {
  var value = ui.item.value;
-
  $selectjs
                                  Adv.Forms.setFocus("description",true);
                                 $.each(value,function(k,v) {Adv.Forms.setFormValue(k,v);});

@@ -533,6 +533,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                                              });
                                            },
                                            select:    function (event, ui) {
+                                             console.log(event);
                                              $this.data('default', null);
                                              if (p.callback(ui.item, event, this) === false) {
                                                return false;

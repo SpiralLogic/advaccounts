@@ -123,7 +123,7 @@
       $this->markTestIncomplete(
         'This test has not been implemented yet.'
       );
-    }
+a    }
     /**
      * @covers ADV\App\Display::submenu_option
      * @todo   Implement testSubmenu_option().

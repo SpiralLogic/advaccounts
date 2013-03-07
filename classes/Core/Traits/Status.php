@@ -30,7 +30,7 @@
      */
     public function setStatus(\Adv\Core\Status $status = null) {
         $this->status = $status;
-    $this->getStatus();
+        $this->getStatus();
     }
     /***
      * @param null   $status

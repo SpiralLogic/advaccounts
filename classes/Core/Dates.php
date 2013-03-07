@@ -2,7 +2,6 @@
   /**
    * ADVAccounting
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   Adv.accounts.core
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -19,7 +18,6 @@
    * The date format is defined in config.php called dateformats
    * this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
    * "m/d/Y" for US/Canada format dates depending on setting in preferences.
-   *
    * @category PHP
    * @package  Adv.accounts.core
    * @method static __date()
@@ -71,18 +69,21 @@
       }
       $how  = ($format !== null) ? $format : $this->format;
       $date = str_replace($this->separators, '/', trim($date));
-      if ($how == 0) {
-        list($month, $day, $year) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
-      } elseif ($how == 1) {
-        list($day, $month, $year) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
-      } else {
-        list($year, $month, $day) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
+      switch ($how) {
+        case 0:
+          list($month, $day, $year) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
+          break;
+        case 1:
+          list($day, $month, $year) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
+          break;
+        default:
+          list($year, $month, $day) = explode('/', $date) + [0 => false, 1 => false, 2 => false];
       }
-      if (!isset($year) || (int)$year > 9999) {
+      if (!isset($year) || (int) $year > 9999) {
         return false;
       }
-      if (is_long((int)$day) && is_long((int)$month) && is_long((int)$year)) {
-        if (checkdate((int)$month, (int)$day, (int)$year)) {
+      if (is_long((int) $day) && is_long((int) $month) && is_long((int) $year)) {
+        if (checkdate((int) $month, (int) $day, (int) $year)) {
           return $this->date($year, $month, $day, $format);
         } else {
           return false;
@@ -298,7 +299,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
     /** Based on converter to and from Gregorian and Jalali calendars.
     Copyright (C) 2000 Roozbeh Pournader and Mohammad Toossi
     Released under GNU General Public License
-     *
      * @static
      *
      * @param $g_y
@@ -401,17 +401,17 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       $m = $g_m;
       $d = $g_d;
       if (($y > 1582) || (($y == 1582) && ($m > 10)) || (($y == 1582) && ($m == 10) && ($d > 14))) {
-        $jd = (int)((1461 * ($y + 4800 + (int)(($m - 14) / 12))) / 4) + (int)((367 * ($m - 2 - 12 * ((int)(($m - 14) / 12)))) / 12) - (int)((3 * ((int)(($y + 4900 + (int)(($m - 14) / 12)) / 100))) / 4) + $d - 32075;
+        $jd = (int) ((1461 * ($y + 4800 + (int) (($m - 14) / 12))) / 4) + (int) ((367 * ($m - 2 - 12 * ((int) (($m - 14) / 12)))) / 12) - (int) ((3 * ((int) (($y + 4900 + (int) (($m - 14) / 12)) / 100))) / 4) + $d - 32075;
       } else {
-        $jd = 367 * $y - (int)((7 * ($y + 5001 + (int)(($m - 9) / 7))) / 4) + (int)((275 * $m) / 9) + $d + 1729777;
+        $jd = 367 * $y - (int) ((7 * ($y + 5001 + (int) (($m - 9) / 7))) / 4) + (int) ((275 * $m) / 9) + $d + 1729777;
       }
       $l = $jd - 1948440 + 10632;
-      $n = (int)(($l - 1) / 10631);
+      $n = (int) (($l - 1) / 10631);
       $l = $l - 10631 * $n + 354;
-      $j = ((int)((10985 - $l) / 5316)) * ((int)((50 * $l) / 17719)) + ((int)($l / 5670)) * ((int)((43 * $l) / 15238));
-      $l = $l - ((int)((30 - $j) / 15)) * ((int)((17719 * $j) / 50)) - ((int)($j / 16)) * ((int)((15238 * $j) / 43)) + 29;
-      $m = (int)((24 * $l) / 709);
-      $d = $l - (int)((709 * $m) / 24);
+      $j = ((int) ((10985 - $l) / 5316)) * ((int) ((50 * $l) / 17719)) + ((int) ($l / 5670)) * ((int) ((43 * $l) / 15238));
+      $l = $l - ((int) ((30 - $j) / 15)) * ((int) ((17719 * $j) / 50)) - ((int) ($j / 16)) * ((int) ((15238 * $j) / 43)) + 29;
+      $m = (int) ((24 * $l) / 709);
+      $d = $l - (int) ((709 * $m) / 24);
       $y = 30 * $n + $j - 30;
       return array($y, $m, $d);
     }
@@ -428,27 +428,27 @@ provided that both dates are after 1970. Also only works for dates up to the yea
       $y  = $i_y;
       $m  = $i_m;
       $d  = $i_d;
-      $jd = (int)((11 * $y + 3) / 30) + 354 * $y + 30 * $m - (int)(($m - 1) / 2) + $d + 1948440 - 385;
+      $jd = (int) ((11 * $y + 3) / 30) + 354 * $y + 30 * $m - (int) (($m - 1) / 2) + $d + 1948440 - 385;
       if ($jd > 2299160) {
         $l = $jd + 68569;
-        $n = (int)((4 * $l) / 146097);
-        $l = $l - (int)((146097 * $n + 3) / 4);
-        $i = (int)((4000 * ($l + 1)) / 1461001);
-        $l = $l - (int)((1461 * $i) / 4) + 31;
-        $j = (int)((80 * $l) / 2447);
-        $d = $l - (int)((2447 * $j) / 80);
-        $l = (int)($j / 11);
+        $n = (int) ((4 * $l) / 146097);
+        $l = $l - (int) ((146097 * $n + 3) / 4);
+        $i = (int) ((4000 * ($l + 1)) / 1461001);
+        $l = $l - (int) ((1461 * $i) / 4) + 31;
+        $j = (int) ((80 * $l) / 2447);
+        $d = $l - (int) ((2447 * $j) / 80);
+        $l = (int) ($j / 11);
         $m = $j + 2 - 12 * $l;
         $y = 100 * ($n - 49) + $i + $l;
       } else {
         $j = $jd + 1402;
-        $k = (int)(($j - 1) / 1461);
+        $k = (int) (($j - 1) / 1461);
         $l = $j - 1461 * $k;
-        $n = (int)(($l - 1) / 365) - (int)($l / 1461);
+        $n = (int) (($l - 1) / 365) - (int) ($l / 1461);
         $i = $l - 365 * $n + 30;
-        $j = (int)((80 * $i) / 2447);
-        $d = $i - (int)((2447 * $j) / 80);
-        $i = (int)($j / 11);
+        $j = (int) ((80 * $i) / 2447);
+        $d = $i - (int) ((2447 * $j) / 80);
+        $i = (int) ($j / 11);
         $m = $j + 2 - 12 * $i;
         $y = 4 * $k + $n + $i - 4716;
       }
@@ -461,7 +461,6 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      * @param int $granularity
      *
      * @internal param $time
-     *
      * @return float|string
      */
     public static function getReadableTime($seconds, $granularity = 2) {
@@ -502,7 +501,7 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      * @return int
      */
     protected function div($a, $b) {
-      return (int)($a / $b);
+      return (int) ($a / $b);
     }
     /**
      * @return string
@@ -529,7 +528,7 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      */
     protected function date($year, $month, $day, $format = null) {
       $how  = $this->formats [($format !== null) ? $format : $this->format];
-      $date = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
+      $date = mktime(0, 0, 0, (int) $month, (int) $day, (int) $year);
       $how  = str_replace('/', $this->sep, $how);
       return date($how, $date);
     }
