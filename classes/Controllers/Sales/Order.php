@@ -36,10 +36,9 @@
   use ADV\Core\Event;
   use ADV\Core\Input\Input;
 
-  /**
-
-   */
-  class Order extends Action {
+  /** **/
+  class Order extends Action
+  {
     protected $addTitles
       = array(
         ST_SALESQUOTE  => "New Sales Quotation Entry", //

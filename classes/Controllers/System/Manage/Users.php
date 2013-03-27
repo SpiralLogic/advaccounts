@@ -25,16 +25,11 @@
   {
 
     protected $tableWidth = '80';
+    protected $tile = "Users";
+    protected $security = SA_USERS;
     protected function before() {
       $this->object = new User();
       $this->runPost();
-    }
-    protected function index() {
-      $this->Page->init(_($help_context = "Sales Persons"), SA_SALESMAN);
-      $this->generateTable();
-      echo '<br>';
-      $this->generateForm();
-      $this->Page->end_page();
     }
     /**
      * @param \ADV\App\Form\Form $form
@@ -46,6 +41,7 @@
       $view['title'] = 'Users';
       $form->hidden('id');
       $form->text('user_id')->label('User ID:')->focus($this->action == EDIT);
+      $form->password('password')->label('Password:');
       $form->text('real_name')->label('Name:');
       $form->text('phone')->label('Telephone number:');
       $form->text('email')->label('Email Address:');

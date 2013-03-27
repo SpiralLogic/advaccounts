@@ -109,6 +109,14 @@
       return true;
     }
     /**
+     * @param int $id
+     */
+    public function load($id = 0, $extra = []) {
+      $status         = parent::load($id, $extra);
+      $this->password = '';
+      return $status;
+    }
+    /**
      * @param bool $inactive
      *
      * @return array
@@ -128,6 +136,16 @@
       parent::__construct($id = 0);
       $this->logged = false;
       $this->prefs  = new UserPrefs();
+    }
+    /**
+     * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
+     *
+     * @return array|bool|int|null
+     * @return \ADV\Core\Traits\Status|array|bool|int|string
+     */
+    public function save($changes=null){
+      unset($this->password,$changes['password']);
+      return parent::save($changes);
     }
     /**
      * @return bool
@@ -192,6 +210,7 @@
      * @static
      *
      * @param $user_id
+     * @param $password
      *
      * @internal param $password
      * @return bool|mixed
@@ -204,11 +223,28 @@
       return $auth->checkUserPassword($user_id, $password);
     }
     /**
+     * @param $password
+     */
+    public function change_password($password) {
+      $auth  = new Auth($this->username);
+      $check = $auth->checkPasswordStrength($password);
+      if ($check['error'] > 0) {
+        Event::error($check['text']);
+      } elseif ($check['strength'] < 3) {
+        Event::error(_("Password Too Weak!"));
+      } else {
+        $auth->updatePassword($this->user, $password);
+        $this->change_password = false;
+        Event::success(_("Password Changed"));
+      }
+    }
+    /**
      * @static
      *
-     * @param       $object
      * @param       $function
      * @param array $arguments
+     *
+     * @internal param $object
      */
     public function _register_login($function = null, $arguments = []) {
       $this->registerHook('login', $function, $arguments);

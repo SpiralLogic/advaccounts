@@ -7,6 +7,8 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
+  use ADV\Core\Auth;
+
   Page::start(_($help_context = "Change password"), SA_CHGPASSWD);
   /**
    * @return bool
