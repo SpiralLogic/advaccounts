@@ -17,7 +17,7 @@
         'enabled'       => true,
         'init'          => true,
         'apiuser'       => 'admin@advancedroadsigns.com.au',
-        'apikey'        => 'B5E372092955E9A46CCABF6AADA001B819669EE27BF3414B3E1E93F008AF80CE',
+        'apikey'        => 'FE2446D419E44896ED983B445C8E81486B2652718A8D121E748BFC5E28442582',
         'apiurl'        => 'http://www.advancedroadsigns.com.au/net/WebService.aspx?',
         'product_url'   => 'http://www.advancedroadsigns.com.au/-p/',
         'url_extension' => '.htm',
