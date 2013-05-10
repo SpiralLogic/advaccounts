@@ -37,6 +37,7 @@
       $view['title'] = 'Users';
       $form->hidden('id');
       $form->text('user_id')->label('User ID:')->focus($this->action == EDIT);
+      $form->password('password')->label('Password:');
       $form->text('real_name')->label('Name:');
       $form->text('phone')->label('Telephone number:');
       $form->text('email')->label('Email Address:');
