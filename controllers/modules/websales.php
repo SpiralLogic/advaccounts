@@ -11,4 +11,7 @@
   $configs                        = Config::_get('modules.default');
   $test                           = new \Modules\Volusion\Volusion($configs['Volusion']);
   \Modules\Volusion\Volusion::$DB = \ADV\Core\DIC::get('DB');
-  $test->doWebsales();
+  $test->run();
+  if (!headers_sent()) {
+    header('Location: /');
+  }

@@ -24,8 +24,11 @@
     public static $DB;
     public function init() {
       if (isset($_POST['user_name'])) {
-        \ADV\Core\Event::registerShutdown([$this, 'doWebsales']);
+      $this->run();
       }
+    }
+    public function run() {
+      \ADV\Core\Event::registerShutdown([$this, 'doWebsales']);
     }
     public function doWebsales() {
       if (!$this->jobsboardDB) {
@@ -75,7 +78,9 @@
      * @return array
      */
     function getNotOnJobsboard() {
+
       $results = static::$DB->select('OrderID,ison_jobsboard')->from('WebOrders')->where('ison_jobsboard IS null')->fetch()->all();
+
       return $results;
     }
     /**
