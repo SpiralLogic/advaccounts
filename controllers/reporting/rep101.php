@@ -1,4 +1,5 @@
 <?php
+  use ADV\App\User;
   use ADV\Core\DB\DB;
   use ADV\Core\Num;
   use ADV\App\Debtor\Debtor;
