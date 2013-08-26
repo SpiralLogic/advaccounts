@@ -10,4 +10,8 @@
    */
   $configs = Config::_get('modules.default');
   $test    = new \Modules\Volusion\Volusion($configs['Volusion']);
-  $test->doWebsales();
+  \Modules\Volusion\Volusion::$DB = \ADV\Core\DIC::get('DB');
+  $test->run();
+  if (!headers_sent()) {
+    header('Location: /');
+  }
