@@ -163,7 +163,7 @@
      *
      * @return bool
      */
-    public function formatMarker($row, $pager) {
+    public function formatMarker($row) {
       if (Dates::_isGreaterThan(Dates::_today(), Dates::_sqlToDate($row["due_date"])) && $row["Outstanding"] != 0) {
         return "<tr class='overduebg'>";
       }
