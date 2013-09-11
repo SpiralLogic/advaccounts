@@ -200,7 +200,7 @@
                 $this->br_name = $this->city . " " . strtoupper($this->state);
             }
             if ($this->branch_ref != 'accounts') {
-                $this->branch_ref = substr($this->br_name, 0, 30);
+                $this->branch_ref = 'delivery';
             }
         }
         /**
