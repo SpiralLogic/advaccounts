@@ -316,6 +316,7 @@
       }
     }
     protected function _getBranches() {
+      //$this->branches->getAll(['debtor_id' => $this->id, 'branch_ref' => Debtor_Branch::DELIVERY]);
       $this->branches->getAll(['debtor_id' => $this->id, 'branch_ref' => Debtor_Branch::DELIVERY]);
     }
     /**
