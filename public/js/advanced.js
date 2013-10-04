@@ -545,7 +545,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                                   catcompleteclose: function (event) {
                                     if (this.value.length > 1 && $this.data().catcomplete.selectedItem === null && $this.data()['default'] !== null) {
                                       if (p.callback($this.data()['default'], event, this) !== false) {
-                                       // $this.val($this.data()['default'].label);
+                                        // $this.val($this.data()['default'].label);
                                       }
                                     }
                                     $this.data('default', null)
@@ -853,54 +853,55 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
 
 
                };
-             })(), Events:      (function () {
-    var events = []//
-      , onloads = {}//
-      , toClean = false//
-      , firstBind = function (s, t, a) {
-        $(s).bind(t, a);
-      }//
-      , load = function () {
-        $.each(onloads, function (k, v) { v();});
-      };
-    return {
-      bind:      function (selector, types, action) {
-        events[events.length] = {s: selector, t: types, a: action};
-        firstBind(selector, types, action);
-      },
-      onload:    function (actions, clean, id) {
-        onloads[id] = actions;
-        load();
-        if (clean !== undefined) {
-          toClean = clean;
-        }
-      },
-      rebind:    function () {
-        if (toClean) {
-          toClean();
-        }
-        if (onloads) {
-          load();
-        }
-        $.each(events, function (k, v) {
-          firstBind(v.s, v.t, v.a);
-        });
-      },
-      onLeave:   function (msg) {
-        if (msg) {
-          window.onbeforeunload = function () {
-            return msg;
-          };
-        }
-        else {
-          window.onbeforeunload = function () {
-            return null;
-          };
-        }
-      },
-      getOnload: function () {return onloads;}
-    }
-  }()),//
+             })(), //
+             Events:            (function () {
+               var events = []//
+                 , onloads = {}//
+                 , toClean = false//
+                 , firstBind = function (s, t, a) {
+                   $(s).bind(t, a);
+                 }//
+                 , load = function () {
+                   $.each(onloads, function (k, v) { v();});
+                 };
+               return {
+                 bind:      function (selector, types, action) {
+                   events[events.length] = {s: selector, t: types, a: action};
+                   firstBind(selector, types, action);
+                 },
+                 onload:    function (actions, clean, id) {
+                   onloads[id] = actions;
+                   actions();
+                   if (clean !== undefined) {
+                     toClean = clean;
+                   }
+                 },
+                 rebind:    function () {
+                   if (toClean) {
+                     toClean();
+                   }
+                   if (onloads) {
+                     load();
+                   }
+                   $.each(events, function (k, v) {
+                     firstBind(v.s, v.t, v.a);
+                   });
+                 },
+                 onLeave:   function (msg) {
+                   if (msg) {
+                     window.onbeforeunload = function () {
+                       return msg;
+                     };
+                   }
+                   else {
+                     window.onbeforeunload = function () {
+                       return null;
+                     };
+                   }
+                 },
+                 getOnload: function () {return onloads;}
+               }
+             }()),//
              postcode:          (function () {
                var sets = [];
                return {

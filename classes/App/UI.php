@@ -326,7 +326,7 @@ JS;
         = <<<JS
      var emailID= $(this).data('emailid');
      $.post('/contacts/emails.php',{type: $contactType, id: emailID}, function(data) {
-     \$emailBox.html(data).dialog('open');
+     Adv.o.\$emailBox.html(data).dialog('open');
      },'html');
      return false;
 JS;

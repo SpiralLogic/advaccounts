@@ -32,7 +32,7 @@
       if ($close) {
         $content .= '</' . $tag . '>';
       }
-      return '<' . $tag . ' ' . static::expandAttributes($attributes) . '>' . $content;
+      return '<' . $tag .  static::expandAttributes($attributes) . '>' . $content;
     }
     /**
      * @param $attributes

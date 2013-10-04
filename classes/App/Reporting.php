@@ -251,7 +251,7 @@
 			var email = $("#EmailSelect$type_no").val();
 				$.getJSON($(this).data('url') + "&Email="+email);
 		Adv.loader.on(65000);
-			\$emailBox.dialog("close");
+			Adv.o.\$emailBox.dialog("close");
 		return false;
 		});
 JS;

@@ -151,7 +151,7 @@
       }
       echo $files;
       if (!REQUEST_AJAX) {
-        $this->beforeload = array_merge($this->beforeload, $this->onlive, $this->onload);
+        $this->beforeload = array_merge($this->beforeload, $this->onload);
         $this->onload     = [];
       }
       if ($this->beforeload) {
@@ -174,6 +174,7 @@
         $content .= "\n$(function(){ " . $onReady . '});';
       }
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
+      if ($content)
       echo    HTML::script(null, $content, [], false);
       if ($return) {
         return ob_get_clean();
@@ -250,6 +251,7 @@
           }
         }
       }
+
       if ($level == 1) {
         return array($options, $funcs);
       } else {

@@ -86,7 +86,7 @@
      * @param string $type
      */
     public function addOpenEvent($selector, $type = 'click') {
-      $this->events[] = array($selector, $type, "\$({$this->name}).dialog('open');");
+      $this->events[] = array($selector, $type, "Adv.o.\$({$this->name}).dialog('open');");
     }
     /**
      * @param $js
@@ -124,15 +124,15 @@
         foreach ($this->buttons as $button => $action) {
           $buttons .= '"' . $button . '": function() { ' . $action . '}, ';
         }
-        $buttons .= '});' . '$' . $this->name . '.parent().find("button").each(function(){var $this=$(this);$this.text($this.attr("text"));});';
+        $buttons .= '});' ;//. '$' . $this->name . '.parent().find("button").each(function(){var $this=$(this);$this.text($this.attr("text"));});';
       }
       if ($this->template) {
         $this->contents = '<script id="' . $this->name . '_template" type="text/x-jquery-tmpl">' . $this->contents . '</script>';
         echo '<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>';
-        $js = '$' . $this->name . '=$("#' . $this->name . '").dialog(' . $this->JS->arrayToOptions($this->options) . ')' . $buttons;
+        $js = 'Adv.o.$' . $this->name . '=$("#' . $this->name . '").dialog(' . $this->JS->arrayToOptions($this->options) . ')' . $buttons;
       } else {
-        $this->JS->beforeload('var html  = ' . json_encode('<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>') . ';$' . $this->name . " = $(html);");
-        $js = '$' . $this->name . '.dialog(' . $this->JS->arrayToOptions($this->options) . ')' . $buttons;
+        $this->JS->beforeload('Adv.o.$' . $this->name . " = $(" . json_encode('<div id="' . $this->name . '" title="' . $this->title . '">' . $this->contents . '</div>') . ');');
+        $js = 'Adv.o.$' . $this->name . '.dialog(' . $this->JS->arrayToOptions($this->options) . ')' . $buttons;
       }
       if (!empty($js)) {
         $this->JS->addEvents($this->events);
@@ -143,7 +143,7 @@
             $js .= 'Adv.o.' . $this->name . '.render(' . json_encode($this->data) . ');';
           }
           $this->JS->onload($js);
-        }
-      }
-    }
   }
+}
+}
+}

@@ -86,16 +86,7 @@ document.getElementsBySelector = jQuery;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
  ***********************************************************************/
-//
-//	JsHttpRequest class extensions.
-//
-// Main functions for asynchronus form submitions
-// 	Trigger is the source of request and can have following forms:
-// 	- input object - all form values are also submited
-//  - arbitrary string - POST var trigger with value 1 is added to request;
-//		if form parameter exists also form values are submited, otherwise
-//		request is directed to current location
-//
+
 JsHttpRequest.request = function (trigger, form, tout) {
   tout = (tout) ? tout : 15000;
   try {
@@ -106,19 +97,24 @@ JsHttpRequest.request = function (trigger, form, tout) {
   JsHttpRequest._request(trigger, form, tout, 0);
 };
 JsHttpRequest._request = function (trigger, form, tout, retry) {
+  var tcheck;
+  var url;
+  var upload;
+  var content;
+  var submitObj;
   if (trigger === '_action') {
     return;
   }
   if (trigger.tagName == 'A') {
-    var content = {};
-    var upload = 0;
-    var url = trigger.href;
+    content = {};
+    upload = 0;
+    url = trigger.href;
     if (trigger.id) {
       content[trigger.id] = 1;
     }
   }
   else {
-    var submitObj = typeof(trigger) == "string" ? document.getElementsByName(trigger)[0] : trigger;
+    submitObj = typeof(trigger) == "string" ? document.getElementsByName(trigger)[0] : trigger;
     form = form || (submitObj && submitObj.form);
     upload = form && form.enctype == 'multipart/form-data';
     url = form && form.getAttribute('action') ? form.getAttribute('action') : window.location.toString();
@@ -147,7 +143,10 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
   if (trigger.id) {
     content['_control'] = trigger.id;
   }
-  var tcheck = setTimeout(function () {
+  subForms = $(form).find('form').each(function (e, f) {
+    console.log(e, f);
+  });
+  tcheck = setTimeout(function () {
     for (var id in JsHttpRequest.PENDING) {
       var call = JsHttpRequest.PENDING[id];
       if (call != false) {
@@ -260,16 +259,19 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 };
 // collect all form input values plus inp trigger value
 JsHttpRequest.formInputs = function (inp, objForm, upload) {
+  var name;
+  var el;
+  var formElements;
   var submitObj = inp, q = {};
   if (typeof(inp) == "string") {
     submitObj = document.getElementsByName(inp)[0] || inp;
   }
   objForm = objForm || (submitObj && submitObj.form);
   if (objForm) {
-    var formElements = objForm.elements;
+    formElements = objForm.elements;
     for (var i = 0; i < formElements.length; i++) {
-      var el = formElements[i];
-      var name = el.name;
+      el = formElements[i];
+      name = el.name;
       if (!el.name) {
         continue;
       }
@@ -309,9 +311,9 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
 function _set_combo_input(e) {
   e.setAttribute('_last', e.value);
   e.onblur = function () {
-    var but_name = this.name.substring(0, this.name.length - 4) + 'button';
-    var button = document.getElementsByName(but_name)[0];
-    var select = document.getElementsByName(this.getAttribute('rel'))[0];
+    var but_name = this.name.substring(0, this.name.length - 4) + 'button'
+      , button = document.getElementsByName(but_name)[0]
+      , select = document.getElementsByName(this.getAttribute('rel'))[0];
     Adv.Forms.saveFocus(select);
 // submit request if there is submit_on_change option set and
 // search field has changed.
@@ -354,13 +356,15 @@ function _set_combo_input(e) {
   }
 }
 function _update_box(s) {
-  var byid = $(s).is('.combo');
-  var rel = s.getAttribute('rel');
-  var box = document.getElementsByName(rel)[0];
+  var old
+    , opt
+    , byid = $(s).is('.combo')
+    , rel = s.getAttribute('rel')
+    , box = document.getElementsByName(rel)[0];
   if (box && s.selectedIndex >= 0) {
-    var opt = s.options[s.selectedIndex];
+    opt = s.options[s.selectedIndex];
     if (box) {
-      var old = box.value;
+      old = box.value;
       box.value = byid ? opt.value : opt.text;
       box.setAttribute('_last', box.value);
       return old != box.value
@@ -379,14 +383,14 @@ function _set_combo_select(e) {
     }
   };
   e.onchange = function () {
-    var s = this;
-    this.setAttribute('_last', this.selectedIndex);
+    var update, sname, s = this;
+    s.setAttribute('_last', s.selectedIndex);
     if ($(s).is('.combo')) {
       _update_box(s);
     }
     if (s.selectedIndex >= 0) {
-      var sname = '_' + s.name + '_update';
-      var update = document.getElementsByName(sname)[0];
+      sname = '_' + s.name + '_update';
+      update = document.getElementsByName(sname)[0];
       if ($(s).is('.async')) {
         JsHttpRequest.request(this);
       }

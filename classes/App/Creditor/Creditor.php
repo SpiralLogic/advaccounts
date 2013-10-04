@@ -473,14 +473,7 @@ JS;
       if ($o['row']) {
         echo "</tr>\n";
       }
-      JS::_beforeload(
-        "var Creditor = function(data) {
-            var id = document.getElementById('creditor_id');
-            id.value= data.id;
-            var creditor = document.getElementById('creditor');
-            creditor.value=data.value;
-            JsHttpRequest.request(creditor)}"
-      );
+
     }
     /**
      * @static
