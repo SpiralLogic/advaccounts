@@ -188,7 +188,7 @@
      * @param Status $status
      */
     public function addStatus(Status $status) {
-      $this->addJson(true, null, ['status' => $status]);
+      $this->addJson(true, null, ['status' => $status->get()]);
     }
     /**
      * @param      $trigger

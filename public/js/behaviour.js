@@ -117,7 +117,9 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     submitObj = typeof(trigger) == "string" ? document.getElementsByName(trigger)[0] : trigger;
     form = form || (submitObj && submitObj.form);
     upload = form && form.enctype == 'multipart/form-data';
-    url = form && form.getAttribute('action') ? form.getAttribute('action') : window.location.toString();
+    url = form && form.getAttribute('action') ? form.getAttribute('action') : window.location.pathname;
+    if (form && !form.getAttribute('action')) {form.setAttribute('action', url) }
+
     content = this.formInputs(trigger, form, upload);
     if (!form) {
       url = url.substring(0, url.indexOf('?'));
