@@ -119,7 +119,6 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
     upload = form && form.enctype == 'multipart/form-data';
     url = form && form.getAttribute('action') ? form.getAttribute('action') : window.location.pathname;
     if (form && !form.getAttribute('action')) {form.setAttribute('action', url) }
-
     content = this.formInputs(trigger, form, upload);
     if (!form) {
       url = url.substring(0, url.indexOf('?'));
@@ -310,130 +309,6 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
   }
   return q;
 };
-function _set_combo_input(e) {
-  e.setAttribute('_last', e.value);
-  e.onblur = function () {
-    var but_name = this.name.substring(0, this.name.length - 4) + 'button'
-      , button = document.getElementsByName(but_name)[0]
-      , select = document.getElementsByName(this.getAttribute('rel'))[0];
-    Adv.Forms.saveFocus(select);
-// submit request if there is submit_on_change option set and
-// search field has changed.
-    if (button && (this.value != this.getAttribute('_last'))) {
-      JsHttpRequest.request(button);
-    }
-    else {
-      if ($(this).is('.combo2')) {
-        this.style.display = 'none';
-        select.style.display = 'inline';
-        Adv.Forms.setFocus(select);
-      }
-    }
-    return false;
-  };
-  e.onkeyup = function () {
-    var select = document.getElementsByName(this.getAttribute('rel'))[0];
-    if (select && select.selectedIndex >= 0) {
-      var len = select.length;
-      var byid = $(this).is('.combo');
-      var ac = this.value.toUpperCase();
-      select.options[select.selectedIndex].selected = false;
-      for (var i = 0; i < len; i++) {
-        var txt = byid ? select.options[i].value : select.options[i].text;
-        if (txt.toUpperCase().indexOf(ac) >= 0) {
-          select.options[i].selected = true;
-          break;
-        }
-      }
-    }
-  };
-  e.onkeydown = function (ev) {
-    ev = ev || window.event;
-    var key = ev.keyCode || ev.which;
-    if (key == 13) {
-      this.blur();
-      return false;
-    }
-    return undefined;
-  }
-}
-function _update_box(s) {
-  var old
-    , opt
-    , byid = $(s).is('.combo')
-    , rel = s.getAttribute('rel')
-    , box = document.getElementsByName(rel)[0];
-  if (box && s.selectedIndex >= 0) {
-    opt = s.options[s.selectedIndex];
-    if (box) {
-      old = box.value;
-      box.value = byid ? opt.value : opt.text;
-      box.setAttribute('_last', box.value);
-      return old != box.value
-    }
-  }
-  return undefined;
-}
-function _set_combo_select(e) {
-  // When combo position is changed via js (eg from searchbox)
-  // no onchange event is generated. To ensure proper change
-  // signaling we must track selectedIndex in onblur handler.
-  e.setAttribute('_last', e.selectedIndex);
-  e.onblur = function () {
-    if ((this.selectedIndex != this.getAttribute('_last')) || ($(this).is('.combo') && _update_box(this))) {
-      this.onchange();
-    }
-  };
-  e.onchange = function () {
-    var update, sname, s = this;
-    s.setAttribute('_last', s.selectedIndex);
-    if ($(s).is('.combo')) {
-      _update_box(s);
-    }
-    if (s.selectedIndex >= 0) {
-      sname = '_' + s.name + '_update';
-      update = document.getElementsByName(sname)[0];
-      if ($(s).is('.async')) {
-        JsHttpRequest.request(this);
-      }
-      if (update) {
-        JsHttpRequest.request(update);
-      }
-    }
-    return true;
-  };
-  e.onkeydown = function (event) {
-    event = event || window.event;
-    var key = event.keyCode || event.which;
-    var box = document.getElementsByName(this.getAttribute('rel'))[0];
-    if (box && key == 32 && $(this).is('.combo2')) {
-      this.style.display = 'none';
-      box.style.display = 'inline';
-      box.value = '';
-      Adv.Forms.setFocus(box);
-      return false;
-    }
-    return undefined;
-  }
-}
-var _w;
-function passBack(value) {
-  var o = opener;
-  if (!value) {
-    var back = o.editors[o.editors._call]; // form input bindings
-    var to = o.document.getElementsByName(back[1])[0];
-    if (to) {
-      if (to[0] != undefined) {
-        to[0].value = value;
-      } // ugly hack to set selector to any value
-      to.value = value;
-      // update page after item selection
-      o.JsHttpRequest.request('_' + to.name + '_update', to.form);
-      o.setFocus(to.name);
-    }
-  }
-  document.close();
-}
 /*
  Behaviour definitions
  */
@@ -448,7 +323,51 @@ Behaviour.register({
                          };
                        }
                        if ($(e).is('.combo,.combo2')) {
-                         _set_combo_input(e);
+                         e.setAttribute('_last', e.value);
+                         e.onblur = function () {
+                           var but_name = this.name.substring(0, this.name.length - 4) + 'button'
+                             , button = document.getElementsByName(but_name)[0]
+                             , select = document.getElementsByName(this.getAttribute('rel'))[0];
+                           Adv.Forms.saveFocus(select);
+                           // submit request if there is submit_on_change option set and
+                           // search field has changed.
+                           if (button && (this.value != this.getAttribute('_last'))) {
+                             JsHttpRequest.request(button);
+                           }
+                           else {
+                             if ($(this).is('.combo2')) {
+                               this.style.display = 'none';
+                               select.style.display = 'inline';
+                               Adv.Forms.setFocus(select);
+                             }
+                           }
+                           return false;
+                         };
+                         e.onkeyup = function () {
+                           var select = document.getElementsByName(this.getAttribute('rel'))[0];
+                           if (select && select.selectedIndex >= 0) {
+                             var len = select.length;
+                             var byid = $(this).is('.combo');
+                             var ac = this.value.toUpperCase();
+                             select.options[select.selectedIndex].selected = false;
+                             for (var i = 0; i < len; i++) {
+                               var txt = byid ? select.options[i].value : select.options[i].text;
+                               if (txt.toUpperCase().indexOf(ac) >= 0) {
+                                 select.options[i].selected = true;
+                                 break;
+                               }
+                             }
+                           }
+                         };
+                         e.onkeydown = function (ev) {
+                           ev = ev || window.event;
+                           var key = ev.keyCode || ev.which;
+                           if (key == 13) {
+                             this.blur();
+                             return false;
+                           }
+                           return undefined;
+                         }
                        }
                        else {
                          if (e.type == 'text') {
@@ -540,6 +459,23 @@ Behaviour.register({
                                                                                                                                          }
                                                                                                                                        },
                      'button[data-aspect="selector"], input[data-aspect="selector"]':                                                  function (e) {
+                       var passBack = function (value) {
+                           var o = opener;
+                           if (!value) {
+                             var back = o.editors[o.editors._call]; // form input bindings
+                             var to = o.document.getElementsByName(back[1])[0];
+                             if (to) {
+                               if (to[0] != undefined) {
+                                 to[0].value = value;
+                               } // ugly hack to set selector to any value
+                               to.value = value;
+                               // update page after item selection
+                               o.JsHttpRequest.request('_' + to.name + '_update', to.form);
+                               o.setFocus(to.name);
+                             }
+                           }
+                           document.close();
+                         };
                        e.onclick = function () {
                          passBack(this.getAttribute('rel'));
                          return false;
@@ -552,7 +488,65 @@ Behaviour.register({
                          };
                        }
                        if ($(e).is('.combo,.combo2')) {
-                         _set_combo_select(e);
+
+
+                         // When combo position is changed via js (eg from searchbox)
+                         // no onchange event is generated. To ensure proper change
+                         // signaling we must track selectedIndex in onblur handler.
+                         var _update_box = function (s) {
+                           var old
+                             , opt
+                             , byid = $(s).is('.combo')
+                             , rel = s.getAttribute('rel')
+                             , box = document.getElementsByName(rel)[0];
+                           if (box && s.selectedIndex >= 0) {
+                             opt = s.options[s.selectedIndex];
+                             if (box) {
+                               old = box.value;
+                               box.value = byid ? opt.value : opt.text;
+                               box.setAttribute('_last', box.value);
+                               return old != box.value
+                             }
+                           }
+                           return undefined;
+                         };
+                         e.setAttribute('_last', e.selectedIndex);
+                         e.onblur = function () {
+                           if ((this.selectedIndex != this.getAttribute('_last')) || ($(this).is('.combo') && _update_box(this))) {
+                             this.onchange();
+                           }
+                         };
+                         e.onchange = function () {
+                           var update, sname, s = this;
+                           s.setAttribute('_last', s.selectedIndex);
+                           if ($(s).is('.combo')) {
+                             _update_box(s);
+                           }
+                           if (s.selectedIndex >= 0) {
+                             sname = '_' + s.name + '_update';
+                             update = document.getElementsByName(sname)[0];
+                             if ($(s).is('.async')) {
+                               JsHttpRequest.request(this);
+                             }
+                             if (update) {
+                               JsHttpRequest.request(update);
+                             }
+                           }
+                           return true;
+                         };
+                         e.onkeydown = function (event) {
+                           event = event || window.event;
+                           var key = event.keyCode || event.which;
+                           var box = document.getElementsByName(this.getAttribute('rel'))[0];
+                           if (box && key == 32 && $(this).is('.combo2')) {
+                             this.style.display = 'none';
+                             box.style.display = 'inline';
+                             box.value = '';
+                             Adv.Forms.setFocus(box);
+                             return false;
+                           }
+                           return undefined;
+                         }
                        }
                      },
                      'a.printlink,button.printlink':                                                                                   function (e) {

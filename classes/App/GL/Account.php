@@ -9,6 +9,7 @@
    **/
 
   namespace ADV\App\GL {
+    use ADV\App\Pager\Pageable;
     use DB_Company;
     use ADV\Core\DB\DB;
     use ADV\Core\Config;
@@ -17,7 +18,7 @@
     /**
 
      */
-    class Account extends \ADV\App\DB\Base {
+    class Account extends \ADV\App\DB\Base implements Pageable {
       protected $_table = 'chart_master';
       protected $_classname = 'GL Account';
       protected $_id_column = 'account_code';
@@ -151,6 +152,19 @@
         }
 
         return $q->fetch()->all();
+      }
+      /**
+       * @return array
+       */
+      public function getPagerColumns() {
+        return  [
+                  'Type',
+                  'Account Name',
+                  'Account Code',
+                  'Account Code 2',
+                  'Inactive'=>['type'=>'inactive'],
+                  ['type'=>'skip'],
+                ];
       }
     }
   }

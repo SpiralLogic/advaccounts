@@ -20,6 +20,7 @@
   class Quickentries extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '70';
+    protected $security = SA_QUICKENTRY;
     public $linesid;
     /** @var  \ADV\App\GL\QuickEntryLine */
     public $line;
