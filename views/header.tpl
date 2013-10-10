@@ -3,7 +3,7 @@
 <head>
   <meta charset='utf-8'>
   <title>{{$title}}</title>
-  <script>document.documentElement.className = document.documentElement.className + ' js'</script>
+  <script>document.documentElement.className += ' js'</script>
   <link rel='apple-touch-icon' href='/company/images/Advanced-Group-Logo.png'/>
   {{#$stylesheets}}
     <link href='{{.}}' rel='stylesheet'/>
