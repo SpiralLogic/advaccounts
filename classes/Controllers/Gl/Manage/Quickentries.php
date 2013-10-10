@@ -20,6 +20,7 @@
   class Quickentries extends \ADV\App\Controller\FormPager
   {
     protected $tableWidth = '70';
+    protected $security = SA_QUICKENTRY;
     public $linesid;
     /** @var  \ADV\App\GL\QuickEntryLine */
     public $line;
@@ -33,14 +34,13 @@
       $this->line->qid = $this->object->id;
     }
     protected function index() {
-      $this->Page->start(_($help_context = "Quick Entries"), SA_QUICKENTRY);
+      $this->setTitle("Quick Entries");
       $this->generateTable();
       echo '<br>';
       if (!REQUEST_POST || $this->Input->post(FORM_ID) != 'QE_Lines_form') {
         $this->generateForm();
       }
       $this->generateLineTable();
-      $this->Page->end_page(true);
     }
     protected function generateLineTable() {
       $cols       = [

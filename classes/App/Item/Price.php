@@ -178,8 +178,8 @@
         $sql
           = "INSERT INTO prices (item_code_id, stock_id, sales_type_id, curr_abrev, price)
             VALUES (" . DB::_escape($item_code_id) . ", " . DB::_escape($stock_id) . ", " . DB::_escape($sales_type_id) . ", " . DB::_escape($curr_abrev) . ", " . DB::_escape(
-          $price
-        ) . ")";
+                                                                                                                                                                     $price
+          ) . ")";
         try {
           DB::_query($sql, "an item price could not be added");
           return true;
@@ -282,6 +282,8 @@
         $add_pct   = DB_Company::_get_pref('add_pct');
         $base_id   = DB_Company::_get_base_sales_type();
         $home_curr = Bank_Currency::for_company();
+
+
         //	AND (sales_type_id = $sales_type_id	OR sales_type_id = $base_id)
         $sql
                   = "SELECT price, curr_abrev, sales_type_id
@@ -294,6 +296,7 @@
         $round_to = DB_Company::_get_pref('round_to');
         $prices   = [];
         while ($myrow = DB::_fetch($result)) {
+          var_dump($myrow);
           $prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
         }
         $price = false;
@@ -350,6 +353,7 @@
         $kit_price = 0.00;
         if (!$std) {
           $kit_price = static::get_calculated_price($item_code, $currency, $sales_type_id, $factor, $date);
+
           if ($kit_price !== false) {
             return $kit_price;
           }
@@ -423,7 +427,7 @@
           $value_of_change = $qoh * ($new_cost - $last_cost);
           $memo_           = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
           GL_Trans::add_std_cost(
-            ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change)
+                  ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], $stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change)
           );
           GL_Trans::add_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, $value_of_change);
         }

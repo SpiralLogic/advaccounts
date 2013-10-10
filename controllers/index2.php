@@ -1,4 +1,6 @@
 <?php
 
-var_dump(strtotime('jhgjhg3'));
-var_dump(date('Y-m-d h:m:s',strtotime('"30-08-2013"')));
+var_dump(Item::search("Bull"));
+  $data = Item::search("Bull");
+  array_walk_recursive($data,function(&$value) { if (!is_array($value));$value=utf8_encode($value);});
+var_dump(json_encode($data,JSON_UNESCAPED_UNICODE),json_last_error());

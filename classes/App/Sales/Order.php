@@ -1354,7 +1354,7 @@
         Ajax::_activate('items_table');
       } else // prepare new line
       {
-        echo '<tr' . 'class="newline"' . '>';
+        echo '<tr ' . 'class="newline"' . '>';
         Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => '', 'sales_type' => $this->sales_type));
         if (Forms::isListUpdated('stock_id')) {
           Ajax::_activate('price');

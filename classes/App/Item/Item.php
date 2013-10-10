@@ -10,6 +10,7 @@
   namespace ADV\App\Item;
 
   use ADV\App\DB\Collection;
+  use ADV\Core\Errors;
   use Item_Unit;
   use DB_AuditTrail;
   use GL_Trans;
@@ -483,6 +484,7 @@ SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_
                                 WHERE (s.item_code LIKE ? $termswhere) $qwhere
                                 AND s.category_id = C.category_id $where2 GROUP BY s.item_code
                                 ORDER BY weight, s.category_id, s.item_code LIMIT 30";
+
       DB::_prepare($sql);
       $result = DB::_execute($terms);
       return $result;

@@ -174,8 +174,9 @@
         $content .= "\n$(function(){ " . $onReady . '});';
       }
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
-      if ($content)
-      echo    HTML::script(null, $content, [], false);
+      if ($content) {
+        echo HTML::script(null, $content, [], false);
+      }
       if ($return) {
         return ob_get_clean();
       }
@@ -211,8 +212,28 @@
       if (!headers_sent()) {
         header('Content-type: application/json');
       }
-      echo   json_encode($data);
+      $this->utf8($data);
+      echo json_encode($data);
       exit();
+    }
+    /**
+     * @param $data
+     */
+    public function utf8(&$data) {
+      if (is_object($data)) {
+        $arraydata = [];
+        foreach ($data as $k => $v) {
+          $arraydata [$k] = $v;
+        }
+        $data= $arraydata;
+      }
+      if (is_array($data)) {
+        array_walk_recursive(
+          $data, [$this, 'utf8']
+        );
+      } elseif (is_string($data)) {
+        $data = utf8_encode($data);
+      }
     }
     /**
      * @static
@@ -251,7 +272,6 @@
           }
         }
       }
-
       if ($level == 1) {
         return array($options, $funcs);
       } else {
