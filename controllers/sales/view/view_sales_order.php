@@ -79,7 +79,7 @@
     $k              = 0;
     $dn_numbers     = [];
     while ($del_row = DB::_fetch($result)) {
-      $dn_numbers[] = $del_row["trans_link"];
+      $dn_numbers[] = $del_row["trans_no"];
       $this_total   = $del_row["ov_freight"] + $del_row["ov_amount"] + $del_row["ov_freight_tax"] + $del_row["ov_gst"];
       $delivery_total += $this_total;
       Cell::label(Debtor::viewTrans($del_row["type"], $del_row["trans_no"]));

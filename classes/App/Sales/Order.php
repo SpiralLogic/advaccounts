@@ -53,7 +53,7 @@
     public $so_type = 0; // for sales order: simple=0 template=1
     /** @var */
     public $order_id; // used to detect multi-tab edition conflits
-    /** @var array * */
+    /** @var Sales_Line[]* */
     public $line_items; //array of objects of class Sales_Line
     /** @var array * */
     public $src_docs = []; // array of arrays(num1=>ver1,...) or 0 for no src
@@ -280,6 +280,11 @@
         $src             = (PHP_VERSION < 5) ? $this : clone($this); // make local copy of this order
         $src->trans_type = Debtor_Trans::get_parent_type($src->trans_type);
         $src->reference  = Ref::get_next($src->trans_type);
+        if ($this->trans_type == ST_SALESINVOICE) {
+          foreach ($src->line_items as $line) {
+            $line->qty_dispatched = $line->quantity;
+          }
+        }
         $src->write(1);
         $type = $this->trans_type;
         $ref  = $this->reference;

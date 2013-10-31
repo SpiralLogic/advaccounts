@@ -424,7 +424,7 @@
       }
       if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . $row['trans_type'] . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
-        $dd->addItem('Void Trans', $href, [], ['class' => 'printlink', 'target' => '_blank']);
+        $dd->addItem('Void Trans', $href, [], [ 'target' => '_blank']);
       }
       return $dd->setAuto(true)->setSplit(true)->render(true);
     }
