@@ -234,14 +234,6 @@
         ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/search/orders?DeliveryTemplates=Yes") :
           Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
       } elseif ($trans_type == ST_SALESINVOICE) {
-        $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . $this->DB->escape(
-          $order_no
-        );
-        $result = $this->DB->query($sql, "could not retrieve customer allocation");
-        $row    = $this->DB->fetch($result);
-        if ($row !== false) {
-          Display::submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
-        }
         GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice"));
         if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
           Display::submenu_option(_("Enter a &New Template Invoice"), "/sales/search/orders?InvoiceTemplates=Yes");
