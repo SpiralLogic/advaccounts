@@ -203,11 +203,11 @@
         Display::submenu_option(_("&Edit This " . $trans_name), $edit_trans);
       }
       echo "<br><div class='center'>" . Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt') . '<br><br>';
-      echo  Reporting::emailDialogue($customer->id, $trans_type, $order_no) . '<br><br>';
+      echo Reporting::emailDialogue($customer->id, $trans_type, $order_no) . '<br><br>';
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        echo    Display::submenu_print(
-          _("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt'
-        ) . '<br><br>';
+        echo Display::submenu_print(
+                    _("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt'
+          ) . '<br><br>';
       }
       echo "</div>";
       if ($trans_type == ST_SALESORDER) {
@@ -229,14 +229,6 @@
         ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/search/orders?DeliveryTemplates=Yes") :
           Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
       } elseif ($trans_type == ST_SALESINVOICE) {
-        $sql    = "SELECT trans_type_from, trans_no_from FROM debtor_allocations WHERE trans_type_to=" . ST_SALESINVOICE . " AND trans_no_to=" . $this->DB->escape(
-          $order_no
-        );
-        $result = $this->DB->query($sql, "could not retrieve customer allocation");
-        $row    = $this->DB->fetch($result);
-        if ($row !== false) {
-          Display::submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from'] . "-" . $row['trans_type_from'], 'prtopt');
-        }
         GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice"));
         if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
           Display::submenu_option(_("Enter a &New Template Invoice"), "/sales/search/orders?InvoiceTemplates=Yes");
@@ -285,7 +277,7 @@
       if (count($this->order->line_items) == 0) {
         if (!empty($_POST['stock_id']) && $this->checkItemData()) {
           $this->order->add_line(
-            $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
+                      $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
           );
           $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
         } else {
@@ -373,26 +365,26 @@
         $this->JS->setFocus('price');
         return false;
       } elseif (!$this->User->hasAccess(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num(
-        'qty', $this->order->line_items[$_POST['LineNo']]->qty_done
-      )
+                                                                                                                                                      'qty', $this->order->line_items[$_POST['LineNo']]->qty_done
+        )
       ) {
         $this->JS->setFocus('qty');
         Event::error(
-          _("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively.")
+             _("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively.")
         );
         return false;
       } // Joe Hunt added 2008-09-22 -------------------------
       elseif ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE && !DB_Company::_get_pref(
-        'allow_negative_stock'
-      ) && Item::is_inventory_item($_POST['stock_id'])
+                                                                                                                   'allow_negative_stock'
+        ) && Item::is_inventory_item($_POST['stock_id'])
       ) {
         $qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['location'], $_POST['OrderDate']);
         if (Validation::input_num('qty') > $qoh) {
           $stock = Item::get($_POST['stock_id']);
           Event::error(
-            _(
-              "The delivery cannot be processed because there is an insufficient quantity for item:"
-            ) . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::_format($qoh, Item::qty_dec($_POST['stock_id']))
+               _(
+                 "The delivery cannot be processed because there is an insufficient quantity for item:"
+               ) . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::_format($qoh, Item::qty_dec($_POST['stock_id']))
           );
           return false;
         }
@@ -509,7 +501,7 @@
         if ($this->order->trans_no != 0) {
           if ($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries()) {
             Event::error(
-              _("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified.")
+                 _("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified.")
             );
           } else {
             $trans_no   = key($this->order->trans_no);
@@ -537,7 +529,7 @@
     protected function updateItem() {
       if ($this->checkItemData($this->order)) {
         $this->order->update_order_item(
-          $_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
+                    $_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
         );
       }
       Item_Line::start_focus('stock_id');
@@ -560,7 +552,6 @@
         return;
       }
       $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']);
-
       $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
       Item_Line::start_focus('stock_id');
     }
