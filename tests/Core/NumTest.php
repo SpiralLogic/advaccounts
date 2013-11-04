@@ -43,12 +43,15 @@
       $actual   = $this->object->round('25.563434', 2);
       $expected = '25.56';
       $this->assertEquals($expected, $actual);
+
       $actual   = $this->object->round('25.56345', 4);
       $expected = '25.5635';
       $this->assertEquals($expected, $actual);
+
       $actual   = $this->object->round('25.565', 2);
       $expected = '25.57';
       $this->assertEquals($expected, $actual);
+
       $actual   = $this->object->round('25.575', 2);
       $expected = '25.58';
       $this->assertEquals($expected, $actual);

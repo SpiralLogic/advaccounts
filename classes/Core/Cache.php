@@ -86,7 +86,12 @@
      */
     public function defineConstants($name, $constants) {
       if (!$this->driver->defineConstants($name, $constants)) {
-        throw new RuntimeException("Could not define constants");
+   if (is_callable($constants)) {
+        $constants = (array) call_user_func($constants);
+      }
+      foreach ($constants as $constant => $value) {
+        define($constant, $value);
+      }
       }
       return $this;
     }

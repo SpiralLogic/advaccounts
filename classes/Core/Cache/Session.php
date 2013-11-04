@@ -74,12 +74,6 @@
      * @return mixed
      */
     public function defineConstants($name, $constants) {
-      if (is_callable($constants)) {
-        $constants = (array) call_user_func($constants);
-      }
-      foreach ($constants as $constant => $value) {
-        define($constant, $value);
-      }
-      return true;
+      return false;
     }
   }

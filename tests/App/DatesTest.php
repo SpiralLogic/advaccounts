@@ -62,12 +62,16 @@
       $date   = 'this is not a date';
       $result = $this->dates->isDate($date, 0);
       $this->assertFalse($result, 'this is not a date');
+
       $date   = 'this is not a date';
       $result = $this->dates->isDate($date, 0);
       $this->assertFalse($result, 'this is not a date');
+
       $date   = '12/20/2011';
       $result = $this->dates->isDate($date, 0);
       $this->assertEquals('12/20/2011', $result);
+
+
       $result = $this->dates->isDate($date, 1);
       $this->assertFalse($result);
       $this->dates->setSep(2);
