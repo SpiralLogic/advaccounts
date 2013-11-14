@@ -47,6 +47,8 @@
             $this->object->save($changes);
             //run the sql from either of the above possibilites
             $status = $this->object->getStatus();
+            $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
+            DB_Pager::kill($pager_name);
             if ($status['status'] == Status::ERROR) {
               $this->JS->renderStatus($status);
             }
@@ -96,7 +98,7 @@
       }
       $cols       = $this->generateTableCols();
       $pager_name = end(explode('\\', ltrim(get_called_class(), '\\'))) . '_table';
-      //    DB_Pager::kill($pager_name);
+      DB_Pager::kill($pager_name);
       $table        = DB_Pager::newPager($pager_name, $this->getTableRows($pager_name), $cols);
       $table->width = $this->tableWidth;
       $table->display();
