@@ -1,7 +1,7 @@
 <?php
   /**
    * PHP version 5.4
-  \   * @category  PHP
+   * \   * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
    * @copyright 2010 - 2012
@@ -16,8 +16,8 @@
     $_SERVER['DOCUMENT_URI'] = $_SERVER['PATH_INFO'];
   }
   if (isset($_SERVER['DOCUMENT_URI']) && $_SERVER['DOCUMENT_URI'] !== '/assets.php' && (!isset($_SERVER['QUERY_STRING']) || (strlen($_SERVER['QUERY_STRING']) && substr_compare(
-    $_SERVER['QUERY_STRING'], '/profile/', 0, 9, true
-  )) !== 0) && extension_loaded('xhprof')
+          $_SERVER['QUERY_STRING'], '/profile/', 0, 9, true
+        )) !== 0) && extension_loaded('xhprof')
   ) {
     $XHPROF_ROOT = realpath(dirname(__FILE__) . '/xhprof');
     include $XHPROF_ROOT . "/xhprof_lib/config.php";
@@ -91,13 +91,13 @@
       return $string;
     }
   }
-  call_user_func(
-    function () use ($loader) {
-      $app        = new \ADV\App\ADVAccounting($loader);
-      $controller = $app->getController();
-      if ($controller && file_exists($controller)) {
+  $bootstrap = function () use ($loader) {
+    $app        = new \ADV\App\ADVAccounting($loader);
+    $controller = $app->getController();
+    if ($controller && file_exists($controller)) {
       include($controller);
-      }
     }
-  );
+  };
+  $bootstrap();
+  unset($bootstrap);
 
