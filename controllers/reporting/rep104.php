@@ -100,33 +100,33 @@
     } else {
       $GP = _('Yes');
     }
-    $cols    = array(0, 100, 385, 450, 515);
-    $headers = array(_('Category/Items'), _('Description'), _('Price'), _('GP %'));
-    $aligns  = array('left', 'left', 'right', 'right');
-    $params  = array(
-      0 => $comments,
-      1 => array(
-        'text' => _('Currency'),
+      $cols    = [0, 100, 385, 450, 515];
+      $headers = [_('Category/Items'), _('Description'), _('Price'), _('GP %')];
+      $aligns  = ['left', 'left', 'right', 'right'];
+      $params  = [
+          0 => $comments,
+          1 => [
+              'text' => _('Currency'),
         'from' => $curr_sel,
         'to'   => ''
-      ),
-      2 => array(
-        'text' => _('Category'),
+          ],
+          2 => [
+              'text' => _('Category'),
         'from' => $cat,
         'to'   => ''
-      ),
-      3 => array(
-        'text' => _('Sales Type'),
+          ],
+          3 => [
+              'text' => _('Sales Type'),
         'from' => $stype,
         'to'   => ''
-      ),
-      4 => array(
-        'text' => _('Show GP %'),
+          ],
+          4 => [
+              'text' => _('Show GP %'),
         'from' => $GP,
         'to'   => ''
-      )
-    );
-    /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
+          ]
+      ];
+      /** @var \ADV\App\Reports\PDF|\ADV\App\Reports\Excel $rep */
     $rep = new $report_type(_('Price Listing'), "PriceListing", SA_PRICEREP, User::_page_size());
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -39,21 +39,21 @@
     Event::success(_("The work order been added."));
     Display::note(GL_UI::viewTrans($stype, $id, _("View this Work Order")));
     if ($_GET['type'] != WO_ADVANCED) {
-      $ar = array(
-        'PARAM_0' => $id,
+        $ar = [
+            'PARAM_0' => $id,
         'PARAM_1' => $id,
         'PARAM_2' => 0
-      );
-      Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
+        ];
+        Display::note(Reporting::print_link(_("Print this Work Order"), 409, $ar), 1);
       $ar['PARAM_2'] = 1;
       Display::note(Reporting::print_link(_("Email this Work Order"), 409, $ar), 1);
       Event::warning(GL_UI::view($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
-      $ar = array(
-        'PARAM_0' => $_GET['date'],
+        $ar = [
+            'PARAM_0' => $_GET['date'],
         'PARAM_1' => $_GET['date'],
         'PARAM_2' => $stype
-      );
-      Event::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+        ];
+        Event::warning(Reporting::print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
     }
     safe_exit();
   }

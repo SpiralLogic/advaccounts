@@ -14,8 +14,8 @@
     /** @var \ADV\Core\Status * */
     public $status;
     /** @var array * */
-    public $customers = array();
-    /**
+      public $customers = [];
+      /**
 
      */
     public function __construct($config = []) {
