@@ -133,11 +133,11 @@
         public function login($company, $loginname, $password) {
             $this->company = $company;
             $this->logged  = false;
-            $auth          = new Auth($user_id);
+            $auth = new Auth($loginname);
             if ($auth->isBruteForce()) {
                 return false;
             }
-            $myrow = $auth->checkUserPassword($user_id, $password);
+            $myrow = $auth->checkUserPassword($loginname, $password);
             if ($myrow) {
                 if ($myrow["inactive"]) {
                     return false;

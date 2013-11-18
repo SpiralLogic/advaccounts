@@ -93,13 +93,13 @@
       if (in_array($type, static::$user_errors)) {
         list($message, $file, $line, $log) = explode('||', $message) + [1 => 'No File Given', 2 => 'No Line Given', 3 => true];
       }
-      $error = array(
-        'type'    => $type,
+        $error = [
+            'type'    => $type,
         'message' => $message,
         'file'    => $file,
         'line'    => $line
-      );
-      if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
+        ];
+        if (in_array($type, static::$user_errors) || in_array($type, static::$fatal_levels)) {
         static::$messages[] = $error;
       }
       self::writeLog($error['type'], $error['message'], $error['file'], $error['line']);
@@ -226,8 +226,8 @@
      *
      * @return mixed
      */
-    protected static function prepareBacktrace($backtrace) {
-      foreach ($backtrace as $key => $trace) {
+      static function prepareBacktrace($backtrace) {
+          foreach ($backtrace as $key => $trace) {
         if (!isset($trace['file']) || $trace['file'] == __FILE__ || (isset($trace['class']) && $trace['class'] == __CLASS__) || $trace['function'] == 'trigger_error' || $trace['function'] == 'shutdown_handler'
         ) {
           unset($backtrace[$key]);
@@ -307,58 +307,58 @@
      * @internal param bool $json
      * @return array|bool|string
      */
-    public static function JSONError() {
-      $status = false;
-      if (count(static::$messages) > 0) {
-        $message           = end(static::$messages);
-        $status['status']  = $message['type'];
-        $status['message'] = $message['message'];
-        if (static::$useConfigClass && Config::_get('debug.enabled')) {
-          $status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
-        }
-        $status['process'] = '';
+      public static function JSONError() {
+          $status = false;
+          if (count(static::$messages) > 0) {
+              $message           = end(static::$messages);
+              $status['status']  = $message['type'];
+              $status['message'] = $message['message'];
+              if (static::$useConfigClass && Config::_get('debug.enabled')) {
+                  $status['var'] = 'file: ' . basename($message['file']) . ' line: ' . $message['line'];
+              }
+              $status['process'] = '';
+          }
+          static::$jsonerrorsent = true;
+          return $status;
       }
-      static::$jsonerrorsent = true;
-      return $status;
-    }
     /**
      * @static
      * @return string
      */
-    protected static function getJSONError() {
-      return json_encode(array('status' => static::JSONError()));
-    }
-    /**
-     * @static
-     *
-     * @param       $error
-     * @param null  $sql
-     * @param array $data
-     *
-     * @internal param $msg
-     * @internal param null $sql_statement
-     * @internal param bool $exit
-     */
-    public static function databaseError($error, $sql = null, $data = []) {
-      $errorCode        = DB\DB::_errorNo();
-      $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'] . $sql;
-      if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
-        $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
+      protected static function getJSONError() {
+          return json_encode(array('status' => static::JSONError()));
       }
-      $error['debug']     = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
-      $backtrace          = debug_backtrace();
-      $source             = array_shift($backtrace);
-      $error['backtrace'] = static::prepareBacktrace($backtrace);
-      static::$dberrors[] = $error;
-      $db_class_file      = $source['file'];
-      while ($source['file'] == $db_class_file) {
-        $source = array_shift($backtrace);
+      /**
+       * @static
+       *
+       * @param       $error
+       * @param null  $sql
+       * @param array $data
+       *
+       * @internal param $msg
+       * @internal param null $sql_statement
+       * @internal param bool $exit
+       */
+      public static function databaseError($error, $sql = null, $data = []) {
+          $errorCode        = DB\DB::_errorNo();
+          $error['message'] = _("DATABASE ERROR $errorCode:") . $error['message'] . $sql;
+          if ($errorCode == static::DB_DUPLICATE_ERROR_CODE) {
+              $error['message'] .= _("The entered information is a duplicate. Please go back and enter different values.");
+          }
+          $error['debug']     = '<br>SQL that failed was: "' . $sql . '" with data: ' . serialize($data) . '<br>with error: ' . $error['debug'];
+          $backtrace          = debug_backtrace();
+          $source             = array_shift($backtrace);
+          $error['backtrace'] = static::prepareBacktrace($backtrace);
+          static::$dberrors[] = $error;
+          $db_class_file      = $source['file'];
+          while ($source['file'] == $db_class_file) {
+              $source = array_shift($backtrace);
+          }
+          self::writeLog('DATABASE', static::dumpVar($error['debug'], true), $source['file'], $source['line']);
+          Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
       }
-      self::writeLog('DATABASE', static::dumpVar($error['debug'], true), $source['file'], $source['line']);
-      Errors::handler(E_ERROR, $error['message'], $source['file'], $source['line']);
-    }
-    /**
-     * @return void
+      /**
+       * @return void
      */
     public static function log() {
       $source  = reset(debug_backtrace());
