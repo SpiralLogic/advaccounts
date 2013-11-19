@@ -224,12 +224,11 @@
       $dd->addItem('Print', $href, [], ['class' => 'printlink']);
       $dd->addItem('Email', '#', ['emailid' => $row['creditor_id'] . '-' . ST_PURCHORDER . '-' . $row['order_no']], ['class' => 'email-button']);
       if ($row['Received'] > 0) {
-        $href = "/purchases/po_receive_items.php?PONumber=" . $row["order_no"];
+          $dd->addItem('Receive', "/purchases/po_receive_items.php?PONumber=" . $row["order_no"]);
       } elseif ($row['Invoiced'] > 0) {
-        $href = "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"];
+          $dd->addItem("Invoice", "/purchases/invoice?New=1&creditor_id=" . $row['creditor_id'] . "&PONumber=" . $row["order_no"]);
       }
-      $dd->addItem('Receive', $href);
-      if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
+        if ($this->User->hasAccess(SA_VOIDTRANSACTION)) {
         $href = '/system/void_transaction?type=' . ST_PURCHORDER . '&trans_no=' . $row['order_no'] . '&memo=Deleted%20during%20order%20search';
         $dd->addItem('Void Trans', $href, [], ['target' => '_blank']);
       }
