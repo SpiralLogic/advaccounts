@@ -472,7 +472,7 @@
           $dd->addItem('Creditor Payment', '/purchases/payment', [], ['class' => 'createCP']);
           $dd->addItem('Bank Payment', '/banking/banking?NewPayment=Yes', [], ['class' => 'createBP']);
         }
-        $dd->addItem('Funds Transfer', '/gl/bank_transfer', [], ['class' => 'createFT']);
+        $dd->addItem('Funds Transfer', '/banking/bank_transfer', [], ['class' => 'createFT']);
         $dd->addDivider();
       }
       $dd->addItem('Change Date', '#', [], ['class' => 'changeDate']);
