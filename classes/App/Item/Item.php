@@ -580,9 +580,7 @@ SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_
     public static function addEditDialog($options = []) {
       $action
         = <<<JS
-            if (e.ctrlKey){
             Adv.dialogWindow.open("/items/manage/items?stock_id="+$(this).data('stock_id'));
-}
 JS;
       JS::_addLiveEvent('.stock', 'click', $action, "wrapper", true);
       JS::_addLiveEvent('label.stock', 'click', $action, "wrapper", true);
