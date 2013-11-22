@@ -13,6 +13,8 @@
         'footer'       => [
             '/js/libs/JsHttpRequest.js',
             '/js/libs/jquery.min.js',
+            //'/js/libs/jquery-2.1.0-beta2.js',
+            // '/js/libs/dev/jquery-migrate-1.2.1.js',
             '/js/libs/jquery-ui.min.js',
             '/js/advanced.js',
             '/js/behaviour.js',

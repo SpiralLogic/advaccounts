@@ -113,7 +113,7 @@
          */
         public function addBeforeClose($js)
         {
-            $this->options['beforeClose'] = "function(event,ui){'.$js.'}";
+            //      $this->options['beforeClose'] = "function(event,ui){".$js."}";
         }
 
         /**
@@ -132,7 +132,7 @@
          */
         public function addButton($button, $action)
         {
-            $this->buttons[$button] = $action;
+            //    $this->buttons[$button] = $action;
         }
 
         public function show()

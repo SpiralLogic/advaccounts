@@ -11,6 +11,7 @@
 
     use ADV\App\Form\Form;
     use ADV\App\Dates;
+    use ADV\Core\Auth;
     use ADV\Core\View;
 
     /** **/
@@ -75,7 +76,7 @@
             if (!extension_loaded('mcrypt')) {
                 throw new \RuntimeException('Mcrypt extension must be installed');
             }
-            $password_iv = base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB), MCRYPT_DEV_URANDOM));
+            $password_iv = Auth::generateIV();
             $form->hidden('password_iv')->value($this->Session->setFlash('password_iv', $password_iv));
             unset($_POST['user_name'], $_POST['password'], $_POST['SubmitUser'], $_POST['login_company']);
             $form->group('buttons');
