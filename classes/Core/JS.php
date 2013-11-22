@@ -38,8 +38,6 @@
     /** @var array * */
     private $onlive = [];
     /** @var array * */
-    private $toclean = [];
-    /** @var array * */
     private $headerFiles = [];
     /** @var array * */
     private $footerFiles = [];
@@ -84,8 +82,7 @@
       $ids[$id] = true;
       $data     = json_encode($data);
       $js       = "Adv.Forms.autocomplete('$id','$type',$callback,$data);";
-      $clean    = "try {if (Adv.o.autocomplete['$id'].attr('type')!=='hidden'){Adv.o.autocomplete['$id'].catcomplete('destroy');}}catch(\$e){}";
-      $this->addLive($js, $clean);
+        $this->addLive($js);
     }
     /**
      * @static
@@ -112,21 +109,7 @@
     public function resetFocus() {
       unset($_POST['_focus']);
     }
-    /**
-     * @static
-     *
-     * @param       $id
-     * @param array $options
-     * @param       $page
-     */
-    public function tabs($id, $options = [], $page = null) {
-      $defaults = ['noajax' => false, 'haslinks' => false];
-      $options  = array_merge($defaults, $options);
-      $noajax   = $options['noajax'] ? 'true' : 'false';
-      $haslinks = $options['hasLinks'] ? 'true' : 'false';
-      $this->onload("Adv.TabMenu.init('$id',$noajax,$haslinks,$page)");
-    }
-    /**
+      /**
      * @static
      */
     public function renderHeader() {
@@ -147,7 +130,7 @@
       }
       $files = $content = $onReady = '';
       foreach ($this->footerFiles as $dir => $file) {
-        $files .= (new HTML)->script(array('src' => $dir . '/' . implode(',', $file)), false);
+          $files .= (new HTML)->script(['src' => $dir . '/' . implode(',', $file)], false);
       }
       echo $files;
       if (!REQUEST_AJAX) {
@@ -159,9 +142,6 @@
       }
       if ($this->onlive) {
         $onReady .= 'Adv.Events.onload(function(){' . implode("", $this->onlive) . '}';
-        if (count($this->toclean)) {
-          $onReady .= ',function(){' . implode("", $this->toclean) . '}';
-        }
         $onReady .= ',"' . ADVAccounting::i()->getController() . '");';
       }
       if ($this->onload) {
@@ -175,7 +155,7 @@
       }
       /** @noinspection PhpDynamicAsStaticMethodCallInspection */
       if ($content) {
-        echo HTML::script(null, $content, [], false);
+          echo (new HTML)->script(null, $content, [], false);
       }
       if ($return) {
         return ob_get_clean();
@@ -273,7 +253,7 @@
         }
       }
       if ($level == 1) {
-        return array($options, $funcs);
+          return [$options, $funcs];
       } else {
         $input_json = json_encode($options);
         foreach ($funcs as $key => $value) {
@@ -315,12 +295,9 @@
      * @param      $action
      * @param bool $clean
      */
-    public function addLive($action, $clean = false) {
-      $this->register($action, $this->onlive);
-      if ($clean) {
-        $this->register($clean, $this->toclean);
+      public function addLive($action) {
+          $this->register($action, $this->onlive);
       }
-    }
     /**
      * @static
      *
@@ -330,7 +307,7 @@
       if (is_array($events)) {
         foreach ($events as $event) {
           if (count($event) == 3) {
-            call_user_func_array(array($this, '_addEvent'), $event);
+              call_user_func_array([$this, 'addEvent'], $event);
           }
         }
       }
@@ -391,8 +368,8 @@
      * @param $url
      */
     public function redirect($url) {
-      $data['status'] = array('status' => 'redirect', 'message' => $url);
-      $this->renderJSON($data);
+        $data['status'] = ['status' => 'redirect', 'message' => $url];
+        $this->renderJSON($data);
     }
     /**
      * @return array
@@ -428,7 +405,7 @@
         }
       } else {
         $js = rtrim($js, ';') . ';';
-        array_push($var, str_replace(array('<script>', '</script>'), '', $js));
+          array_push($var, str_replace(['<script>', '</script>'], '', $js));
       }
     }
     /**

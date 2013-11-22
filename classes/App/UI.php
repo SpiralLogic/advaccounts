@@ -250,6 +250,7 @@ JS;
       }
       $js
              = <<<JS
+    try { if (Adv.o.stock_id.attr('type')!=='hidden'){Adv.o.stock_id.catcomplete('destroy');}}catch(e){console.log(e)}
     Adv.o.stock_id = \$$id = $("#$id");
     if (\$$id.attr('type')!=='hidden'){
     \$$id.catcomplete({
@@ -299,9 +300,8 @@ JS;
                 .on('paste',function() {var \$this=$(this);window.setTimeout(function(){\$this.catcomplete('search', \$this.val())},1)});
                 }
 JS;
-      $clean = "   try { if (Adv.o.stock_id.attr('type')!=='hidden'){Adv.o.stock_id.catcomplete('destroy');}}catch(\$e){}";
-      JS::_addLive($js, $clean);
-      return $HTML->__toString();
+        JS::_addLive($js);
+        return $HTML->__toString();
     }
     /**
      * @static
