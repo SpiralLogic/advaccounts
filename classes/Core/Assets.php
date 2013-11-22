@@ -34,24 +34,24 @@
     protected $clientCacheCheck = true;
     protected $file = [];
     protected $minifyTypes
-      = array(
-        'js'  => array(
+      = [
+        'js'  => [
           'minify'   => false, //
           'minifier' => '\\ADV\\Core\\JSMin', //
           'settings' => [] //
-        ), //
-        'css' => array( //
+        ], //
+        'css' => [ //
           'minify'   => true, //
           'minifier' => '\\ADV\\Core\\CSSMin', //
-          'settings' => array( //
+          'settings' => [ //
             'embed'           => true, //
             'embedMaxSize'    => 5120, //
             'embedExceptions' => 'htc',
-          )
-        )
-      );
+          ]
+        ]
+      ];
     protected $mimeTypes
-      = array(
+      = [
         "js"   => "text/javascript",
         "css"  => "text/css",
         "htm"  => "text/html",
@@ -64,7 +64,7 @@
         "gif"  => "image/gif",
         "swf"  => "application/x-shockwave-flash",
         "ico"  => "image/x-icon",
-      );
+      ];
     protected $files = [];
     protected $fileType;
     protected $cacheFile;

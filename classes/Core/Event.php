@@ -103,7 +103,7 @@
      */
     protected static function handle($message, $source, $type, $log) {
       if (static::$request_finsihed) {
-        static::$shutdown_events[] = array($message, $source, $type, $log);
+        static::$shutdown_events[] = [$message, $source, $type, $log];
       } else {
         $message = $message . '||' . $source['file'] . '||' . $source['line'] . '||';
         $message .= $log ? 1 : 0;

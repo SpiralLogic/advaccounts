@@ -10,7 +10,7 @@
   <div class='login'>
     <a target='_blank' href='{{POWERED_URL}}'><img width=440 height=64 src='/themes/{{$theme}}/images/logo-advaccounts.png' alt='ADVAccounts'/></a>
     {{#if $timeout}}
-      <br><span class='font10'>Authorization timeout</span><br>You were idle for: {{$idletime}}
+    <br><span class='font10'>Authorization timeout</span><br>You were idle for: {{$idletime}}
     {{/if}}
     <div class='tablehead'>
       Version {{VERSION}} - Login
@@ -20,15 +20,15 @@
       {{$form._start}}
       <hr>
       {{#$form}}
-        {{.}}
-        <hr>
+      {{.}}
+      <hr>
       {{/$form}}
       <div class='center'>
         {{#$form.buttons}}
-          {{.}}
+        {{.}}
         {{/$form.buttons}}
         {{#$form.hidden}}
-          {{.}}
+        {{.}}
         {{/$form.hidden}}
       </div>
       {{$form._end}}
@@ -39,18 +39,25 @@
 </div>
 <script src="/js/libs/aes.js"></script>
 <script src="/js/libs/jquery.min.js"></script>
-<script>(function () {
-  var form = document.forms.login_form, password_iv = form.password_iv, iv = password_iv.value, password_el = form.password;
-  {{#if $timeout}}form.login_company.value = '{{$company}}';
-  {{/if}}
-  form.user_name.select();
-  form.user_name.focus();
-  password_iv.parentNode.removeChild(password_iv);
-  form._action.addEventListener('click', function () {
-    password_el.value = Base64.encode(Aes.Ctr.encrypt(password_el.value, iv, 256));
-    form.submit();
-    return false;
-  });
-})();</script>
+<script>$(function () {
+    $('form').each(function () {
+      if (this.password_iv) {
+        var form = this, password_iv = this.password_iv, iv = password_iv.value;
+        password_iv.parentNode.removeChild(password_iv);
+        this._action.addEventListener('click', function () {
+          $('form').find(':password').each(function () {
+            this.value = Base64.encode(Aes.Ctr.encrypt(this.value, iv, 256));
+          });
+          form.submit();
+          return false;
+        });
+      }
+    });
+    var form = document.forms.login_form;
+    {{#if $timeout}}form.login_company.value = '{{$company}}';
+    {{/if}}
+    form.user_name.select();
+    form.user_name.focus();
+  });</script>
 </body>
 </html>

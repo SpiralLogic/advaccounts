@@ -29,7 +29,7 @@
     protected static $session = false;
     /** @var array */
     protected static $levels
-      = array(
+      = [
         -1                => 'Fatal!',
         0                 => 'Error',
         E_ERROR           => 'Error',
@@ -46,7 +46,7 @@
         E_STRICT          => 'Runtime Notice',
         E_ALL             => 'No Error',
         E_SUCCESS         => 'Success!'
-      );
+      ];
     /** @var string  temporary container for output html data before error box */
     /** @var array Errors which terminate execution */
     protected static $fatal_levels = [E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR];
@@ -129,13 +129,13 @@
      * @param \Exception $e
      */
     public static function exceptionHandler(\Exception $e) {
-      $error                    = array(
+      $error                    = [
         'type'    => -1,
         'code'    => $e->getCode(),
         'message' => end(explode('\\', get_class($e))) . ' ' . $e->getMessage(),
         'file'    => $e->getFile(),
         'line'    => $e->getLine()
-      );
+      ];
       static::$current_severity = -1;
       static::$messages[]       = $error;
       self::writeLog($error['type'], $error['message'], $error['file'], $error['line']);
@@ -147,13 +147,13 @@
      * @return string
      */
     public static function format() {
-      $msg_class = array(
-        E_USER_ERROR        => array('ERROR', 'err_msg'),
+      $msg_class = [
+        E_USER_ERROR        => ['ERROR', 'err_msg'],
         E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
         E_USER_WARNING      => array('WARNING', 'warn_msg'),
         E_USER_NOTICE       => array('USER', 'info_msg'),
         E_SUCCESS           => array('SUCCESS', 'success_msg')
-      );
+      ];
       $content   = '';
       foreach (static::$messages as $msg) {
         if (!isset($msg['type']) || $msg['type'] < E_USER_ERROR) {

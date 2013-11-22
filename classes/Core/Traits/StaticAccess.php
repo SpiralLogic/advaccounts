@@ -51,6 +51,6 @@
       if (!method_exists(static::i(), ltrim($func, '_'))) {
         throw new BadFunctionCallException('Call to undefined static method ' . $func . ' in class ' . get_called_class());
       }
-      return call_user_func_array(array(static::i(), ltrim($func, '_')), $args);
+      return call_user_func_array([static::i(), ltrim($func, '_')], $args);
     }
   }

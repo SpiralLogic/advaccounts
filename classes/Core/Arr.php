@@ -44,7 +44,7 @@
           // empty array to hold the next value, allowing us to create the
           // arrays to hold the final value.
           if (!isset($array[$key]) or !is_array($array[$key])) {
-            $array[$key] = array();
+            $array[$key] = [];
           }
 
           $array =& $array[$key];

@@ -26,7 +26,29 @@
     public function __construct($username) {
       $this->username = $username;
     }
-    /**
+
+      /**
+       * @return string
+       */
+      public static function generateIV()
+      {
+          if (!extension_loaded('mcrypt')) {
+              throw new \RuntimeException('Mcrypt extension must be installed');
+          }
+
+          return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB), MCRYPT_DEV_URANDOM));
+      }
+
+      /**
+       * @param $password
+       * @param $iv
+       * @return string
+       */
+      public static function fromIV($password,$iv){
+          return \AesCtr::decrypt(base64_decode($password), $iv, 256);
+      }
+
+      /**
      * @param     $id
      * @param     $password
      * @param int $change_password

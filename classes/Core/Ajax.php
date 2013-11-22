@@ -75,7 +75,7 @@
      */
     public function redirect($url) {
       if ($this->isActive()) {
-        $this->addCommand(true, array('n' => 'rd'), $this->absoluteURL($url));
+        $this->addCommand(true, ['n' => 'rd'], $this->absoluteURL($url));
         $this->run();
       }
     }
@@ -87,7 +87,7 @@
      * @return void
      */
     public function popup($url) {
-      $this->addCommand(true, array('n' => 'pu'), $this->absoluteURL($url));
+      $this->addCommand(true, ['n' => 'pu'], $this->absoluteURL($url));
     }
     /**
      * Adds an executable Javascript code.
@@ -98,7 +98,7 @@
      * @return Ajax
      */
     public function addScript($trigger, $sJS) {
-      $this->addCommand($trigger, array('n' => 'js'), $sJS, 'js');
+      $this->addCommand($trigger, ['n' => 'js'], $sJS, 'js');
       return $this;
     }
     /**
@@ -122,11 +122,11 @@
      */
     public function addAssign($trigger, $sTarget, $sAttribute, $sData) {
       $this->addCommand(
-        $trigger, array(
+        $trigger, [
                        'n' => 'as',
                        't' => $sTarget,
                        'p' => $sAttribute
-                  ), $sData
+                  ], $sData
       );
       return $this;
     }
@@ -141,10 +141,10 @@
      */
     public function addUpdate($trigger, $sTarget, $sData) {
       $this->addCommand(
-        $trigger, array(
+        $trigger, [
                        'n' => 'up',
                        't' => $sTarget
-                  ), $sData
+                  ], $sData
       );
       return $this;
     }
@@ -159,10 +159,10 @@
      */
     public function addDisable($trigger, $sTarget, $sData = true) {
       $this->addCommand(
-        $trigger, array(
+        $trigger, [
                        'n' => 'di',
                        't' => $sTarget
-                  ), $sData
+                  ], $sData
       );
       return $this;
     }
@@ -177,10 +177,10 @@
      */
     public function addEnable($trigger, $sTarget, $sData = true) {
       $this->addCommand(
-        $trigger, array(
+        $trigger, [
                        'n' => 'di',
                        't' => $sTarget
-                  ), !$sData
+                  ], !$sData
       );
       return $this;
     }
@@ -207,7 +207,7 @@
      * @return Ajax
      */
     public function addFocus($trigger, $sTarget) {
-      $this->addCommand($trigger, array('n' => 'fc'), $sTarget, 'fc');
+      $this->addCommand($trigger, ['n' => 'fc'], $sTarget, 'fc');
       return $this;
     }
     /**
@@ -288,7 +288,7 @@
           //			Event::error('unset '.$com['t']);
         } else {
           if ($com['n'] == 'up' && $com['t'] == '_page_body') {
-            $cmds = array($com);
+            $cmds = [$com];
             if ($this->aCommands['fc']) {
               $cmds[] = $this->aCommands['fc'];
             }
