@@ -379,7 +379,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                    if (isdefault) {
                      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                       $(el).attr('value', value);
+                       $(el).prop('value', value);
                        el.defaultValue = value;
                      }
                    }
