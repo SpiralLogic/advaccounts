@@ -10,7 +10,6 @@
   namespace ADV\App\Item;
 
   use ADV\App\DB\Collection;
-  use ADV\Core\Errors;
   use Item_Unit;
   use DB_AuditTrail;
   use GL_Trans;
@@ -22,7 +21,6 @@
   use ADV\App\Dates;
   use ADV\App\DB\Base;
   use ADV\App\SysTypes;
-  use ADV\Core\Dialog;
   use ADV\Core\Num;
   use ADV\Core\JS;
   use ADV\Core\Input\Input;
@@ -32,12 +30,12 @@
   class Item extends Base
   {
     public static $types
-      = array(
+      = [
         STOCK_MANUFACTURE => "Manufactured", //
         STOCK_PURCHASED   => "Purchased", //
         STOCK_SERVICE     => "Service", //
         STOCK_INFO        => "Information"
-      );
+      ];
     /** @var */
     public static $qoh_stock;
     /**
@@ -293,11 +291,11 @@ SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_
              FROM stock_master,item_units
              WHERE stock_id=" . DB::_escape($stock_id) . " AND stock_master.units=item_units.abbr";
       $query  = DB::_query($sql, "The standard cost cannot be retrieved");
-      $result = array(
+      $result = [
         'standard_cost' => 0,
         'units'         => 'ea',
         'decimals'      => User::_price_dec()
-      );
+      ];
       if (DB::_numRows($query) == 0) {
         $result = DB::_fetch($query);
       }
@@ -468,8 +466,8 @@ SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_
     public static function search($term) {
       $term       = explode(' ', trim($term));
       $item_code  = trim(array_shift($term));
-      $terms      = array($item_code, '%' . $item_code . '%');
-      $terms      = array($item_code, $item_code . '%', $terms[1], $terms[1], $terms[1]);
+      $terms      = [$item_code, '%' . $item_code . '%'];
+      $terms      = [$item_code, $item_code . '%', $terms[1], $terms[1], $terms[1]];
       $termswhere = ' OR i.long_description LIKE ? ';
       $qwhere     = '';
       foreach ($term as $t) {
@@ -520,8 +518,8 @@ SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_
       }
       $term         = explode(' ', trim($term));
       $item_code    = trim(array_shift($term));
-      $terms        = array($item_code, '%' . $item_code . '%');
-      $terms        = array($item_code, $item_code . '%', $terms[1], $terms[1], $terms[1]);
+      $terms        = [$item_code, '%' . $item_code . '%'];
+      $terms        = [$item_code, $item_code . '%', $terms[1], $terms[1], $terms[1]];
       $termswhere   = ' OR i.long_description LIKE ? ';
       $qconstraints = '';
       foreach ($term as $t) {
@@ -561,7 +559,7 @@ SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_
         $qconstraints .= " AND s.stock_id!=i.stock_id ";
       }
       $qselect = ($select) ? $select : ' ';
-      $sql     = "SELECT $qselect $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
+      $sql     = "SELECT ".$qselect." $stock_code i.description as item_name, c.description as category, i.long_description as description , editable,
                             $weight FROM stock_category c, item_codes s, stock_master i  $prices
                             WHERE (s.item_code LIKE ? $termswhere) $qconstraints
                             AND s.category_id = c.category_id $qconstraints2 $sales_type GROUP BY s.item_code
@@ -580,7 +578,8 @@ SELECT l.loc_code, l.location_name, r.shelf_primary, r.shelf_secondary, i.stock_
     public static function addEditDialog($options = []) {
       $action
         = <<<JS
-            Adv.dialogWindow.open("/items/manage/items?stock_id="+$(this).data('stock_id'));
+            //noinspection ThisExpressionReferencesGlobalObjectJS
+Adv.dialogWindow.open("/items/manage/items?stock_id="+$(this).data('stock_id'));
 JS;
       JS::_addLiveEvent('.stock', 'click', $action, "wrapper", true);
       JS::_addLiveEvent('label.stock', 'click', $action, "wrapper", true);
@@ -756,7 +755,7 @@ JS;
      */
     public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
       echo Item::select(
-        $name, $selected_id, $all_option, $submit_on_change, array(
+        $name, $selected_id, $all_option, $submit_on_change, [
                                                                   'submitonselect' => $submit_on_change,
                                                                   'label'          => $label,
                                                                   'cells'          => true,
@@ -764,7 +763,7 @@ JS;
                                                                   'purchase'       => false,
                                                                   'show_inactive'  => $all,
                                                                   'editable'       => $editkey
-                                                             ), $editkey, $legacy
+                                                             ], $editkey, $legacy
       );
     }
     /**
@@ -784,12 +783,12 @@ JS;
       if (!$legacy) {
         Item::addSearchBox(
           $name, array_merge(
-            array(
+            [
                  'submitonselect' => $submit_on_change,
                  'selected'       => $selected_id,
                  'purchase'       => true,
                  'cells'          => true
-            ), $opts
+            ], $opts
           )
         );
         return '';
@@ -799,27 +798,27 @@ JS;
                     FROM stock_master s,stock_category C WHERE s.category_id=C.category_id";
       return Forms::selectBox(
         $name, $selected_id, $sql, 'stock_id', 's.description', array_merge(
-          array(
+          [
                'format'        => 'Forms::stockItemsFormat',
                'spec_option'   => $all_option === true ? _("All Items") : $all_option,
                'spec_id'       => ALL_TEXT,
                'search_box'    => false,
-               'search'        => array(
+               'search'        => [
                  "stock_id",
                  "c.description",
                  "s.description"
-               ),
+               ],
                'search_submit' => DB_Company::_get_pref('no_item_list') != 0,
                'size'          => 10,
                'select_submit' => $submit_on_change,
                'category'      => 2,
-               'order'         => array(
+               'order'         => [
                  'c.description',
                  'stock_id'
-               ),
+               ],
                'editable'      => 30,
                'max'           => 50
-          ), $opts
+          ], $opts
         )
       );
     }
