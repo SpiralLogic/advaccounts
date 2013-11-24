@@ -58,8 +58,9 @@ var Adv = {};
         message: "Request failed: " + settings.url + "<br>"
       };
       Adv.Status.show(status);
-    }).ajaxComplete(function (event, request) {
+    }).ajaxComplete(function (event, request)  {
                       Behaviour.apply();
+                      if (request.responseText === undefined) {return}
                       try {
                         var data = $.parseJSON(request.responseText);
                         if (data && data.status) {
@@ -1063,14 +1064,14 @@ $(function () {
   $(document).on('focusout', ':input',function () {
     prevFocus = $(this);
   }).on('keydown', function (event) {
-            if (event.which === 83 && event.altKey === true) {
-              if (prevFocus) {
-                closeMenu();
-              }
-              else {
-                prevFocus = document.activeElement;
-                currentChanged(current);
-              }
+          if (event.which === 83 && event.altKey === true) {
+            if (prevFocus) {
+              closeMenu();
             }
-          });
+            else {
+              prevFocus = document.activeElement;
+              currentChanged(current);
+            }
+          }
+        });
 });
