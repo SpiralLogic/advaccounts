@@ -79,16 +79,16 @@
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $view->set('form', $form);
-      $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
       if (!$this->Input->hasGet('stock_id')) {
+        $this->JS->autocomplete('itemSearchId', 'Items.fetch', 'Item');
         $searchBox = UI::search(
-          'itemSearchId', [
-                          'url'      => 'Item',
-                          'idField'  => 'stock_id',
-                          'name'     => 'itemSearchId', //
-                          'focus'    => true,
-                          'callback' => 'Items.fetch'
-                          ], true
+                       'itemSearchId', [
+                                       'url'      => 'Item',
+                                       'idField'  => 'stock_id',
+                                       'name'     => 'itemSearchId', //
+                                       'focus'    => true,
+                                       'callback' => 'Items.fetch'
+                                       ], true
         );
         $view->set('searchBox', $searchBox);
         $id = 0;
@@ -97,6 +97,7 @@
         $id = Item::getStockId($_GET['stock_id']);
       }
       $data = $this->getItemData($id);
+      $this->Session->setGlobal('stock_id', $_GET['stock_id']);
       $view->set('firstPage', $this->Input->get('page', null, null));
       $view->render();
       $this->JS->tabs('tabs' . MenuUI::$menuCount, [], 0);
