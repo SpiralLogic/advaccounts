@@ -3428,19 +3428,19 @@ div.warn_msg {
   width: 180px;
 }
 
-.formbox input, .formbox textarea, .formbox .add-on {
+.formbox input, .formbox textarea, .formbox .input-group-addon {
   margin: 2px 5px 2px 5px;
 }
 
-.input-prepend .add-on, .formbox .input-prepend .add-on {
+.input-group .input-group-addon, .formbox .input-group .input-group-addon {
   margin-right: -1px;
 }
 
-.grid .input-append input+.add-on, .formbox .input-append input+.add-on {
+.grid .input-group input+.input-group-addon, .formbox .input-group input+.input-group-addon {
   margin-left: -1px;
 }
 
-.grid .input-append span.add-on, .grid .input-prepend span.add-on {
+.grid .input-group span.input-group-addon, .grid .input-group span.input-group-addon {
   padding: 4px 0;
 }
 
@@ -3457,12 +3457,12 @@ div.warn_msg {
   margin: 5px 0 0 5px;
 }
 
-.formbox .input-append input, .formbox .input-prepend input {
+.formbox .input-group input, .formbox .input-group input {
   width:   157px;
   z-index: 10002;
 }
 
-.ui-dialog .input-append input, .ui-dialog  .input-prepend input {
+.ui-dialog .input-group input, .ui-dialog  .input-group input {
   width:   157px;
   z-index: 10002;
 }
@@ -3471,17 +3471,17 @@ div.warn_msg {
   width: 6em;
 }
 
-.formbox .input-append input {
+.formbox .input-group input {
   margin-right: -1px;
   border-right: none;
 }
 
-.formbox .input-prepend input {
+.formbox .input-group input {
   margin-left: -1px;
   border-left: none;
 }
 
-.formbox .input-append.input-prepend input {
+.formbox .input-group.input-group input {
   width: 136px;
 }
 
@@ -3636,7 +3636,7 @@ table.noborder td {
   white-space:      nowrap;
 }
 
-.grid .input-prepend {
+.grid .input-group {
   display:   -webkit-flex;
   min-width: 7em;
 }
@@ -3651,19 +3651,19 @@ table.noborder td {
   min-width: 10em;
 }
 
-.grid .input-append input, .grid .input-prepend input {
+.grid .input-group input, .grid .input-group input {
   min-width: 3em;
 }
 
-.grid .input-prepend input {
+.grid .input-group input {
   border-left: none;
 }
 
-.grid .input-append input {
+.grid .input-group input {
   border-right: none;
 }
 
-.grid span.add-on {
+.grid span.input-group-addon {
   margin: 0;
   height: 25px;
 }
@@ -3756,7 +3756,7 @@ td .btn-group {
   max-width: 30em;
 }
 
-.grid .alignright .input-prepend {
+.grid .alignright .input-group {
   float: right;
 }
 

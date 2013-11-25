@@ -173,17 +173,17 @@
      */
     protected function formatAddOns($content) {
       if ($this->append && $this->prepend) {
-        $return = "<span class='input-append input-prepend'><span class='add-on'>" . $this->prepend . "</span>";
+        $return = "<span class='input-group input-group'><span class='input-group-addon'>" . $this->prepend . "</span>";
       } elseif ($this->append) {
-        $return = "<span class='input-append'>";
+        $return = "<span class='input-group'>";
       } elseif ($this->prepend) {
-        $return = "<span class='input-prepend'><span class='add-on'>" . $this->prepend . "</span>";
+        $return = "<span class='input-group'><span class='input-group-addon'>" . $this->prepend . "</span>";
       } else {
         return $content;
       }
       $return .= $content;
       if ($this->append) {
-        $return .= "<span class='add-on' >" . $this->append . "</span>";
+        $return .= "<span class='input-group-addon' >" . $this->append . "</span>";
       }
       return $return . "</span>";
     }

@@ -10,6 +10,8 @@
   namespace ADV\Controllers\Sales;
 
   use ADV\App\Controller\Action;
+  use ADV\App\Form\Button;
+  use Modules\Jobsboard\Jobsboard;
   use Sales_Point;
   use Sales_Order;
   use DB_Company;
@@ -40,26 +42,26 @@
   class Order extends Action
   {
     protected $addTitles
-      = array(
+      = [
         ST_SALESQUOTE   => "New Sales Quotation Entry", //
         ST_SALESINVOICE => "Direct Sales Invoice", //
         ST_CUSTDELIVERY => "Direct Sales Delivery", //
         ST_SALESORDER   => "New Sales Order Entry"
-      );
+      ];
     protected $modifyTitles
-      = array(
+      = [
         ST_SALESQUOTE => "Modifying Sales Quotation # ", //
         ST_SALESORDER => "Modifying Sales Order # "
-      );
+      ];
     protected $typeSecurity
-      = array(
+      = [
         ST_SALESORDER          => SA_SALESORDER, //
         ST_SALESQUOTE          => SA_SALESQUOTE, ///
         ST_CUSTDELIVERY        => SA_SALESDELIVERY, //
         Orders::QUOTE_TO_ORDER => SA_SALESORDER, //
         Orders::CLONE_ORDER    => SA_SALESORDER, //
         ST_SALESINVOICE        => SA_SALESINVOICE
-      );
+      ];
     protected $security;
     public $type;
     /***
@@ -125,12 +127,12 @@
       $this->Ajax->start_div('controls', 'items_table');
       $buttons = new Form();
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
-        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->type('danger')->setWarning('You are about to void this Document.\nDo you want to continue?');
+        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->type(Button::DANGER)->setWarning('You are about to void this Document.\nDo you want to continue?');
       }
       $buttons->submit(Orders::CANCEL_CHANGES, _("Cancel Changes"))->preIcon(ICON_CANCEL)->type('warning');
       if (count($this->order->line_items)) {
         $type = ($this->order->trans_no > 0) ? $corder : $porder; //_('Check entered data and save document')
-        $buttons->submit(Orders::PROCESS_ORDER, $type)->type('success')->preIcon(ICON_SUBMIT);
+        $buttons->submit(Orders::PROCESS_ORDER, $type)->type(\ADV\App\Form\Button::SUCCESS)->preIcon(ICON_SUBMIT);
       }
       $view = new View('libraries/forms');
       $view->set('buttons', $buttons);
@@ -236,7 +238,7 @@
           Display::submenu_option(_("Enter a &New Direct Invoice"), $new_trans);
         }
         Display::link_params("/sales/payment", _("Apply a customer payment"));
-        if (isset($_GET[ADDED_DI]) && $this->Session->getGlobal('debtor_id') && $row == false) {
+        if (isset($_GET[ADDED_DI]) && $this->Session->getGlobal('debtor_id') ) {
           echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='" . '/sales/payment' . "?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
@@ -400,14 +402,14 @@
      */
     protected function createOrder($type, $trans_no) {
       if (isset($_GET[Orders::QUOTE_TO_ORDER])) {
-        $this->order    = new Sales_Order(ST_SALESQUOTE, array($trans_no));
+        $this->order    = new Sales_Order(ST_SALESQUOTE, [$trans_no]);
         $doc            = clone($this->order);
         $doc->source_no = $trans_no;
         $this->order->finish();
         $doc->convertToOrder();
       } elseif (isset($_GET[Orders::CLONE_ORDER])) {
         $trans_no           = $_GET[Orders::CLONE_ORDER];
-        $doc                = new Sales_Order(ST_SALESORDER, array($trans_no));
+        $doc                = new Sales_Order(ST_SALESORDER, [$trans_no]);
         $doc->trans_no      = 0;
         $doc->trans_type    = ST_SALESORDER;
         $doc->reference     = Ref::get_next($doc->trans_type);
@@ -416,7 +418,7 @@
           $line->qty_done = $line->qty_dispatched = 0;
         }
       } elseif ($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
-        $doc                = new Sales_Order(ST_SALESORDER, array($trans_no));
+        $doc                = new Sales_Order(ST_SALESORDER, [$trans_no]);
         $doc->trans_type    = $type;
         $doc->trans_no      = 0;
         $doc->document_date = Dates::_newDocDate();
@@ -429,11 +431,12 @@
           $doc->due_date = $doc->document_date;
         }
         $doc->reference = Ref::get_next($doc->trans_type);
+        /** @var $line  int */
         foreach ($doc->line_items as $line) {
           $doc->line_items[$line]->qty_done = 0;
         }
       } else {
-        $doc = new Sales_Order($type, array($trans_no));
+        $doc = new Sales_Order($type, [$trans_no]);
       }
       $this->type = $type;
       return Sales_Order::copyToPost($doc);
@@ -471,7 +474,7 @@
       }
       $this->order->finish();
       if ($trans_type == ST_SALESORDER) {
-        $jb = new \Modules\Jobsboard\Jobsboard([]);
+        $jb = new Jobsboard([]);
         $jb->addjob($jobsboard_order);
       }
       $this->pageComplete($trans_no, $trans_type, true, $modified);
@@ -508,7 +511,7 @@
             $trans_type = $this->order->trans_type;
             $this->order->delete($trans_no, $trans_type);
             if ($trans_type == ST_SALESORDER) {
-              $jb = new \Modules\Jobsboard\Jobsboard([]);
+              $jb = new Jobsboard([]);
               $jb->removejob($trans_no);
               Event::notice(_("Sales order has been cancelled."), 1);
             } else {

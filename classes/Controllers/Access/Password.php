@@ -37,7 +37,7 @@
             $password_iv = Auth::generateIV();
             $form->hidden('password_iv')->value($this->Session->setFlash('password_iv', $password_iv));
             unset($_POST['user_name'], $_POST['password'], $_POST['SubmitUser'], $_POST['login_company']);
-            $form->submit('change', "Change")->type('small')->type('inverse');
+            $form->submit('change', "Change")->type(\ADV\App\Form\Button::SMALL)->type('inverse');
             echo $form;
             echo $form->end();
             $this->JS->footerFile('/js/libs/aes.js');

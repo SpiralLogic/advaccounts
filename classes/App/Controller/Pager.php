@@ -10,6 +10,7 @@
    **/
   namespace ADV\App\Controller;
 
+  use ADV\App\Form\Button;
   use ADV\Core\Status;
   use ADV\App\Pager\Edit;
   use ADV\Core\Input\Input;
@@ -94,7 +95,7 @@
     /**
      * @param $row
      *
-     * @return \ADV\App\Form\Button
+     * @return Button
      */
     public function formatEditBtn($row) {
       return $this->formatBtn(EDIT, $row[$this->object->getIDColumn()], ICON_EDIT);
@@ -102,10 +103,10 @@
     /**
      * @param $row
      *
-     * @return \ADV\App\Form\Button
+     * @return Button
      */
     public function formatDeleteBtn($row) {
-      return $this->formatBtn(DELETE, $row[$this->object->getIDColumn()], ICON_DELETE, 'danger');
+      return $this->formatBtn(DELETE, $row[$this->object->getIDColumn()], ICON_DELETE, Button::DANGER);
     }
     /**
      * @param        $action
@@ -113,12 +114,12 @@
      * @param null   $icon
      * @param string $type
      *
-     * @return \ADV\App\Form\Button
+     * @return Button
      */
-    public function formatBtn($action, $id = '', $icon = null, $type = 'primary') {
-      $button = new \ADV\App\Form\Button(FORM_ACTION, $action . $id, $action);
+    public function formatBtn($action, $id = '', $icon = null, $type = Button::PRIMARY) {
+      $button = new Button(FORM_ACTION, $action . $id, $action);
       $button->preIcon($icon);
-      $button->type('mini')->type($type);
+      $button->type(Button::MINI)->type($type);
       return $button;
     }
     /**

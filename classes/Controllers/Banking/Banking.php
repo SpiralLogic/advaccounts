@@ -105,7 +105,7 @@
       echo '</tr>';
       Table::end(1);
       echo '<div class="center">';
-      echo (new Button(FORM_ACTION, COMMIT, COMMIT))->type('success')->preIcon(ICON_SUBMIT);
+      echo (new Button(FORM_ACTION, COMMIT, COMMIT))->type(\ADV\App\Form\Button::SUCCESS)->preIcon(ICON_SUBMIT);
       echo "</div>";
       Forms::end();
     }

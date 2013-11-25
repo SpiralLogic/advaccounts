@@ -250,7 +250,7 @@ JS;
       }
       $js
              = <<<JS
-    try { if (Adv.o.stock_id.attr('type')!=='hidden'){Adv.o.stock_id.catcomplete('destroy');}}catch(e){console.log(e)}
+    try { if (Adv.o.stock_id&&Adv.o.stock_id.attr('type')!=='hidden'){Adv.o.stock_id.catcomplete('destroy');}}catch(e){console.log(e)}
     Adv.o.stock_id = \$$id = $("#$id");
     if (\$$id.attr('type')!=='hidden'){
     \$$id.catcomplete({

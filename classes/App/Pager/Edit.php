@@ -8,6 +8,7 @@
    */
   namespace ADV\App\Pager;
 
+  use ADV\App\Form\Button;
   use ADV\App\Form\Form;
   use ADV\Core\Num;
   use ADV\Core\Arr;
@@ -283,12 +284,12 @@
           $field['form'] = $this->name . '_form';
         }
       }
-      $form->group('save')->button(FORM_ACTION, SAVE, $this->editing->id ? SAVE : ADD, ['form' => $this->name . '_form'])->preIcon(ICON_SAVE)->type('mini')->type(
+      $form->group('save')->button(FORM_ACTION, SAVE, $this->editing->id ? SAVE : ADD, ['form' => $this->name . '_form'])->preIcon(ICON_SAVE)->type(\ADV\App\Form\Button::MINI)->type(
         'success'
       );
       $form->group('button');
       if ($this->editing->id) {
-        $form->button(FORM_ACTION, CANCEL, CANCEL, ['form' => $this->name . '_form'])->preIcon(ICON_CANCEL)->type('mini')->type('danger');
+        $form->button(FORM_ACTION, CANCEL, CANCEL, ['form' => $this->name . '_form'])->preIcon(ICON_CANCEL)->type(Button::MINI)->type(Button::DANGER);
       } else {
         $form->heading('');
       }
@@ -305,7 +306,7 @@
         return '';
       }
       $button = new \ADV\App\Form\Button(FORM_ACTION, EDIT . $row[$this->editing->getIDColumn()], EDIT);
-      $button->type('mini')->type('primary');
+      $button->type(\ADV\App\Form\Button::MINI)->type(\ADV\App\Form\Button::PRIMARY);
       $button['form'] = $this->name . '_form';
       return $button;
     }
@@ -320,7 +321,7 @@
       }
       $button = new \ADV\App\Form\Button(FORM_ACTION, DELETE . $row[$this->editing->getIDColumn()], DELETE);
       $button->preIcon(ICON_DELETE);
-      $button->type('mini')->type('danger');
+      $button->type(\ADV\App\Form\Button::MINI)->type(\ADV\App\Form\Button::DANGER);
       $button['form'] = $this->name . '_form';
       return $button;
     }

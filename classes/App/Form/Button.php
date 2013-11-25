@@ -16,7 +16,13 @@
     class Button implements \ArrayAccess
     {
         use \ADV\Core\Traits\HTML;
-
+        const NORMAL = "default";
+        const MINI = "xs";
+        const SMALL = "sm";
+        const LARGE = "lg";
+        const SUCCESS = "success";
+        const DANGER = "danger";
+        const PRIMARY = "primary";
         public $id;
         public $validator;
         protected $attr = [];
@@ -34,7 +40,7 @@
             $this->id                         = $this->nameToId();
             $this->attr['value']              = e($value);
             $this->attr['title']              = e(strip_tags($caption));
-            $this->attr['class']              = 'btn';
+            $this->attr['class']              = 'btn btn-'.self::NORMAL;
             $this->caption                    = $caption;
         }
         /**
@@ -43,7 +49,7 @@
          * @return \ADV\App\Form\Button
          */
         public function type($type) {
-            $this->attr['class'] .= ' btn-' . $type;
+            $this->attr['class'] .= ' btn-'. $type;
             return $this;
         }
         /**

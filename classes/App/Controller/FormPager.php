@@ -10,6 +10,7 @@
    **/
   namespace ADV\App\Controller;
 
+  use ADV\App\Form\Button;
   use ADV\Core\Status;
   use ADV\App\Pager\Pager;
   use ADV\App\Form\Form;
@@ -91,8 +92,8 @@
       }
       $form->name($this->object->getClassname());
       $form->group('buttons');
-      $form->submit(CANCEL)->type('danger')->preIcon(ICON_CANCEL);
-      $form->submit(SAVE)->type('success')->preIcon(ICON_ADD);
+      $form->submit(CANCEL)->type(Button::DANGER)->preIcon(ICON_CANCEL);
+      $form->submit(SAVE)->type(Button::SUCCESS)->preIcon(ICON_ADD);
       $form->setValues($object ? : $this->object);
       $view->set('form', $form);
       $view->render();

@@ -58,7 +58,7 @@ var Adv = {};
         message: "Request failed: " + settings.url + "<br>"
       };
       Adv.Status.show(status);
-    }).ajaxComplete(function (event, request)  {
+    }).ajaxComplete(function (event, request) {
                       Behaviour.apply();
                       if (request.responseText === undefined) {return}
                       try {
@@ -463,6 +463,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  },
                  setFormValues:   function (data, form) {
                    var focused = false;
+                   /** @namespace data._form_id */
                    if (data._form_id) {
                      form = document.getElementsByName(data._form_id)[0];
                    }
@@ -546,7 +547,6 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                                              });
                                            },
                                            select:    function (event, ui) {
-                                             console.log(event);
                                              $this.data('default', null);
                                              if (p.callback(ui.item, event, this) === false) {
                                                return false;
@@ -640,13 +640,13 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      el.style.color = (sign) ? '' : '#FF0000';
                    }
                  },
-                 getAmount:       function (doc, label) {
+                 getAmount:       function (id, label) {
                    var val;
                    if (label) {
-                     val = document.getElementById(doc).innerHTML;
+                     val = document.getElementById(id).innerHTML;
                    }
                    else {
-                     val = typeof(doc) === "string" ? document.getElementsByName(doc)[0].value : doc.value;
+                     val = typeof(id) === "string" ? document.getElementsByName(id)[0].value : id.value;
                    }
                    val = val.replace(new RegExp('\\' + user.ts, 'g'), '');
                    val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
@@ -664,7 +664,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    if (focusOff === true) {
                      return;
                    }
-                   if (typeof(name) == 'object') {
+                   if (typeof(name) === 'object') {
                      el = name;
                    }
                    else {
@@ -760,11 +760,11 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    return res;
                  },
                  resetHighlights: function (form) {
-                   if (!form) {
-                     form = window;
+                   if (form) {
+                     form.fieldsChanged = 0;
                    }
                    else {
-                     form.fieldsChanged = 0;
+                     form = window;
                    }
                    $(form).find(".ui-state-highlight").removeClass("ui-state-highlight");
                    Adv.Events.onLeave();
@@ -811,7 +811,6 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      }
                    }
                    Adv.Events.onLeave("Continue without saving changes?");
-                   return;
                  },
                  error:           function (field, error, type) {
                    var $error;

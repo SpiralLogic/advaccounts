@@ -66,13 +66,9 @@
       }
       return false;
     }
+
     /**
-     * @param \Sales_Order $job_data
-     *
-     * @internal param $type
-     * @internal param $trans_no
-     * @internal param $so_type
-     * @return mixed
+     * @param $job_data
      */
     public function addjob($job_data) {
       $this->order_no = $order_no = $job_data->trans_no;
@@ -81,18 +77,18 @@
       $update         = var_export($job_data, true);
       $job            = $this->get_job($order_no);
       $exists         = ($job['Advanced_Job_No'] > 0);
-      $lines          = array();
+      $lines          = [];
       foreach ($orderlines as $line) {
         /***
          * @var \Sales_Line $line
          */
-        $lines[$line['id']] = array(
+        $lines[$line['id']] = [
           'line_id'     => $line['id'],
           'stock_code'  => $line['stk_code'],
           'price'       => $line['unit_price'],
           'description' => $line['description'],
           'quantity'    => $line['quantity']
-        );
+        ];
       }
       if ($exists) {
         $jobslines = $this->getLines();
@@ -186,7 +182,7 @@
     }
     protected function insertLines() {
       $lines        = $this->lines;
-      $this->lines  = array();
+      $this->lines  = [];
       $currentLines = $this->getLines();
       foreach ($lines as $line) {
         if (isset($currentLines[$line['line_id']])) {
@@ -216,7 +212,7 @@
      */
     protected function getLines() {
       $lines  = $this->jobsboardDB->select()->from('JobListItems')->where('job_id=', $this->currentJob['Advanced_Job_No'])->fetch()->all();
-      $result = array();
+      $result = [];
       foreach ($lines as $line) {
         $result[$line['line_id']] = $line;
       }

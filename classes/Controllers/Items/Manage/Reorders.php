@@ -135,7 +135,7 @@
       echo  $this->form->hidden('stockid')->value($this->stockid);
       $this->generateTable();
       echo '<div class="pad10 center">';
-      echo $this->form->submit(UPDATED, 'Update')->type('primary');
+      echo $this->form->submit(UPDATED, 'Update')->type(\ADV\App\Form\Button::PRIMARY);
       echo '</div>';
       echo $this->form->end();
       $this->Ajax->end_div();

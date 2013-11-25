@@ -106,10 +106,10 @@
       $form->custom(GL_UI::all('adjustment_account'))->label('Adjustment Account:');
       $form->custom(GL_UI::all('assembly_account'))->label('Assembly Account:');
       $form->group('buttons');
-      $form->button(FORM_ACTION, ADD, ADD)->type('primary')->id('btnNew')->mergeAttr(['form' => 'item_form']);
-      $form->button(FORM_ACTION, 'clone', 'Clone')->type('primary')->id('btnClone')->mergeAttr(['form' => 'item_form']);
-      $form->button(FORM_ACTION, CANCEL, CANCEL)->type('danger')->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
-      $form->button(FORM_ACTION, SAVE, SAVE)->type('success')->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, ADD, ADD)->type(\ADV\App\Form\Button::PRIMARY)->id('btnNew')->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, 'clone', 'Clone')->type(\ADV\App\Form\Button::PRIMARY)->id('btnClone')->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, CANCEL, CANCEL)->type(\ADV\App\Form\Button::DANGER)->preIcon(ICON_CANCEL)->id('btnCancel')->hide()->mergeAttr(['form' => 'item_form']);
+      $form->button(FORM_ACTION, SAVE, SAVE)->type(\ADV\App\Form\Button::SUCCESS)->preIcon(ICON_SAVE)->id('btnConfirm')->hide()->mergeAttr(['form' => 'item_form']);
       $view->set('form', $form);
       $data = $this->getItemData();
       $this->JS->onload("Items.onload(" . json_encode($data) . ");");

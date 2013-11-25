@@ -20,6 +20,7 @@
     /**
      * @method static _theme
      * @method User ii()
+     * @method static \ADV\App\User _i()
      * @method static _logout()
      * @method static _date_format()
      * @method static _date_sep()
@@ -216,11 +217,11 @@
         }
         public function addLog() {
             DB::_insert('user_login_log')->values(
-              array(
+              [
                    'user'    => $this->username,
                    'IP'      => Auth::get_ip(),
                    'success' => 2
-              )
+              ]
             ) ->exec();
         }
         /**
@@ -465,7 +466,7 @@
          * @return array
          */
         public function getPagerColumns() {
-            $cols = array(
+            $cols = [
                 ['type' => "skip"],
                 _("User ID"),
                 _("Name"),
@@ -474,7 +475,7 @@
                 _("Last Visit Date"),
                 _("Role"),
                 _('Inactive') => ['type' => 'inactive'],
-            );
+            ];
             return $cols;
         }
         /**

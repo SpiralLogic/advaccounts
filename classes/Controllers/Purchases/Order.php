@@ -201,14 +201,14 @@
         if ($this->order->order_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION)) {
           $buttons->submit(Orders::CANCEL, "Delete Order")->preIcon(ICON_DELETE)->setWarning(
             'You are about to void this Document.\nDo you want to continue?'
-          )->type('danger');
+          )->type(\ADV\App\Form\Button::DANGER);
         }
         $buttons->submit(Orders::CANCEL_CHANGES, "Cancel Changes")->preIcon(ICON_CANCEL)->type('warning');
       }
       if ($this->order->order_no) {
-        $buttons->submit(COMMIT, "Update Order")->preIcon(ICON_UPDATE)->type('success');
+        $buttons->submit(COMMIT, "Update Order")->preIcon(ICON_UPDATE)->type(\ADV\App\Form\Button::SUCCESS);
       } else {
-        $buttons->submit(COMMIT, "Place Order")->preIcon(ICON_SUBMIT)->type('success');
+        $buttons->submit(COMMIT, "Place Order")->preIcon(ICON_SUBMIT)->type(\ADV\App\Form\Button::SUCCESS);
       }
       $view = new View('libraries/forms');
       $view->set('buttons', $buttons);

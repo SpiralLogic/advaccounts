@@ -9,6 +9,7 @@
      **/
     namespace ADV\Controllers\Access;
 
+    use ADV\App\Form\Button;
     use ADV\App\Form\Form;
     use ADV\App\Dates;
     use ADV\Core\Auth;
@@ -80,7 +81,7 @@
             $form->hidden('password_iv')->value($this->Session->setFlash('password_iv', $password_iv));
             unset($_POST['user_name'], $_POST['password'], $_POST['SubmitUser'], $_POST['login_company']);
             $form->group('buttons');
-            $form->submit('SubmitUser', "Login -->")->type('small')->type('inverse');
+            $form->submit('SubmitUser', "Login -->")->type(Button::SMALL)->type('inverse');
             $form->end();
             if ($this->User->logged) {
                 $view['date'] = $this->Dates->today() . " | " . $this->Dates->now();
