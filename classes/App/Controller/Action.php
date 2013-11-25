@@ -89,8 +89,8 @@
     protected function runValidation() {
     }
     protected function runAction() {
-      if ($this->action && is_callable(array($this, $this->action))) {
-        call_user_func(array($this, $this->action));
+      if ($this->action && is_callable([$this, $this->action])) {
+        call_user_func([$this, $this->action]);
       }
     }
   }

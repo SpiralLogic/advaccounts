@@ -194,13 +194,13 @@
       Display::heading($title);
       $this->Ajax->start_div('items_table');
       Table::start('tables_style grid width95');
-      $th = array(
+      $th = [
         _("Account Code"),
         _("Account Description"),
         _("Amount"),
         _("Memo"),
         ""
-      );
+      ];
       if (count($this->order->gl_items)) {
         $th[] = '';
       }
@@ -291,9 +291,7 @@
       echo '</tr>';
     }
     protected function quickEntries() {
-      GL_QuickEntry::addEntry(
-        $this->order, $_POST['person_id'], Validation::input_num('total_amount'), $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
-      );
+      GL_QuickEntry::addEntry($this->order, $_POST['person_id'], Validation::input_num('total_amount'), $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT);
       $_POST['total_amount'] = Num::_priceFormat(0);
       $this->Ajax->activate('total_amount');
       Item_Line::start_focus('_code_id_edit');

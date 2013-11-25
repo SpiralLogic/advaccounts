@@ -149,10 +149,10 @@
     public static function format() {
       $msg_class = [
         E_USER_ERROR        => ['ERROR', 'err_msg'],
-        E_RECOVERABLE_ERROR => array('ERROR', 'err_msg'),
-        E_USER_WARNING      => array('WARNING', 'warn_msg'),
-        E_USER_NOTICE       => array('USER', 'info_msg'),
-        E_SUCCESS           => array('SUCCESS', 'success_msg')
+        E_RECOVERABLE_ERROR => ['ERROR', 'err_msg'],
+        E_USER_WARNING      => ['WARNING', 'warn_msg'],
+        E_USER_NOTICE       => ['USER', 'info_msg'],
+        E_SUCCESS           => ['SUCCESS', 'success_msg']
       ];
       $content   = '';
       foreach (static::$messages as $msg) {
@@ -162,7 +162,6 @@
         $class = $msg_class[$msg['type']] ? : $msg_class[E_USER_NOTICE];
         $content .= "<div class='$class[1]'>" . $msg['message'] . "</div>\n";
       }
-      Ajax::i()->debug=static::$messages;
       if (static::$current_severity > -1) {
         if (class_exists('JS', false)) {
           JS::_beforeload("Adv.Status.show();");
@@ -252,6 +251,7 @@
         static::exceptionHandler($error);
       }
       if (class_exists('Ajax', false) && Ajax::_inAjax()) {
+        Ajax::i()->debug=static::$errors;
         Ajax::_run();
       } elseif (REQUEST_AJAX && REQUEST_JSON && !static::$jsonerrorsent) {
         ob_end_clean();
@@ -326,7 +326,7 @@
      * @return string
      */
       protected static function getJSONError() {
-          return json_encode(array('status' => static::JSONError()));
+          return json_encode(['status' => static::JSONError()]);
       }
       /**
        * @static
@@ -367,7 +367,7 @@
       foreach ($args as $arg) {
         $content[] = static::dumpVar($arg, true);
       }
-      $error              = array('line' => $source['line'], 'file' => $source['file'], 'content' => $content);
+      $error              = ['line' => $source['line'], 'file' => $source['file'], 'content' => $content];
       static::$debugLog[] = $error;
       error_log(
         date(DATE_RFC822) . ' ' . 'LOG' . ": " . print_r($content, true) . " in file: " . $error['file'] . " on line:" . $error['line'] . "\n\n", 3, ROOT_DOC . '../error_log'
