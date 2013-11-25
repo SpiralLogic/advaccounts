@@ -165,7 +165,7 @@
        *
        * @return null|PDOStatement
        */
-      public static function getAll($all = false) {
+      public static function  getAll($all = false) {
         $sql = "SELECT * FROM item_units";
         if (!$all) {
           $sql .= " WHERE !inactive";

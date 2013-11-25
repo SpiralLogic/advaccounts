@@ -8,14 +8,15 @@
      */
     class Purchase extends \ADV\App\DB\Base {
       protected $_table = 'purch_data';
-      protected $_classname = 'Purch_data';
+      protected $_classname = 'Pruchase Price';
       protected $_id_column = 'id';
-      public $id;
-      public $creditor_id;
+      public $id=0;
+      public $creditor_id=0;
       public $stock_id;
       public $stockid;
       public $price = 0.0000;
-      public $suppliers_uom;
+      public $suppliers_uom='ea';
+      public $supplier;
       public $conversion_factor = 1.00000000;
       public $supplier_description;
       public $last_update;
@@ -51,8 +52,9 @@
         if (strlen($this->stock_id) > 20) {
           return $this->status(false, 'Stock_id must be not be longer than 20 characters!', 'stock_id');
         }
-        if (!Validation::is_num($this->stockid, 0)) {
-          return $this->status(false, 'Stockid must be a number', 'stockid');
+        $this->stockid = Item::getStockID((string) $this->stock_id);
+        if (!$this->stockid) {
+          return $this->status(false, 'Can\'t add prive to non-existing item', 'stock_id');
         }
         if (!Validation::is_num($this->price, 0)) {
           return $this->status(false, 'Price must be a number and $0 or more', 'price');
@@ -69,6 +71,9 @@
         }
         if (strlen($this->supplier_description) > 20) {
           return $this->status(false, 'Supplier_description must be not be longer than 20 characters!', 'supplier_description');
+        }
+        if (!strlen($this->supplier_description)) {
+          $this->supplier_description = $this->stock_id;
         }
         return true;
       }
