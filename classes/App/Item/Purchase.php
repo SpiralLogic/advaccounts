@@ -8,7 +8,7 @@
      */
     class Purchase extends \ADV\App\DB\Base {
       protected $_table = 'purch_data';
-      protected $_classname = 'Pruchase Price';
+      protected $_classname = 'Purchase Price';
       protected $_id_column = 'id';
       public $id=0;
       public $creditor_id=0;
