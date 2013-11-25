@@ -47,16 +47,13 @@
     protected $trans_no;
     protected $type;
     protected function before() {
-      if ($this->Input->hasSession('pay_items')) {
-        $this->order = $this->Input->session('pay_items');
-      }
-      if (!$this->order) {
         if ($this->Input->get('NewPayment')) {
           $this->newOrder(ST_BANKPAYMENT);
         } elseif ($this->Input->get('NewDeposit')) {
           $this->newOrder(ST_BANKDEPOSIT);
+      } elseif ($this->Input->hasSession('pay_items')) {
+        $this->order = $this->Input->session('pay_items');
         }
-      }
       $this->security = $this->order->trans_type == ST_BANKPAYMENT ? SA_PAYMENT : SA_DEPOSIT;
       $this->JS->openWindow(950, 500);
       $this->type = $this->order->trans_type == ST_BANKPAYMENT ? 'Payment' : 'Deposit';
@@ -301,7 +298,7 @@
       echo '</tr>';
     }
     protected function quickEntries() {
-      GL_QuickEntry::addEntry(
+      $result =  GL_QuickEntry::addEntry(
         $this->order,
         $_POST['person_id'],
         Validation::input_num('total_amount'),
@@ -309,7 +306,7 @@
       );
       $_POST['total_amount'] = Num::_priceFormat(0);
       $this->Ajax->activate('total_amount');
-      Item_Line::start_focus('_code_id_edit');
+      ($result===false) ? $this->JS->setFocus('person_id') : Item_Line::start_focus('_code_id_edit');
     }
     /**
      * @return bool

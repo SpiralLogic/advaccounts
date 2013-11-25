@@ -245,7 +245,7 @@
         $taxbase = 0;
         if (!count($qe_lines)) {
           Event::error(_('There are no lines for this quick entry!'));
-          Page::footer_exit();
+            return false;
         }
         foreach ($qe_lines as $qe_line) {
           switch (strtolower($qe_line['action'])) {
