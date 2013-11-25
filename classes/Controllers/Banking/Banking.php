@@ -291,10 +291,15 @@
       echo '</tr>';
     }
     protected function quickEntries() {
-      GL_QuickEntry::addEntry($this->order, $_POST['person_id'], Validation::input_num('total_amount'), $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT);
+      $result =  GL_QuickEntry::addEntry(
+        $this->order,
+        $_POST['person_id'],
+        Validation::input_num('total_amount'),
+        $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
+      );
       $_POST['total_amount'] = Num::_priceFormat(0);
       $this->Ajax->activate('total_amount');
-      Item_Line::start_focus('_code_id_edit');
+      ($result===false) ? $this->JS->setFocus('person_id') : Item_Line::start_focus('_code_id_edit');
     }
     /**
      * @return bool
