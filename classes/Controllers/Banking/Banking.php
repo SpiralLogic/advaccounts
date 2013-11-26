@@ -2,6 +2,7 @@
   namespace ADV\Controllers\Banking;
 
   use ADV\App\Bank\Bank;
+
   use Item_Order;
   use GL_Bank;
   use ADV\Core\Event;
@@ -39,7 +40,7 @@
    **/
   class Banking extends \ADV\App\Controller\Action
   {
-    /** @var Item_Order */
+    /** @var \Item_Order */
     protected $order;
     protected $security;
     protected $trans_type;

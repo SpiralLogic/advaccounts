@@ -116,7 +116,7 @@
     {
 
       public static $actions
-        = array(
+        = [
           '='  => 'Remainder', // post current base amount to GL account
           'a'  => 'Amount', // post amount to GL account
           'a+' => 'Amount, increase base', // post amount to GL account and increase base
@@ -130,14 +130,14 @@
           't'  => 'Taxes included', // post taxes calculated on base amount
           't+' => 'Taxes included, increase base', // ditto & increase base amount
           't-' => 'Taxes included, reduce base' // ditto & reduce base amount
-        );
+        ];
       public static $types
-        = array(
+        = [
           QE_DEPOSIT => "Bank Deposit", //
           QE_PAYMENT => "Bank Payment", //
           QE_JOURNAL => "Journal Entry", //
           QE_SUPPINV => "Supplier Invoice/Credit"
-        );
+        ];
       /**
        * @static
        *
@@ -314,7 +314,7 @@
       /**
        * @static
        *
-       * @param        $order
+       * @param Sales_Order|Purch_Order $order
        * @param        $id
        * @param        $base
        * @param        $type
@@ -465,12 +465,12 @@
           $sql,
           'id',
           'description',
-          array(
+          [
             'spec_id'       => '',
             'order'         => 'description',
             'select_submit' => $submit_on_change,
             'async'         => false
-          )
+          ]
         );
       }
       /**
@@ -514,7 +514,7 @@
        */
       public static function actions($label, $name, $selected_id = null, $submit_on_change = false) {
         echo "<tr><td class='label'>$label</td><td>";
-        echo Forms::arraySelect($name, $selected_id, static::$actions, array('select_submit' => $submit_on_change));
+        echo Forms::arraySelect($name, $selected_id, static::$actions, ['select_submit' => $submit_on_change]);
         echo "</td></tr>\n";
       }
       /**
@@ -527,7 +527,7 @@
        */
       public static function types($label, $name, $selected_id = null, $submit_on_change = false) {
         echo "<tr><td class='label'>$label</td><td>";
-        echo Forms::arraySelect($name, $selected_id, static::$types, array('select_submit' => $submit_on_change));
+        echo Forms::arraySelect($name, $selected_id, static::$types, ['select_submit' => $submit_on_change]);
         echo "</td></tr>\n";
       }
     }

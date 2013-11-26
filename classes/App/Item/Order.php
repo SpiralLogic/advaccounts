@@ -13,11 +13,11 @@
   /**
    *
    */
-  class Item_Order
+  class   Item_Order
   {
     /** @var */
     public $trans_type;
-    /** @var */
+    /** @var Item_Line[] */
     public $line_items;
     /** @var */
     public $gl_items;
@@ -216,7 +216,7 @@
     /**
      * @static
      *
-     * @param $order
+     * @param Item_Order $order
      * @param $new_item
      * @param $new_item_qty
      * @param $standard_cost
