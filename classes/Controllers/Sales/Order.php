@@ -10,10 +10,15 @@
   namespace ADV\Controllers\Sales;
 
   use ADV\App\Controller\Action;
+  use ADV\App\Dimensions;
   use ADV\App\Form\Button;
   use ADV\App\Tax\Tax;
   use ADV\Core\Cell;
   use ADV\Core\HTML;
+  use Bank_Currency;
+  use Debtor_Branch;
+  use Debtor_Payment;
+  use GL_ExchangeRate;
   use Item_Price;
   use Modules\Jobsboard\Jobsboard;
   use Sales_Point;
@@ -41,6 +46,7 @@
   use ADV\App\Dates;
   use ADV\Core\Event;
   use ADV\Core\Input\Input;
+  use Sales_Type;
   use Sales_UI;
 
   /** **/
@@ -119,7 +125,7 @@
       $corder          = _("Commit $type_name_short Changes");
       $porder          = _("Place $type_name_short");
       Forms::start();
-      $this->order->header($idate);
+      $this->header($idate);
       Forms::hidden('order_id');
       Table::start('tablesstyle center width90 pad10');
       echo "<tr><td>";
@@ -790,6 +796,183 @@
         Forms::submitCells(FORM_ACTION, Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
       }
       echo '</tr>';
+    }
+    /**
+     * @param      $date_text
+     * @param bool $display_tax_group
+     *
+     * @return mixed|string
+     */
+    public function header($date_text, $display_tax_group = false) {
+      $editable = ($this->order->any_already_delivered() == 0);
+      Table::startOuter('standard width90');
+      Table::section(1);
+      $customer_error = "";
+      $change_prices  = 0;
+      if (!$editable) {
+        if (isset($this)) {
+          // can't change the customer/branch if items already received on this order
+          //echo $this->order->customer_name . " - " . $this->order->deliver_to;
+          Table::label(_('Customer:'), $this->order->customer_name . " - " . $this->order->deliver_to, "id='debtor_id_label' class='label pointer'");
+          Forms::hidden('debtor_id', $this->order->debtor_id);
+          Forms::hidden('branch_id', $this->order->Branch);
+          Forms::hidden('sales_type', $this->order->sales_type);
+          //		if ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE) {
+          Forms::hidden('dimension_id', $this->order->dimension_id); // 2008-11-12 Joe Hunt
+          Forms::hidden('dimension2_id', $this->order->dimension2_id);
+          //		}
+        }
+      } else {
+        //Debtor::row(_("Customer:"), 'debtor_id', null, false, true, false, true);
+        Debtor::newselect();
+        if (Input::_post(FORM_CONTROL) == 'customer') {
+          // customer has changed
+          $this->JS->setFocus('stock_id');
+          $this->Ajax->activate('_page_body');
+        }
+        Debtor_Branch::row(_("Branch:"), $_POST['debtor_id'], 'branch_id', null, false, true, true, true);
+        if (($this->order->Branch != Input::_post('branch_id', null, -1))) {
+          if (!isset($_POST['branch_id']) || !$_POST['branch_id']) {
+            // ignore errors on customer search box call
+            if (!$_POST['debtor_id']) {
+              Event::warning("No customer found for entered text.", false);
+            } else {
+              Event::warning("The selected customer does not have any branches. Please create at least one branch.", false);
+            }
+            unset($_POST['branch_id']);
+            $this->order->Branch = 0;
+          } else {
+            $old_order                 = clone($this);
+            $customer_error            = $this->order->customer_to_order($_POST['debtor_id'], $_POST['branch_id']);
+            $_POST['location']         = $this->order->location;
+            $_POST['deliver_to']       = $this->order->deliver_to;
+            $_POST['delivery_address'] = $this->order->delivery_address;
+            $_POST['name']             = $this->order->name;
+            $_POST['phone']            = $this->order->phone;
+            if (Input::_post('cash') !== $this->order->cash) {
+              $_POST['cash'] = $this->order->cash;
+              $this->Ajax->activate('delivery');
+              $this->Ajax->activate('cash');
+            } else {
+              if ($this->order->trans_type == ST_SALESINVOICE) {
+                $_POST['delivery_date'] = $this->order->due_date;
+                $this->Ajax->activate('delivery_date');
+              }
+              $this->Ajax->activate('location');
+              $this->Ajax->activate('deliver_to');
+              $this->Ajax->activate('name');
+              $this->Ajax->activate('phone');
+              $this->Ajax->activate('delivery_address');
+            }
+            // change prices if necessary
+            // what about discount in template case?
+            /** @var Sales_Order $old_order */
+            if ($old_order->customer_currency != $this->order->customer_currency) {
+              $change_prices = 1;
+            }
+            if ($old_order->sales_type != $this->order->sales_type) {
+              // || $old_order->default_discount!=$this->order->default_discount
+              $_POST['sales_type'] = $this->order->sales_type;
+              $this->Ajax->activate('sales_type');
+              $change_prices = 1;
+            }
+            if ($old_order->dimension_id != $this->order->dimension_id) {
+              $_POST['dimension_id'] = $this->order->dimension_id;
+              $this->Ajax->activate('dimension_id');
+            }
+            if ($old_order->dimension2_id != $this->order->dimension2_id) {
+              $_POST['dimension2_id'] = $this->order->dimension2_id;
+              $this->Ajax->activate('dimension2_id');
+            }
+            unset($old_order);
+          }
+          Session::_setGlobal('debtor_id', $_POST['debtor_id']);
+        } // changed branch
+        else {
+          $row = Sales_Order::get_customer($_POST['debtor_id']);
+          if ($row['dissallow_invoices'] == 1) {
+            $customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
+          }
+        }
+      }
+      if ($editable) {
+        Forms::refRow(_("Reference") . ':', 'ref', _('Reference number unique for this document type'), $this->order->reference ? : Ref::get_next($this->order->trans_type), '');
+      } else {
+        Forms::hidden('ref', $this->order->reference);
+        Table::label(_("Reference:"), $this->order->reference);
+      }
+      if (!Bank_Currency::is_company($this->order->customer_currency)) {
+        Table::section(2);
+        Table::label(_("Customer Currency:"), $this->order->customer_currency);
+        GL_ExchangeRate::display(
+                       $this->order->customer_currency, Bank_Currency::for_company(), ($editable && Input::_post('OrderDate') ? $_POST['OrderDate'] : $this->order->document_date)
+        );
+      }
+      Table::section(3);
+      if ($_POST['debtor_id']) {
+        Debtor_Payment::credit_row($_POST['debtor_id'], $this->order->credit);
+      }
+      if ($editable) {
+        Sales_Type::row(_("Price List"), 'sales_type', null, true);
+      } else {
+        Table::label(_("Price List:"), $this->order->sales_type_name);
+      }
+      if ($this->order->sales_type != $_POST['sales_type']) {
+        $myrow = Sales_Type::get($_POST['sales_type']);
+        $this->order->set_sales_type($myrow['id'], $myrow['sales_type'], $myrow['tax_included'], $myrow['factor']);
+        $this->Ajax->activate('sales_type');
+        $change_prices = 1;
+      }
+      Table::label(_("Customer Discount:"), ($this->order->default_discount * 100) . "%");
+      Table::section(4);
+      if ($editable) {
+        if (!isset($_POST['OrderDate']) || !$_POST['OrderDate']) {
+          $_POST['OrderDate'] = $this->order->document_date;
+        }
+        Forms::dateRow($date_text, 'OrderDate', null, $this->order->trans_no == 0, 0, 0, 0, null, true);
+        if (isset($_POST['_OrderDate_changed'])) {
+          if (!Bank_Currency::is_company($this->order->customer_currency) && (DB_Company::_get_base_sales_type() > 0)) {
+            $change_prices = 1;
+          }
+          $this->Ajax->activate('_ex_rate');
+          if ($this->order->trans_type == ST_SALESINVOICE) {
+            $_POST['delivery_date'] = Sales_Order::get_invoice_duedate(Input::_post('debtor_id'), Input::_post('OrderDate'));
+          } else {
+            $_POST['delivery_date'] = Dates::_addDays(Input::_post('OrderDate'), DB_Company::_get_pref('default_delivery_required'));
+          }
+          $this->Ajax->activate('items_table');
+          $this->Ajax->activate('delivery_date');
+        }
+        if ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt added dimensions
+          $dim = DB_Company::_get_pref('use_dimension');
+          if ($dim > 0) {
+            Dimensions::select_row(_("Dimension") . ":", 'dimension_id', null, true, ' ', false, 1, false);
+          } else {
+            Forms::hidden('dimension_id', 0);
+          }
+          if ($dim > 1) {
+            Dimensions::select_row(_("Dimension") . " 2:", 'dimension2_id', null, true, ' ', false, 2, false);
+          } else {
+            Forms::hidden('dimension2_id', 0);
+          }
+        }
+      } else {
+        Table::label($date_text, $this->order->document_date);
+        Forms::hidden('OrderDate', $this->order->document_date);
+      }
+      if ($display_tax_group) {
+        Table::label(_("Tax Group:"), $this->order->tax_group_name);
+        Forms::hidden('tax_group_id', $this->order->tax_group_id);
+      }
+      Sales_UI::persons_row(_("Sales Person:"), 'salesman', (isset($this->order->salesman)) ? $this->order->salesman : $this->User->i()->salesmanid);
+      Table::endOuter(1); // outer table
+      if ($change_prices != 0) {
+        foreach ($this->order->line_items as $line) {
+          $line->price = Item_Price::get_kit($line->stock_id, $this->order->customer_currency, $this->order->sales_type, $this->order->price_factor, Input::_post('OrderDate'));
+        }
+        $this->Ajax->activate('items_table');
+      }
+      return $customer_error;
     }
   }
 

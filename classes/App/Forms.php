@@ -1342,14 +1342,14 @@
         $post_label = null;
       }
       if ($post_label) {
-        echo "<div class='input-group'>";
+        echo "<div class='input-append'>";
       } elseif ($pre_label) {
-        echo "<div class='input-group'>";
+        echo "<div class='input-prepend'>";
       }
       if ($pre_label) {
-        echo "<span class='input-group-addon' id='_{$name}_label'>$pre_label</span><input $inputparams></div>";
+        echo "<span class='add-on' id='_{$name}_label'>$pre_label</span><input $inputparams></div>";
       } elseif ($post_label) {
-        echo "<input $inputparams><span class='input-group-addon' id='_{$name}_label'>$post_label</span></div>";
+        echo "<input $inputparams><span class='add-on' id='_{$name}_label'>$post_label</span></div>";
         static::$Ajax->addUpdate($name, '_' . $name . '_label', $post_label);
       } else {
         echo "<input $inputparams>";
