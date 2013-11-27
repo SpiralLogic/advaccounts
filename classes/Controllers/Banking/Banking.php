@@ -47,13 +47,16 @@
     protected $trans_no;
     protected $type;
     protected function before() {
+      if ($this->Input->hasSession('pay_items')) {
+        $this->order = $this->Input->session('pay_items');
+      }
+      if (!$this->order) {
         if ($this->Input->get('NewPayment')) {
           $this->newOrder(ST_BANKPAYMENT);
         } elseif ($this->Input->get('NewDeposit')) {
           $this->newOrder(ST_BANKDEPOSIT);
-      } elseif ($this->Input->hasSession('pay_items')) {
-        $this->order = $this->Input->session('pay_items');
         }
+      }
       $this->security = $this->order->trans_type == ST_BANKPAYMENT ? SA_PAYMENT : SA_DEPOSIT;
       $this->JS->openWindow(950, 500);
       $this->type = $this->order->trans_type == ST_BANKPAYMENT ? 'Payment' : 'Deposit';
