@@ -426,17 +426,17 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                                       dateFormat:       'dd/mm/yy'}).off('focus.datepicker');
                });
                return {
-                 findInputEl:    function (id) {
+                 findInputEl:     function (id) {
                    var els = document.getElementsByName(id);
                    if (!els.length) {
                      els = [document.getElementById(id)];
                    }
                    return els;
                  },
-                 getFormEl:      function (name, form) {
+                 getFormEl:       function (name, form) {
                    return $(Array.prototype.slice.call(form.elements)).filter('[name=' + name.replace(/([^A-Za-z0-9_\u00A1-\uFFFF-])/g, "\\$1") + ']');
                  },
-                 setFormValue:   function (id, value, form, disabled) {
+                 setFormValue:    function (id, value, form, disabled) {
                    var isdefault, els, values = {};
                    if (value !== null && typeof value === 'object') {
                      if (value.value === undefined) {
@@ -464,7 +464,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    });
                    return els;
                  },
-                 setFormValues:  function (data, form) {
+                 setFormValues:   function (data, form) {
                    var focused = false;
                    /** @namespace data._form_id */
                    if (data._form_id) {
@@ -491,13 +491,13 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      }
                    });
                  },
-                 setFormDefault: function (id, value, form, disabled) {
+                 setFormDefault:  function (id, value, form, disabled) {
                    if (form) {
                      form = document.getElementsByName(form)[0];
                    }
                    this.setFormValue(id, value, form, disabled, true);
                  },
-                 autocomplete:   (function () {
+                 autocomplete:    (function () {
                    var init = false //
                      , fieldStore = [] //
                      , blank = {id: 0, value: ''}//
@@ -626,7 +626,10 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    return num;
                  },
                  priceFormat:     function (post, num, dec, label, color) {
-                   var sign, el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
+                   var sign, el = post;
+                   if (typeof post == 'String') {
+                     el = label ? document.getElementById(post) : document.getElementsByName(post)[0]
+                   }
                    //num = num.toString().replace(/\$|\,/g,'');
                    num = Adv.Forms.toPrice(num, dec);
                    if (label) {

@@ -11,6 +11,10 @@
 
   use ADV\App\Controller\Action;
   use ADV\App\Form\Button;
+  use ADV\App\Tax\Tax;
+  use ADV\Core\Cell;
+  use ADV\Core\HTML;
+  use Item_Price;
   use Modules\Jobsboard\Jobsboard;
   use Sales_Point;
   use Sales_Order;
@@ -37,6 +41,7 @@
   use ADV\App\Dates;
   use ADV\Core\Event;
   use ADV\Core\Input\Input;
+  use Sales_UI;
 
   /** **/
   class Order extends Action
@@ -119,7 +124,7 @@
       Table::start('tablesstyle center width90 pad10');
       echo "<tr><td>";
       $edit_line = $this->getActionId(Orders::EDIT_LINE);
-      $this->order->summary($orderitems, $edit_line);
+      $this->summary($orderitems, $edit_line);
       echo "</td></tr><tr><td>";
       $this->order->display_delivery_details();
       echo "</td></tr>";
@@ -600,6 +605,191 @@
       if (isset($this->typeSecurity[$value])) {
         $this->security = $this->typeSecurity[$value];
       }
+    }
+    /**
+     * @param      $title
+     * @param bool $editable_items
+     */
+    public function summary($title, $editable_items = false) {
+      Display::heading($title);
+      if (count($this->order->line_items) > 0) {
+        $label  = _("Create PO from this order");
+        $target = "/purchases/order?NewOrder=Yes&UseOrder=" . $this->order->order_id . "' class='button'";
+        $pars   = Display::access_string($label);
+        echo "<div class='center'><a target='_blank' href='$target' $pars[1]>$pars[0]</a></div>";
+        $label  = _("Dropship this order");
+        $target = "/purchases/order?NewOrder=Yes&UseOrder=" . $this->order->order_id . "&DRP=1' class='button   '";
+        $pars   = Display::access_string($label);
+        echo "<div class='center'><a target='_blank' href='$target' $pars[1]>$pars[0]</a></div>";
+      }
+      $this->Ajax->start_div('items_table');
+      Table::start('padded width90 grid');
+      $th = array(
+        _("Item Code"),
+        _("Item Description"),
+        _("Quantity"),
+        _("Delivered"),
+        _("Unit"),
+        _("Price"),
+        _("Discount %"),
+        _("Total"),
+        "",
+        ""
+      );
+      if ($this->order->trans_no == 0) {
+        unset($th[3]);
+      }
+      if (count($this->order->line_items)) {
+        $th[] = '';
+      }
+      Table::header($th);
+      $total_discount = $total = 0;
+      $id             = $editable_items;
+      $editable_items = ($editable_items === false) ? false : true;
+      $has_marked     = false;
+      foreach ($this->order->line_items as $line_no => $stock_item) {
+        $line_total    = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent), $this->User->price_dec());
+        $line_discount = round($stock_item->qty_dispatched * $stock_item->price, $this->User->price_dec()) - $line_total;
+        $qoh_msg       = '';
+        if (!$editable_items || $id != $line_no) {
+          $row_class = '';
+          if (!DB_Company::_get_pref('allow_negative_stock') && Item::is_inventory_item($stock_item->stock_id)) {
+            $qoh = Item::get_qoh_on_date($stock_item->stock_id, $_POST['location'], $_POST['OrderDate']);
+            if ($stock_item->qty_dispatched > $qoh) {
+              // oops, we don't have enough of one of the component items
+              $row_class = "class='stockmankobg'";
+              $qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::_format(
+                                                                                                                               $qoh, Item::qty_dec($stock_item->stock_id)
+                ) . '<br>';
+              $has_marked = true;
+            }
+          }
+          echo '<tr' . $row_class . 'data-line=' . $line_no . '>';
+          Cell::label($stock_item->stock_id, "class='stock pointer' data-stock_id='{$stock_item->stock_id}'");
+          //Cell::label($stock_item->description, ' class="nowrap"' );
+          Cell::description($stock_item->description);
+          $dec = Item::qty_dec($stock_item->stock_id);
+          Cell::qty($stock_item->qty_dispatched, false, $dec);
+          if ($this->order->trans_no != 0) {
+            Cell::qty($stock_item->qty_done, false, $dec);
+          }
+          Cell::label($stock_item->units);
+          Cell::amount($stock_item->price);
+          Cell::percent($stock_item->discount_percent * 100);
+          Cell::amount($line_total);
+          if ($editable_items) {
+            Forms::buttonEditCell($line_no, _("Edit"), _('Edit document line'));
+            Forms::buttonDeleteCell($line_no, _("Delete"), _('Remove line from document'));
+          }
+          echo '</tr>';
+        } else {
+          $this->item_controls($id, $line_no);
+        }
+        $total += $line_total;
+        $total_discount += $line_discount;
+      }
+      if ($id == -1 && $editable_items) {
+        $this->item_controls($id);
+        UI::lineSortable();
+      }
+      $colspan = 6;
+      if ($this->order->trans_no != 0) {
+        ++$colspan;
+      }
+      Table::foot();
+      echo '<tr>';
+      Cell::label(_("Shipping Charge"), "colspan=$colspan class='alignright'");
+      Forms::amountCellsSmall(null, 'freight_cost', Num::_priceFormat(Input::_post('freight_cost', null, 0)), null, ['$']);
+      Cell::label('', 'colspan=2');
+      echo '</tr>';
+      $display_sub_total = Num::_priceFormat($total + Validation::input_num('freight_cost'));
+      echo '<tr>';
+      Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
+      Forms::amountCellsSmall(null, 'totalDiscount', $total_discount, null, ['$']);
+      echo (new HTML)->td(null, array('colspan' => 2, 'class' => 'center'))->button(
+                     'discountAll', 'Discount All', array('name' => FORM_ACTION, 'value' => 'discountAll'), false
+      );
+      Forms::hidden('_discountAll', '0', true);
+      echo HTML::td();
+      $action = "var discount = prompt('Discount Percent?',''); if (!discount) return false; $(\"[name='_discountAll']\").val(Number(discount));e=$(this);Adv.Forms.saveFocus(e);JsHttpRequest.request(this);return false;";
+      $this->JS->addLiveEvent('#discountAll', 'click', $action);
+      echo '</tr>';
+      Table::label(_("Sub-total"), $display_sub_total, "colspan=$colspan  class='alignright'", "class='alignright'", 2);
+      $taxes         = $this->order->get_taxes(Validation::input_num('freight_cost'));
+      $tax_total     = Tax::edit_items($taxes, $colspan, $this->order->tax_included, 2);
+      $display_total = Num::_priceFormat(($total + Validation::input_num('freight_cost') + $tax_total));
+      echo '<tr>';
+      Cell::labelled(_("Total"), $display_total, "colspan=$colspan class='alignright'", "class='alignright'");
+      Forms::submitCells(FORM_ACTION, Orders::REFRESH, "colspan=2", _("Refresh"), true);
+      echo '</tr>';
+      Table::footEnd();
+      Table::end();
+      if ($has_marked) {
+        Event::notice(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
+      }
+      if ($this->order->trans_type != 30 && !DB_Company::_get_pref('allow_negative_stock')) {
+        Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:") . '<br>' . $qoh_msg);
+      }
+      $this->Ajax->end_div();
+    }
+    /**
+     * @param $id
+     * @param $line_no
+     *
+     * @internal param $rowcounter
+     */
+    public function item_controls($id, $line_no = -1) {
+      if ($line_no != -1 && $line_no == $id) // edit old line
+      {
+        echo '<tr' . 'class="editline"' . '>';
+        $_POST['stock_id']    = $this->order->line_items[$id]->stock_id;
+        $dec                  = Item::qty_dec($_POST['stock_id']);
+        $_POST['qty']         = Num::_format($this->order->line_items[$id]->qty_dispatched, $dec);
+        $_POST['price']       = Num::_priceFormat($this->order->line_items[$id]->price);
+        $_POST['Disc']        = Num::_percentFormat($this->order->line_items[$id]->discount_percent * 100);
+        $_POST['description'] = $this->order->line_items[$id]->description;
+        $units                = $this->order->line_items[$id]->units;
+        Forms::hidden('stock_id', $_POST['stock_id']);
+        Cell::label($_POST['stock_id'], 'class="stock"');
+        Forms::textareaCells(null, 'description', null, 50, 5);
+        $this->Ajax->activate('items_table');
+      } else // prepare new line
+      {
+        echo '<tr ' . 'class="newline"' . '>';
+        Sales_UI::items_cells(null, 'stock_id', null, false, false, array('description' => '', 'sales_type' => $this->order->sales_type));
+        if (Forms::isListUpdated('stock_id')) {
+          $this->Ajax->activate('price');
+          $this->Ajax->activate('description');
+          $this->Ajax->activate('units');
+          $this->Ajax->activate('qty');
+          $this->Ajax->activate('line_total');
+        }
+        $item_info      = Item::get_edit_info(Input::_post('stock_id'));
+        $units          = $item_info["units"];
+        $dec            = $item_info['decimals'];
+        $_POST['qty']   = Num::_format(1, $dec);
+        $price          = Item_Price::get_kit(Input::_post('stock_id'), $this->order->customer_currency, $this->order->sales_type, $this->order->price_factor, Input::_post('OrderDate'));
+        $_POST['price'] = Num::_priceFormat($price);
+        $_POST['Disc']  = Num::_percentFormat($this->order->default_discount * 100);
+      }
+      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
+      if ($this->order->trans_no != 0) {
+        Cell::qty($line_no == -1 ? 0 : $this->order->line_items[$line_no]->qty_done, false, $dec);
+      }
+      Cell::label($units, '', 'units');
+      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$']);
+      Forms::percentCells(null, 'Disc', Num::_percentFormat($_POST['Disc']));
+      $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
+      Cell::amount($line_total, false, '', 'line_total');
+      if ($id != -1) {
+        Forms::buttonCell(FORM_ACTION, Orders::UPDATE_ITEM, _("Update"), ICON_UPDATE); //_('Confirm changes'),
+        Forms::buttonCell(FORM_ACTION, Orders::CANCEL_ITEM_CHANGES, _("Cancel"), ICON_CANCEL); //, _('Cancel changes')
+        Forms::hidden('LineNo', $line_no);
+        $this->JS->setFocus('qty');
+      } else {
+        Forms::submitCells(FORM_ACTION, Orders::ADD_LINE, 'colspan=2 class="center"', _("Add Item"), true); //_('Add new item to document'),
+      }
+      echo '</tr>';
     }
   }
 
