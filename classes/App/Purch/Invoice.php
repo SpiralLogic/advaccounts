@@ -678,8 +678,7 @@ the credit is to creditors control act done later for the total invoice value + 
         $supp                 = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
         Cell::labelled('Supplier', $supp . Forms::hidden('creditor_id', $_POST['creditor_id'], false));
       } else {
-        Creditor::newselect($creditor_trans->supplier_name, array('row'=> false));
-        JS::_setFocus('creditor_id');
+        Creditor::newselect($creditor_trans->creditor_id, ['row' => false]);
       }
       if ($creditor_trans->creditor_id != $_POST['creditor_id']) {
         // supplier has changed

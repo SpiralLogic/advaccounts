@@ -460,7 +460,7 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null, $options = []) {
+    public static function newselect($creditor_id = null, $options = []) {
       $o     = [
         'row'         => true, //
         'cell_params' => [], //
@@ -470,20 +470,22 @@ JS;
         'cell_class'  => null
       ];
       $o     = array_merge($o, $options);
+      $value = null;
       $focus = false;
-      if (!$value && Input::_post('creditor')) {
+      if (!$creditor_id && Input::_hasPost(['creditor', 'creditor_id'])) {
         $value = $_POST['creditor'];
+        $creditor_id = $_POST['creditor_id'];
         JS::_setFocus('stock_id');
-      } elseif (!$value) {
-        $value = Session::_getGlobal('creditor_id');
-        if ($value) {
-          $_POST['creditor_id'] = $value;
-          $value                = Creditor::get_name($value);
+      } elseif (!$creditor_id) {
+        $creditor_id = Session::_getGlobal('creditor_id');
+        $value       = Creditor::get_name($creditor_id);
+      }
+      if ($creditor_id) {
+        $_POST['creditor_id'] = $creditor_id;
         } else {
           JS::_setFocus('creditor');
           $focus = true;
         }
-      }
       if ($o['row']) {
         echo '<tr>';
       }

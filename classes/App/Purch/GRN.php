@@ -288,7 +288,7 @@
       if ($ponum) {
         $sql .= " AND purch_orders.order_no=purch_order_details.order_no AND (purch_orders.reference LIKE " . DB::_quote(
           '%' . $ponum . '%'
-        ) . " OR purch_orders.reference LIKE " . DB::_quote('%' . $ponum . '%') . ")";
+        ) . " OR purch_orders.order_no LIKE " . DB::_quote('%' . $ponum . '%') . ")";
       }
       if ($invoice_no != 0) {
         $sql .= " AND  creditor_trans_details.creditor_trans_type=" . ST_SUPPINVOICE . " AND  creditor_trans_details.creditor_trans_no=$invoice_no AND  grn_items.id= creditor_trans_details.grn_item_id";
