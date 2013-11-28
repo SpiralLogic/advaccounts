@@ -285,7 +285,7 @@
       if ($ponum) {
         $sql .= " AND purch_orders.order_no=purch_order_details.order_no AND (purch_orders.reference LIKE " . DB::_quote(
           '%' . $ponum . '%'
-        ) . " OR purch_orders.reference LIKE " . DB::_quote('%' . $ponum . '%') . ")";
+        ) . " OR purch_orders.order_no LIKE " . DB::_quote('%' . $ponum . '%') . ")";
       }
       if ($invoice_no != 0) {
         $sql .= " AND  creditor_trans_details.creditor_trans_type=" . ST_SUPPINVOICE . " AND  creditor_trans_details.creditor_trans_no=$invoice_no AND  grn_items.id= creditor_trans_details.grn_item_id";
@@ -685,7 +685,7 @@
       Ajax::_start_div('grn_items');
       Table::start('standard grid width90');
       if ($mode == 1) {
-        $th = array(
+        $th = [
           _("Delivery"),
           _("Seq #"),
           _("P.O."),
@@ -703,7 +703,7 @@
           "",
           "",
           ""
-        );
+        ];
         // if ($creditor_trans->is_invoice && CurrentUser::_get()->hasAccess(SA_GRNDELETE)) // Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
         // $th[] = "";
         if (!$creditor_trans->is_invoice) {
@@ -711,7 +711,7 @@
           $th[8] = _("Credit QTY");
         }
       } else {
-        $th = array(
+        $th = [
           _("Delivery"),
           _("Item"),
           _("Description"),
@@ -721,7 +721,7 @@
           _("Disc %"),
           _("Each Price"),
           _("Line Value")
-        );
+        ];
       }
       Table::header($th);
       $total_grn_value = 0;

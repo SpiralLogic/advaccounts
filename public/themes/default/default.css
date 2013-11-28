@@ -3645,7 +3645,9 @@ table.noborder td {
   width:     auto;
   min-width: 6em;
 }
-
+.grid input .small {
+  width:5em;
+}
 .grid .input-append input, .grid .input-prepend input {
   min-width: 3em;
 }

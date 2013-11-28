@@ -410,9 +410,9 @@
             unset($_SESSION['delivery_po']);
             unset($_POST['PONumber']);
             unset($_POST['creditor_id']);
-            unset($_POST['supplier']);
+            unset($_POST['creditor']);
             Creditor_Trans::killInstance();
-            $this->Session->removeGlobal('creditor');
+            $this->Session->removeGlobal('creditor_id','creditor');
             $this->trans = Creditor_Trans::i(true);
             $this->Ajax->activate('_page_body');
         }

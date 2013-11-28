@@ -642,14 +642,18 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                      el.style.color = (sign) ? '' : '#FF0000';
                    }
                  },
-                 getAmount:       function (id, label) {
+                 getAmount:       function (id) {
                    var val;
-                   if (label) {
-                     val = document.getElementById(id).innerHTML;
+                   if (typeof(id) === "string" ) {
+                     id = Adv.Forms.findInputEl(id)[0];
+                   }
+                   if (id.tagName && id.tagName!=="INPUT") {
+                     val = id.innerHTML;
                    }
                    else {
-                     val = typeof(id) === "string" ? document.getElementsByName(id)[0].value : id.value;
+                     val = id.value;
                    }
+                    console.log(val);
                    val = val.replace(new RegExp('\\' + user.ts, 'g'), '');
                    val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
                    return isNaN(val) ? 0 : val;

@@ -430,9 +430,9 @@ Behaviour.register({
                        }
                      },
                      '[data-dec]':                                                                                                     function (e) {
-                       var dec = e.getAttribute("data-dec");
                        if (!e.onblur) {
                          e.onblur = function () {
+                           var dec = e.getAttribute("data-dec");
                            Adv.Forms.priceFormat(this, Adv.Forms.getAmount(this), dec);
                          };
                          e.onblur();

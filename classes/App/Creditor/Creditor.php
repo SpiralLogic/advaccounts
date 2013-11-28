@@ -37,14 +37,10 @@
     public static function search($terms) {
       $data  = [];
       $terms = preg_replace("/[^a-zA-Z 0-9]+/", " ", $terms);
-      $sql   = static::$staticDB->_select(
-        'creditor_id as id',
-        'name as label',
-        'name as value',
-        "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight"
-      )->from(
-        'suppliers'
-      )->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
+      $sql   = static::$staticDB->_select('creditor_id as id', 'name as label', 'name as value', "IF(name LIKE " . static::$staticDB->_quote(trim($terms) . '%') . ",0,5) as weight"
+      )                         ->from('suppliers'
+        )                       ->where('name LIKE ', trim($terms) . "%")->orWhere('name LIKE ', trim($terms))
+                                ->orWhere('name LIKE', '%' . str_replace(' ', '%', trim($terms)) . "%");
       if (is_numeric($terms)) {
         $sql->orWhere('creditor_id LIKE', "$terms%");
       }
@@ -203,11 +199,7 @@
         return $this->status(false, "The credit limit must be numeric and not less than zero.", 'credit_limit');
       }
       if (!Validation::is_num($this->discount, 0, 100)) {
-        return $this->status(
-          false,
-          'Processing',
-          "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.",
-          'discount'
+        return $this->status(false, 'Processing', "The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0.", 'discount'
         );
       }
       return true;
@@ -260,14 +252,13 @@
       $customerBox = new Dialog('Supplier Edit', 'supplierBox', '');
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#creditor_id").trigger("change")');
-      $customerBox->setOptions(
-        array(
-             'autoOpen'   => false,
-             'modal'      => true,
-             'width'      => '850',
-             'height'     => '715',
-             'resizeable' => true
-        )
+      $customerBox->setOptions(array(
+                                    'autoOpen'   => false,
+                                    'modal'      => true,
+                                    'width'      => '850',
+                                    'height'     => '715',
+                                    'resizeable' => true
+                               )
       );
       $customerBox->show();
       $js
@@ -428,7 +419,7 @@ JS;
      *
      * @return void
      */
-    public static function newselect($value = null, $options = []) {
+    public static function newselect($creditor_id = null, $options = []) {
       $o     = [
         'row'         => true, //
         'cell_params' => [], //
@@ -438,42 +429,41 @@ JS;
         'cell_class'  => null
       ];
       $o     = array_merge($o, $options);
+      $value = null;
       $focus = false;
-      if (!$value && Input::_post('creditor')) {
-        $value = $_POST['creditor'];
+      if (!$creditor_id && Input::_hasPost(['creditor', 'creditor_id'])) {
+        $value       = $_POST['creditor'];
+        $creditor_id = $_POST['creditor_id'];
         JS::_setFocus('stock_id');
-      } elseif (!$value) {
-        $value = Session::_getGlobal('creditor_id');
-        if ($value) {
-          $_POST['creditor_id'] = $value;
-          $value                = Creditor::get_name($value);
-        } else {
-          JS::_setFocus('creditor');
-          $focus = true;
-        }
+      } elseif (!$creditor_id) {
+        $creditor_id = Session::_getGlobal('creditor_id');
+        $value       = Creditor::get_name($creditor_id);
+      }
+      if ($creditor_id) {
+        $_POST['creditor_id'] = $creditor_id;
+      } else {
+        JS::_setFocus('creditor');
+        $focus = true;
       }
       if ($o['row']) {
         echo '<tr>';
       }
       Forms::hidden('creditor_id');
-      UI::search(
-        'creditor',
-        array(
-             'cells'             => true, //
-             'url'               => 'Creditor', ///
-             'label_cell_params' => ['rowspan' => $o['rowspan'], 'class' => 'nowrap label ' . $o['cell_class']], //
-             'idField'           => 'creditor_id',
-             'label'             => $o['label'], //
-             'name'              => 'creditor', //
-             'input_cell_params' => $o['cell_params'], //
-             'focus'             => $focus, //
-             'value'             => $value ? : null,
-        )
+      UI::search('creditor', [
+                             'cells'             => true, //
+                             'url'               => 'Creditor', ///
+                             'label_cell_params' => ['rowspan' => $o['rowspan'], 'class' => 'nowrap label ' . $o['cell_class']], //
+                             'idField'           => 'creditor_id',
+                             'label'             => $o['label'], //
+                             'name'              => 'creditor', //
+                             'input_cell_params' => $o['cell_params'], //
+                             'focus'             => $focus, //
+                             'value'             => $value,
+                             ]
       );
       if ($o['row']) {
         echo "</tr>\n";
       }
-
     }
     /**
      * @static
@@ -491,24 +481,18 @@ JS;
     public static function select($name, $selected_id = null, $spec_option = false, $submit_on_change = false, $all = false) {
       $sql  = "SELECT creditor_id, supp_ref, curr_code, inactive FROM suppliers ";
       $mode = DB_Company::_get_pref('no_supplier_list');
-      return Forms::selectBox(
-        $name,
-        $selected_id,
-        $sql,
-        'creditor_id',
-        'name',
-        array(
-             'format'        => 'Forms::addCurrFormat',
-             'order'         => array('supp_ref'),
-             'search_box'    => $mode != 0,
-             'type'          => 1,
-             'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
-             'spec_id'       => ALL_TEXT,
-             'select_submit' => $submit_on_change,
-             'async'         => false,
-             'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
-             'show_inactive' => $all
-        )
+      return Forms::selectBox($name, $selected_id, $sql, 'creditor_id', 'name', array(
+                                                                                     'format'        => 'Forms::addCurrFormat',
+                                                                                     'order'         => array('supp_ref'),
+                                                                                     'search_box'    => $mode != 0,
+                                                                                     'type'          => 1,
+                                                                                     'spec_option'   => $spec_option === true ? _("All Suppliers") : $spec_option,
+                                                                                     'spec_id'       => ALL_TEXT,
+                                                                                     'select_submit' => $submit_on_change,
+                                                                                     'async'         => false,
+                                                                                     'sel_hint'      => $mode ? _('Press Space tab to filter by name fragment') : _('Select supplier'),
+                                                                                     'show_inactive' => $all
+                                                                                )
       );
     }
     /**
