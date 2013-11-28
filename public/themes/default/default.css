@@ -2645,10 +2645,6 @@ img {
   border: 0;
 }
 
-body > div:first-child {
-  display: none;
-}
-
 #login {
   text-align: center;
 }
