@@ -26,29 +26,26 @@
     public function __construct($username) {
       $this->username = $username;
     }
-
-      /**
-       * @return string
-       */
-      public static function generateIV()
-      {
-          if (!extension_loaded('mcrypt')) {
-              throw new \RuntimeException('Mcrypt extension must be installed');
-          }
-
-          return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB), MCRYPT_DEV_URANDOM));
+    /**
+     * @throws \RuntimeException
+     * @return string
+     */
+    public static function generateIV() {
+      if (!extension_loaded('mcrypt')) {
+        throw new \RuntimeException('Mcrypt extension must be installed');
       }
-
-      /**
-       * @param $password
-       * @param $iv
-       * @return string
-       */
-      public static function fromIV($password,$iv){
-          return \AesCtr::decrypt(base64_decode($password), $iv, 256);
-      }
-
-      /**
+      return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB), MCRYPT_DEV_URANDOM));
+    }
+    /**
+     * @param $password
+     * @param $iv
+     *
+     * @return string
+     */
+    public static function fromIV($password, $iv) {
+      return \AesCtr::decrypt(base64_decode($password), $iv, 256);
+    }
+    /**
      * @param     $id
      * @param     $password
      * @param int $change_password
@@ -57,9 +54,9 @@
       $change_password = $change_password == true ? 1 : 0;
       DB::_update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)->value(
         'hash', $this->makeHash(
-          $password, $id
-        )
-      )->value('change_password', $change_password)->where('id=', $id)->exec();
+                     $password, $id
+          )
+      ) ->value('change_password', $change_password)->where('id=', $id)->exec();
       session_regenerate_id();
     }
     /**
@@ -68,6 +65,7 @@
      */
     public function hashPassword() {
       $password = crypt($this->password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
+      $password2 = password_hash($this->password, PASSWORD_DEFAULT);
       return $password;
     }
     /**
