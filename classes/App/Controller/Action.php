@@ -34,15 +34,14 @@
 
      */
     public function __construct(Session $session, User $user, Ajax $ajax, JS $js, Input $input, DB $db = null) {
-      $this->Ajax    = $ajax;
-      $this->JS      = $js;
-      $this->Session = $session;
-      $this->User    = $user;
-      $this->Input   = $input;
-      static::$DB    = $db;
+      parent::__construct($session, $user);
+      $this->Ajax  = $ajax;
+      $this->JS    = $js;
+      $this->Input = $input;
+      static::$DB  = $db;
     }
     /**
-     * @param $controller
+     * @param  $controller
      *
      * @return bool
      */

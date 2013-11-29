@@ -131,14 +131,6 @@
       if (!$this->ajaxpage) {
         echo "<div id='wrapper'>";
       }
-      if (!$this->User->hasAccess($this->security)) {
-        echo "<div class='center'><br><br><br><span class='bold'>";
-        echo _("The security settings on your account do not permit you to access this function");
-        echo "</span>";
-        echo "<br><br><br><br></div>";
-        $this->end_page(false);
-        exit;
-      }
       if (!REQUEST_JSON) {
         if ($this->title && !$this->isIndex && !$this->frame) {
           echo "<div class='titletext'>{$this->title}</div>";

@@ -28,9 +28,10 @@
     /**
 
      */
-    function __construct($session, $user) {
+     public function __construct($session, $user) {
       $this->Session = $session;
       $this->User    = $user;
+      $this->checkSecurity();
     }
     /**
      * @param \ADV\App\Page $page
@@ -44,6 +45,17 @@
      */
     protected function setTitle($title) {
       $this->title = _($this->help_context = $title);
+    }
+    final private function checkSecurity() {
+      if (!$this->User->hasAccess($this->security)) {
+        Page::start('No access');
+        echo "<div class='center'><br><br><br><span class='bold'>";
+        echo _("The security settings on your account do not permit you to access this function");
+        echo "</span>";
+        echo "<br><br><br><br></div>";
+        Page::end();
+        exit;
+      }
     }
     /**
      * @param $embed

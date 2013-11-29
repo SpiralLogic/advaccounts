@@ -9,6 +9,7 @@
    **/
   namespace ADV\Controllers\System\Manage;
 
+  use ADV\Core\Auth;
   use Reports_UI;
   use Sales_Point;
   use ADV\App\Languages;
