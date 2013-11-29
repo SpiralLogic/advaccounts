@@ -72,6 +72,7 @@
     /** @var bool * */
     public $change_password = false;
     public $selectedApp;
+    public $password;
     public $hash;
     /** @var */
     public $last_record;
@@ -231,6 +232,9 @@
     public function hasAccess($page_level) {
       if ($page_level === SA_OPEN) {
         return true;
+      }
+      if ($page_level == SA_DENIED) {
+        return false;
       }
       return $this->Security->hasAccess($this, $page_level);
     }
@@ -487,7 +491,7 @@
         return false;
       }
       $auth  = new Auth($_POST['user_id']);
-      $check = $auth->checkPasswordStrength($_POST['password'], $_POST['user_id']);
+      $check = $auth->checkPasswordStrength($this->password,$this->user_id);
       if ($check['error'] > 0) {
         return $this->status(false, $check['text']);
       } elseif ($check['strength'] < 3) {

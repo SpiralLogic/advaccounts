@@ -17,6 +17,7 @@
   /** **/
   class Search extends Action
   {
+    protected $security = SA_ALL;
     protected function before() {
       if (!REQUEST_AJAX) {
         header('Location: /');

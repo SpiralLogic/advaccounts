@@ -23,7 +23,7 @@
     public $help_context;
     /** @var Page */
     public $Page;
-    protected $security = SA_SECROLES;
+    protected $security = SA_DENIED;
     protected $embedded = false;
     /**
 

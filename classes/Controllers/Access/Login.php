@@ -23,6 +23,7 @@
         protected $Config;
         /** @var \ADV\App\Dates */
         protected $Dates;
+      protected $security = SA_OPEN;
         /**
          * @param bool $embed
          *

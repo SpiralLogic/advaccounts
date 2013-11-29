@@ -601,6 +601,7 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    }
                  })(),
                  toPrice:         function (num, dec) {
+                   var i;
                    var sign, decsize, cents;
                    if (isNaN(num)) {
                      num = "0";
@@ -613,10 +614,10 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                    num = Math.floor(num * decsize + 0.50000000001);
                    cents = num % decsize;
                    num = Math.floor(num / decsize).toString();
-                   for (i = cents.toString().length; i < dec; i++) {
+                   for ( i = cents.toString().length; i < dec; i++) {
                      cents = "0" + cents;
                    }
-                   for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
+                   for (i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
                      num = num.substring(0, num.length - (4 * i + 3)) + user.ts + num.substring(num.length - (4 * i + 3));
                    }
                    num = ((sign) ? '' : '-') + num;
@@ -644,16 +645,16 @@ Adv.extend({  headerHeight:     Adv.o.header.height(),
                  },
                  getAmount:       function (id) {
                    var val;
-                   if (typeof(id) === "string" ) {
+                   if (typeof(id) === "string") {
                      id = Adv.Forms.findInputEl(id)[0];
                    }
-                   if (id.tagName && id.tagName!=="INPUT") {
+                   if (id.tagName && id.tagName !== "INPUT") {
                      val = id.innerHTML;
                    }
                    else {
                      val = id.value;
                    }
-                    console.log(val);
+                   console.log(val);
                    val = val.replace(new RegExp('\\' + user.ts, 'g'), '');
                    val = +val.replace(new RegExp('\\' + user.ds, 'g'), '.');
                    return isNaN(val) ? 0 : val;
