@@ -20,12 +20,14 @@
     protected $id;
     /** @var */
     private $password;
+
     /**
      * @param $username
      */
     public function __construct($username) {
       $this->username = $username;
     }
+
     /**
      * @throws \RuntimeException
      * @return string
@@ -36,6 +38,7 @@
       }
       return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB), MCRYPT_DEV_URANDOM));
     }
+
     /**
      * @param $password
      * @param $iv
@@ -45,6 +48,7 @@
     public static function fromIV($password, $iv) {
       return \AesCtr::decrypt(base64_decode($password), $iv, 256);
     }
+
     /**
      * @param     $id
      * @param     $password
@@ -52,19 +56,29 @@
      */
     public function updatePassword($id, $password, $change_password = 0) {
       $change_password = $change_password == true ? 1 : 0;
-      DB::_update('users')->value('password', $this->hashPassword($password))->value('user_id', $this->username)->value('hash', $this->makeHash($password, $id))
-        ->value('change_password', $change_password)->where('id=', $id)->exec();
+      $hash            = $this->hashPassword($password);
+      DB::_update('users')->value('password', $hash)->value('user_id', $this->username)->value('hash', $this->makeHash($password, $id))->value('change_password', $change_password)
+        ->where('id=', $id)->exec();
       session_regenerate_id();
+      return $hash;
     }
+
     /**
      * @internal param $password
      * @return string
      */
-    public function hashPassword() {
-      $password  = crypt($this->password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
-      $password2 = password_hash($this->password, PASSWORD_DEFAULT);
+    public function hashPassword($password) {
+      //$password  = crypt($this->password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
+      $password = password_hash($password, PASSWORD_DEFAULT);
       return $password;
     }
+
+    public function oldHashPassword($password) {
+      $password = crypt($password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
+      //$password = password_hash($this->password, PASSWORD_DEFAULT);
+      return $password;
+    }
+
     /**
      * @param $username
      * @param $password
@@ -74,22 +88,23 @@
      * @return bool|mixed
      */
     public function checkUserPassword($username, $password) {
-      $this->password = $password;
-      $username       = $username ? : $this->username;
-      $password       = $this->hashPassword($this->password);
-      $result         = DB::_select()->from('users')->where('user_id=', $username)->andWhere('inactive =', 0)->andWhere('password=', $password)->fetch()->one();
-      if ($result['password'] != $password) {
-        $result = false;
-      } else {
-        if (!isset($result['hash']) || !$result['hash']) {
-          $this->updatePassword($result['id'], $this->password);
-          $result['hash'] = $this->makeHash($password, $result['id']);
-        }
-        unset($result['password']);
+           $result         = DB::_select()->from('users')->where('user_id=', $username)->andWhere('inactive =', 0)->fetch()->one();
+      if (!password_get_info($result['password'])['algo'] && $result['password'] == $this->oldHashPassword($password)) {
+        $result['password'] = $this->updatePassword($result['id'], $password);
       }
-      DB::_insert('user_login_log')->values(['user' => $username, 'IP' => Auth::get_ip(), 'success' => (bool)$result])->exec();
+
+      if (!password_verify($password, $result['password'])) {
+        return false;
+      }
+      if (!isset($result['hash']) || !$result['hash']) {
+        $this->updatePassword($result['id'], $password);
+        $result['hash'] = $this->makeHash($password, $result['id']);
+      }
+      unset($result['password']);
+      DB::_insert('user_login_log')->values(['user' => $username, 'IP' => Auth::get_ip(), 'success' => (bool) $result])->exec();
       return $result;
     }
+
     /**
      * @return bool
      */
@@ -97,6 +112,7 @@
       $query = DB::_query('select COUNT(IP) FROM user_login_log WHERE success=0 AND timestamp>NOW() - INTERVAL 1 HOUR AND IP=' . DB::_escape(Auth::get_ip()));
       return (DB::_fetch($query)[0] > Config::_get('max_login_attempts', 50));
     }
+
     /**
      * @static
      *
@@ -108,6 +124,7 @@
     public function makeHash($password, $user_id) {
       return crypt($password, $user_id);
     }
+
     /**
      * @static
      *
@@ -176,6 +193,7 @@
       }
       return $returns;
     }
+
     /**
      * @static
      * @return mixed

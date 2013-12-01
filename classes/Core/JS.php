@@ -168,7 +168,7 @@
      * @return mixed
      */
     public function renderStatus(Status $status) {
-      $this->renderJSON(['status' => $status]);
+      $this->renderJSON(['status' => $status->get()]);
     }
     /**
      * @static

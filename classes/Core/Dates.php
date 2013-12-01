@@ -464,14 +464,14 @@ provided that both dates are after 1970. Also only works for dates up to the yea
      * @return float|string
      */
     public static function getReadableTime($seconds, $granularity = 2) {
-      $units  = array(
+      $units  = [
         '1 year|:count years' => 31536000,
         '1 week|:count weeks' => 604800,
         '1 day|:count days'   => 86400,
         '1 hour|:count hours' => 3600,
         '1 min|:count mins'   => 60,
         '1 sec|:count secs'   => 1
-      );
+      ];
       $output = '';
       foreach ($units as $key => $value) {
         $key = explode('|', $key);

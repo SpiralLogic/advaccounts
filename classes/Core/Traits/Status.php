@@ -41,8 +41,7 @@
      */
     protected function status($status = null, $message = '', $var = null) {
       if (!$this->status) {
-        $this->status = new \ADV\Core\Status($status, $message, $var);
-        return $status;
+        $this->status = new \ADV\Core\Status();
       }
       return $this->status->set($status, $message, $var);
     }
