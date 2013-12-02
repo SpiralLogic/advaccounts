@@ -116,7 +116,7 @@
             break;
         }
         if (isset($status)) {
-          Ajax::_addStatus($status->get());
+          Ajax::_addStatus($status);
         }
       }
     }
