@@ -371,13 +371,13 @@
       $customerBox->addButtons(array('Close' => '$(this).dialog("close");'));
       $customerBox->addBeforeClose('$("#debtor_id").trigger("change")');
       $customerBox->setOptions(
-        array(
+        [
              'autoOpen'   => false,
              'modal'      => true,
              'width'      => '850',
              'height'     => '715',
              'resizeable' => true
-        )
+        ]
       );
       $customerBox->show();
       $js

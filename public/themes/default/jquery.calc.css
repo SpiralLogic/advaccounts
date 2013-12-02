@@ -141,7 +141,7 @@ img.calculator-trigger {
   font-size: 70%;
 }
 
-@-moz-document url-prefix() { // Firefox
+@-moz-document url-prefix() {
 	.calculator-trig, .calculator-base {
 		text-indent: -3px;
 	}

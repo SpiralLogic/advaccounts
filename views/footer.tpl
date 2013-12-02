@@ -12,7 +12,7 @@
     {{#if $user}}
       <span class='power'><i class='icon-share'> </i><a target='_blank' href='{{POWERED_URL}}'>{{POWERED_BY}}</a></span>
       <span class='date'>{{$today}} | {{$now}}</span>
-      <span> </span>| <span>mem/peak: {{$mem}} </span><span>|</span><span> load time: {{$load_time}}</span>
+      <span> </span>| <span>mem/peak: {{$mem}} </span><span>|</span><span> load time: {{$loaeed_time}}</span>
     {{/if}}
     <!-- end footer div-->
   </div>

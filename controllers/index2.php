@@ -3,13 +3,7 @@
     use ADV\Core\JS;
 
     echo "<pre>";
-    class test
-    {
-        function tes2t() {
-            trigger_error('test', E_USER_ERROR);
-        }
-    }
-
-    $test = new test();
-    $test->tes2t();
-    JS::_renderJSON();
+    $test = new \ADV\App\User(1);
+  $test->password = 'testING33';
+  $test->save();
+    var_dump($test->getStatus());

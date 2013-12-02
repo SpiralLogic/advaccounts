@@ -40,7 +40,7 @@
     use StaticAccess;
 
     public $user;
-    public $id;
+    public $id = 0;
     public $user_id;
     /** @var string * */
     public $loginname;
@@ -72,13 +72,14 @@
     /** @var bool * */
     public $change_password = false;
     public $selectedApp;
-    public $hash;
+    public $startup_tab = 'Sales';
+    public $hash = 'none';
     /** @var */
     public $last_record;
     /** @var \ADV\App\Security */
     public $Security;
     protected $_table = 'users';
-    protected $_classname = 'Users';
+    protected $_classname = 'User';
     protected $_id_column = 'id';
     /** @var array * */
     protected $role_set = [];
@@ -88,8 +89,9 @@
      */
     public function __construct($id = 0) {
       parent::__construct($id);
-      $this->logged = false;
-      $this->prefs  = new UserPrefs();
+      $this->logged   = false;
+      $this->password = '';
+      $this->prefs    = new UserPrefs();
     }
     /**
      * @return \ADV\App\User
@@ -103,9 +105,9 @@
      * @return array
      */
     public static function getAll($inactive = false) {
-      $q = DB::_select('users.id', 'user_id', 'real_name', 'phone', 'email', 'last_visit_date', 'role', 'users.inactive')->from('users,security_roles')
-             ->where('security_roles.id=users.role_id'
-        );
+      $q = DB::_select('users.id', 'user_id', 'real_name', 'phone', 'email', 'last_visit_date', 'role', 'users.inactive')->from('users,security_roles')->where(
+             'security_roles.id=users.role_id'
+      );
       if (!$inactive) {
         $q->andWhere('users.inactive=', 0);
       }
@@ -123,6 +125,19 @@
         Event::registerShutdown([$this, '_addLog']);
       }
       return $this->logged;
+    }
+    /**
+     * @return bool
+     */
+    public function timeout() {
+      // skip timeout on logout page
+      if ($this->logged) {
+        if (time() > $this->last_action + $this->timeout) {
+          return true;
+        }
+      }
+      $this->last_action = time();
+      return false;
     }
     /**
      * @param $company
@@ -177,6 +192,12 @@
       return $this->logged;
     }
     /**
+     * @return mixed
+     */
+    private function get_salesmanid() {
+      return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
+    }
+    /**
      * @param $user_id
      * @param $password
      *
@@ -202,25 +223,13 @@
     public function register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
     }
-    /**
-     * @return bool
-     */
-    public function timeout() {
-      // skip timeout on logout page
-      if ($this->logged) {
-        if (time() > $this->last_action + $this->timeout) {
-          return true;
-        }
-      }
-      $this->last_action = time();
-      return false;
-    }
     public function addLog() {
-      DB::_insert('user_login_log')->values([
-                                            'user'    => $this->username,
-                                            'IP'      => Auth::get_ip(),
-                                            'success' => 2
-                                            ]
+      DB::_insert('user_login_log')->values(
+        [
+        'user'    => $this->username,
+        'IP'      => Auth::get_ip(),
+        'success' => 2
+        ]
       ) ->exec();
     }
     /**
@@ -231,6 +240,9 @@
     public function hasAccess($page_level) {
       if ($page_level === SA_OPEN) {
         return true;
+      }
+      if ($page_level == SA_DENIED) {
+        return false;
       }
       return $this->Security->hasAccess($this, $page_level);
     }
@@ -255,6 +267,14 @@
     public function update_prefs($prefs) {
       $this->prefs = new UserPrefs($this->get());
       $this->prefs->update($this->user, $prefs);
+    }
+    /**
+     * @return \ADV\Core\DB\Query\Result
+     */
+    protected function  get() {
+      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
+      $result = DB::_query($sql, "could not get user " . $this->user);
+      return DB::_fetch($result);
     }
     /**
      * @static
@@ -293,9 +313,9 @@
       if (!is_numeric($num)) {
         return false;
       }
-      $num = (float)$num;
-      if ($num == (int)$num) {
-        return (int)$num;
+      $num = (float) $num;
+      if ($num == (int) $num) {
+        return (int) $num;
       } else {
         return $num;
       }
@@ -482,35 +502,35 @@
      */
     protected function canProcess() {
       if (strlen($this->user_id) < 4) {
-        Event::error(_("The user login entered must be at least 4 characters long."));
-        JS::_setFocus('user_id');
-        return false;
+        return $this->status(false, "The user login entered must be at least 4 characters long.", 'user_id');
+      }
+      if ($this->password == '') {
+        unset($this->password);
+        return true;
       }
       $auth  = new Auth($_POST['user_id']);
-      $check = $auth->checkPasswordStrength($_POST['password'], $_POST['user_id']);
+      $check = $auth->checkPasswordStrength($this->password, $this->user_id);
       if ($check['error'] > 0) {
         return $this->status(false, $check['text']);
       } elseif ($check['strength'] < 3) {
         return $this->status(false, _("Password Too Weak!"));
-      } else {
-        return $this->status(false, 'Password potentially changed');
-        //$auth->updatePassword(User::_i()->user, $_POST['password']);
       }
       return true;
     }
     /**
-     * @return \ADV\Core\DB\Query\Result
+     * @param null       $changes
+     * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
+     *
+     * @return array|bool|int|null
+     * @return \ADV\Core\Traits\Status|array|bool|int|string
      */
-    protected function  get() {
-      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
-      $result = DB::_query($sql, "could not get user " . $this->user);
-      return DB::_fetch($result);
-    }
-    /**
-     * @return mixed
-     */
-    private function get_salesmanid() {
-      return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
+    public function save($changes = []) {
+      $result = parent::save($changes);
+      $auth   = new Auth($_POST['user_id']);
+      //  $this->status(false, 'Password potentially changed');
+      $auth->updatePassword($this->id, $this->password);
+      unset($this->password);
+      return $result;
     }
   }
 

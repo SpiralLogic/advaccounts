@@ -52,7 +52,7 @@
             $this->object->save($changes);
             //run the sql from either of the above possibilites
             $status = $this->object->getStatus();
-            if ($status['status'] == Status::ERROR) {
+         if ($status['status'] == Status::ERROR) {
               $this->JS->renderStatus($status);
             }
             $this->object->load(0);

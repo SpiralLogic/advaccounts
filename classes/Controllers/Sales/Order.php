@@ -73,7 +73,7 @@
         Orders::CLONE_ORDER    => SA_SALESORDER, //
         ST_SALESINVOICE        => SA_SALESINVOICE
       ];
-    protected $security;
+    protected $security = SA_SALESORDER;
     public $type;
     /***
      * @var \Sales_Order;
@@ -138,7 +138,8 @@
       $this->Ajax->start_div('controls', 'items_table');
       $buttons = new Form();
       if ($this->order->trans_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION) && !($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries())) {
-        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->type(Button::DANGER)->setWarning('You are about to void this Document.\nDo you want to continue?');
+        $buttons->submit(Orders::DELETE_ORDER, $deleteorder)->preIcon(ICON_DELETE)->type(Button::DANGER)
+                ->setWarning('You are about to void this Document.\nDo you want to continue?');
       }
       $buttons->submit(Orders::CANCEL_CHANGES, _("Cancel Changes"))->preIcon(ICON_CANCEL)->type('warning');
       if (count($this->order->line_items)) {
@@ -249,7 +250,7 @@
           Display::submenu_option(_("Enter a &New Direct Invoice"), $new_trans);
         }
         Display::link_params("/sales/payment", _("Apply a customer payment"));
-        if (isset($_GET[ADDED_DI]) && $this->Session->getGlobal('debtor_id') ) {
+        if (isset($_GET[ADDED_DI]) && $this->Session->getGlobal('debtor_id')) {
           echo "<div style='text-align:center;'><iframe style='margin:0 auto; border-width:0;' src='" . '/sales/payment' . "?frame=1' width='80%' height='475' scrolling='auto' frameborder='0'></iframe> </div>";
         }
       }
@@ -772,8 +773,8 @@
         }
         $item_info      = Item::get_edit_info(Input::_post('stock_id'));
         $units          = $item_info["units"];
-        $dec            = $item_info['decimals'];
-        $_POST['qty']   = Num::_format(1, $dec);
+        $dec = false;
+        $_POST['qty'] = Num::_qtyFormat(1, $dec);
         $price          = Item_Price::get_kit(Input::_post('stock_id'), $this->order->customer_currency, $this->order->sales_type, $this->order->price_factor, Input::_post('OrderDate'));
         $_POST['price'] = Num::_priceFormat($price);
         $_POST['Disc']  = Num::_percentFormat($this->order->default_discount * 100);
@@ -783,7 +784,7 @@
         Cell::qty($line_no == -1 ? 0 : $this->order->line_items[$line_no]->qty_done, false, $dec);
       }
       Cell::label($units, '', 'units');
-      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$']);
+      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$'], $dec ? : $this->User->price_dec());
       Forms::percentCells(null, 'Disc', Num::_percentFormat($_POST['Disc']));
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');
