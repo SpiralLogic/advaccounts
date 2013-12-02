@@ -103,7 +103,7 @@
      * @return int|string
      */
     public function qtyFormat($number, $dec = null) {
-      $dec = (int) ($dec === null ? : $this->qty_dec);
+      $dec = (int) ($dec === null || $dec === false ? : $this->qty_dec);
       return $this->format($this->round($number, $dec), $dec);
     }
     /**

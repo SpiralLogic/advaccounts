@@ -1480,9 +1480,11 @@
      * @param string $inputparams
      */
     public static function qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
-      if (!isset($dec)) {
+      if ($dec === null) {
         $dec = User::_qty_dec();
-        $dec = User::_qty_dec();
+      }
+      if ($dec === false) {
+        $dec = null;
       }
       Forms::amountCellsEx($label, $name, null, 15, $init, $params, $post_label, $dec, null, $inputparams = '', true);
     }
