@@ -150,7 +150,9 @@
      * @return bool
      */
     public function logged_in() {
-      $this->timeout();
+      if ($this->timeout()) {
+        return false;
+      }
       if ($this->logged && date('i', time() - $this->last_record) > 4) {
         $this->last_record = time();
         Event::registerShutdown([$this, '_addLog']);
@@ -158,21 +160,24 @@
       return $this->logged;
     }
 
+    /**
+     * @return bool
+     */
     public function timeout() {
       // skip timeout on logout page
       if ($this->logged) {
-        $tout = $this->timeout;
-        if ($tout && (time() > $this->last_action + $tout)) {
-          $this->logged = false;
-        } else {
-          $this->last_action = time();
+        if (time() > $this->last_action + $this->timeout) {
+          return true;
         }
       }
+      $this->last_action = time();
+      return false;
     }
 
     /**
      * @param $company
      * @param $loginname
+     * @param $password
      *
      * @internal param $password
      * @return bool
@@ -180,7 +185,11 @@
     public function login($company, $loginname, $password) {
       $this->company = $company;
       $this->logged  = false;
-      $myrow         = $this->get_for_login($loginname, $password);
+      $auth          = new Auth($loginname);
+      if ($auth->isBruteForce()) {
+        return false;
+      }
+      $myrow = $auth->checkUserPassword($loginname, $password);
       if ($myrow) {
         if ($myrow["inactive"]) {
           return false;
@@ -220,23 +229,6 @@
     }
 
     /**
-     * @static
-     *
-     * @param $user_id
-     * @param $password
-     *
-     * @internal param $password
-     * @return bool|mixed
-     */
-    public function  get_for_login($user_id, $password) {
-      $auth = new Auth($user_id);
-      if ($auth->isBruteForce()) {
-        return false;
-      }
-      return $auth->checkUserPassword($user_id, $password);
-    }
-
-    /**
      * @return mixed
      */
     private function get_salesmanid() {
@@ -244,40 +236,29 @@
     }
 
     /**
+     * @param $user_id
      * @param $password
+     *
+     * @return bool|mixed
      */
-    public function change_password($password) {
-      $auth  = new Auth($this->username);
-      $check = $auth->checkPasswordStrength($password);
-      if ($check['error'] > 0) {
-        Event::error($check['text']);
-      } elseif ($check['strength'] < 3) {
-        Event::error(_("Password Too Weak!"));
-      } else {
-        $auth->updatePassword($this->user, $password);
-        $this->change_password = false;
-        Event::success(_("Password Changed"));
+    public function  get_for_login($user_id, $password) {
       }
-    }
 
     /**
-     * @static
-     *
      * @param       $function
      * @param array $arguments
      *
-     * @internal param $object
+     * @return void
      */
     public function _register_login($function = null, $arguments = []) {
       $this->registerHook('login', $function, $arguments);
     }
 
     /**
-     * @static
-     *
-     * @param       $object
      * @param       $function
      * @param array $arguments
+     *
+     * @return void
      */
     public function _register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
@@ -299,8 +280,11 @@
      * @return bool
      */
     public function hasAccess($page_level) {
-      if ($page_level == SA_OPEN) {
+      if ($page_level === SA_OPEN) {
         return true;
+      }
+      if ($page_level == SA_DENIED) {
+        return false;
       }
       return $this->Security->hasAccess($this, $page_level);
     }
@@ -331,10 +315,6 @@
     }
 
     /**
-     * @static
-     *
-     * @param $id
-     *
      * @return \ADV\Core\DB\Query\Result
      */
     protected function  get() {
@@ -585,9 +565,22 @@
      */
     protected function canProcess() {
       if (strlen($this->user_id) < 4) {
-        Event::error(_("The user login entered must be at least 4 characters long."));
-        JS::_setFocus('user_id');
-        return false;
+        return $this->status(false, "The user login entered must be at least 4 characters long.", 'user_id');
+      }
+      if ($this->password == '') {
+        unset($this->password);
+        return true;
+      }
+      $auth  = new Auth($_POST['user_id']);
+      $check = $auth->checkPasswordStrength($this->password, $this->user_id);
+      if ($check['error'] > 0) {
+        return $this->status(false, $check['text']);
+      } elseif ($check['strength'] < 3) {
+        return $this->status(false, _("Password Too Weak!"));
+      } else {
+        //  $this->status(false, 'Password potentially changed');
+        $auth->updatePassword($this->id, $this->password);
+        unset($this->password);
       }
       return true;
     }

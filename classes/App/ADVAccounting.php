@@ -9,6 +9,7 @@
    **/
   namespace ADV\App;
 
+  use ADV\Core\Auth;
   use ADV\Core\JS;
   use DB_Pager;
   use DB_Company;
@@ -351,12 +352,13 @@
       if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();
       }
-      if ($this->Input->post("user_name")) {
+      if ($this->Input->hasPost("user_name")) {
         $this->login();
       } elseif (!$this->User->logged_in()) {
         $this->showLogin();
       }
       if ($this->User->username != 'admin' && strpos($_SERVER['SERVER_NAME'], 'dev') !== false) {
+        ini_set('html_errors', 'Off');
       } else {
         ini_set('html_errors', 'On');
       }
@@ -377,32 +379,34 @@
             }
           );
         }
-        try {
-          $password = \AesCtr::decrypt(base64_decode($_POST['password']), $this->Session->getFlash('password_iv'), 256);
+        $password = Auth::fromIV($_POST['password'], $this->Session->getFlash('password_iv'));
           if (!$this->User->login($company, $_POST["user_name"], $password)) {
             // Incorrect password
+          $this->Session->keepFlash('uri');
             $this->loginFail();
           }
-        } catch (\ADV\Core\DB\DBException $e) {
-          throw new \ADV\Core\DB\DBException('Could not connect to database!');
-        }
         $this->Session->checkUserAgent();
         $this->Session['User'] = $this->User;
         $this->Session->regenerate();
         $this->Session->language->setLanguage($this->Session['language']->code);
+        header('HTTP/1.1 303 See Other');
+        header('Location: ' . $this->Session->getFlash('uri'));
       }
     }
     protected function showLogin() {
       // strip ajax marker from uri, to force synchronous page reload
-      $_SESSION['timeout'] = array(
-        'uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])
-      );
+      $_SESSION['timeout'] = ['uri' => preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s', '', $_SERVER['REQUEST_URI'])];
+      $uri                 = $_SERVER['HTTP_REFERER'] . '?' . $_SERVER['QUERY_STRING'];
+      if (stristr($uri, 'logout')) {
+        $uri = '/';
+      }
+      $this->Session->keepFlash('uri', $uri);
       $dic                 = \ADV\Core\DIC::i();
       (new \ADV\Controllers\Access\Login($this->Session, $this->User, $this->Ajax, $this->JS, $dic['Input'], $dic->offsetGet('DB', 'default')))->run();
       if ($this->Ajax->inAjax()) {
         $this->Ajax->redirect($_SERVER['DOCUMENT_URI']);
       } elseif (REQUEST_AJAX) {
-        $this->JS->redirect('/');
+        $this->JS->redirect($_SERVER['HTTP_REFERER'] . '?' . $_SERVER['QUERY_STRING']);
       }
       exit();
     }
