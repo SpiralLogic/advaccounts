@@ -131,6 +131,20 @@
     }
 
     /**
+     * @return bool
+     */
+    public function timeout() {
+      // skip timeout on logout page
+      if ($this->logged) {
+        if (time() > $this->last_action + $this->timeout) {
+          return true;
+        }
+      }
+      $this->last_action = time();
+      return false;
+    }
+
+    /**
      * @param $company
      * @param $loginname
      * @param $password
@@ -184,6 +198,13 @@
     }
 
     /**
+     * @return mixed
+     */
+    private function get_salesmanid() {
+      return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
+    }
+
+    /**
      * @param $user_id
      * @param $password
      *
@@ -210,20 +231,6 @@
      */
     public function register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
-    }
-
-    /**
-     * @return bool
-     */
-    public function timeout() {
-      // skip timeout on logout page
-      if ($this->logged) {
-        if (time() > $this->last_action + $this->timeout) {
-          return true;
-        }
-      }
-      $this->last_action = time();
-      return false;
     }
 
     public function addLog() {
@@ -274,6 +281,15 @@
     public function update_prefs($prefs) {
       $this->prefs = new UserPrefs($this->get());
       $this->prefs->update($this->user, $prefs);
+    }
+
+    /**
+     * @return \ADV\Core\DB\Query\Result
+     */
+    protected function  get() {
+      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
+      $result = DB::_query($sql, "could not get user " . $this->user);
+      return DB::_fetch($result);
     }
 
     /**
@@ -543,27 +559,11 @@
       } elseif ($check['strength'] < 3) {
         return $this->status(false, _("Password Too Weak!"));
       } else {
-    //  $this->status(false, 'Password potentially changed');
+        //  $this->status(false, 'Password potentially changed');
         $auth->updatePassword($this->id, $this->password);
         unset($this->password);
       }
       return true;
-    }
-
-    /**
-     * @return \ADV\Core\DB\Query\Result
-     */
-    protected function  get() {
-      $sql    = "SELECT * FROM users WHERE id=" . DB::_escape($this->user);
-      $result = DB::_query($sql, "could not get user " . $this->user);
-      return DB::_fetch($result);
-    }
-
-    /**
-     * @return mixed
-     */
-    private function get_salesmanid() {
-      return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
   }
 
