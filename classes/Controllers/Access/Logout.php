@@ -16,6 +16,7 @@
    */
   class Logout extends \ADV\App\Controller\Base
   {
+    protected $security = SA_OPEN;
     protected function index() {
       $this->Page->start('Logout', SA_OPEN, true);
       (new View('logout'))->render();

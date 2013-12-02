@@ -40,7 +40,7 @@
     use StaticAccess;
 
     public $user;
-    public $id;
+    public $id = 0;
     public $user_id;
     /** @var string * */
     public $loginname;
@@ -72,19 +72,18 @@
     /** @var bool * */
     public $change_password = false;
     public $selectedApp;
-    public $hash;
+    public $hash = 'none';
     /** @var */
     public $last_record;
     /** @var \ADV\App\Security */
     public $Security;
     protected $_table = 'users';
-    protected $_classname = 'Users';
+    protected $_classname = 'User';
     protected $_id_column = 'id';
     /** @var array * */
     protected $role_set = [];
     /** @var */
     protected $access_sections;
-
     /**
      */
     public function __construct($id = 0) {
@@ -93,14 +92,12 @@
       $this->password = '';
       $this->prefs    = new UserPrefs();
     }
-
     /**
      * @return \ADV\App\User
      */
     public static function i() {
       return $_SESSION['User'];
     }
-
     /**
      * @param bool $inactive
      *
@@ -115,7 +112,6 @@
       }
       return $q->fetch()->all();
     }
-
     /**
      * @return bool
      */
@@ -129,7 +125,6 @@
       }
       return $this->logged;
     }
-
     /**
      * @return bool
      */
@@ -143,7 +138,6 @@
       $this->last_action = time();
       return false;
     }
-
     /**
      * @param $company
      * @param $loginname
@@ -196,14 +190,12 @@
       }
       return $this->logged;
     }
-
     /**
      * @return mixed
      */
     private function get_salesmanid() {
       return DB::_select('salesman_code')->from('salesman')->where('user_id=', $this->user)->fetch()->one('salesman_code');
     }
-
     /**
      * @param $user_id
      * @param $password
@@ -212,7 +204,6 @@
      */
     public function  get_for_login($user_id, $password) {
     }
-
     /**
      * @param       $function
      * @param array $arguments
@@ -222,7 +213,6 @@
     public function register_login($function = null, $arguments = []) {
       $this->registerHook('login', $function, $arguments);
     }
-
     /**
      * @param       $function
      * @param array $arguments
@@ -232,7 +222,6 @@
     public function register_logout($function, $arguments = []) {
       $this->registerHook('logout', $function, $arguments);
     }
-
     public function addLog() {
       DB::_insert('user_login_log')->values(
         [
@@ -242,7 +231,6 @@
         ]
       ) ->exec();
     }
-
     /**
      * @param $page_level
      *
@@ -257,7 +245,6 @@
       }
       return $this->Security->hasAccess($this, $page_level);
     }
-
     /**
      * @param $section
      *
@@ -266,7 +253,6 @@
     public function hasSectionAccess($section) {
       return isset($this->access_sections) and in_array($section, $this->access_sections);
     }
-
     /**
      * @param $role
      *
@@ -275,14 +261,12 @@
     public function hasRole($role) {
       return in_array($role, $this->role_set);
     }
-
     /**
      */
     public function update_prefs($prefs) {
       $this->prefs = new UserPrefs($this->get());
       $this->prefs->update($this->user, $prefs);
     }
-
     /**
      * @return \ADV\Core\DB\Query\Result
      */
@@ -291,7 +275,6 @@
       $result = DB::_query($sql, "could not get user " . $this->user);
       return DB::_fetch($result);
     }
-
     /**
      * @static
      * @return UserPrefs
@@ -299,7 +282,6 @@
     public function prefs() {
       return $this->prefs;
     }
-
     /**
      * @static
      */
@@ -310,7 +292,6 @@
         . "};";
       JS::_beforeload($js);
     }
-
     /**
      * @static
      *
@@ -338,7 +319,6 @@
         return $num;
       }
     }
-
     /**
      * @static
      * @return mixed
@@ -346,7 +326,6 @@
     public function pos() {
       return $this->pos;
     }
-
     /**
      * @static
      * @return mixed
@@ -354,7 +333,6 @@
     public function language() {
       return $this->prefs->language;
     }
-
     /**
      * @static
      * @return mixed
@@ -362,7 +340,6 @@
     public function qty_dec() {
       return $this->prefs->qty_dec;
     }
-
     /**
      * @static
      * @return mixed
@@ -370,7 +347,6 @@
     public function price_dec() {
       return $this->prefs->price_dec;
     }
-
     /**
      * @static
      * @return mixed
@@ -378,7 +354,6 @@
     public function exrate_dec() {
       return $this->prefs->exrate_dec;
     }
-
     /**
      * @static
      * @return mixed
@@ -386,7 +361,6 @@
     public function percent_dec() {
       return $this->prefs->percent_dec;
     }
-
     /**
      * @static
      * @return mixed
@@ -394,7 +368,6 @@
     public function show_gl() {
       return $this->prefs->show_gl;
     }
-
     /**
      * @static
      * @return mixed
@@ -402,7 +375,6 @@
     public function show_codes() {
       return $this->prefs->show_codes;
     }
-
     /**
      * @static
      * @return mixed
@@ -410,7 +382,6 @@
     public function date_format() {
       return $this->prefs->date_format;
     }
-
     /**
      * @static
      * @return mixed
@@ -418,7 +389,6 @@
     public function date_display() {
       return $this->prefs->date_display();
     }
-
     /**
      * @static
      * @return int
@@ -426,14 +396,12 @@
     public function date_sep() {
       return (isset($_SESSION["User"])) ? $this->prefs->date_sep : 0;
     }
-
     /**
      * @return int
      */
     public function tho_sep() {
       return $this->prefs->tho_sep;
     }
-
     /**
      * @static
      * @return mixed
@@ -441,7 +409,6 @@
     public function dec_sep() {
       return $this->prefs->dec_sep;
     }
-
     /**
      * @static
      * @return mixed
@@ -449,7 +416,6 @@
     public function theme() {
       return $this->prefs->theme;
     }
-
     /**
      * @static
      * @return mixed
@@ -457,7 +423,6 @@
     public function page_size() {
       return $this->prefs->page_size;
     }
-
     /**
      * @static
      * @return mixed
@@ -465,7 +430,6 @@
     public function hints() {
       return $this->prefs->show_hints;
     }
-
     /**
      * @static
      * @return mixed
@@ -473,7 +437,6 @@
     public function print_profile() {
       return $this->prefs->print_profile;
     }
-
     /**
      * @static
      * @return mixed
@@ -481,7 +444,6 @@
     public function rep_popup() {
       return $this->prefs->rep_popup;
     }
-
     /**
      * @static
      * @return mixed
@@ -489,7 +451,6 @@
     public function query_size() {
       return $this->prefs->query_size;
     }
-
     /**
      * @static
      * @return mixed
@@ -497,7 +458,6 @@
     public function graphic_links() {
       return $this->prefs->graphic_links;
     }
-
     /**
      * @static
      * @return mixed
@@ -505,7 +465,6 @@
     public function sticky_doc_date() {
       return $this->prefs->sticky_doc_date;
     }
-
     /**
      * @static
      * @return mixed
@@ -513,17 +472,14 @@
     public function startup_tab() {
       return $this->prefs->startup_tab;
     }
-
     public function logout() {
       \ADV\Core\Config::_removeAll();
       Session::_kill();
       $this->logged = false;
     }
-
     public function getHash() {
       return $this->hash;
     }
-
     /**
      * @return array
      */
@@ -540,7 +496,6 @@
       ];
       return $cols;
     }
-
     /**
      * @return \ADV\Core\Traits\Status|bool
      */
@@ -558,12 +513,23 @@
         return $this->status(false, $check['text']);
       } elseif ($check['strength'] < 3) {
         return $this->status(false, _("Password Too Weak!"));
-      } else {
-        //  $this->status(false, 'Password potentially changed');
-        $auth->updatePassword($this->id, $this->password);
-        unset($this->password);
       }
       return true;
+    }
+    /**
+     * @param null       $changes
+     * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
+     *
+     * @return array|bool|int|null
+     * @return \ADV\Core\Traits\Status|array|bool|int|string
+     */
+    public function save($changes = []) {
+      $result = parent::save($changes);
+      $auth   = new Auth($_POST['user_id']);
+      //  $this->status(false, 'Password potentially changed');
+      $auth->updatePassword($this->id, $this->password);
+      unset($this->password);
+      return $result;
     }
   }
 
