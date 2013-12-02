@@ -336,7 +336,7 @@
       if (!$this->Session instanceof \ADV\Core\Session || !$this->Session->checkUserAgent()) {
         $this->showLogin();
       }
-      if ($this->Input->post("user_name")) {
+      if ($this->Input->hasPost("user_name")) {
         $this->login();
       } elseif (!$this->User->logged_in()) {
         $this->showLogin();

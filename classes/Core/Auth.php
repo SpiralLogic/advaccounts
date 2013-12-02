@@ -18,8 +18,7 @@
     protected $username;
     /** @var */
     protected $id;
-    /** @var */
-    private $password;
+
 
     /**
      * @param $username
@@ -53,6 +52,8 @@
      * @param     $id
      * @param     $password
      * @param int $change_password
+     *
+     * @return string
      */
     public function updatePassword($id, $password, $change_password = 0) {
       $change_password = $change_password == true ? 1 : 0;
@@ -65,17 +66,23 @@
 
     /**
      * @internal param $password
+     *
+     * @param $password
+     *
      * @return string
      */
     public function hashPassword($password) {
-      //$password  = crypt($this->password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
       $password = password_hash($password, PASSWORD_DEFAULT);
       return $password;
     }
 
+    /**
+     * @param $password
+     *
+     * @return string
+     */
     public function oldHashPassword($password) {
       $password = crypt($password, '$6$rounds=5000$' . Config::_get('auth_salt') . '$');
-      //$password = password_hash($this->password, PASSWORD_DEFAULT);
       return $password;
     }
 

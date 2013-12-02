@@ -45,11 +45,10 @@
                 $view['login_text'] = _("Please login here");
             }
             $view['theme']         = "default";
-            $view['timeout']       = $timeout = $this->User->last_action;
+            $view['timeout']       = $timeout = $this->User->timeout();
             $view['encoding']      = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "utf-8";
             $view['rtl']           = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
             $idletime              = time() - $this->User->last_action;
-            $view['timeout']       = $idletime;
             $view['idletime']      = Dates::getReadableTime($idletime);
             $view['usernamevalue'] = $this->User->last_action ? $this->User->loginname : ($this->Config->get('demo_mode') ? "demouser" : "");
             $view['company']       = $this->User->company;
