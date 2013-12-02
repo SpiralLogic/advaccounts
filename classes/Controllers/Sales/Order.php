@@ -219,8 +219,7 @@
       echo "<br><div class='center'>" . Display::submenu_print(_("&Print This " . $trans_name), $trans_type, $order_no, 'prtopt') . '<br><br>';
       echo Reporting::emailDialogue($customer->id, $trans_type, $order_no) . '<br><br>';
       if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE) {
-        echo Display::submenu_print(
-                    _("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt'
+        echo Display::submenu_print(_("Print Proforma Invoice"), ($trans_type == ST_SALESORDER ? ST_PROFORMA : ST_PROFORMAQ), $order_no, 'prtopt'
           ) . '<br><br>';
       }
       echo "</div>";
@@ -240,8 +239,7 @@
         Display::submenu_print(_("P&rint as Packing Slip"), ST_CUSTDELIVERY, $order_no, 'prtopt', null, 1);
         GL_UI::view(ST_CUSTDELIVERY, $order_no, _("View the GL Journal Entries for this Dispatch"));
         Display::submenu_option(_("Make &Invoice Against This Delivery"), "/sales/customer_invoice.php?DeliveryNumber=$order_no");
-        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/search/orders?DeliveryTemplates=Yes") :
-          Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
+        ((isset($_GET['Type']) && $_GET['Type'] == 1)) ? Display::submenu_option(_("Enter a New Template &Delivery"), "/sales/search/orders?DeliveryTemplates=Yes") : Display::submenu_option(_("Enter a &New Delivery"), $new_trans);
       } elseif ($trans_type == ST_SALESINVOICE) {
         GL_UI::view(ST_SALESINVOICE, $order_no, _("View the GL &Journal Entries for this Invoice"));
         if ((isset($_GET['Type']) && $_GET['Type'] == 1)) {
@@ -290,8 +288,7 @@
       }
       if (count($this->order->line_items) == 0) {
         if (!empty($_POST['stock_id']) && $this->checkItemData()) {
-          $this->order->add_line(
-                      $_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
+          $this->order->add_line($_POST['stock_id'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
           );
           $_POST['_stock_id_edit'] = $_POST['stock_id'] = "";
         } else {
@@ -378,27 +375,22 @@
         Event::error(_("Price for item must be entered and can not be less than 0"));
         $this->JS->setFocus('price');
         return false;
-      } elseif (!$this->User->hasAccess(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num(
-                                                                                                                                                      'qty', $this->order->line_items[$_POST['LineNo']]->qty_done
+      } elseif (!$this->User->hasAccess(SA_SALESCREDIT) && isset($_POST['LineNo']) && isset($this->order->line_items[$_POST['LineNo']]) && !Validation::post_num('qty', $this->order->line_items[$_POST['LineNo']]->qty_done
         )
       ) {
         $this->JS->setFocus('qty');
-        Event::error(
-             _("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively.")
+        Event::error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively.")
         );
         return false;
       } // Joe Hunt added 2008-09-22 -------------------------
-      elseif ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE && !DB_Company::_get_pref(
-                                                                                                                   'allow_negative_stock'
+      elseif ($this->order->trans_type != ST_SALESORDER && $this->order->trans_type != ST_SALESQUOTE && !DB_Company::_get_pref('allow_negative_stock'
         ) && Item::is_inventory_item($_POST['stock_id'])
       ) {
         $qoh = Item::get_qoh_on_date($_POST['stock_id'], $_POST['location'], $_POST['OrderDate']);
         if (Validation::input_num('qty') > $qoh) {
           $stock = Item::get($_POST['stock_id']);
-          Event::error(
-               _(
-                 "The delivery cannot be processed because there is an insufficient quantity for item:"
-               ) . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::_format($qoh, Item::qty_dec($_POST['stock_id']))
+          Event::error(_("The delivery cannot be processed because there is an insufficient quantity for item:"
+            ) . " " . $stock['stock_id'] . " - " . $stock['description'] . " - " . _("Quantity On Hand") . " = " . Num::_format($qoh, Item::qty_dec($_POST['stock_id']))
           );
           return false;
         }
@@ -515,8 +507,7 @@
       } else {
         if ($this->order->trans_no != 0) {
           if ($this->order->trans_type == ST_SALESORDER && $this->order->has_deliveries()) {
-            Event::error(
-                 _("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified.")
+            Event::error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified.")
             );
           } else {
             $trans_no   = key($this->order->trans_no);
@@ -543,8 +534,7 @@
     }
     protected function updateItem() {
       if ($this->checkItemData($this->order)) {
-        $this->order->update_order_item(
-                    $_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
+        $this->order->update_order_item($_POST['LineNo'], Validation::input_num('qty'), Validation::input_num('price'), Validation::input_num('Disc') / 100, $_POST['description']
         );
       }
       Item_Line::start_focus('stock_id');
@@ -665,8 +655,7 @@
             if ($stock_item->qty_dispatched > $qoh) {
               // oops, we don't have enough of one of the component items
               $row_class = "class='stockmankobg'";
-              $qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::_format(
-                                                                                                                               $qoh, Item::qty_dec($stock_item->stock_id)
+              $qoh_msg .= $stock_item->stock_id . " - " . $stock_item->description . ": " . _("Quantity On Hand") . " = " . Num::_format($qoh, Item::qty_dec($stock_item->stock_id)
                 ) . '<br>';
               $has_marked = true;
             }
@@ -713,8 +702,7 @@
       echo '<tr>';
       Cell::label(_("Total Discount"), "colspan=$colspan class='alignright'");
       Forms::amountCellsSmall(null, 'totalDiscount', $total_discount, null, ['$']);
-      echo (new HTML)->td(null, array('colspan' => 2, 'class' => 'center'))->button(
-                     'discountAll', 'Discount All', array('name' => FORM_ACTION, 'value' => 'discountAll'), false
+      echo (new HTML)->td(null, array('colspan' => 2, 'class' => 'center'))->button('discountAll', 'Discount All', array('name' => FORM_ACTION, 'value' => 'discountAll'), false
       );
       Forms::hidden('_discountAll', '0', true);
       echo HTML::td();
@@ -750,7 +738,7 @@
       {
         echo '<tr' . 'class="editline"' . '>';
         $_POST['stock_id']    = $this->order->line_items[$id]->stock_id;
-        $dec                  = Item::qty_dec($_POST['stock_id']);
+        $unit_dec             = Item::qty_dec($_POST['stock_id']);
         $_POST['qty']         = Num::_format($this->order->line_items[$id]->qty_dispatched, $dec);
         $_POST['price']       = Num::_priceFormat($this->order->line_items[$id]->price);
         $_POST['Disc']        = Num::_percentFormat($this->order->line_items[$id]->discount_percent * 100);
@@ -773,18 +761,18 @@
         }
         $item_info      = Item::get_edit_info(Input::_post('stock_id'));
         $units          = $item_info["units"];
-        $dec = false;
-        $_POST['qty'] = Num::_qtyFormat(1, $dec);
+        $unit_dec       = false;
+        $_POST['qty']   = Num::_qtyFormat(1, $unit_dec);
         $price          = Item_Price::get_kit(Input::_post('stock_id'), $this->order->customer_currency, $this->order->sales_type, $this->order->price_factor, Input::_post('OrderDate'));
         $_POST['price'] = Num::_priceFormat($price);
         $_POST['Disc']  = Num::_percentFormat($this->order->default_discount * 100);
       }
-      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
+      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $unit_dec);
       if ($this->order->trans_no != 0) {
         Cell::qty($line_no == -1 ? 0 : $this->order->line_items[$line_no]->qty_done, false, $dec);
       }
       Cell::label($units, '', 'units');
-      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$'], $dec ? : $this->User->price_dec());
+      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$']);
       Forms::percentCells(null, 'Disc', Num::_percentFormat($_POST['Disc']));
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');
@@ -905,8 +893,7 @@
       if (!Bank_Currency::is_company($this->order->customer_currency)) {
         Table::section(2);
         Table::label(_("Customer Currency:"), $this->order->customer_currency);
-        GL_ExchangeRate::display(
-                       $this->order->customer_currency, Bank_Currency::for_company(), ($editable && Input::_post('OrderDate') ? $_POST['OrderDate'] : $this->order->document_date)
+        GL_ExchangeRate::display($this->order->customer_currency, Bank_Currency::for_company(), ($editable && Input::_post('OrderDate') ? $_POST['OrderDate'] : $this->order->document_date)
         );
       }
       Table::section(3);
