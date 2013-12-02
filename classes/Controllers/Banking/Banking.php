@@ -39,21 +39,23 @@
    * @copyright 2010 - 2012
    * @link      http://www.advancedgroup.com.au
    **/
-  class Banking extends \ADV\App\Controller\Action {
+  class Banking extends \ADV\App\Controller\Action
+  {
     /** @var Item_Order */
     protected $order;
     protected $security;
     protected $trans_type;
     protected $trans_no;
     protected $type;
+
     protected function before() {
-        if ($this->Input->get('NewPayment')) {
-          $this->newOrder(ST_BANKPAYMENT);
-        } elseif ($this->Input->get('NewDeposit')) {
-          $this->newOrder(ST_BANKDEPOSIT);
+      if ($this->Input->get('NewPayment')) {
+        $this->newOrder(ST_BANKPAYMENT);
+      } elseif ($this->Input->get('NewDeposit')) {
+        $this->newOrder(ST_BANKDEPOSIT);
       } elseif ($this->Input->hasSession('pay_items')) {
         $this->order = $this->Input->session('pay_items');
-        }
+      }
       $this->security = $this->order->trans_type == ST_BANKPAYMENT ? SA_PAYMENT : SA_DEPOSIT;
       $this->JS->openWindow(950, 500);
       $this->type = $this->order->trans_type == ST_BANKPAYMENT ? 'Payment' : 'Deposit';
@@ -91,6 +93,88 @@
         $this->quickEntries();
       }
     }
+
+    /**
+     * @param $type
+     */
+    protected function newOrder($type) {
+      if (isset($this->order)) {
+        unset($_SESSION['pay_items']);
+      }
+      $this->order    = $_SESSION['pay_items'] = new Item_Order($type);
+      $_POST['date_'] = Dates::_newDocDate();
+      if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
+        $_POST['date_'] = Dates::_endFiscalYear();
+      }
+      $this->order->tran_date = $_POST['date_'];
+    }
+
+    /**
+     * @param $id
+     */
+    protected function deleteItem($id) {
+      $this->order->remove_gl_item($id);
+      Item_Line::start_focus('_code_id_edit');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function addLine() {
+      if (!$this->checkItemData()) {
+        return;
+      }
+      $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
+      $this->order->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
+      Item_Line::start_focus('_code_id_edit');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function checkItemData() {
+      if ($this->Input->post('PayType') == PT_QUICKENTRY && $this->order->count_gl_items() < 1) {
+        Event::error('You must select and add quick entry before adding extra lines!');
+        $this->JS->setFocus('total_amount');
+        return false;
+      }
+      //if (!Validation::post_num('amount', 0))
+      //{
+      //	Event::error( _("The amount entered is not a valid number or is less than zero."));
+      //	$this->JS->setFocus('amount');
+      //	return false;
+      //}
+      if ($_POST['code_id'] == $_POST['bank_account']) {
+        Event::error(_("The source and destination accouts cannot be the same."));
+        $this->JS->setFocus('code_id');
+        return false;
+      }
+      if (Bank_Account::is($_POST['code_id'])) {
+        Event::error(_("You cannot make a " . $this->type . " from a bank account. Please use the transfer funds facility for this."));
+        $this->JS->setFocus('code_id');
+        return false;
+      }
+      return true;
+    }
+
+    protected function updateItem() {
+      $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
+      if ($_POST['updateItem'] != "" && $this->checkItemData()) {
+        $this->order->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
+      }
+      Item_Line::start_focus('_code_id_edit');
+    }
+
+    protected function quickEntries() {
+      $result                = GL_QuickEntry::addEntry(
+                                            $this->order, $_POST['person_id'], Validation::input_num('total_amount'), $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT :
+                                                QE_DEPOSIT
+      );
+      $_POST['total_amount'] = Num::_priceFormat(0);
+      $this->Ajax->activate('total_amount');
+      ($result === false) ? $this->JS->setFocus('person_id') : Item_Line::start_focus('_code_id_edit');
+    }
+
     protected function index() {
       $this->Page->init($this->title, $this->security);
       $this->runAction();
@@ -112,6 +196,7 @@
       Forms::end();
       $this->Page->end_page();
     }
+
     /**
      * @return void
      */
@@ -173,11 +258,7 @@
             $this->Ajax->activate('total_amount');
           }
           Forms::AmountRow(
-            $qid['base_desc'] . ":",
-            'total_amount',
-            Num::_priceFormat($qid['base_amount']),
-            null,
-            "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
+               $qid['base_desc'] . ":", 'total_amount', Num::_priceFormat($qid['base_amount']), null, "&nbsp;&nbsp;" . Forms::submit('go', _("Go"), false, false, true)
           );
           break;
         //case payment_person_types::Project() :
@@ -192,6 +273,7 @@
       Table::endOuter(1); // outer table
       $this->Ajax->end_div();
     }
+
     /**
      * @static
      * @return void
@@ -240,6 +322,7 @@
       Table::end();
       $this->Ajax->end_div();
     }
+
     /**
      * @static
      *
@@ -297,17 +380,22 @@
       }
       echo '</tr>';
     }
-    protected function quickEntries() {
-      $result =  GL_QuickEntry::addEntry(
-        $this->order,
-        $_POST['person_id'],
-        Validation::input_num('total_amount'),
-        $this->order->trans_type == ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT
+
+    protected function commit() {
+      if (!$this->canProcess()) {
+        return;
+      }
+      $trans            = GL_Bank::add_bank_transaction(
+                                 $this->order->trans_type, $_POST['bank_account'], $this->order, $_POST['date_'], $_POST['PayType'], $_POST['person_id'], $this->Input->post('PersonDetailID'), $_POST['ref'], $_POST['memo_']
       );
-      $_POST['total_amount'] = Num::_priceFormat(0);
-      $this->Ajax->activate('total_amount');
-      ($result===false) ? $this->JS->setFocus('person_id') : Item_Line::start_focus('_code_id_edit');
+      $this->trans_type = $trans[0];
+      $this->trans_no   = $trans[1];
+      Dates::_newDocDate($_POST['date_']);
+      $this->order->clear_items();
+      unset($_SESSION['pay_items']);
+      $this->pageComplete();
     }
+
     /**
      * @return bool
      */
@@ -336,28 +424,7 @@
       }
       return true;
     }
-    protected function commit() {
-      if (!$this->canProcess()) {
-        return;
-      }
-      $trans            = GL_Bank::add_bank_transaction(
-        $this->order->trans_type,
-        $_POST['bank_account'],
-        $this->order,
-        $_POST['date_'],
-        $_POST['PayType'],
-        $_POST['person_id'],
-        $this->Input->post('PersonDetailID'),
-        $_POST['ref'],
-        $_POST['memo_']
-      );
-      $this->trans_type = $trans[0];
-      $this->trans_no   = $trans[1];
-      Dates::_newDocDate($_POST['date_']);
-      $this->order->clear_items();
-      unset($_SESSION['pay_items']);
-      $this->pageComplete();
-    }
+
     protected function pageComplete() {
       Event::success(_($this->type . " " . $this->trans_no . " has been entered"));
       Display::note(GL_UI::view($this->trans_type, $this->trans_no, _("&View the GL Postings for this " . $this->type)));
@@ -366,73 +433,7 @@
       $this->Ajax->activate('_page_body');
       $this->Page->endExit();
     }
-    /**
-     * @return bool
-     */
-    protected function checkItemData() {
-      if ($this->Input->post('PayType') == PT_QUICKENTRY && $this->order->count_gl_items() < 1) {
-        Event::error('You must select and add quick entry before adding extra lines!');
-        $this->JS->setFocus('total_amount');
-        return false;
-      }
-      //if (!Validation::post_num('amount', 0))
-      //{
-      //	Event::error( _("The amount entered is not a valid number or is less than zero."));
-      //	$this->JS->setFocus('amount');
-      //	return false;
-      //}
-      if ($_POST['code_id'] == $_POST['bank_account']) {
-        Event::error(_("The source and destination accouts cannot be the same."));
-        $this->JS->setFocus('code_id');
-        return false;
-      }
-      if (Bank_Account::is($_POST['code_id'])) {
-        Event::error(_("You cannot make a " . $this->type . " from a bank account. Please use the transfer funds facility for this."));
-        $this->JS->setFocus('code_id');
-        return false;
-      }
-      return true;
-    }
-    protected function updateItem() {
-      $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
-      if ($_POST['updateItem'] != "" && $this->checkItemData()) {
-        $this->order->update_gl_item($_POST['Index'], $_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
-      }
-      Item_Line::start_focus('_code_id_edit');
-    }
-    /**
-     * @param $id
-     */
-    protected function deleteItem($id) {
-      $this->order->remove_gl_item($id);
-      Item_Line::start_focus('_code_id_edit');
-    }
-    /**
-     * @return bool
-     */
-    protected function addLine() {
-      if (!$this->checkItemData()) {
-        return;
-      }
 
-      $amount = ($this->order->trans_type == ST_BANKPAYMENT ? 1 : -1) * Validation::input_num('amount');
-      $this->order->add_gl_item($_POST['code_id'], $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
-      Item_Line::start_focus('_code_id_edit');
-    }
-    /**
-     * @param $type
-     */
-    protected function newOrder($type) {
-      if (isset($this->order)) {
-        unset($_SESSION['pay_items']);
-      }
-      $this->order    = $_SESSION['pay_items'] = new Item_Order($type);
-      $_POST['date_'] = Dates::_newDocDate();
-      if (!Dates::_isDateInFiscalYear($_POST['date_'])) {
-        $_POST['date_'] = Dates::_endFiscalYear();
-      }
-      $this->order->tran_date = $_POST['date_'];
-    }
     protected function runValidation() {
       Validation::check(Validation::BANK_ACCOUNTS, _("There are no bank accounts defined in the system."));
     }
