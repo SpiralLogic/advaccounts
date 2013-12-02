@@ -1370,7 +1370,7 @@
       {
         echo '<tr' . 'class="editline"' . '>';
         $_POST['stock_id']    = $this->line_items[$id]->stock_id;
-        $dec                  = Item::qty_dec($_POST['stock_id']);
+        $unit_dec                  = Item::qty_dec($_POST['stock_id']);
         $_POST['qty']         = Num::_format($this->line_items[$id]->qty_dispatched, $dec);
         $_POST['price']       = Num::_priceFormat($this->line_items[$id]->price);
         $_POST['Disc']        = Num::_percentFormat($this->line_items[$id]->discount_percent * 100);
@@ -1393,18 +1393,18 @@
         }
         $item_info      = Item::get_edit_info(Input::_post('stock_id'));
         $units          = $item_info["units"];
-        $dec = false;
-        $_POST['qty']   = Num::_format(1, $dec);
+        $unit_dec = false;
+        $_POST['qty']   = Num::_format(1, $unit_dec);
         $price          = Item_Price::get_kit(Input::_post('stock_id'), $this->customer_currency, $this->sales_type, $this->price_factor, Input::_post('OrderDate'));
         $_POST['price'] = Num::_priceFormat($price);
         $_POST['Disc']  = Num::_percentFormat($this->default_discount * 100);
       }
-      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $dec);
+      Forms::qtyCells(null, 'qty', $_POST['qty'], null, null, $unit_dec);
       if ($this->trans_no != 0) {
-        Cell::qty($line_no == -1 ? 0 : $this->line_items[$line_no]->qty_done, false, $dec);
+        Cell::qty($line_no == -1 ? 0 : $this->line_items[$line_no]->qty_done, false, $unit_dec);
       }
       Cell::label($units, '', 'units');
-      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$'], $dec === false ? User::_price_dec() : $dec);
+      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$']);
       Forms::percentCells(null, 'Disc', Num::_percentFormat($_POST['Disc']));
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');
