@@ -39,17 +39,23 @@
       $this->JS->openWindow(900, 500);
       $this->trans             = Creditor_Trans::i();
       $this->trans->is_invoice = true;
-      if (isset($_POST['ClearFields']) || isset($_GET['New'])) {
+            if (isset($_POST['ClearFields'])) {
         $this->clearFields();
       }
       if (isset($_POST['Cancel'])) {
         $this->cancelInvoice();
       }
+            if ((REQUEST_GET && $this->Input->get('New'))) {
+                $this->cancelInvoice();
+                $this->creditor_id = $this->Input->get('creditor_id', Input::NUMERIC, null);
+                $_POST['PONumber'] = $this->Input->get('PONumber');
+            } else {
       $this->creditor_id = $this->trans->creditor_id ? : $this->Input->post('creditor_id', Input::NUMERIC, null);
+            }
       if (!$this->creditor_id) {
         $this->creditor_id = $this->Session->getGlobal('creditor_id');
       }
-      $this->creditor_id = & $this->Input->postGetGlobal('creditor_id');
+            // $this->creditor_id = & $this->Input->postGetGlobal('creditor_id');
       $this->Session->setGlobal('creditor_id', $this->creditor_id);
       if (isset($_POST['AddGLCodeToTrans'])) {
         $this->addGlCodesToTrans();
@@ -380,9 +386,9 @@
       unset($_SESSION['delivery_po']);
       unset($_POST['PONumber']);
       unset($_POST['creditor_id']);
-      unset($_POST['supplier']);
+            unset($_POST['creditor']);
       Creditor_Trans::killInstance();
-      $this->Session->removeGlobal('creditor');
+            $this->Session->removeGlobal('creditor_id','creditor');
       $this->trans = Creditor_Trans::i(true);
       $this->Ajax->activate('_page_body');
     }
