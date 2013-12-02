@@ -53,7 +53,7 @@
   });
       }
     });
-    var form = document.forms.login_form;
+    var form = document.forms.login;
     {{#if $timeout}}form.login_company.value = '{{$company}}';
     {{/if}}
     form.user_name.select();

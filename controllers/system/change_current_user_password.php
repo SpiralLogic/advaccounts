@@ -44,7 +44,7 @@
         } elseif ($check['strength'] < 3) {
           Event::error(_("Password Too Weak!"));
         } else {
-          $auth->updatePassword(User::i()->user, $_POST['password']);
+          $auth->updatePassword(User::i()->id, $_POST['password']);
           User::i()->change_password = false;
           Event::success(_("Password Changed"));
         }

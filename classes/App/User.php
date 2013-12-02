@@ -86,7 +86,7 @@
     /** @var \ADV\App\Security */
     public $Security;
     protected $_table = 'users';
-    protected $_classname = 'Users';
+    protected $_classname = 'User';
     protected $_id_column = 'id';
     /**
      * @var array
@@ -578,7 +578,7 @@
       } elseif ($check['strength'] < 3) {
         return $this->status(false, _("Password Too Weak!"));
       } else {
-        //  $this->status(false, 'Password potentially changed');
+        $this->status(true, 'Password potentially changed');
         $auth->updatePassword($this->id, $this->password);
         unset($this->password);
       }
