@@ -1393,7 +1393,7 @@
         }
         $item_info      = Item::get_edit_info(Input::_post('stock_id'));
         $units          = $item_info["units"];
-        $dec            = $item_info['decimals'];
+        $dec = false;
         $_POST['qty']   = Num::_format(1, $dec);
         $price          = Item_Price::get_kit(Input::_post('stock_id'), $this->customer_currency, $this->sales_type, $this->price_factor, Input::_post('OrderDate'));
         $_POST['price'] = Num::_priceFormat($price);
@@ -1404,7 +1404,7 @@
         Cell::qty($line_no == -1 ? 0 : $this->line_items[$line_no]->qty_done, false, $dec);
       }
       Cell::label($units, '', 'units');
-      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$']);
+      Forms::amountCellsEx(null, 'price', 'small', null, null, null, ['$'], $dec === false ? User::_price_dec() : $dec);
       Forms::percentCells(null, 'Disc', Num::_percentFormat($_POST['Disc']));
       $line_total = Validation::input_num('qty') * Validation::input_num('price') * (1 - Validation::input_num('Disc') / 100);
       Cell::amount($line_total, false, '', 'line_total');

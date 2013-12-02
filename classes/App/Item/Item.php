@@ -31,13 +31,13 @@
    */
   class Item extends Base
   {
-
-    public static $types = array(
-      STOCK_MANUFACTURE => "Manufactured", //
-      STOCK_PURCHASED   => "Purchased", //
-      STOCK_SERVICE     => "Service", //
-      STOCK_INFO        => "Information"
-    );
+    public static $types
+      = array(
+        STOCK_MANUFACTURE => "Manufactured", //
+        STOCK_PURCHASED   => "Purchased", //
+        STOCK_SERVICE     => "Service", //
+        STOCK_INFO        => "Information"
+      );
     /**
      * @var int
      */
@@ -221,18 +221,18 @@
         return false;
       }
       $sql    = "INSERT INTO stock_location (loc_code, stockid, stock_id) SELECT locations.loc_code, " . DB::_quote($this->id) . ", " . DB::_quote(
-        $this->stock_id
-      ) . " FROM locations";
+                                                                                                                                          $this->stock_id
+        ) . " FROM locations";
       $result = DB::_query($sql, "The item locstock could not be added");
       if (!$result) {
         DB::_cancel();
         return $this->status(false, "Could not add item location information.");
       }
       $sql    = "INSERT INTO item_codes (stockid, item_code, stock_id, description, category_id, quantity, is_foreign) VALUES(" . DB::_quote($this->id) . "," . DB::_quote(
-        $this->stock_id
-      ) . "," . DB::_quote($this->stock_id) . "," . DB::_quote($this->description) . "," . DB::_quote(
-        $this->category_id
-      ) . ",0,0)";
+                                                                                                                                                                  $this->stock_id
+        ) . "," . DB::_quote($this->stock_id) . "," . DB::_quote($this->description) . "," . DB::_quote(
+                                                                                               $this->category_id
+        ) . ",0,0)";
       $result = DB::_query($sql, "The item locstock could not be added");
       if (!$result) {
         DB::_cancel();
@@ -349,8 +349,8 @@
      */
     public function getStockOnOrder() {
       $sql    = "SELECT SUM(sales_order_details.quantity - sales_order_details.qty_sent) AS demand , sales_orders.from_stk_loc AS loc_code FROM sales_order_details, sales_orders WHERE sales_order_details.order_no= sales_orders.order_no AND sales_orders.trans_type=30 AND sales_orders.trans_type=sales_order_details.trans_type AND sales_order_details.stockid = " . DB::_escape(
-        $this->id
-      ) . "' GROUP BY sales_orders.from_stk_loc";
+                                                                                                                                                                                                                                                                                                                                                                              $this->id
+        ) . "' GROUP BY sales_orders.from_stk_loc";
       $result = DB::_query($sql, "No transactions were returned");
       $row    = DB::_fetch($result);
       if ($row === false) {
@@ -378,7 +378,8 @@
         $date_ = Dates::_today();
       }
       $date = Dates::_dateToSql($date_);
-      $sql  = "SELECT SUM(qty) FROM stock_moves
+      $sql
+        = "SELECT SUM(qty) FROM stock_moves
              WHERE stock_id=" . DB::_escape($stock_id) . "
              AND tran_date <= '$date'";
       if ($location != null) {
@@ -387,7 +388,8 @@
       $result = DB::_query($sql, "QOH calulcation failed");
       $myrow  = DB::_fetchRow($result);
       if ($exclude > 0) {
-        $sql    = "SELECT SUM(qty) FROM stock_moves
+        $sql
+          = "SELECT SUM(qty) FROM stock_moves
                  WHERE stock_id=" . DB::_escape($stock_id) . " AND type=" . DB::_escape($exclude) . " AND tran_date = '$date'";
         $result = DB::_query($sql, "QOH calulcation failed");
         $myrow2 = DB::_fetchRow($result);
@@ -405,7 +407,8 @@
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get_edit_info($stock_id) {
-      $sql    = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
+      $sql
+        = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
              FROM stock_master,item_units
              WHERE stock_id=" . DB::_escape($stock_id) . " AND stock_master.units=item_units.abbr";
       $query  = DB::_query($sql, "The standard cost cannot be retrieved");
@@ -427,7 +430,8 @@
      * @return bool
      */
     public static function is_inventory_item($stock_id) {
-      $sql    = "SELECT stock_id FROM stock_master
+      $sql
+        = "SELECT stock_id FROM stock_master
              WHERE stock_id=" . DB::_escape($stock_id) . " AND mb_flag <> 'D'";
       $result = DB::_query($sql, "Cannot query is inventory item or not");
       return DB::_numRows($result) > 0;
@@ -446,7 +450,8 @@
       DB::_query($sql);
       $sql = "SET @flag = 0";
       DB::_query($sql);
-      $sql    = "SELECT SUM(qty), @q:= @q + qty, IF(@q < 0 AND @flag=0, @flag:=1,@flag:=0), IF(@q < 0 AND @flag=1, tran_date,'') AS begin_date
+      $sql
+        = "SELECT SUM(qty), @q:= @q + qty, IF(@q < 0 AND @flag=0, @flag:=1,@flag:=0), IF(@q < 0 AND @flag=1, tran_date,'') AS begin_date
              FROM stock_moves
              WHERE stock_id=" . DB::_escape($stock_id) . " AND tran_date<='$to'
              AND qty <> 0
@@ -465,9 +470,10 @@
      * @return mixed
      */
     public static function get_deliveries_between($stock_id, $from, $to) {
-      $from   = Dates::_dateToSql($from);
-      $to     = Dates::_dateToSql($to);
-      $sql    = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM stock_moves
+      $from = Dates::_dateToSql($from);
+      $to   = Dates::_dateToSql($to);
+      $sql
+            = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM stock_moves
              WHERE type=" . ST_CUSTDELIVERY . " AND stock_id=" . DB::_escape($stock_id) . " AND
                  tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
       $result = DB::_query($sql, "The deliveries could not be updated");
@@ -519,7 +525,8 @@
      */
     public static function get_gl_code($stock_id) {
       /*Gets the GL Codes relevant to the item account */
-      $sql = "SELECT inventory_account, cogs_account,
+      $sql
+        = "SELECT inventory_account, cogs_account,
              adjustment_account, sales_account, assembly_account, dimension_id, dimension2_id FROM
              stock_master WHERE stock_id = " . DB::_escape($stock_id);
       $get = DB::_query($sql, "retreive stock gl code");
@@ -711,23 +718,24 @@
       $o        = array_merge($default, $options);
       $stockbox = new Dialog('Item Edit', 'stockbox', '');
       $stockbox->addButtons(
-        array(
-          'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
+               array(
+                    'Save'  => 'var item =$("#stockframe")[0].contentWindow.Items; item.save(); if (item.get().id==$("#stock_id").val()) { Adv.Forms.setFormValue("description",
                 item.get().description)} $(this).dialog("close")',
-          'Close' => '$(this).dialog("close");'
-        )
+                    'Close' => '$(this).dialog("close");'
+               )
       );
       $stockbox->setOptions(
-        array(
-          'autoopen'   => false,
-          'modal'      => true,
-          'width'      => 940,
-          'height'     => 630,
-          'resizeable' => true
-        )
+               array(
+                    'autoopen'   => false,
+                    'modal'      => true,
+                    'width'      => 940,
+                    'height'     => 630,
+                    'resizeable' => true
+               )
       );
       $stockbox->show();
-      $action = <<<JS
+      $action
+        = <<<JS
             $('#stockbox').html("<iframe src='/items/manage/items?frame=1&stock_id="+$(this).data('stock_id')+"&page={$o['page']}' id='stockframe' style='width:100%' height='500'  style='border:none' frameborder='0'></iframe>").dialog('open');
 JS;
       JS::_addLiveEvent('.stock', 'dblclick', $action, "wrapper", true);
@@ -738,24 +746,24 @@ JS;
      *
      * @param       $id
      * @param array $options 'description' => false,<br>
-    'disabled' => false,<br>
-    'editable' => true,<br>
-    'selected' => '',<br>
-    'label' => false,<br>
-    'cells' => false,<br>
-    'inactive' => false,<br>
-    'purchase' => false,<br>
-    'sale' => false,<br>
-    'js' => '',<br>
-    'selectjs' => '',<br>
-    'submitonselect' => '',<br>
-    'sales_type' => 1,<br>
-    'no_sale' => false,<br>
-    'select' => false,<br>
-    'type' => 'local',<br>
-    'kits'=>true,<br>
-    'where' => '',<br>
-    'size'=>'20px'<br>
+     *                       'disabled' => false,<br>
+     *                       'editable' => true,<br>
+     *                       'selected' => '',<br>
+     *                       'label' => false,<br>
+     *                       'cells' => false,<br>
+     *                       'inactive' => false,<br>
+     *                       'purchase' => false,<br>
+     *                       'sale' => false,<br>
+     *                       'js' => '',<br>
+     *                       'selectjs' => '',<br>
+     *                       'submitonselect' => '',<br>
+     *                       'sales_type' => 1,<br>
+     *                       'no_sale' => false,<br>
+     *                       'select' => false,<br>
+     *                       'type' => 'local',<br>
+     *                       'kits'=>true,<br>
+     *                       'where' => '',<br>
+     *                       'size'=>'20px'<br>
      *
      * @return void
      */
@@ -793,23 +801,7 @@ JS;
      *
      * @return void
      */
-    public static function update(
-      $stock_id,
-      $description,
-      $long_description,
-      $category_id,
-      $tax_type_id,
-      $units = '',
-      $mb_flag = '',
-      $sales_account,
-      $inventory_account,
-      $cogs_account,
-      $adjustment_account,
-      $assembly_account,
-      $dimension_id,
-      $dimension2_id,
-      $no_sale
-    ) {
+    public static function update($stock_id, $description, $long_description, $category_id, $tax_type_id, $units = '', $mb_flag = '', $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
       $sql = "UPDATE stock_master SET long_description=" . DB::_escape($long_description) . ",
                  description=" . DB::_escape($description) . ",
                  category_id=" . DB::_escape($category_id) . ",
@@ -853,35 +845,21 @@ JS;
      *
      * @return void
      */
-    public static function add(
-      $stock_id,
-      $description,
-      $long_description,
-      $category_id,
-      $tax_type_id,
-      $units,
-      $mb_flag,
-      $sales_account,
-      $inventory_account,
-      $cogs_account,
-      $adjustment_account,
-      $assembly_account,
-      $dimension_id,
-      $dimension2_id,
-      $no_sale
-    ) {
-      $sql = "INSERT INTO stock_master (stock_id, description, long_description, category_id,
+    public static function add($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag, $sales_account, $inventory_account, $cogs_account, $adjustment_account, $assembly_account, $dimension_id, $dimension2_id, $no_sale) {
+      $sql
+        = "INSERT INTO stock_master (stock_id, description, long_description, category_id,
                  tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
                  adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale)
                  VALUES (" . DB::_escape($stock_id) . ", " . DB::_escape($description) . ", " . DB::_escape($long_description) . ",
                  " . DB::_escape($category_id) . ", " . DB::_escape($tax_type_id) . ", " . DB::_escape($units) . ", " . DB::_escape($mb_flag) . ",
                  " . DB::_escape($sales_account) . ", " . DB::_escape($inventory_account) . ", " . DB::_escape($cogs_account) . "," . DB::_escape(
-        $adjustment_account
-      ) . ", " . DB::_escape($assembly_account) . ", " . DB::_escape($dimension_id) . ", " . DB::_escape($dimension2_id) . "," . DB::_escape(
-        $no_sale
-      ) . ")";
+                                                                                                                                        $adjustment_account
+        ) . ", " . DB::_escape($assembly_account) . ", " . DB::_escape($dimension_id) . ", " . DB::_escape($dimension2_id) . "," . DB::_escape(
+                                                                                                                                     $no_sale
+        ) . ")";
       DB::_query($sql, "The item could not be added");
-      $sql = "INSERT INTO stock_location (loc_code, stock_id)
+      $sql
+        = "INSERT INTO stock_location (loc_code, stock_id)
                  SELECT locations.loc_code, " . DB::_escape($stock_id) . " FROM locations";
       DB::_query($sql, "The item locstock could not be added");
       Item_Code::add($stock_id, $stock_id, $description, $category_id, 1, 0);
@@ -918,7 +896,8 @@ JS;
      * @return Array|\ADV\Core\DB\Query\Result
      */
     public static function get($stock_id) {
-      $sql    = "SELECT stock_master.*,item_tax_types.name AS tax_type_name
+      $sql
+        = "SELECT stock_master.*,item_tax_types.name AS tax_type_name
                  FROM stock_master,item_tax_types
                  WHERE item_tax_types.id=stock_master.tax_type_id
                  AND stock_id=" . DB::_escape($stock_id);
@@ -972,51 +951,44 @@ JS;
     public static function select($name, $selected_id = null, $all_option = false, $submit_on_change = false, $opts = [], $editkey = false, $legacy = false) {
       if (!$legacy) {
         Item::addSearchBox(
-          $name,
-          array_merge(
-            array(
-              'submitonselect' => $submit_on_change,
-              'selected'       => $selected_id,
-              'purchase'       => true,
-              'cells'          => true
-            ),
-            $opts
-          )
+            $name, array_merge(
+                array(
+                     'submitonselect' => $submit_on_change,
+                     'selected'       => $selected_id,
+                     'purchase'       => true,
+                     'cells'          => true
+                ), $opts
+              )
         );
         return '';
       }
-      $sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
+      $sql
+        = "SELECT stock_id, s.description, c.description, s.inactive, s.editable, s.long_description
                     FROM stock_master s,stock_category c WHERE s.category_id=c.category_id";
       return Forms::selectBox(
-        $name,
-        $selected_id,
-        $sql,
-        'stock_id',
-        's.description',
-        array_merge(
-          array(
-            'format'        => 'Forms::stockItemsFormat',
-            'spec_option'   => $all_option === true ? _("All Items") : $all_option,
-            'spec_id'       => ALL_TEXT,
-            'search_box'    => false,
-            'search'        => array(
-              "stock_id",
-              "c.description",
-              "s.description"
-            ),
-            'search_submit' => DB_Company::get_pref('no_item_list') != 0,
-            'size'          => 10,
-            'select_submit' => $submit_on_change,
-            'category'      => 2,
-            'order'         => array(
-              'c.description',
-              'stock_id'
-            ),
-            'editable'      => 30,
-            'max'           => 50
-          ),
-          $opts
-        )
+                  $name, $selected_id, $sql, 'stock_id', 's.description', array_merge(
+                      array(
+                           'format'        => 'Forms::stockItemsFormat',
+                           'spec_option'   => $all_option === true ? _("All Items") : $all_option,
+                           'spec_id'       => ALL_TEXT,
+                           'search_box'    => false,
+                           'search'        => array(
+                             "stock_id",
+                             "c.description",
+                             "s.description"
+                           ),
+                           'search_submit' => DB_Company::get_pref('no_item_list') != 0,
+                           'size'          => 10,
+                           'select_submit' => $submit_on_change,
+                           'category'      => 2,
+                           'order'         => array(
+                             'c.description',
+                             'stock_id'
+                           ),
+                           'editable'      => 30,
+                           'max'           => 50
+                      ), $opts
+                    )
       );
     }
     /**
@@ -1035,21 +1007,15 @@ JS;
      */
     public static function cells($label, $name, $selected_id = null, $all_option = false, $submit_on_change = false, $all = false, $editkey = false, $legacy = false) {
       echo Item::select(
-        $name,
-        $selected_id,
-        $all_option,
-        $submit_on_change,
-        array(
-          'submitonselect' => $submit_on_change,
-          'label'          => $label,
-          'cells'          => true,
-          'size'           => 10,
-          'purchase'       => false,
-          'show_inactive'  => $all,
-          'editable'       => $editkey
-        ),
-        $editkey,
-        $legacy
+               $name, $selected_id, $all_option, $submit_on_change, array(
+                                                                         'submitonselect' => $submit_on_change,
+                                                                         'label'          => $label,
+                                                                         'cells'          => true,
+                                                                         'size'           => 10,
+                                                                         'purchase'       => false,
+                                                                         'show_inactive'  => $all,
+                                                                         'editable'       => $editkey
+                                                                    ), $editkey, $legacy
       );
     }
   }
