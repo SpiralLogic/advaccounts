@@ -51,8 +51,7 @@
     protected $controller = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
-      set_error_handler(
-        function ($severity, $message, $filepath, $line) {
+      set_error_handler(function ($severity, $message, $filepath, $line) {
           if ($filepath == PATH_CORE . 'Errors.php') {
             while (ob_get_level()) {
               ob_end_clean();
@@ -63,26 +62,22 @@
           return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
         }, E_ALL & ~E_STRICT & ~E_NOTICE
       );
-      set_exception_handler(
-        function (\Exception $e) {
+      set_exception_handler(function (\Exception $e) {
           class_exists('ADV\\Core\\Errors', false) or include_once PATH_CORE . 'Errors.php';
           \ADV\Core\Errors::exceptionHandler($e);
         }
       );
-      register_shutdown_function(
-        function () {
+      register_shutdown_function(function () {
           \ADV\Core\Event::shutdown();
         }
       );
       $dic  = \ADV\Core\DIC::i();
       $self = $this;
-      $dic->offsetSet(
-        'ADVAccounting', function () use ($self) {
+      $dic->offsetSet('ADVAccounting', function () use ($self) {
           return $self;
         }
       );
-      $this->Cache  = $dic->offsetSet(
-        'Cache', function () {
+      $this->Cache  = $dic->offsetSet('Cache', function () {
           $driver = new \ADV\Core\Cache\APC();
           $cache  = new \ADV\Core\Cache($driver);
           if (isset($_GET['cache_reloaded'])) {
@@ -91,34 +86,28 @@
           return $cache;
         }
       )->offsetGet(null);
-      $this->Config = $dic->offsetSet(
-        'Config', function (\ADV\Core\DIC $c) {
+      $this->Config = $dic->offsetSet('Config', function (\ADV\Core\DIC $c) {
           return new \ADV\Core\Config($c->offsetGet('Cache'));
         }
       )->offsetGet(null);
       $loader->registerCache($this->Cache);
-      $this->Cache->defineConstants(
-        $_SERVER['SERVER_NAME'] . '.defines', function () {
+      $this->Cache->defineConstants($_SERVER['SERVER_NAME'] . '.defines', function () {
           return include(ROOT_DOC . 'config' . DS . 'defines.php');
         }
       );
-      $this->Ajax = $dic->offsetSet(
-        'Ajax', function () {
+      $this->Ajax = $dic->offsetSet('Ajax', function () {
           return new \ADV\Core\Ajax();
         }
       )->offsetGet(null);
-      $dic->offsetSet(
-        'Input', function () {
-          array_walk(
-            $_POST, function (&$v) {
+      $dic->offsetSet('Input', function () {
+          array_walk($_POST, function (&$v) {
               $v = is_string($v) ? trim($v) : $v;
             }
           );
           return new \ADV\Core\Input\Input();
         }
       );
-      $dic->offsetSet(
-        'Num', function () {
+      $dic->offsetSet('Num', function () {
           $num              = new \ADV\Core\Num();
           $num->price_dec   = $this->User->_price_dec();
           $num->qty_dec     = $this->User->_qty_dec();
@@ -129,13 +118,11 @@
           return $num;
         }
       );
-      $dic->offsetSet(
-        'DB_Company', function () {
+      $dic->offsetSet('DB_Company', function () {
           return new \DB_Company();
         }
       );
-      $dic->offsetSet(
-        'Dates', function (\ADV\Core\DIC $c) {
+      $dic->offsetSet('Dates', function (\ADV\Core\DIC $c) {
           $config  = $c->offsetGet('Config');
           $user    = $c->offsetGet('User');
           $company = $c->offsetGet('DB_Company');
@@ -148,8 +135,7 @@
           return $dates;
         }
       );
-      $dic->offsetSet(
-        'DB', function (\ADV\Core\DIC $c, $name = 'default') {
+      $dic->offsetSet('DB', function (\ADV\Core\DIC $c, $name = 'default') {
           $config   = $c->offsetGet('Config');
           $dbconfig = $config->get('db.' . $name);
           $cache    = $c->offsetGet('Cache');
@@ -157,8 +143,7 @@
           return $db;
         }
       );
-      $dic->offsetSet(
-        'Pager', function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
+      $dic->offsetSet('Pager', function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
           if (!isset($_SESSION['pager'])) {
             $_SESSION['pager'] = [];
           }
@@ -185,8 +170,7 @@
         }
       );
       ob_start([$this, 'flush_handler'], 0);
-      $this->JS = $dic->offsetSet(
-        'JS', function (\ADV\Core\DIC $c) {
+      $this->JS = $dic->offsetSet('JS', function (\ADV\Core\DIC $c) {
           $js             = new \ADV\Core\JS();
           $config         = $c->offsetGet('Config');
           $js->apikey     = $config->get('assets.maps_api_key');
@@ -194,8 +178,7 @@
           return $js;
         }
       )->offsetGet(null);
-      $dic->offsetSet(
-        'User', function () {
+      $dic->offsetSet('User', function () {
           if (isset($_SESSION['User'])) {
             return $_SESSION['User'];
           }
@@ -203,8 +186,7 @@
           return $_SESSION['User'];
         }
       );
-      $this->Session = $dic->offsetSet(
-        'Session', function (\ADV\Core\DIC $c) {
+      $this->Session = $dic->offsetSet('Session', function (\ADV\Core\DIC $c) {
           $handler           = new \ADV\Core\Session\Memcached();
           $session           = new \ADV\Core\Session($handler);
           $config            = $c->offsetGet('Config');
@@ -252,11 +234,10 @@
         if (isset($this->applications[$app])) {
           $request = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
         }
-        $controller = 'ADV\\Controllers' . array_reduce(
-          explode('/', ltrim($request, '/')), function ($result, $val) {
-            return $result . '\\' . ucfirst($val);
-          }, ''
-        );
+        $controller = 'ADV\\Controllers' . array_reduce(explode('/', ltrim($request, '/')), function ($result, $val) {
+              return $result . '\\' . ucfirst($val);
+            }, ''
+          );
         if (class_exists($controller)) {
           $this->runController($controller);
         } else {
@@ -372,8 +353,7 @@
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
         foreach ($modules as $module => $module_config) {
-          $this->User->_register_login(
-            function () use ($module, $module_config) {
+          $this->User->_register_login(function () use ($module, $module_config) {
               $module = '\\Modules\\' . $module . '\\' . $module;
               new $module($module_config);
             }
@@ -422,8 +402,7 @@
     }
     private function setupPage() {
       $dic = \ADV\Core\DIC::i();
-      $dic->offsetSet(
-        'Page', function (\ADV\Core\DIC $c) {
+      $dic->offsetSet('Page', function (\ADV\Core\DIC $c) {
           return new Page($c['Session'], $c['User'], $c['Config'], $c['Ajax'], $c['JS'], $c['Dates']);
         }
       );

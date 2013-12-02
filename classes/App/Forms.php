@@ -1439,7 +1439,7 @@
      */
     public static function qtyCells($label, $name, $init = null, $params = null, $post_label = null, $dec = null, $inputparams = '') {
       if ($dec === null) {
-        $dec = User::_qty_dec();
+        $dec = User::qty_dec();
       }
       if ($dec === false) {
         $dec = null;
