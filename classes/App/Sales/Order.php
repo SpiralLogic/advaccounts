@@ -823,7 +823,7 @@
         }
         $item_price = round($item_price, User::price_dec());
         if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id']) { // this is sales kit - recurse
-          $this->add_line($item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $std_price);
+          $this->add_line($item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, $description);
         } else { // stock item record eventually with foreign code
           // check duplicate stock item
           foreach ($this->line_items as $this_item) {
@@ -832,7 +832,7 @@
               break;
             }
           }
-          $this->add_to_order(count($this->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount);
+          $this->add_to_order(count($this->line_items), $item['stock_id'], $new_item_qty * $item['quantity'], $item_price, $discount, 0, 0, $description);
         }
       }
     }
