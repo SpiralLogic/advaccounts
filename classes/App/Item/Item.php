@@ -946,11 +946,7 @@ JS;
         DB::_cancel();
         return $this->status(false, "Could not add item location information.");
       }
-      $sql    = "INSERT INTO item_codes (stockid, item_code, stock_id, description, category_id, quantity, is_foreign) VALUES(" . DB::_quote($this->id) . "," . DB::_quote(
-        $this->stock_id
-      ) . "," . DB::_quote($this->stock_id) . "," . DB::_quote($this->description) . "," . DB::_quote(
-        $this->category_id
-      ) . ",1,0)";
+      $sql    = "INSERT INTO item_codes (stockid, item_code, stock_id, description, category_id, quantity, is_foreign) VALUES(" . DB::_quote($this->id) . "," . DB::_quote($this->stock_id) . "," . DB::_quote($this->stock_id) . "," . DB::_quote($this->description) . "," . DB::_quote($this->category_id) . ",1,0)";
       $result = DB::_query($sql, "The item locstock could not be added");
       if (!$result) {
         DB::_cancel();
