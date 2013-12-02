@@ -51,7 +51,8 @@
     protected $controller = null;
     /** */
     public function __construct(\ADV\Core\Loader $loader) {
-      set_error_handler(function ($severity, $message, $filepath, $line) {
+      set_error_handler(
+        function ($severity, $message, $filepath, $line) {
           if ($filepath == PATH_CORE . 'Errors.php') {
             while (ob_get_level()) {
               ob_end_clean();
@@ -62,139 +63,156 @@
           return \ADV\Core\Errors::handler($severity, $message, $filepath, $line);
         }, E_ALL & ~E_STRICT & ~E_NOTICE
       );
-      set_exception_handler(function (\Exception $e) {
+      set_exception_handler(
+        function (\Exception $e) {
           class_exists('ADV\\Core\\Errors', false) or include_once PATH_CORE . 'Errors.php';
           \ADV\Core\Errors::exceptionHandler($e);
         }
       );
-      register_shutdown_function(function () {
+      register_shutdown_function(
+        function () {
           \ADV\Core\Event::shutdown();
         }
       );
       $dic  = \ADV\Core\DIC::i();
       $self = $this;
-      $dic->offsetSet('ADVAccounting', function () use ($self) {
-          return $self;
-        }
+      $dic->offsetSet(
+          'ADVAccounting', function () use ($self) {
+              return $self;
+            }
       );
-      $this->Cache  = $dic->offsetSet('Cache', function () {
-          try {
-            $driver = new \ADV\Core\Cache\APC();
-          } catch (\RuntimeException $e) {
-            $driver = new \ADV\Core\Cache\Session;
-          }
-          $cache = new \ADV\Core\Cache($driver);
-          if (isset($_GET['cache_reloaded'])) {
-            Event::notice('Cache Reloaded');
-          }
-          return $cache;
-        }
+      $this->Cache  = $dic->offsetSet(
+                          'Cache', function () {
+                              try {
+                                $driver = new \ADV\Core\Cache\APC();
+                              } catch (\RuntimeException $e) {
+                                $driver = new \ADV\Core\Cache\Session;
+                              }
+                              $cache = new \ADV\Core\Cache($driver);
+                              if (isset($_GET['cache_reloaded'])) {
+                                Event::notice('Cache Reloaded');
+                              }
+                              return $cache;
+                            }
       )                   ->offsetGet(null);
-      $this->Config = $dic->offsetSet('Config', function (\ADV\Core\DIC $c) {
-          return new \ADV\Core\Config($c->offsetGet('Cache'));
-        }
+      $this->Config = $dic->offsetSet(
+                          'Config', function (\ADV\Core\DIC $c) {
+                              return new \ADV\Core\Config($c->offsetGet('Cache'));
+                            }
       )                   ->offsetGet(null);
       $loader->registerCache($this->Cache);
-      $this->Cache->defineConstants($_SERVER['SERVER_NAME'] . '.defines', function () {
-          return include(ROOT_DOC . 'config' . DS . 'defines.php');
-        }
+      $this->Cache->defineConstants(
+                  $_SERVER['SERVER_NAME'] . '.defines', function () {
+                      return include(ROOT_DOC . 'config' . DS . 'defines.php');
+                    }
       );
-      $this->Ajax = $dic->offsetSet('Ajax', function () {
-          return new \ADV\Core\Ajax();
-        }
+      $this->Ajax = $dic->offsetSet(
+                        'Ajax', function () {
+                            return new \ADV\Core\Ajax();
+                          }
       )                 ->offsetGet(null);
-      $dic->offsetSet('Input', function () {
-          array_walk($_POST, function (&$v) {
-              $v = is_string($v) ? trim($v) : $v;
+      $dic->offsetSet(
+          'Input', function () {
+              array_walk(
+                $_POST, function (&$v) {
+                  $v = is_string($v) ? trim($v) : $v;
+                }
+              );
+              return new \ADV\Core\Input\Input();
             }
-          );
-          return new \ADV\Core\Input\Input();
-        }
       );
-      $dic->offsetSet('Num', function () {
-          $num              = new \ADV\Core\Num();
-          $num->price_dec   = $this->User->price_dec();
-          $num->qty_dec     = $this->User->qty_dec();
-          $num->tho_sep     = $this->User->prefs->tho_sep;
-          $num->dec_sep     = $this->User->prefs->dec_sep;
-          $num->exrate_dec  = $this->User->exrate_dec();
-          $num->percent_dec = $this->User->percent_dec();
-          return $num;
-        }
+      $dic->offsetSet(
+          'Num', function () {
+              $num              = new \ADV\Core\Num();
+              $num->price_dec   = $this->User->price_dec();
+              $num->qty_dec     = $this->User->qty_dec();
+              $num->tho_sep     = $this->User->prefs->tho_sep;
+              $num->dec_sep     = $this->User->prefs->dec_sep;
+              $num->exrate_dec  = $this->User->exrate_dec();
+              $num->percent_dec = $this->User->percent_dec();
+              return $num;
+            }
       );
-      $dic->offsetSet('DB_Company', function (\ADV\Core\DIC $c) {
-          $user    = $c->offsetGet('User');
-          $cache   = $c->offsetGet('Cache');
-          $name    = $user->company;
-          $company = $cache->get('Company.' . $name);
-          if (!$company) {
-            $config  = $c->offsetGet('Config');
-            $input   = $c->offsetGet('Input');
-            $company = $config->get('db.' . $input->post('login_company', null, $name));
-            $company = new \DB_Company($company);
-            $cache->set('Company.' . $name, (array)$company);
-          } else {
-            $company = new \DB_Company($company);
-          }
-          return $company;
-        }
+      $dic->offsetSet(
+          'DB_Company', function (\ADV\Core\DIC $c) {
+              $user    = $c->offsetGet('User');
+              $cache   = $c->offsetGet('Cache');
+              $name    = $user->company;
+              $company = $cache->get('Company.' . $name);
+              if (!$company) {
+                $config  = $c->offsetGet('Config');
+                $input   = $c->offsetGet('Input');
+                $company = $config->get('db.' . $input->post('login_company', null, $name));
+                $company = new \DB_Company($company);
+                $cache->set('Company.' . $name, (array) $company);
+              } else {
+                $company = new \DB_Company($company);
+              }
+              return $company;
+            }
       );
-      $dic->offsetSet('Dates', function (\ADV\Core\DIC $c) {
-          $config  = $c->offsetGet('Config');
-          $user    = $c->offsetGet('User');
-          $company = $c->offsetGet('DB_Company');
-          $dates   = new \ADV\App\Dates($company);
-          $sep     = is_int($user->prefs->date_sep) ? $user->prefs->date_sep : $config->get('date.ui_separator');
-          $dates->setSep($sep);
-          $dates->format          = $user->prefs->date_format;
-          $dates->use_fiscal_year = $config->get('use_fiscalyear');
-          $dates->sticky_doc_date = $user->prefs->sticky_doc_date;
-          return $dates;
-        }
+      $dic->offsetSet(
+          'Dates', function (\ADV\Core\DIC $c) {
+              $config  = $c->offsetGet('Config');
+              $user    = $c->offsetGet('User');
+              $company = $c->offsetGet('DB_Company');
+              $dates   = new \ADV\App\Dates($company);
+              $sep     = is_int($user->prefs->date_sep) ? $user->prefs->date_sep : $config->get('date.ui_separator');
+              $dates->setSep($sep);
+              $dates->format          = $user->prefs->date_format;
+              $dates->use_fiscal_year = $config->get('use_fiscalyear');
+              $dates->sticky_doc_date = $user->prefs->sticky_doc_date;
+              return $dates;
+            }
       );
-      $dic->offsetSet('DB', function (\ADV\Core\DIC $c, $name = 'default') {
-          $config   = $c->offsetGet('Config');
-          $dbconfig = $config->get('db.' . $name);
-          $cache    = $c->offsetGet('Cache');
-          $db       = new \ADV\Core\DB\DB($dbconfig, $cache);
-          return $db;
-        }
+      $dic->offsetSet(
+          'DB', function (\ADV\Core\DIC $c, $name = 'default') {
+              $config   = $c->offsetGet('Config');
+              $dbconfig = $config->get('db.' . $name);
+              $cache    = $c->offsetGet('Cache');
+              $db       = new \ADV\Core\DB\DB($dbconfig, $cache);
+              return $db;
+            }
       );
-      $dic->offsetSet('Pager', function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
-        }
+      $dic->offsetSet(
+          'Pager', function (\ADV\Core\DIC $c, $name, $sql = null, $coldef) {
+            }
       );
       ob_start([$this, 'flush_handler'], 0);
-      $this->JS = $dic->offsetSet('JS', function (\ADV\Core\DIC $c) {
-          $js         = new \ADV\Core\JS();
-          $config     = $c->offsetGet('Config');
-          $js->apikey = $config->get('assets.maps_api_key');
-          return $js;
-        }
+      $this->JS = $dic->offsetSet(
+                      'JS', function (\ADV\Core\DIC $c) {
+                          $js         = new \ADV\Core\JS();
+                          $config     = $c->offsetGet('Config');
+                          $js->apikey = $config->get('assets.maps_api_key');
+                          return $js;
+                        }
       )               ->offsetGet(null);
-      $dic->offsetSet('User', function () {
-          if (isset($_SESSION['User'])) {
-            return $_SESSION['User'];
-          }
-          $_SESSION['User'] = new \ADV\App\User();
-          return $_SESSION['User'];
-        }
+      $dic->offsetSet(
+          'User', function () {
+              if (isset($_SESSION['User'])) {
+                return $_SESSION['User'];
+              }
+              $_SESSION['User'] = new \ADV\App\User();
+              return $_SESSION['User'];
+            }
       );
-      $this->Session = $dic->offsetSet('Session', function (\ADV\Core\DIC $c) {
-          try {
-            $handler = new \ADV\Core\Session\Memcached();
-          } catch (\RuntimeException $e) {
-            $handler = new \SessionHandler();
-          }
-          $session           = new \ADV\Core\Session($handler);
-          $config            = $c->offsetGet('Config');
-          $l                 = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
-          $name              = $l['name'];
-          $code              = $l['code'];
-          $encoding          = $l['encoding'];
-          $dir               = isset($l['rtl']) ? 'rtl' : 'ltr';
-          $session->language = new \ADV\Core\Language($name, $code, $encoding, $dir);
-          return $session;
-        }
+      $this->Session = $dic->offsetSet(
+                           'Session', function (\ADV\Core\DIC $c) {
+                               try {
+                                 $handler = new \ADV\Core\Session\Memcached();
+                               } catch (\RuntimeException $e) {
+                                 $handler = new \SessionHandler();
+                               }
+                               $session           = new \ADV\Core\Session($handler);
+                               $config            = $c->offsetGet('Config');
+                               $l                 = \ADV\Core\Arr::searchValue($config->get('default.language'), $config->get('languages.installed'), 'code');
+                               $name              = $l['name'];
+                               $code              = $l['code'];
+                               $encoding          = $l['encoding'];
+                               $dir               = isset($l['rtl']) ? 'rtl' : 'ltr';
+                               $session->language = new \ADV\Core\Language($name, $code, $encoding, $dir);
+                               return $session;
+                             }
       )                    ->offsetGet(null);
       $this->User    = $dic['User'];
       $this->Input   = $dic['Input'];
@@ -231,7 +249,8 @@
         if (isset($this->applications[$app])) {
           $request = (isset($this->applications[$app]['route']) ? $this->applications[$app]['route'] : $app);
         }
-        $controller = 'ADV\\Controllers' . array_reduce(explode('/', ltrim($request, '/')), function ($result, $val) {
+        $controller = 'ADV\\Controllers' . array_reduce(
+            explode('/', ltrim($request, '/')), function ($result, $val) {
               return $result . '\\' . ucfirst($val);
             }, ''
           );
@@ -283,10 +302,15 @@
         $controller = 'ADV\\Controllers\\' . ucFirst($path[1]);
       }
       if (!class_exists($controller)) {
-        $controller = 'ADV\\Controllers\\' . ($this->User->prefs->startup_tab ? : $this->Config->get('apps.default'));
+        $controller = 'ADV\\Controllers\\' . $this->User->prefs->startup_tab;
       }
       if (class_exists($controller)) {
         $this->runController($controller);
+      } else {
+        $controller = $this->Config->get('apps.default');
+        if (class_exists($controller)) {
+          $this->runController($controller);
+        }
       }
       return $controller;
     }
@@ -356,10 +380,11 @@
       if ($company) {
         $modules = $this->Config->get('modules.login', []);
         foreach ($modules as $module => $module_config) {
-          $this->User->register_login(function () use ($module, $module_config) {
-              $module = '\\Modules\\' . $module . '\\' . $module;
-              new $module($module_config);
-            }
+          $this->User->register_login(
+                     function () use ($module, $module_config) {
+                       $module = '\\Modules\\' . $module . '\\' . $module;
+                       new $module($module_config);
+                     }
           );
         }
         $password = Auth::fromIV($_POST['password'], $this->Session->getFlash('password_iv'));
@@ -405,9 +430,10 @@
     }
     private function setupPage() {
       $dic = \ADV\Core\DIC::i();
-      $dic->offsetSet('Page', function (\ADV\Core\DIC $c) {
-          return new Page($c['Session'], $c['User'], $c['Config'], $c['Ajax'], $c['JS'], $c['Dates']);
-        }
+      $dic->offsetSet(
+          'Page', function (\ADV\Core\DIC $c) {
+              return new Page($c['Session'], $c['User'], $c['Config'], $c['Ajax'], $c['JS'], $c['Dates']);
+            }
       );
     }
   }

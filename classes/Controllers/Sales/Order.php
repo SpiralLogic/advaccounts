@@ -73,7 +73,7 @@
         Orders::CLONE_ORDER    => SA_SALESORDER, //
         ST_SALESINVOICE        => SA_SALESINVOICE
       ];
-    protected $security;
+    protected $security = SA_SALESORDER;
     public $type;
     /***
      * @var \Sales_Order;

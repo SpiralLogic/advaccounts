@@ -72,6 +72,7 @@
     /** @var bool * */
     public $change_password = false;
     public $selectedApp;
+    public $startup_tab = 'Sales';
     public $hash = 'none';
     /** @var */
     public $last_record;
