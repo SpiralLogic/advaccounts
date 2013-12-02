@@ -38,7 +38,7 @@
     use StaticAccess;
 
     public $user;
-    public $id;
+    public $id = 0;
     public $user_id;
     /**
      * @var string
