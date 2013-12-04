@@ -45,7 +45,7 @@
       $form->text('user_id')->readonly(true)->value($this->User->username)->label('User:');
       $form->password('password')->label('Password:');
       $form->password('confirmpwd')->label('Confirm password:');
-      $form->submit('change', 'Change Password')->type(Button::SUCCESS)->preIcon(ICON_SUBMIT);
+      $form->submit('change', 'Change Password')->type('success')->preIcon(ICON_SUBMIT);
       $form->end();
       $view->render();
       $this->Page->end();
