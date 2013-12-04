@@ -187,6 +187,7 @@
      */
     public function password($name, Array $attrs = []) {
       $field                = $this->addField(new Field('input', $name));
+      $field->value('');
       $field['type']        = 'password';
       $field['placeholder'] = '';
       return $field->mergeAttr($attrs);

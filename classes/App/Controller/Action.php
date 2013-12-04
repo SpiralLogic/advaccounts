@@ -60,6 +60,7 @@
     public function   run($embed = false) {
       $this->action   = $this->Input->post(FORM_ACTION);
       $this->embedded = $embed || $this->Input->request('frame');
+      $this->setTitle();
       $this->before();
       if ($this->Page && !$this->Ajax->inAjax()) {
         $this->Page->init($this->title, $this->security, $this->embedded);

@@ -3490,11 +3490,24 @@ div.warn_msg {
   width:            180px;
   height:           inherit;
   padding:          3px;
-  padding:          3px;
   font-weight:      bold;
   background-color: #D4E6F6;
   vertical-align:   top;
   border:           #F3F9FE 1px solid;
+}
+
+.formbox form label span.readonly {
+  margin:           2px 5px 2px 5px;
+  width:            180px;
+  background-color: #cccccc;
+  display:          inline-block;
+  padding:          1px 4px 1px 4px;
+  box-shadow:       inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  border:           1px solid #cccccc;
+  height:           25px;
+  font-family:      Tahoma, Verdana, Geneva;
+  line-height:      2;
+  font-weight:      normal;
 }
 
 .formbox textarea, .grid textarea {
@@ -3645,9 +3658,11 @@ table.noborder td {
   width:     auto;
   min-width: 6em;
 }
+
 .grid input .small {
-  width:5em;
+  width: 5em;
 }
+
 .grid .input-append input, .grid .input-prepend input {
   min-width: 3em;
 }

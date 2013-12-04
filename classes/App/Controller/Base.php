@@ -43,7 +43,8 @@
     /**
      * @param      $title
      */
-    protected function setTitle($title) {
+    protected function setTitle($title = null) {
+      $title = $title ? : $this->title;
       $this->title = _($this->help_context = $title);
     }
     final private function checkSecurity() {

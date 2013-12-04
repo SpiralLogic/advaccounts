@@ -2,7 +2,6 @@
 
   /**
    * PHP version 5.4
-   *
    * @category  PHP
    * @package   ADVAccounts
    * @author    Advanced Group PTY LTD <admin@advancedgroup.com.au>
@@ -11,28 +10,25 @@
    **/
   namespace ADV\Controllers\System;
 
+  use ADV\App\Dates;
   use ADV\Core\View;
   use ADV\Core\Event;
   use ADV\App\ADVAccounting;
   use ADV\Core\Config;
-  use ADV\Core\DIC;
   use ADV\App\Form\Form;
 
-  /**
-   *
-   */
   class Preferences extends \ADV\App\Controller\Action
   {
-    /** @var \ADV\App\Dates */
+    protected $title = 'Preferences';
+    protected $security = SA_SETUPDISPLAY;
     protected $Dates;
     protected function before() {
-      $this->Dates = DIC::get('Dates');
+      $this->Dates = Dates::i();
       if (REQUEST_POST) {
         $this->User->update_prefs($_POST);
       }
     }
     protected function index() {
-      $this->Page->start('Preferences', SA_SETUPDISPLAY);
       $view = new View('preferences');
       $form = new Form();
       $view->set('form', $form);
@@ -59,7 +55,6 @@
       $form->checkbox('sticky_doc_date')->label('Remember last document date:');
       $form->setValues($this->User->prefs);
       $view->render();
-      $this->Page->end();
     }
     /**
      * @return array
@@ -81,15 +76,16 @@
       $themes = [];
       try {
         $themedir = new \DirectoryIterator(ROOT_WEB . PATH_THEME);
+        /** @var \DirectoryIterator $theme */
+        foreach ($themedir as $theme) {
+          if (!$theme->isDot() && $theme->isDir()) {
+            $themes[$theme->getFilename()] = $theme->getFilename();
+          }
+        }
+        ksort($themes);
       } catch (\UnexpectedValueException $e) {
         Event::error($e->getMessage());
       }
-      foreach ($themedir as $theme) {
-        if (!$theme->isDot() && $theme->isDir()) {
-          $themes[$theme->getFilename()] = $theme->getFilename();
-        }
-      }
-      ksort($themes);
       return $themes;
     }
   }
