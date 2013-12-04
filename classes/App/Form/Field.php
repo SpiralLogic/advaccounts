@@ -29,6 +29,7 @@
     protected $tag;
     protected $append;
     protected $prepend;
+    protected $readonly = false;
     /**
      * @param $tag
      * @param $name
@@ -68,6 +69,15 @@
      */
     public function focus($on = true) {
       $this->attr['autofocus'] = $on;
+      return $this;
+    }
+    /**
+     * @param bool $on
+     *
+     * @return Field
+     */
+    public function readonly($on = true) {
+      $this->readonly = $on;
       return $this;
     }
     /**
@@ -170,14 +180,21 @@
      * @return string
      */
     public function __toString() {
-      $tag                 = $this->tag;
+      $value = (isset($this->value)) ? $this->value : $this->default;
+      if ($this->readonly) {
+        $tag           = 'span';
+        $this->content = $value;
+        $this->attr    = ['class' => 'readonly'];
+      } else {
+        $tag                 = $this->tag;
       $value               = (isset($this->value)) ? $this->value : $this->default;
       $this->attr['id']    = $this->id;
       $this->attr['value'] = $value;
+      }
       $control             = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
       $control             = $this->formatAddOns($control);
       if ($this->label) {
-        $control = "<label for='" . $this->id . "'><span>" . $this->label . "</span>$control</label>";
+        $control = "<label><span>" . $this->label . "</span>$control</label>";
       }
       return $control;
     }

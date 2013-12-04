@@ -63,9 +63,10 @@
     public function updatePassword($id, $password, $change_password = 0) {
       $change_password = $change_password == true ? 1 : 0;
       $hash            = $this->hashPassword($password);
-      DB::_update('users')->value('password', $hash)->value('hash', $this->makeHash($password, $id))->value('change_password', $change_password)->where('id=', $id)->exec();
+      $result = DB::_update('users')->value('password', $hash)->value('user_id', $this->username)->value('hash', $this->makeHash($password, $id))
+                  ->value('change_password', $change_password)->where('id=', $id)->exec();
       session_regenerate_id();
-      return $hash;
+      return $result ? $hash : false;
     }
 
     /**
@@ -163,7 +164,7 @@
           $returns['error'] = 3;
           $returns['text']  = 'Password is too common';
         } else {
-          preg_match_all("/(.)\1{2}/", $password, $matches);
+          preg_match_all('/(.)\\1{2}/', $password, $matches);
           $consecutives = count($matches[0]);
           preg_match_all("/\d/i", $password, $matches);
           $numbers = count($matches[0]);

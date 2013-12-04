@@ -75,12 +75,11 @@
     public $phone;
     public $language;
     public $email;
-    /**
-     * @var bool
-     */
+    /** @var bool * */
     public $change_password = false;
     public $selectedApp;
-    public $hash;
+    public $startup_tab = 'Sales';
+    public $hash = 'none';
     /** @var */
     public $last_record;
     /** @var \ADV\App\Security */
@@ -125,27 +124,6 @@
       }
       return $q->fetch()->all();
     }
-
-    /**
-     * @param int $id
-     */
-    public function load($id = 0, $extra = []) {
-      $status         = parent::load($id, $extra);
-      $this->password = '';
-      return $status;
-    }
-
-    /**
-     * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
-     *
-     * @return array|bool|int|null
-     * @return \ADV\Core\Traits\Status|array|bool|int|string
-     */
-    public function save($changes = null) {
-      unset($this->password, $changes['password']);
-      return parent::save($changes);
-    }
-
     /**
      * @return bool
      */
@@ -212,6 +190,7 @@
         }
         $this->change_password = $myrow['change_password'];
         $this->logged          = true;
+        $this->id = $myrow['id'];
         $this->name            = $myrow['real_name'];
         $this->pos             = $myrow['pos'];
         $this->username        = $this->loginname = $loginname;
@@ -577,12 +556,23 @@
         return $this->status(false, $check['text']);
       } elseif ($check['strength'] < 3) {
         return $this->status(false, _("Password Too Weak!"));
-      } else {
-        $this->status(true, 'Password potentially changed');
-        $auth->updatePassword($this->id, $this->password);
-        unset($this->password);
       }
       return true;
+    }
+    /**
+     * @param null       $changes
+     * @param array|null $changes can take an array of  changes  where key->value pairs match properties->values and applies them before save
+     *
+     * @return array|bool|int|null
+     * @return \ADV\Core\Traits\Status|array|bool|int|string
+     */
+    public function save($changes = []) {
+      $result = parent::save($changes);
+      $auth   = new Auth($_POST['user_id']);
+      //  $this->status(false, 'Password potentially changed');
+      $auth->updatePassword($this->id, $this->password);
+      unset($this->password);
+      return $result;
     }
   }
 

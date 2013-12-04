@@ -23,10 +23,10 @@
     <ul class="menu" id="rightmenu">
         <li><a>{{$name}}</a>
             <ul>
-                <li><a href='{{ROOT_URL}}system/display_prefs.php?'>Preferences</a></li>
-                <li><a href='{{ROOT_URL}}system/change_current_user_password.php?selected_id={# echo e($username) #}'>Change&nbsp;password</a>
-                </li>
-                <li><a href='{{ROOT_URL}}access/logout.php?'>Logout</a></li>
+              <li><a href='{{ROOT_URL}}system/preferences?'>Preferences</a></li>
+              <li><a href='{{ROOT_URL}}system/manage/password'>Change&nbsp;password</a>
+              </li>
+              <li><a href='{{ROOT_URL}}access/logout?'>Logout</a></li>
             </ul>
         </li>
     </ul>
