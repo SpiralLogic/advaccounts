@@ -22,7 +22,6 @@
    */
   class Purchasing extends Manage
   {
-
     protected $stock_id;
     protected $security = SA_PURCHASEPRICING;
     protected $frame = false;
@@ -31,21 +30,22 @@
       $this->stock_id = $this->Input->getPostGlobal('stock_id');
       $this->object   = new Purchase();
       $this->runPost();
-      $this->object->stock_id = $this->stock_id;
+      if (!$this->object->id) {
+        $this->object->stock_id = $this->stock_id;
+      }
     }
     protected function beforeTable() {
       if (!$this->frame) {
         echo "<div class='bold center pad10 margin20 font13'>";
         UI::search(
-          'stock_id',
-          [
-            'label'   => 'Item:',
-            'url'     => 'Item',
-            'idField' => 'stock_id',
-            'name'    => 'stock_id', //
-            'value'   => $this->stock_id,
-            'focus'   => true,
-          ]
+          'stock_id', [
+                      'label'   => 'Item:',
+                      'url'     => 'Item',
+                      'idField' => 'stock_id',
+                      'name'    => 'stock_id', //
+                      'value'   => $this->stock_id,
+                      'focus'   => true,
+                      ]
         );
         $this->Session->setGlobal('stock_id', $this->stock_id);
         echo "</div>";

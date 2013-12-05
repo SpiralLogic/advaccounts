@@ -54,7 +54,7 @@
         }
         $this->stockid = Item::getStockID((string) $this->stock_id);
         if (!$this->stockid) {
-          return $this->status(false, 'Can\'t add prive to non-existing item', 'stock_id');
+          return $this->status(false, 'Can\'t add price to non-existing item', 'stock_id');
         }
         if (!Validation::is_num($this->price, 0)) {
           return $this->status(false, 'Price must be a number and $0 or more', 'price');

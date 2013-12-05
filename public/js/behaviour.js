@@ -257,7 +257,7 @@ JsHttpRequest._request = function (trigger, form, tout, retry) {
 };
 // collect all form input values plus inp trigger value
 JsHttpRequest.formInputs = function (inp, objForm, upload) {
-  var submitObj = inp, q = {};
+  var submitObj = inp, q = {}, value;
   if (typeof(inp) == "string") {
     submitObj = document.getElementsByName(inp)[0] || inp;
   }
@@ -284,6 +284,7 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
       if (el.disabled && el.disabled == true) {
         continue;
       }
+      value = el.value;
       if (name) {
         if (el.type == 'select-multiple') {
           name = name.substr(0, name.length - 2);
@@ -296,7 +297,10 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
           }
         }
         else {
-          q[name] = el.value;
+          if (el.hasAttribute('data-dec')) {
+            value.replace(user.ts, '');
+          }
+          q[name] = value;
         }
       }
     }
