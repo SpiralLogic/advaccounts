@@ -298,7 +298,7 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
         }
         else {
           if (el.hasAttribute('data-dec')) {
-            value.replace(user.ts, '');
+            value = value.replace(user.ts, '');
           }
           q[name] = value;
         }
