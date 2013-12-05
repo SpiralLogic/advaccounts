@@ -38,6 +38,7 @@
     /** @var \Purch_Order */
     protected $order = null;
     protected $creditor_id;
+    protected $security = SA_OPEN;
     protected function before() {
       $this->JS->openWindow(950, 500);
       $this->order = Orders::session_get() ? : null;
@@ -63,8 +64,8 @@
         $this->cancelItem();
       }
       $this->iframe = "<div class='center'><iframe src='" . e(
-        '/purchases/search/completed?' . LOC_NOT_FAXED_YET . '=1&frame=1'
-      ) . "' class='width70' style='height:300px' ></iframe></div>";
+          '/purchases/search/completed?' . LOC_NOT_FAXED_YET . '=1&frame=1'
+        ) . "' class='width70' style='height:300px' ></iframe></div>";
       if ($this->Input->get(Orders::MODIFY_ORDER)) {
         $this->order = $this->createOrder($_GET[Orders::MODIFY_ORDER]);
       } elseif (isset($_POST[CANCEL]) || isset($_POST[UPDATE_ITEM])) {
@@ -81,6 +82,7 @@
         $this->security = SA_PURCHASEORDER;
         $this->setTitle("Purchase Order Entry");
       }
+      $this->checkSecurity();
     }
     protected function cancelChanges() {
       $order_no = $this->order->order_no;
@@ -118,9 +120,9 @@
       //need to check that not already dispatched or invoiced by the supplier
       if (($this->order->order_no != 0) && $this->order->any_already_received() == 1) {
         Event::error(
-          _("This order cannot be cancelled because some of it has already been received.") . "<br>" . _(
-            "The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."
-          )
+             _("This order cannot be cancelled because some of it has already been received.") . "<br>" . _(
+               "The line item quantities may be modified to quantities more than already received. prices cannot be altered for lines that have already been received and quantities cannot be reduced below the quantity already received."
+             )
         );
       } else {
         Orders::session_delete($this->order->order_id);
@@ -147,7 +149,7 @@
           if ($allow_update) {
             $myrow = DB::_fetch($result);
             $this->order->add_to_order(
-              $_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'], Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100
+                        $_POST['line_no'], $_POST['stock_id'], Validation::input_num('qty'), $_POST['description'], Validation::input_num('price'), $myrow["units"], $_POST['req_del_date'], 0, 0, $_POST['discount'] / 100
             );
             unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
             $_POST['stock_id'] = "";
@@ -160,18 +162,18 @@
     }
     protected function updateItem() {
       if ($this->order->line_items[$_POST['line_no']]->qty_inv > Validation::input_num(
-        'qty'
-      ) || $this->order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')
+                                                                           'qty'
+        ) || $this->order->line_items[$_POST['line_no']]->qty_received > Validation::input_num('qty')
       ) {
         Event::error(
-          _("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _(
-            "The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."
-          )
+             _("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received. This is prohibited.") . "<br>" . _(
+               "The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."
+             )
         );
         $this->JS->setFocus('qty');
       } else {
         $this->order->update_order_item(
-          $_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100
+                    $_POST['line_no'], Validation::input_num('qty'), Validation::input_num('price'), $_POST['req_del_date'], $_POST['description'], $_POST['discount'] / 100
         );
         unset($_POST['stock_id'], $_POST['qty'], $_POST['price'], $_POST['req_del_date']);
         Item_Line::start_focus('stock_id');
@@ -200,8 +202,8 @@
       if ($this->order->order_has_items()) {
         if ($this->order->order_no > 0 && $this->User->hasAccess(SA_VOIDTRANSACTION)) {
           $buttons->submit(Orders::CANCEL, "Delete Order")->preIcon(ICON_DELETE)->setWarning(
-            'You are about to void this Document.\nDo you want to continue?'
-          )->type(\ADV\App\Form\Button::DANGER);
+                                                                                'You are about to void this Document.\nDo you want to continue?'
+          )                                                                     ->type(\ADV\App\Form\Button::DANGER);
         }
         $buttons->submit(Orders::CANCEL_CHANGES, "Cancel Changes")->preIcon(ICON_CANCEL)->type('warning');
       }
@@ -270,7 +272,7 @@
         $this->order->supplier_to_order($row['creditor_id']);
         foreach ($sales_order->line_items as $line_no => $line_item) {
           $this->order->add_to_order(
-            $line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::_addDays(Dates::_today(), 10), 0, 0, 0
+                      $line_no, $line_item->stock_id, $line_item->quantity, $line_item->description, 0, $line_item->units, Dates::_addDays(Dates::_today(), 10), 0, 0, 0
           );
         }
         if (isset($_GET[LOC_DROP_SHIP])) {

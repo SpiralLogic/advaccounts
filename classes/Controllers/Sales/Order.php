@@ -612,6 +612,7 @@
       if (isset($this->typeSecurity[$value])) {
         $this->security = $this->typeSecurity[$value];
       }
+      $this->checkSecurity();
     }
     /**
      * @param      $title

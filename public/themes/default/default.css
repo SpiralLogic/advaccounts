@@ -420,7 +420,7 @@ input[type="checkbox"]:focus {
   width: 60px;
 }
 
-.input-small {
+.input-xs {
   width: 90px;
 }
 
@@ -965,7 +965,7 @@ legend + .control-group {
   box-shadow:         none;
 }
 
-.btn-large {
+.btn-lg {
   padding:               9px 14px;
   font-size:             15px;
   line-height:           normal;
@@ -974,21 +974,21 @@ legend + .control-group {
   border-radius:         5px;
 }
 
-.btn-large [class^="icon-"] {
+.btn-lg [class^="icon-"] {
   margin-top: 1px;
 }
 
-.btn-small {
+.btn-sm {
   padding:     5px 9px;
   font-size:   11px;
   line-height: 16px;
 }
 
-.btn-small [class^="icon-"] {
+.btn-sm [class^="icon-"] {
   margin-top: -1px;
 }
 
-.btn-mini {
+.btn-xs {
   padding:     2px 6px;
   font-size:   11px;
   line-height: 14px;
@@ -1222,20 +1222,20 @@ input[type="submit"].btn::-moz-focus-inner {
   border:  0;
 }
 
-button.btn.btn-large,
-input[type="submit"].btn.btn-large {
+button.btn.btn-lg,
+input[type="submit"].btn.btn-lg {
   *padding-top:    7px;
   *padding-bottom: 7px;
 }
 
-button.btn.btn-small,
-input[type="submit"].btn.btn-small {
+button.btn.btn-sm,
+input[type="submit"].btn.btn-sm {
   *padding-top:    3px;
   *padding-bottom: 3px;
 }
 
-button.btn.btn-mini,
-input[type="submit"].btn.btn-mini {
+button.btn.btn-xs,
+input[type="submit"].btn.btn-xs {
   *padding-top:    1px;
   *padding-bottom: 1px;
 }
@@ -1347,17 +1347,17 @@ input[type="submit"].btn.btn-mini {
   *padding-bottom:    4px;
 }
 
-.btn-group > .btn-mini.dropdown-toggle {
+.btn-group > .btn-xs.dropdown-toggle {
   padding-left:  5px;
   padding-right: 5px;
 }
 
-.btn-group > .btn-small.dropdown-toggle {
+.btn-group > .btn-sm.dropdown-toggle {
   *padding-top:    4px;
   *padding-bottom: 4px;
 }
 
-.btn-group > .btn-large.dropdown-toggle {
+.btn-group > .btn-lg.dropdown-toggle {
   padding-left:  12px;
   padding-right: 12px;
 }
@@ -1408,22 +1408,22 @@ input[type="submit"].btn.btn-mini {
   filter:  alpha(opacity=100);
 }
 
-.btn-mini .caret {
+.btn-xs .caret {
   margin-top: 5px;
 }
 
-.btn-small .caret {
+.btn-sm .caret {
   margin-top: 6px;
 }
 
-.btn-large .caret {
+.btn-lg .caret {
   margin-top:         6px;
   border-left-width:  5px;
   border-right-width: 5px;
   border-top-width:   5px;
 }
 
-.dropup .btn-large .caret {
+.dropup .btn-lg .caret {
   border-bottom: 5px solid #000000;
   border-top:    0;
 }
@@ -1547,17 +1547,17 @@ input[type="submit"].btn.btn-mini {
   *padding-bottom:    4px;
 }
 
-.btn-group > .btn-mini.dropdown-toggle {
+.btn-group > .btn-xs.dropdown-toggle {
   padding-left:  5px;
   padding-right: 5px;
 }
 
-.btn-group > .btn-small.dropdown-toggle {
+.btn-group > .btn-sm.dropdown-toggle {
   *padding-top:    4px;
   *padding-bottom: 4px;
 }
 
-.btn-group > .btn-large.dropdown-toggle {
+.btn-group > .btn-lg.dropdown-toggle {
   padding-left:  12px;
   padding-right: 12px;
 }
@@ -1608,15 +1608,15 @@ input[type="submit"].btn.btn-mini {
   filter:  alpha(opacity=100);
 }
 
-.btn-mini .caret {
+.btn-xs .caret {
   margin-top: 5px;
 }
 
-.btn-small .caret {
+.btn-sm .caret {
   margin-top: 6px;
 }
 
-.btn-large .caret {
+.btn-lg .caret {
   margin-top:         6px;
   border-left-width:  5px;
   border-right-width: 5px;
@@ -1834,7 +1834,7 @@ input[type="submit"].btn.btn-mini {
 /*</editor-fold>*/
 /*<editor-fold desc="Drop Downs">*/
 
-.dropup .btn-large .caret {
+.dropup .btn-lg .caret {
   border-bottom: 5px solid #000000;
   border-top:    0;
 }
