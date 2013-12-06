@@ -263,7 +263,7 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
   var name;
   var el;
   var formElements;
-  var submitObj = inp, q = {};
+  var submitObj = inp, q = {}, value;
   if (typeof(inp) == "string") {
     submitObj = document.getElementsByName(inp)[0] || inp;
   }
@@ -302,7 +302,11 @@ JsHttpRequest.formInputs = function (inp, objForm, upload) {
           }
         }
         else {
-          q[name] = el.value;
+          value = el.value;
+          if (el.hasAttribute('data-dec')) {
+            value = value.replace(user.ts, '');
+          }
+          q[name] = value;
         }
       }
     }
@@ -460,22 +464,22 @@ Behaviour.register({
                                                                                                                                        },
                      'button[data-aspect="selector"], input[data-aspect="selector"]':                                                  function (e) {
                        var passBack = function (value) {
-                           var o = opener;
-                           if (!value) {
-                             var back = o.editors[o.editors._call]; // form input bindings
-                             var to = o.document.getElementsByName(back[1])[0];
-                             if (to) {
-                               if (to[0] != undefined) {
-                                 to[0].value = value;
-                               } // ugly hack to set selector to any value
-                               to.value = value;
-                               // update page after item selection
-                               o.JsHttpRequest.request('_' + to.name + '_update', to.form);
-                               o.setFocus(to.name);
-                             }
+                         var o = opener;
+                         if (!value) {
+                           var back = o.editors[o.editors._call]; // form input bindings
+                           var to = o.document.getElementsByName(back[1])[0];
+                           if (to) {
+                             if (to[0] != undefined) {
+                               to[0].value = value;
+                             } // ugly hack to set selector to any value
+                             to.value = value;
+                             // update page after item selection
+                             o.JsHttpRequest.request('_' + to.name + '_update', to.form);
+                             o.setFocus(to.name);
                            }
-                           document.close();
-                         };
+                         }
+                         document.close();
+                       };
                        e.onclick = function () {
                          passBack(this.getAttribute('rel'));
                          return false;

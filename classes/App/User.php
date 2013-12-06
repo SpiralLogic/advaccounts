@@ -176,6 +176,7 @@
         }
         $this->change_password = $myrow['change_password'];
         $this->logged          = true;
+        $this->id = $myrow['id'];
         $this->name            = $myrow['real_name'];
         $this->pos             = $myrow['pos'];
         $this->username        = $this->loginname = $loginname;

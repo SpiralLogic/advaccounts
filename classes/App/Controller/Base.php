@@ -28,7 +28,7 @@
     /**
 
      */
-     public function __construct($session, $user) {
+    public function __construct($session, $user) {
       $this->Session = $session;
       $this->User    = $user;
       $this->checkSecurity();
@@ -43,10 +43,11 @@
     /**
      * @param      $title
      */
-    protected function setTitle($title) {
+    protected function setTitle($title = null) {
+      $title = $title ? : $this->title;
       $this->title = _($this->help_context = $title);
     }
-    final private function checkSecurity() {
+    final protected function checkSecurity() {
       if (!$this->User->hasAccess($this->security)) {
         Page::start('No access');
         echo "<div class='center'><br><br><br><span class='bold'>";

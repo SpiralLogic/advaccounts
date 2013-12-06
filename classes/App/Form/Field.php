@@ -40,6 +40,7 @@
     }
     /**
      * @param $name
+     * you
      */
     public function name($name) {
       $this->name = $this['name'] = $name;
@@ -195,6 +196,7 @@
       if ($this->readonly) {
         $tag           = 'span';
         $this->content = $value;
+        $this->attr = ['class' => 'readonly'];
       } else {
         $tag                 = $this->tag;
         $this->attr['value'] = $value;
@@ -202,7 +204,7 @@
       $control = $this->makeElement($tag, $this->attr, $this->content, $tag != 'input');
       $control = $this->formatAddOns($control);
       if ($this->label) {
-        $control = "<label ><span>" . $this->label . "</span>$control</label>";
+        $control = "<label><span>" . $this->label . "</span>$control</label>";
       }
       return $control;
     }
@@ -210,12 +212,13 @@
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+
      *
-     * @param mixed $offset <p>
+*@param mixed $offset <p>
      *                      An offset to check for.
-     * </p>
+     *                      </p>
      *
-     * @return boolean true on success or false on failure.
+*@return boolean true on success or false on failure.
      * </p>
      * <p>
      *       The return value will be casted to boolean if non-boolean was returned.
@@ -227,12 +230,14 @@
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
+
      *
-     * @param mixed $offset <p>
+*@param mixed $offset <p>
      *                      The offset to retrieve.
-     * </p>
+     *                      </p>
+
      *
-     * @return mixed Can return all value types.
+*@return mixed Can return all value types.
      */
     public function offsetGet($offset) {
       if (isset($this->attr[$offset])) {
@@ -246,15 +251,19 @@
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     *
-     * @param mixed $offset <p>
+
+
+*
+*@param mixed $offset <p>
      *                      The offset to assign the value to.
-     * </p>
+     *                      </p>
      * @param mixed $value  <p>
      *                      The value to set.
-     * </p>
-     *
-     * @return void
+     *                      </p>
+
+
+*
+*@return void
      */
     public function offsetSet($offset, $value) {
       if ($offset == 'value') {
@@ -267,12 +276,14 @@
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+
      *
-     * @param mixed $offset <p>
+*@param mixed $offset <p>
      *                      The offset to unset.
-     * </p>
+     *                      </p>
+
      *
-     * @return void
+*@return void
      */
     public function offsetUnset($offset) {
       unset($this->attr[$offset]);
