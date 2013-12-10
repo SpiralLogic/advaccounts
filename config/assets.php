@@ -17,7 +17,7 @@
     //use this to set Minifier On or Off
     'minifytypes'      => array(
       'js'  => array(
-        'minify'   => false, //
+        'minify'   => true, //
         'minifier' => 'JSMin' //
       ), //
       'css' => array( //
