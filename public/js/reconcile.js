@@ -34,7 +34,7 @@ Adv.extend({Reconcile:{group:{}, toChange:{}, total:0, voidtrans:false,
       amount = self.data('amount');
     }
 
-    url = encodeURI(url + (url.indexOf('?')?'&':'?')+'date=' + date + '&account=' + $('#bank_account').val() + '&amount=' + amount + fee + '&memo=' + memo);
+    url = encodeURI(url + (url.indexOf('?')===-1?'&':'?')+'date=' + date + '&account=' + $('#bank_account').val() + '&amount=' + amount + fee + '&memo=' + memo);
     Adv.Reconcile.openLink(url);
     return false;
   },
