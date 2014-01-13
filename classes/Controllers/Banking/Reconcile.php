@@ -159,7 +159,7 @@
       $sql = GL_Account::get_sql_for_reconcile($this->bank_account, $this->reconcile_date);
       $act = Bank_Account::get($this->bank_account);
       Display::heading($act['bank_account_name'] . " - " . $act['bank_curr_code']);
-      $cols               = array(
+      $cols               = [
         _("Type")        => array('fun' => array($this, 'formatType'), 'ord' => ''), //
         _("#")           => array('fun' => array($this, 'formatTrans'), 'ord' => ''), //
         _("Reference")   => array('fun' => [$this, 'formatReference']), //
@@ -170,7 +170,7 @@
         array('insert' => true, 'fun' => array($this, 'formatGL')), //
         "X"              => array('insert' => true, 'fun' => array($this, 'formatCheckbox')), //
         ['insert' => true, 'fun' => array($this, 'formatDropdown')], ////
-      );
+      ];
       $table              = DB_Pager::newPager('bank_rec', $sql, $cols);
       $table->width       = "80";
       $table->rowFunction = [$this, 'formatRow'];
