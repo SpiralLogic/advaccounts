@@ -1,4 +1,5 @@
 <?php
+  use ADV\App\Page;
   use ADV\Core\JS;
   use ADV\App\Orders;
   use ADV\Core\Input\Input;
@@ -24,7 +25,7 @@
   if ($_GET['trans_type'] == ST_SALESQUOTE) {
     Page::start(_($help_context = "View Sales Quotation"), SA_SALESTRANSVIEW, true);
   } else {
-    Page::start(_($help_context = "View Sales Order"), true);
+    Page::start(_($help_context = "View Sales Order"), SA_SALESTRANSVIEW, true);
   }
   if (isset($_SESSION['View'])) {
     unset ($_SESSION['View']);
