@@ -4465,6 +4465,7 @@ body.lite {
   height: 10px;
 }
 
+/*noinspection CssInvalidPseudoSelector*/
 form ::-webkit-scrollbar {
   width:  7px;
   height: 7px;
