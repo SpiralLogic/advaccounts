@@ -37,21 +37,22 @@
     /** @var Debtor */
     protected $debtor;
     protected function before() {
+      $id = $this->Input->request('id', Input::NUMERIC);
       if ($this->action == 'save') {
         $this->debtor = new Debtor();
         $this->debtor->save($_POST['company']);
-      } elseif ($this->action == 'fetch' && $this->Input->request('id', Input::NUMERIC) > 0) {
-        $this->debtor        = new Debtor($this->Input->request('id', Input::NUMERIC));
+      } elseif ($this->action == 'fetch' && $id > 0) {
+        $this->debtor = new Debtor($id);
         $data['contact_log'] = Contact_Log::read($this->debtor->id, CT_CUSTOMER);
         $this->Session->setGlobal('debtor_id', $this->debtor->id);
       } elseif ($this->action == 'newBranch') {
-        $this->debtor   = new Debtor($this->Input->request('id', Input::NUMERIC));
+        $this->debtor = new Debtor($id);
         $data['branch'] = $this->debtor->addBranch();
       } elseif ($this->action == 'deleteBranch') {
-        $this->debtor = new Debtor($this->Input->request('id', Input::NUMERIC));
+        $this->debtor = new Debtor($id);
         $this->debtor->deleteBranch($this->Input->post('branch_id', Input::NUMERIC));
       } else {
-        $this->debtor = new Debtor();
+        $this->debtor = new Debtor($id);
       }
       if (REQUEST_AJAX) {
         if ($this->debtor) {
@@ -106,9 +107,9 @@
       );
       $form->group('shipping_details')->text('branch[contact_name]')->label('Contact:');
       $form->text('branch[phone]')->label('Phone Number:');
-      $form->text('branch[phone2]')->label("Alt Phone Number:");
-      $form->text('branch[fax]')->label("Fax Number:");
-      $form->text('branch[email]')->label("Email:");
+      $form->text('branch[phone2]')->label('Alt Phone Number:');
+      $form->text('branch[fax]')->label('Fax Number:');
+      $form->text('branch[email]')->label('Email:');
       $form->textarea('branch[br_address]', ['cols' => 37, 'rows' => 4])->label('Street:');
       $branch_postcode = new Postcode([
                                       'city'     => ['branch[city]'], //
@@ -131,7 +132,7 @@
       $form->hidden('accounts_id');
       $form->group('accounts');
       $has_access = !$this->User->hasAccess(SA_CUSTOMER_CREDIT);
-      $form->percent('discount', ["disabled" => $has_access])->label("Discount Percent:");
+      $form->percent('discount', ['disabled' => $has_access])->label('Discount Percent:');
       $form->percent('payment_discount', ["disabled" => $has_access])->label("Prompt Payment Discount:");
       $form->amount('credit_limit', ["disabled" => $has_access])->label("Credit Limit:");
       $form->text('tax_id')->label("GSTNo:");
