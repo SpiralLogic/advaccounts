@@ -143,7 +143,7 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           $branch = $transaction['branch_id'];
         }
         if ($transaction['OverDue'] && !$inc_all) {
-          $openingbalance += abs($transaction["TotalAmount"] - $transaction["Allocated"]) * (in_array($transaction['type'], [ST_SALESINVOICE, ST_BANKPAYMENT]) ? 1 : -1);
+          $openingbalance += abs($transaction["TotalAmount"] - $transaction["Allocated"]) * (in_array($transaction['type'], [ST_SALESINVOICE]) ? 1 : -1);
           continue;
         }
         $transactions[] = $transaction;
@@ -184,13 +184,13 @@ CONCAT(a.br_address,CHARACTER(13),a.city," ",a.state," ",a.postcode) as address 
           continue;
         }
         if (!$inc_all || !$inc_payments) {
-          $balance += (in_array($trans['type'], [ST_SALESINVOICE, ST_BANKPAYMENT])) ? $outstanding : -$outstanding;
+          $balance += (in_array($trans['type'], [ST_SALESINVOICE])) ? $outstanding : -$outstanding;
         } else {
-          $balance += $trans["TotalAmount"];
+          $balance += (in_array($trans['type'], [ST_BANKPAYMENT])) ? -$trans["TotalAmount"] : $trans["TotalAmount"];
         }
         $display_balance = Num::_format($balance, $dec);
         $rep->TextCol(0, 1, $trans_type_string[$trans['type']], -2);
-        $ledgerside = (in_array($trans['type'], [ST_SALESINVOICE, ST_BANKPAYMENT]));
+        $ledgerside = (in_array($trans['type'], [ST_SALESINVOICE]));
         if ($ledgerside) {
           $rep->Font('bold');
         }
